@@ -37,8 +37,14 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
             <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<a href="/">Voir</a>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
             <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<a href="/">Voir</a>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
-            <td ' . ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes') . '>' . ($data['compteur_demandes'] === 0 ? '<a role="button" href="#">1ère demande</a>' : '<a role="button" href="#">Relance</a>') . '</td>
+            <td ' . ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes') . '>' . ($data['compteur_demandes'] === 0 ? '<a role="button" onclick="attribuerId(' . $data['id'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" onclick="attribuerId(' . $data['id'] . ');" data-modal="modal">Relance</a>') . '</td>
         </tr>' . $footer;
     }
     die(json_encode($html));
+}
+
+if ((isset($_POST['envoyerMail']) && !empty($_POST['envoyerMail'])) && (isset($_POST['id_stagiaire']) && !empty($_POST['id_stagiaire']))) {
+    $documents = array();
+    if((isset($_POST['horaires_mois_1']) || isset($_POST['horaires_mois_2']) || isset($_POST['horaires_mois_3'])) || ())
+    die(json_encode(envoyerMail($_POST['id_stagiaire'], $documents)));
 }

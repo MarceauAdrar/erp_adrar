@@ -45,6 +45,8 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
 
 if ((isset($_POST['envoyerMail']) && !empty($_POST['envoyerMail'])) && (isset($_POST['id_stagiaire']) && !empty($_POST['id_stagiaire']))) {
     $documents = array();
-    if((isset($_POST['horaires_mois_1']) || isset($_POST['horaires_mois_2']) || isset($_POST['horaires_mois_3'])) || ())
+    if(isset($_POST['horaires_mois_1']) && isset($_POST['horaires_mois_2']) && isset($_POST['horaires_mois_3']) && isset($_POST['attestation_de_stage']) && isset($_POST['evaluation_de_stage'])) {
+
+    }
     die(json_encode(envoyerMail($_POST['id_stagiaire'], $documents)));
 }

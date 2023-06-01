@@ -34,6 +34,7 @@ async function recupererDonnees() {
               event.preventDefault();
               modal.classList.remove('open');
               document.getElementById("id_stagiaire").value = "0";
+              document.getElementById("relance").value = "0";
             });
           });
           
@@ -44,14 +45,25 @@ async function recupererDonnees() {
 
 recupererDonnees();
 
-function attribuerId(id) {
+function attribuerId(id, relance) {
   document.getElementById("id_stagiaire").value = id;
+  if(relance) {
+    document.getElementById("relance").value = 1;
+  } else {
+    document.getElementById("relance").value = 0;
+  }
 }
 
 async function envoyerMail() {
     var formData = new FormData();
     formData.append('envoyerMail', 1);
     formData.append('id_stagiaire', document.getElementById("id_stagiaire").value);
+    formData.append('horaires_mois_1', document.getElementById("horaires_mois_1").checked);
+    formData.append('horaires_mois_2', document.getElementById("horaires_mois_2").checked);
+    formData.append('horaires_mois_3', document.getElementById("horaires_mois_3").checked);
+    formData.append('attestation_de_stage', document.getElementById("attestation_de_stage").checked);
+    formData.append('evaluation_de_stage', document.getElementById("evaluation_de_stage").checked);
+    formData.append('relance', document.getElementById("relance").value);
     
     await fetch("../src/c/c_requetes.php", {
       method: "POST",
@@ -59,6 +71,6 @@ async function envoyerMail() {
     })
     .then((response) => response.json())
     .then((result) => {
-      console.log(result);
+      window.location.reload();
     });
 }

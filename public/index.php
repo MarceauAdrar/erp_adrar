@@ -14,15 +14,12 @@ include_once __DIR__ . '/m/requetes.php';
 </head>
 <body>
 <div id="tables-stages"></div>
-    <div class="container">
-        <a data-modal="modal">Open Modal</a>
-    </div>
-
     <div class="modal" id="modal">
         <div class="modal-bg"></div> <!-- Ajouter la classe "modal-exit" si on souhaite quitter la modale en cliquant à l'extérieur -->
         <div class="modal-container">
             <button class="modal-close modal-exit">X</button>
             <input type="hidden" name="id_stagiaire" id="id_stagiaire" value="0">
+            <input type="hidden" name="relance" id="relance" value="0">
             <div>
                 <label for="horaires_mois_1">
                     <input type="checkbox" name="horaires_mois_1" id="horaires_mois_1" checked>

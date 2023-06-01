@@ -225,7 +225,7 @@ function envoyerMail($id_stagiaire, $documents, $document_libelles, $bEstRelance
                 $req->bindParam(":id_stagiaire", $id_stagiaire);
                 $req->execute();
             }
-            unlink(__DIR__ . "/../v/tmp/*.pdf");
+            array_map( "unlink", glob(__DIR__ . "/../v/tmp/*.pdf")); // Permet de supprimer l'entiereté des PDF généré pour qu'il n'en reste pas de trace
         }
         echo "Message délivré.";
     } catch (Exception $e) {

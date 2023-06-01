@@ -58,6 +58,7 @@ async function envoyerMail() {
     var formData = new FormData();
     formData.append('envoyerMail', 1);
     formData.append('id_stagiaire', document.getElementById("id_stagiaire").value);
+    formData.append('convention_de_stage', document.getElementById("convention_de_stage").checked);
     formData.append('horaires_mois_1', document.getElementById("horaires_mois_1").checked);
     formData.append('horaires_mois_2', document.getElementById("horaires_mois_2").checked);
     formData.append('horaires_mois_3', document.getElementById("horaires_mois_3").checked);

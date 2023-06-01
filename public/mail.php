@@ -18,4 +18,3 @@ $req = $db->prepare("SELECT nom, prenom, duree_stage, sigle, DATE_FORMAT(date_de
 $req->bindParam(":id_stagiaire", $_GET['id']);
 $req->execute();
 $stage = $req->fetch(PDO::FETCH_ASSOC);
-

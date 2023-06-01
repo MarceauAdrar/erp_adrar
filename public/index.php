@@ -21,6 +21,12 @@ include_once __DIR__ . '/m/requetes.php';
             <input type="hidden" name="id_stagiaire" id="id_stagiaire" value="0">
             <input type="hidden" name="relance" id="relance" value="0">
             <div>
+                <label for="convention_de_stage">
+                    <input type="checkbox" name="convention_de_stage" id="convention_de_stage" checked>
+                    Convention de stage
+                </label>
+            </div>
+            <div>
                 <label for="horaires_mois_1">
                     <input type="checkbox" name="horaires_mois_1" id="horaires_mois_1" checked>
                     Horaires mois 1

@@ -17,6 +17,7 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
                         <th>Session</th>
                         <th>NOM</th>
                         <th>Prénom</th>
+                        <th>Convention de stage</th>
                         <th>Horaire mois 1</th>
                         <th>Horaire mois 2</th>
                         <th>Horaire mois 3</th>
@@ -32,6 +33,7 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
             <td>' . strtoupper($data['nom_session']) . '</td>
             <td>' . strtoupper($data['nom']) . '</td>
             <td>' . ucfirst($data['prenom']) . '</td>
+            <td class="' . (!empty($data['convention_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['convention_recue']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_1']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_1']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_2']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_2']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
@@ -60,6 +62,10 @@ if ((isset($_POST['envoyerMail']) && !empty($_POST['envoyerMail'])) && (isset($_
         array_push($documents, 'presence');
         array_push($documents_libelles, "L'entiereté des heures de présence (Mois n°" . implode(", n°", $horaires) . ": Elles sont essentielles pour assurer que le stagiaire a bien travaillé dans votre structure.");
     }
+    if(isset($_POST['convention_de_stage']) && $_POST['convention_de_stage'] == "true") {
+        array_push($documents, 'convention');
+        array_push($documents_libelles, 'Convention de stage : Veuillez nous fournir une copie signée de votre convention de stage. Assurez-vous que tous les détails, sont correctement remplis.');
+    } 
     if(isset($_POST['attestation_de_stage']) && $_POST['attestation_de_stage'] == "true") {
         array_push($documents, 'attestation');
         array_push($documents_libelles, 'Attestation de stage : Veuillez nous fournir une copie signée de votre attestation de stage. Assurez-vous que tous les détails, sont correctement remplis.');

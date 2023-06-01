@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : lun. 29 mai 2023 à 20:36
+-- Généré le : jeu. 01 juin 2023 à 20:48
 -- Version du serveur : 10.5.19-MariaDB-0+deb11u2
 -- Version de PHP : 8.2.6
 
@@ -20,6 +20,40 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `adrar_titres`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `documents`
+--
+
+CREATE TABLE `documents` (
+  `id` int(11) NOT NULL,
+  `nom_document` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `documents`
+--
+
+INSERT INTO `documents` (`id`, `nom_document`) VALUES
+(1, 'Convention de stage'),
+(2, 'Attestation de stage'),
+(3, 'Évaluation de stage'),
+(4, 'Heures entreprises');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `documents_pages`
+--
+
+CREATE TABLE `documents_pages` (
+  `id` int(11) NOT NULL,
+  `num_page` int(11) NOT NULL,
+  `lien` varchar(100) NOT NULL,
+  `id_document` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -71,7 +105,7 @@ INSERT INTO `stages` (`id`, `lieu`, `nom_tuteur`, `prenom_tuteur`, `mail_tuteur`
 (6, '710 rue d\'Aleo, 34080 Montpellier, France', 'BOURAI', 'Ramdane', 'r.bourai@nouas.org'),
 (7, '4 quai de la dunette, 34200 Sète, France', 'BRENAC', 'Philippe', 'brenacphilippe73@gmail.com'),
 (8, '239 rue des Étoffes, 34400 Lunel, France', 'AMIRROUCHE', 'Redouane', 'contact@perform34.com'),
-(9, '11 rue de l\'abrivado, 34740 Vendargues, France', 'GADEA', 'Delphine', 'ehpadelmasmarguerite.secretariat@gmail.com'),
+(9, '11 rue de l\'abrivado, 34740 Vendargues, France', 'GADEA', 'Delphine', 'ehpadmasmarguerite.secretariat@gmail.com'),
 (10, '7 rue de la Costa Brava, 34070 Montpellier, France', 'SQUARATTI', 'Ryan', 'contact@foodeat.fr'),
 (11, '23 avenue de  la mouyssaguese, 31280 Dremil Lafage, France', 'POP', 'Alexandru', 'entreprise.benazet@gmail.com'),
 (12, '2 avenue de Montpellier, 34820 Teyran, France', 'JOUAUX', 'Muriel', 'aquas34@yahoo.com');
@@ -88,6 +122,7 @@ CREATE TABLE `stagiaires` (
   `prenom` varchar(50) NOT NULL,
   `id_session` int(11) NOT NULL,
   `id_stage` int(11) DEFAULT NULL,
+  `convention_recue` tinyint(1) NOT NULL DEFAULT 0,
   `horaires_recues_1` tinyint(1) NOT NULL DEFAULT 0,
   `horaires_recues_2` tinyint(1) NOT NULL DEFAULT 0,
   `horaires_recues_3` tinyint(1) NOT NULL DEFAULT 0,
@@ -102,32 +137,46 @@ CREATE TABLE `stagiaires` (
 -- Déchargement des données de la table `stagiaires`
 --
 
-INSERT INTO `stagiaires` (`id`, `nom`, `prenom`, `id_session`, `id_stage`, `horaires_recues_1`, `horaires_recues_2`, `horaires_recues_3`, `attestation_mail_envoye`, `attestation_recue`, `evaluation_mail_envoye`, `evaluation_recue`, `compteur_demandes`) VALUES
-(23, 'BOTTA', 'Facundo', 1, 1, 0, 0, 0, 0, '0', 0, '0', 1),
-(24, 'BOUJANDIR', 'Karim', 1, 2, 0, 1, 0, 0, '0', 0, '0', 0),
-(25, 'BOURHIL', 'Yannis', 1, 3, 0, 0, 0, 0, '0', 0, '0', 0),
-(26, 'CHABROUX', 'Jérémy', 1, 4, 0, 0, 0, 0, '0', 0, '0', 0),
-(27, 'EFNANE', 'Haitam', 1, 5, 0, 0, 0, 0, '0', 0, '0', 0),
-(28, 'GATELLIER', 'Amory', 1, 6, 0, 0, 0, 0, '0', 0, '0', 0),
-(29, 'HUET', 'Laurent', 1, 7, 0, 0, 0, 0, '0', 0, '0', 0),
-(30, 'JABRE', 'Hamza', 1, 8, 0, 0, 0, 0, '0', 0, '0', 0),
-(31, 'MAKEMBE', 'Céline', 1, 9, 0, 0, 0, 0, '0', 0, '0', 0),
-(32, 'SETIAO', 'Tiffaine', 1, 11, 0, 0, 0, 0, '0', 0, '0', 0),
-(33, 'PIERROT', 'Gilles', 1, 12, 0, 0, 0, 0, '0', 0, '0', 0),
-(34, 'AOUACHRIA', 'Hibat', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(35, 'CAMOSSI', 'Jérémy', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(36, 'DELLA RICA', 'Steven', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(37, 'DELMON', 'Eryan', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(38, 'DILMAMODE', 'Yasmine', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(39, 'EYMARD', 'Luc', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(40, 'FAKIR', 'Karim', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(41, 'GIRARD', 'Anthony', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(42, 'HERBETTE', 'Alban', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0),
-(43, 'VONGSY', 'Laura', 2, NULL, 0, 0, 0, 0, '0', 0, '0', 0);
+INSERT INTO `stagiaires` (`id`, `nom`, `prenom`, `id_session`, `id_stage`, `convention_recue`, `horaires_recues_1`, `horaires_recues_2`, `horaires_recues_3`, `attestation_mail_envoye`, `attestation_recue`, `evaluation_mail_envoye`, `evaluation_recue`, `compteur_demandes`) VALUES
+(23, 'BOTTA', 'Facundo', 1, 1, 1, 1, 1, 0, 1, '0', 1, '0', 1),
+(24, 'BOUJANDIR', 'Karim', 1, 2, 1, 1, 0, 0, 1, '0', 1, '0', 1),
+(25, 'BOURHIL', 'Yannis', 1, 3, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(26, 'CHABROUX', 'Jérémy', 1, 4, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(27, 'EFNANE', 'Haitam', 1, 5, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(28, 'GATELLIER', 'Amory', 1, 6, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(29, 'HUET', 'Laurent', 1, 7, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(30, 'JABRE', 'Hamza', 1, 8, 1, 1, 0, 0, 1, '0', 1, '0', 1),
+(31, 'MAKEMBE', 'Céline', 1, 9, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(32, 'SETIAO', 'Tiffaine', 1, 11, 1, 0, 0, 0, 1, '0', 1, '0', 1),
+(33, 'PIERROT', 'Gilles', 1, 12, 1, 1, 1, 0, 1, '0', 1, '0', 1),
+(34, 'AOUACHRIA', 'Hibat', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(35, 'CAMOSSI', 'Jérémy', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(36, 'DELLA RICA', 'Steven', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(37, 'DELMON', 'Eryan', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(38, 'DILMAMODE', 'Yasmine', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(39, 'EYMARD', 'Luc', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(40, 'FAKIR', 'Karim', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(41, 'GIRARD', 'Anthony', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(42, 'HERBETTE', 'Alban', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(43, 'VONGSY', 'Laura', 2, NULL, 0, 0, 0, 0, 0, '0', 0, '0', 0),
+(44, 'MOUSTAGHFIR', 'Waël Amir', 1, 10, 1, 1, 0, 0, 1, '0', 1, '0', 1);
 
 --
 -- Index pour les tables déchargées
 --
+
+--
+-- Index pour la table `documents`
+--
+ALTER TABLE `documents`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `documents_pages`
+--
+ALTER TABLE `documents_pages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_document` (`id_document`);
 
 --
 -- Index pour la table `sessions`
@@ -154,6 +203,18 @@ ALTER TABLE `stagiaires`
 --
 
 --
+-- AUTO_INCREMENT pour la table `documents`
+--
+ALTER TABLE `documents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT pour la table `documents_pages`
+--
+ALTER TABLE `documents_pages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT pour la table `sessions`
 --
 ALTER TABLE `sessions`
@@ -169,11 +230,17 @@ ALTER TABLE `stages`
 -- AUTO_INCREMENT pour la table `stagiaires`
 --
 ALTER TABLE `stagiaires`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `documents_pages`
+--
+ALTER TABLE `documents_pages`
+  ADD CONSTRAINT `documents_pages_ibfk_1` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `stagiaires`

@@ -3,6 +3,8 @@
 error_reporting(E_ALL); 
 ini_set("display_errors", 1);
 
+define("DEV", true);
+
 try {
     $db = new PDO("mysql:host=localhost;dbname=adrar_titres", "root", "adrar");
 } catch(PDOException $e) {

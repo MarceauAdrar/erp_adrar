@@ -51,7 +51,7 @@ async function recupererDocumentsManquants(id_stagiaire) {
   formData.append('recupererDocumentsManquants', 1);
   formData.append('id_stagiaire', id_stagiaire);
 
-  await fetch("../src/c/c_requetes.php", {
+  await fetch("/src/c/c_requetes.php", {
     method: "POST",
     body: formData
   })
@@ -86,9 +86,9 @@ async function envoyerMail() {
 
 function exporterStages() {
   if (document.getElementById("nom_session").value == 0) {
-    window.open('export.php', '_blank');
+    window.open('stage/export.php', '_blank');
   } else {
-    window.open('export.php?nom_session=' + document.getElementById("nom_session").value, '_blank');
+    window.open('stage/export.php?nom_session=' + document.getElementById("nom_session").value, '_blank');
   }
 }
 

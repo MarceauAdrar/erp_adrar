@@ -2,8 +2,8 @@
 error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
-require __DIR__ . '/../src/vendor/autoload.php'; // Include the PhpSpreadsheet autoloader
-require __DIR__ . '/../src/m/connect.php';
+require __DIR__ . '/../../src/m/connect.php';
+require RACINE . '/src/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -60,20 +60,52 @@ if (isset($_GET['nom_session']) && !empty($_GET['nom_session'])) {
 $req->execute();
 $session = $req->fetchAll(PDO::FETCH_ASSOC);
 
+// Définition des bordures
+$borderThickBlack = array(
+  'borders' => array(
+    'outline' => array(
+      'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK,
+      'color' => array('argb' => '000000'),
+    ),
+    'inside' => array(
+      'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+      'color' => array('argb' => '000000'),
+    ),
+  ),
+  'alignment' => [
+    'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+  ],
+  'font' => [
+    'bold' => true,
+  ]
+);
+$borderThinWheat = array(
+  'borders' => array(
+    'allBorders' => array(
+      'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+      'color' => array('argb' => 'adadad'),
+    ),
+    'outline' => array(
+      'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+      'color' => array('argb' => '000000'),
+    ),
+  ),
+);
+
 if (!empty($session)) {
   $sessions = array();
   for ($stagiaire = 1; $stagiaire <= sizeof($session); $stagiaire++) {
     if (!in_array($session[$stagiaire - 1]['nom_session'], $sessions)) {
       $i = 2;
-      if(empty($sessions)) {
+      if (empty($sessions)) {
         $sheet = $spreadsheet->getActiveSheet();
       } else {
         $sheet = $spreadsheet->createSheet();
       }
       array_push($sessions, $session[$stagiaire - 1]['nom_session']);
-      
+
       $sheet->setTitle($session[$stagiaire - 1]['nom_session']);
-      
+
       // Appliquer la validation des données à la plage de cellules spécifiée
       $sheet->setDataValidation($cellRangeChoix, $dataValidation);
 
@@ -84,11 +116,13 @@ if (!empty($session)) {
       $sheet->setCellValue('D1', 'Horaires mois 1');
       $sheet->setCellValue('E1', 'Horaires mois 2');
       $sheet->setCellValue('F1', 'Horaires mois 3');
-      $sheet->setCellValue('G1', 'Attestation (envoyée/reçue)');
-      $sheet->setCellValue('H1', 'Évaluation (envoyée/reçue)');
+      $sheet->setCellValue('G1', 'Attestation reçue');
+      $sheet->setCellValue('H1', 'Évaluation reçue');
+      $sheet->getStyle('A1:H1')->applyFromArray($borderThickBlack);
+      $sheet->getStyle('A1:H1')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('9BC2E6'); // Définition du background
+      $sheet->setAutoFilter('A1:H1'); // Définition des filtres
 
       // Ajuster automatiquement la taille des cellules en fonction du contenu
-      $sheet->getStyle('A2:H1000')->getAlignment()->setWrapText(true);
 
       $sheet->getStyle($cellWizard->getCellRange())
         ->setConditionalStyles($conditionalStyles);
@@ -102,6 +136,11 @@ if (!empty($session)) {
     $sheet->setCellValue("G" . $i, ($session[$stagiaire - 1]['attestation_recue'] ? "Oui" : "Non"));
     $sheet->setCellValue("H" . $i, ($session[$stagiaire - 1]['evaluation_recue'] ? "Oui" : "Non"));
     $i++;
+    $sheet->getStyle('A2:H' . $i - 1)->applyFromArray($borderThinWheat);
+    foreach (range('A', $sheet->getHighestDataColumn()) as $col) {
+      $sheet->getColumnDimension($col)
+        ->setAutoSize(true);
+    }
   }
 }
 
@@ -109,7 +148,7 @@ if (!empty($session)) {
 $writer = new Xlsx($spreadsheet);
 // Set appropriate headers for file download
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment; filename="Liste.xlsx"');
+header('Content-Disposition: attachment; filename="Liste_' . uniqid("SS_") . '.xlsx"');
 header('Cache-Control: max-age=0');
 
 $writer->save('php://output');

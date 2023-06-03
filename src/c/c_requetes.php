@@ -28,6 +28,9 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
                 </thead>
                 <tbody>';
         }
+
+        $lienTransiPro = urlencode($data['lien_serveur'] . '_' . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . ' Transition Pro\Ma Dynamique Emploi\Stage 1\\');
+        $lienClassique = urlencode($data['lien_serveur'] . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . '\Ma Dynamique Emploi\Stage 1\\');
         $stages .= $head . '
         <tr>
             <td>' . strtoupper($data['nom_session']) . '</td>
@@ -37,8 +40,8 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
             <td class="' . (!empty($data['horaires_recues_1']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_1']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_2']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_2']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<a href="/">Voir</a>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
-            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<a href="/">Voir</a>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
+            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<a id="' . uniqid("attest_") . '" onclick="copyClipboard(this);">Si transition pro</a><a href="file:///' . $lienClassique . '">Sinon</a>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
+            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<a target="_blank" href="file:///' . $lienTransiPro . '">Si transition pro</a><a href="file:///' . $lienClassique . '">Sinon</a>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
             <td ' . ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes') . '>' . ($data['compteur_demandes'] === 0 ? '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">Relance</a>') . '</td>
         </tr>' . $footer;
     }

@@ -11,7 +11,7 @@ function recupererStages()
 {
     global $db;
 
-    $req = $db->prepare("SELECT stagiaires.id_stagiaire, nom_stagiaire, prenom_stagiaire, nom_session, convention_recue, horaires_recues_1, horaires_recues_2, horaires_recues_3, attestation_mail_envoye, attestation_recue, evaluation_mail_envoye, evaluation_recue, compteur_demandes
+    $req = $db->prepare("SELECT stagiaires.id_stagiaire, nom_stagiaire, prenom_stagiaire, nom_session, lien_serveur, convention_recue, horaires_recues_1, horaires_recues_2, horaires_recues_3, attestation_mail_envoye, attestation_recue, evaluation_mail_envoye, evaluation_recue, compteur_demandes
                         FROM stagiaires
                         JOIN sessions ON sessions.id_session = stagiaires.id_session
                         JOIN stages ON stages.id_stage = stagiaires.id_stage;");
@@ -98,7 +98,7 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
         $req->execute();
         $documents = $req->fetchAll(PDO::FETCH_ASSOC);
 
-        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, carte_formateur
+        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, carte_formateur_logo_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site
                             FROM formateurs 
                             WHERE id_formateur=:id_formateur;");
         $req->bindParam(":id_formateur", $id_formateur);
@@ -172,11 +172,40 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
         } else {
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_DEMANDE.html');
         }
+        $numeros = "";
+        $liens = "";
+        if(!empty($formateur['carte_formateur_tel']) && !empty($formateur['carte_formateur_portable'])) {
+            $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_tel'] . '">' . $formateur['carte_formateur_tel'] . '</a></p>';
+            $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_portable'] . '">' . $formateur['carte_formateur_portable'] . '</a></p>';
+        } elseif(!empty($formateur['carte_formateur_tel'])) {
+            $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_tel'] . '">' . $formateur['carte_formateur_tel'] . '</a></p>';
+            
+        } elseif(!empty($formateur['carte_formateur_portable'])) {
+            $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_portable'] . '">' . $formateur['carte_formateur_portable'] . '</a></p>';
+        }
+        if(!empty($formateur['carte_formateur_liens'])) {
+            if(str_contains(",", $formateur['carte_formateur_liens'])) {
+                foreach(explode(",", $formateur['carte_formateur_liens']) as $lien) {
+                    $liens .= '<p style="margin:0;"><a href="' . $lien . '">' . $lien . '</a></p>';
+                }
+            } else {
+                $liens .= '<p style="margin:0;"><a href="' . $formateur['carte_formateur_liens'] . '">' . $formateur['carte_formateur_liens'] . '</a></p>';
+            }
+        }
+
         $message = strtr($message, array(
             '{{NOM_TUTEUR}}' => strtoupper($stage['nom_tuteur']),
             '{{PRENOM_NOM_STAGIAIRE}}' => strtoupper($stage['nom_stagiaire']) . " " . ucwords($stage['prenom_stagiaire']),
-            '{{LISTE_DOCUMENTS}}' => $liste_documents,
+            '{{LISTE_DOCUMENTS}}' => $liste_documents, 
+            '{{CARTE_PRENOM}}' => ucwords($formateur['prenom_formateur']),
+            '{{CARTE_NOM}}' => strtoupper($formateur['nom_formateur']),
+            '{{CARTE_LOGO_SECTEUR}}' => $formateur['carte_formateur_logo_secteur'],
+            '{{CARTE_ADRESSE}}' => $formateur['carte_formateur_adresse_site'],
+            '{{CARTE_NUMEROS}}' => $numeros, 
+            '{{CARTE_LIENS}}' => $liens,
+            '{{CARTE_ROLE}}' => $formateur['carte_formateur_role']
         ));
+
 
         //Content
         $mail->isHTML(true);

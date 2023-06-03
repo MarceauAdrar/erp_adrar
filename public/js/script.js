@@ -91,3 +91,12 @@ function exporterStages() {
     window.open('export.php?nom_session=' + document.getElementById("nom_session").value, '_blank');
   }
 }
+
+function copyClipboard(text) {
+  const textarea = document.createElement("textarea");
+  textarea.textContent = text.value;
+  document.body.appendChild(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textarea);
+}

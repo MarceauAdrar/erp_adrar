@@ -15,8 +15,11 @@ include_once __DIR__ . '/m/requetes.php';
 </head>
 
 <body>
-    <label for="id_formateur">Sélectionner le formateur associé à la démarche:</label><br>
+    <label for="id_formateur">Sélectionner le formateur associé à la démarche:</label>
     <select id="id_formateur"></select>
+    <label for="nom_session">Sélectionner la session a exporter:</label>
+    <select id="nom_session"></select>
+    <a onclick="exporterStages();">Exporter !</a>
     <div id="tables-stages"></div>
     <div class="modal" id="modal">
         <div class="modal-bg modal-exit"></div> <!-- Ajouter la classe "modal-exit" si on souhaite quitter la modale en cliquant à l'extérieur -->

@@ -9,7 +9,8 @@ async function recupererDonnees() {
   })
   .then((response) => response.json())
   .then((result) => {
-    document.getElementById("tables-stages").innerHTML = result;
+    document.getElementById("id_formateur").innerHTML = result.formateurs;
+    document.getElementById("tables-stages").innerHTML = result.stages;
 
     // Permet de mettre le trigger sur les nouveaux boutons
   
@@ -24,7 +25,6 @@ async function recupererDonnees() {
             send.addEventListener('click', function (event) {
               event.preventDefault();
               modal.classList.remove('open');
-              envoyerMail();
             });
           });
 
@@ -45,25 +45,32 @@ async function recupererDonnees() {
 
 recupererDonnees();
 
-function attribuerId(id, relance) {
-  document.getElementById("id_stagiaire").value = id;
-  if(relance) {
-    document.getElementById("relance").value = 1;
-  } else {
-    document.getElementById("relance").value = 0;
-  }
+async function recupererDocumentsManquants(id_stagiaire) {
+  var formData = new FormData();
+  formData.append('recupererDocumentsManquants', 1);
+  formData.append('id_stagiaire', id_stagiaire);
+  
+  await fetch("../src/c/c_requetes.php", {
+    method: "POST",
+    body: formData
+  })
+  .then((response) => response.text())
+  .then((result) => {
+    document.getElementById("liste_documents").innerHTML = result;
+  });
 }
 
 async function envoyerMail() {
     var formData = new FormData();
     formData.append('envoyerMail', 1);
     formData.append('id_stagiaire', document.getElementById("id_stagiaire").value);
-    formData.append('convention_de_stage', document.getElementById("convention_de_stage").checked);
-    formData.append('horaires_mois_1', document.getElementById("horaires_mois_1").checked);
-    formData.append('horaires_mois_2', document.getElementById("horaires_mois_2").checked);
-    formData.append('horaires_mois_3', document.getElementById("horaires_mois_3").checked);
-    formData.append('attestation_de_stage', document.getElementById("attestation_de_stage").checked);
-    formData.append('evaluation_de_stage', document.getElementById("evaluation_de_stage").checked);
+    formData.append('id_formateur', document.getElementById("id_formateur").value);
+    if(document.getElementById("convention")) formData.append('convention', document.getElementById("convention").checked);
+    if(document.getElementById("horaires_mois_1")) formData.append('horaires_mois_1', document.getElementById("horaires_mois_1").checked);
+    if(document.getElementById("horaires_mois_2")) formData.append('horaires_mois_2', document.getElementById("horaires_mois_2").checked);
+    if(document.getElementById("horaires_mois_3")) formData.append('horaires_mois_3', document.getElementById("horaires_mois_3").checked);
+    if(document.getElementById("attestation")) formData.append('attestation', document.getElementById("attestation").checked);
+    if(document.getElementById("evaluation")) formData.append('evaluation', document.getElementById("evaluation").checked);
     formData.append('relance', document.getElementById("relance").value);
     
     await fetch("../src/c/c_requetes.php", {
@@ -72,6 +79,6 @@ async function envoyerMail() {
     })
     .then((response) => response.json())
     .then((result) => {
-      window.location.reload();
+      // window.location.reload();
     });
 }

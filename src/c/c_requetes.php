@@ -4,12 +4,12 @@ include_once __DIR__ . '/../m/connect.php';
 
 if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
     $stages = '';
-    $sessions = array();
+    $liste_sessions = array();
     foreach (recupererStages() as $data) {
         $head = '';
         $footer = '';
-        if (!in_array($data['nom_session'], $sessions)) {
-            array_push($sessions, $data['nom_session']);
+        if (!in_array($data['nom_session'], $liste_sessions)) {
+            array_push($liste_sessions, $data['nom_session']);
             $head = '
             <table class="table-stages" id="table-stages-' . $data['nom_session'] . '">
                 <thead>
@@ -47,8 +47,13 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
     foreach(recupererFormateurs() as $formateur) {
         $formateurs .= '<option value="' . $formateur['id_formateur'] . '" >' . strtoupper($formateur['nom_formateur']) . " " . ucwords($formateur['prenom_formateur']) . '</option>';
     }
+    $sessions = '<option value="0">Tout</option>';
+    foreach(recupererSessions() as $session) {
+        $sessions .= '<option value="' . $session['nom_session'] . '" >' . strtoupper($session['nom_session']) . '</option>';
+    }
     die(json_encode(array(
         "stages" => $stages, 
+        "sessions" => $sessions, 
         "formateurs" => $formateurs
     )));
 }

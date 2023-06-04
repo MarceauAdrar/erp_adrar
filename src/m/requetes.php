@@ -31,6 +31,17 @@ function recupererFormateurs()
     return $formateurs;
 }
 
+function recupererSessions()
+{
+    global $db;
+
+    $req = $db->prepare("SELECT *
+                        FROM sessions;");
+    $req->execute();
+    $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
+    return $sessions;
+}
+
 function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelles, $bEstRelance = false)
 {
     global $db;

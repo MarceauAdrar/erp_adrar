@@ -1,10 +1,7 @@
 <?php
-error_reporting(E_ALL);
-ini_set("display_errors", 1);
-
 //Load Composer's autoloader
-require __DIR__ . '/../src/vendor/autoload.php';
 require __DIR__ . '/../src/m/connect.php';
+require __DIR__ . '/../src/vendor/autoload.php';
 
 $docs = array('convention', 'attestation', 'evaluation', 'presence');
 // $docs = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);

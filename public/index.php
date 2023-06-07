@@ -1,9 +1,5 @@
 <?php
 include_once __DIR__ . '/m/connect.php';
-include_once __DIR__ . '/m/requetes.php';
-?>
-
-<?php 
 
 $page = "notfound.html";
 if(isset($_GET["page"]) && !empty($_GET["page"])) {

@@ -51,7 +51,7 @@ async function recupererDocumentsManquants(id_stagiaire) {
   formData.append('recupererDocumentsManquants', 1);
   formData.append('id_stagiaire', id_stagiaire);
 
-  await fetch("/src/c/c_requetes.php", {
+  await fetch("../src/c/c_requetes.php", {
     method: "POST",
     body: formData
   })

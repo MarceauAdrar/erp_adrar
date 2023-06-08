@@ -17,9 +17,9 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
 </head>
 
 <body>
-    <form>
+    <form action="./viewer.php" method="post">
         <div>
-            <label for="document">Document à générer:</label>
+            <label for="c">Document à générer:</label>
             <select name="document" id="document">
                 <?php foreach ($documents as $document) { ?>
                     <option value="<?= $document['index_document'] ?>"><?= $document['nom_document'] ?></option>
@@ -51,7 +51,7 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
             <label for="date_production">Date:</label>
             <input type="date" name="date_production" id="date_production">
         </div>
-        <a target="_blank" onclick="genererPDF();">Voir le PDF</a>
+        <button type="submit">Voir le PDF</button>
     </form>
     <script src="../js/_global.js"></script>
 </body>

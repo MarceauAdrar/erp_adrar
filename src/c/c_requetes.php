@@ -2,10 +2,6 @@
 
 include_once __DIR__ . '/../m/connect.php';
 
-if (isset($_POST['genererPDF']) && !empty($_POST['genererPDF'])) {
-    die(include __DIR__ . '/../../public/viewer.php');
-}
-
 if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
     $stages = '';
     $liste_sessions = array();

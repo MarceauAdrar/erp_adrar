@@ -13,7 +13,7 @@ $req->bindParam(":id_document", $document['id_document']);
 $req->execute();
 $pages = $req->fetchAll(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur
+$req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, DATE_FORMAT(date_naissance_stagiaire, '%d/%m/%Y') AS date_naissance_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
                     FROM stagiaires 
                     JOIN sessions ON sessions.id_session = stagiaires.id_session
                     LEFT JOIN stages ON stages.id_stage = stagiaires.id_stage
@@ -21,6 +21,13 @@ $req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, duree_stage, sigle_
 $req->bindParam(":id_stagiaire", $_POST['stagiaire']);
 $req->execute();
 $stage = $req->fetch(PDO::FETCH_ASSOC);
+
+$req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, carte_formateur_logo_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site
+                    FROM formateurs 
+                    WHERE id_formateur=:id_formateur;");
+$req->bindParam(":id_formateur", $_POST['formateur']);
+$req->execute();
+$formateur = $req->fetch(PDO::FETCH_ASSOC);
 
 $html2pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8');
 $html2pdf->SetCreator("Marceau RODRIGUES");
@@ -49,10 +56,13 @@ if(!empty($pages)) {
                     $html2pdf->Cell(0, 10, $i['texte'], 0, 1);
                 }
                 if (isset($i['tampon']) && !empty($i['tampon'])) { // Gère le tampon s'il est nécessaire sur le document
-                    $html2pdf->Image(__DIR__ . "/../" . $i['tampon'], $i['xtampon'], $i['ytampon'], 60, 30);
+                    $html2pdf->Image(__DIR__ . "/../src/" . $i['tampon'], $i['xtampon'], $i['ytampon'], 60, 30);
                 }
                 if (isset($i['signature']) && !empty($i['signature'])) { // Gère la signature du formateur si elle est nécessaire sur le document
-                    $html2pdf->Image(__DIR__ . "/../" . $i['signature'], $i['xsignature'], $i['ysignature'], 47, 27.5);
+                    $i['signature'] = strtr($i['signature'], array(
+                        '{{FORMATEUR_NOM_PRENOM}}' => $formateur['prenom_formateur'] . "_" . $formateur['nom_formateur']
+                    ));
+                    $html2pdf->Image(__DIR__ . "/../src/" . $i['signature'], $i['xsignature'], $i['ysignature'], 47, 27.5);
                 }
             }
         }

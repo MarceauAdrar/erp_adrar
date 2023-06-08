@@ -1,12 +1,15 @@
-async function genererPDF() {
-    var formData = new FormData();
-    formData.append('genererPDF', 1);
-    formData.append('document', document.querySelector('#document').value);
-    formData.append('stagiaire', document.querySelector('#stagiaire').value);
-    formData.append('date_production', document.querySelector('#date_production').value);
-
-    await fetch("../../src/c/c_requetes.php", {
-        method: "POST",
-        body: formData
-    });
+function updateForm() {
+    switch(document.querySelector('#document').value) {
+        case "convention":
+            
+            break;
+        case "attestation":
+            break;
+        case "evaluation":
+            break;
+        case "presence":
+            break;
+        case "livret_evaluation":
+            break;
+    }
 }

@@ -14,6 +14,7 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Génération de documents à la volée</title>
+    <link rel="stylesheet" href="./css/_style.css">
 </head>
 
 <body>
@@ -57,27 +58,50 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
         </fieldset>
         <fieldset>
             <legend>Informations du fichier</legend>
-            <div id="document_attestation">
+            <span id="document_convention">
+                <input type="hidden" name="document_convention" value="1">
+                <div>
+                    <label for="">CONVENTION:</label>
+                </div>
+            </span>
+            <span id="document_attestation">
                 <input type="hidden" name="document_attestation" value="1">
-                <label for="poste_occupe">Poste occupé par le stagiaire:</label>
-                <input type="text" name="poste_occupe" id="poste_occupe">
-                <label for="tache_effectuee_1">Tâche n°1 effectuée par le stagiaire:</label>
-                <input type="text" name="tache_effectuee_1" id="tache_effectuee_1">
-                <label for="tache_effectuee_2">Tâche n°2 effectuée par le stagiaire:</label>
-                <input type="text" name="tache_effectuee_2" id="tache_effectuee_2">
-                <label for="tache_effectuee_3">Tâche n°3 effectuée par le stagiaire:</label>
-                <input type="text" name="tache_effectuee_3" id="tache_effectuee_3">
-                <label for="tache_effectuee_4">Tâche n°4 effectuée par le stagiaire:</label>
-                <input type="text" name="tache_effectuee_4" id="tache_effectuee_4">
-                <label for="tache_effectuee_5">Tâche n°5 effectuée par le stagiaire:</label>
-                <input type="text" name="tache_effectuee_5" id="tache_effectuee_5">
-                <label for="tache_effectuee_6">Tâche n°6 effectuée par le stagiaire:</label>
-                <input type="text" name="tache_effectuee_6" id="tache_effectuee_6">
-            </div>
+                <div>
+                    <label for="poste_occupe">Poste occupé par le stagiaire:</label>
+                    <input type="text" name="poste_occupe" id="poste_occupe">
+                </div>
+                <?php for($tache = 1 ; $tache <= 6 ; $tache++) { ?>
+                    <div class="<?=($tache > 1 ? 'hidden':'') ?>">
+                        <label for="tache_effectuee_<?=$tache?>">Tâche n°<?=$tache?> effectuée par le stagiaire:</label>
+                        <input type="text" class="tache_effectuee_" name="tache_effectuee_<?=$tache?>" id="tache_effectuee_<?=$tache?>" onchange="loadNextInput('tache_effectuee_', this, <?=$tache + 1?>);">
+                    </div>
+                <?php } ?>
+            </span>
+            <span id="document_evaluation">
+                <input type="hidden" name="document_evaluation" value="1">
+                <div>
+                    <label for="">EVALUATION:</label>
+                </div>
+            </span>
+            <span id="document_presence">
+                <input type="hidden" name="document_presence" value="1">
+                <div>
+                    <label for="">PRESENCE:</label>
+                </div>
+            </span>
+            <span id="document_livret_evaluation">
+                <input type="hidden" name="document_livret_evaluation" value="1">
+                <div>
+                    <label for="">LIVRET:</label>
+                </div>
+            </span>
         </fieldset>
         <button type="submit">Voir le PDF</button>
     </form>
     <script src="./js/_global.js"></script>
+    <script>
+        updateForm();
+    </script>
 </body>
 
 </html>

@@ -14,9 +14,9 @@
 
 <body>
     <label for="id_formateur">Sélectionner le formateur associé à la démarche:</label>
-    <select id="id_formateur"></select>
+    <select id="id_formateur" onchange="recupererDonnees();"></select>
     <label for="nom_session">Sélectionner la session a exporter:</label>
-    <select id="nom_session"></select>
+    <select id="nom_session" onchange="recupererDonnees();"></select>
     <a onclick="exporterStages();">Exporter !</a>
     <div id="tables-stages"></div>
     <div class="modal" id="modal">
@@ -30,6 +30,7 @@
             <button class="modal-send modal-exit" onclick="envoyerMail();">Envoyer</button>
         </div>
     </div>
+    <script src="../src/vendor/zenorocha/clipboardjs/dist/clipboard.min.js"></script>
     <script src="js/stage.js?v=<?= uniqid() ?>"></script>
 </body>
 

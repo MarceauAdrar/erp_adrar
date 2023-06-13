@@ -1,7 +1,9 @@
 
-async function recupererDonnees() {
+async function recupererDonneesFiltres() {
   var formData = new FormData();
-  formData.append('recupererDonnees', 1);
+  formData.append('recupererDonneesFiltres', 1);
+  formData.append('id_formateur', document.querySelector('#id_formateur').value);
+  formData.append('nom_session', document.querySelector('#nom_session').value);
 
   await fetch("../src/c/c_requetes.php", {
     method: "POST",
@@ -11,6 +13,26 @@ async function recupererDonnees() {
     .then((result) => {
       document.getElementById("id_formateur").innerHTML = result.formateurs;
       document.getElementById("nom_session").innerHTML = result.sessions;
+    })
+    .then(() => {
+      recupererDonnees();
+    });
+}
+
+recupererDonneesFiltres();
+
+async function recupererDonnees() {
+  var formData = new FormData();
+  formData.append('recupererDonnees', 1);
+  formData.append('id_formateur', document.querySelector('#id_formateur').value);
+  formData.append('nom_session', document.querySelector('#nom_session').value);
+
+  await fetch("../src/c/c_requetes.php", {
+    method: "POST",
+    body: formData
+  })
+    .then((response) => response.json())
+    .then((result) => {
       document.getElementById("tables-stages").innerHTML = result.stages;
 
       // Permet de mettre le trigger sur les nouveaux boutons
@@ -43,10 +65,9 @@ async function recupererDonnees() {
       });
     }).then(() => {
       let table = new DataTable('#table-stages');
+      new ClipboardJS('.btn');
     });
 }
-
-recupererDonnees();
 
 async function recupererDocumentsManquants(id_stagiaire) {
   var formData = new FormData();
@@ -61,7 +82,7 @@ async function recupererDocumentsManquants(id_stagiaire) {
     .then((result) => {
       document.getElementById("liste_documents").innerHTML = result;
     });
-  }
+}
 
 async function envoyerMail() {
   var formData = new FormData();
@@ -92,13 +113,4 @@ function exporterStages() {
   } else {
     window.open('stage/export.php?nom_session=' + document.getElementById("nom_session").value, '_blank');
   }
-}
-
-function copyClipboard(text) {
-  const textarea = document.createElement("textarea");
-  textarea.textContent = text.value;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textarea);
 }

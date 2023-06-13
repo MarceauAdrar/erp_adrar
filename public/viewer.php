@@ -74,8 +74,44 @@ if(!empty($pages)) {
                 $html2pdf->Cell(0, 10, filter_var($_POST['poste_occupe'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
             if(isset($_POST['tache_effectuee_1']) && !empty($_POST['tache_effectuee_1'])) {
-                $html2pdf->setXY(25, 110);
+                $html2pdf->setXY(29, 125);
                 $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_1'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['tache_effectuee_2']) && !empty($_POST['tache_effectuee_2'])) {
+                $html2pdf->setXY(29, 132);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['tache_effectuee_3']) && !empty($_POST['tache_effectuee_3'])) {
+                $html2pdf->setXY(29, 139);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_3'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['tache_effectuee_4']) && !empty($_POST['tache_effectuee_4'])) {
+                $html2pdf->setXY(29, 146);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_4'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['tache_effectuee_5']) && !empty($_POST['tache_effectuee_5'])) {
+                $html2pdf->setXY(29, 153);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_5'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['tache_effectuee_6']) && !empty($_POST['tache_effectuee_6'])) {
+                $html2pdf->setXY(29, 160);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_6'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['observation_tuteur_1']) && !empty($_POST['observation_tuteur_1'])) {
+                $html2pdf->setXY(29, 191.5);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_1'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['observation_tuteur_2']) && !empty($_POST['observation_tuteur_2'])) {
+                $html2pdf->setXY(29, 198.5);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['observation_tuteur_3']) && !empty($_POST['observation_tuteur_3'])) {
+                $html2pdf->setXY(29, 205.5);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_3'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+            }
+            if(isset($_POST['observation_tuteur_4']) && !empty($_POST['observation_tuteur_4'])) {
+                $html2pdf->setXY(29, 212.5);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_4'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
         }
     }

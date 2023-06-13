@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automatisation documents stage</title>
     <link rel="stylesheet" href="css/stage.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="//code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>

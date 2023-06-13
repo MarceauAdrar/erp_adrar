@@ -7,14 +7,29 @@ use TCPDF;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-function recupererStages()
+function recupererStages($id_formateur, $nom_session)
 {
     global $db;
 
-    $req = $db->prepare("SELECT stagiaires.id_stagiaire, nom_stagiaire, prenom_stagiaire, nom_session, lien_serveur, convention_recue, horaires_recues_1, horaires_recues_2, horaires_recues_3, attestation_mail_envoye, attestation_recue, evaluation_mail_envoye, evaluation_recue, compteur_demandes
-                        FROM stagiaires
-                        JOIN sessions ON sessions.id_session = stagiaires.id_session
-                        JOIN stages ON stages.id_stage = stagiaires.id_stage;");
+    $sql = "SELECT stagiaires.id_stagiaire, nom_stagiaire, prenom_stagiaire, nom_session, lien_serveur, convention_recue, horaires_recues_1, horaires_recues_2, horaires_recues_3, attestation_mail_envoye, attestation_recue, evaluation_mail_envoye, evaluation_recue, compteur_demandes
+            FROM stagiaires
+            JOIN sessions ON sessions.id_session = stagiaires.id_session
+            JOIN stages ON stages.id_stage = stagiaires.id_stage 
+            WHERE 1 ";
+    if(!empty($id_formateur)) {
+        $sql .= " AND sessions.id_formateur=:id_formateur ";
+    }
+    if(!empty($nom_session)) {
+        $sql .= " AND sessions.nom_session=:nom_session ";
+    }
+    $sql .= ";";
+    $req = $db->prepare($sql);
+    if(!empty($id_formateur)) {
+        $req->bindParam(":id_formateur", $id_formateur);
+    }
+    if(!empty($nom_session)) {
+        $req->bindParam(":nom_session", $nom_session);
+    }
     $req->execute();
     $stages = $req->fetchAll(PDO::FETCH_ASSOC);
     return $stages;

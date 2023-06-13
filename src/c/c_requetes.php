@@ -2,7 +2,26 @@
 
 include_once __DIR__ . '/../m/connect.php';
 
+if (isset($_POST['recupererDonneesFiltres']) && !empty($_POST['recupererDonneesFiltres'])) {    
+    $formateurs = '<option value="0"' . (!isset($_SESSION['filtres']['id_formateur']) || empty($_SESSION['filtres']['id_formateur']) ? " selected" : "") . '>Tous</option>';
+    foreach(recupererFormateurs() as $formateur) {
+        $formateurs .= '<option value="' . $formateur['id_formateur'] . '"' . (isset($_SESSION['filtres']['id_formateur']) && $_SESSION['filtres']['id_formateur'] == $formateur['id_formateur'] ? " selected" : "") . '>' . strtoupper($formateur['nom_formateur']) . " " . ucwords($formateur['prenom_formateur']) . '</option>';
+    }
+    $sessions = '<option value="0"' . (!isset($_SESSION['filtres']['nom_session']) || empty($_SESSION['filtres']['nom_session']) ? " selected" : "") . '>Toutes</option>';
+    foreach(recupererSessions() as $session) {
+        $sessions .= '<option value="' . $session['nom_session'] . '"' . (isset($_SESSION['filtres']['nom_session']) && $_SESSION['filtres']['nom_session'] == $session['nom_session'] ? " selected" : "") . '>' . strtoupper($session['nom_session']) . '</option>';
+    }
+
+    die(json_encode(array(
+        "sessions" => $sessions, 
+        "formateurs" => $formateurs
+    )));
+}
+
 if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
+    $_SESSION['filtres']['id_formateur'] = filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT);
+    $_SESSION['filtres']['nom_session'] = filter_var($_POST['nom_session'], FILTER_SANITIZE_SPECIAL_CHARS);
+
     $stages = '';
     $liste_sessions = array();
     $head = '
@@ -23,7 +42,9 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
                 </thead>
                 <tbody>';
     $tbody = '';
-    foreach (recupererStages() as $data) {
+    
+    // var_dump($_SESSION['filtres']['nom_session']);
+    foreach (recupererStages($_SESSION['filtres']['id_formateur'], $_SESSION['filtres']['nom_session']) as $data) {
         $lienTransiPro = ($data['lien_serveur'] . '_' . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . ' Transition Pro\Ma Dynamique Emploi\Stage 1\\');
         $lienClassique = ($data['lien_serveur'] . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . '\Ma Dynamique Emploi\Stage 1\\');
         $tbody .= '
@@ -35,8 +56,8 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
             <td class="' . (!empty($data['horaires_recues_1']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_1']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_2']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_2']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<a id="' . uniqid("attest_") . '" onclick="copyClipboard(this);">Si transition pro</a><a href="file:///' . $lienClassique . '">Sinon</a>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
-            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<a target="_blank" href="file:///' . $lienTransiPro . '">Si transition pro</a><a href="file:///' . $lienClassique . '">Sinon</a>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
+            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<button class="btn" data-clipboard-text="Lien transition pro">Transition pro</button><button class="btn" data-clipboard-text="Lien classique">Classique</button>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
+            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<button class="btn" data-clipboard-text="Lien transition pro">Transition pro</button><button class="btn" data-clipboard-text="Lien classique">Classique</button>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
             <td ' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "demandes_terminees" : ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes')) . '>' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "Terminé !" : ($data['compteur_demandes'] === 0 ? '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">Relance</a>')) . '</td>
         </tr>';
     }
@@ -46,18 +67,8 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
                 '</tbody>
             </table>';
 
-    $formateurs = '';
-    foreach(recupererFormateurs() as $formateur) {
-        $formateurs .= '<option value="' . $formateur['id_formateur'] . '" >' . strtoupper($formateur['nom_formateur']) . " " . ucwords($formateur['prenom_formateur']) . '</option>';
-    }
-    $sessions = '<option value="0">Tout</option>';
-    foreach(recupererSessions() as $session) {
-        $sessions .= '<option value="' . $session['nom_session'] . '" >' . strtoupper($session['nom_session']) . '</option>';
-    }
     die(json_encode(array(
-        "stages" => $stages, 
-        "sessions" => $sessions, 
-        "formateurs" => $formateurs
+        "stages" => $stages
     )));
 }
 

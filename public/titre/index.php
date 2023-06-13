@@ -57,15 +57,14 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
             </div>
         </fieldset>
         <fieldset>
+            <input type="hidden" name="document_attestation" id="document_informations" value="1">
             <legend>Informations du fichier</legend>
             <span id="document_convention">
-                <input type="hidden" name="document_convention" value="1">
                 <div>
                     <label for="">CONVENTION:</label>
                 </div>
             </span>
             <span id="document_attestation">
-                <input type="hidden" name="document_attestation" value="1">
                 <div>
                     <label for="poste_occupe">Poste occupé par le stagiaire:</label>
                     <input type="text" name="poste_occupe" id="poste_occupe">
@@ -76,21 +75,24 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
                         <input type="text" class="tache_effectuee_" name="tache_effectuee_<?=$tache?>" id="tache_effectuee_<?=$tache?>" onchange="loadNextInput('tache_effectuee_', this, <?=$tache + 1?>);">
                     </div>
                 <?php } ?>
+                <?php for($observation = 1 ; $observation <= 4 ; $observation++) { ?>
+                    <div class="<?=($observation > 1 ? 'hidden':'') ?>">
+                        <label for="observation_tuteur_<?=$observation?>">Observation du tuteur n°<?=$observation?>:</label>
+                        <input type="text" class="observation_tuteur_" name="observation_tuteur_<?=$observation?>" id="observation_tuteur_<?=$observation?>" onchange="loadNextInput('observation_tuteur_', this, <?=$observation + 1?>);">
+                    </div>
+                <?php } ?>
             </span>
             <span id="document_evaluation">
-                <input type="hidden" name="document_evaluation" value="1">
                 <div>
                     <label for="">EVALUATION:</label>
                 </div>
             </span>
             <span id="document_presence">
-                <input type="hidden" name="document_presence" value="1">
                 <div>
                     <label for="">PRESENCE:</label>
                 </div>
             </span>
             <span id="document_livret_evaluation">
-                <input type="hidden" name="document_livret_evaluation" value="1">
                 <div>
                     <label for="">LIVRET:</label>
                 </div>

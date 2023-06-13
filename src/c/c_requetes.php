@@ -5,13 +5,8 @@ include_once __DIR__ . '/../m/connect.php';
 if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
     $stages = '';
     $liste_sessions = array();
-    foreach (recupererStages() as $data) {
-        $head = '';
-        $footer = '';
-        if (!in_array($data['nom_session'], $liste_sessions)) {
-            array_push($liste_sessions, $data['nom_session']);
-            $head = '
-            <table class="table-stages" id="table-stages-' . $data['nom_session'] . '">
+    $head = '
+            <table class="table-stages" id="table-stages">
                 <thead>
                     <tr>
                         <th>Session</th>
@@ -27,11 +22,11 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
                     </tr>
                 </thead>
                 <tbody>';
-        }
-
-        $lienTransiPro = urlencode($data['lien_serveur'] . '_' . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . ' Transition Pro\Ma Dynamique Emploi\Stage 1\\');
-        $lienClassique = urlencode($data['lien_serveur'] . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . '\Ma Dynamique Emploi\Stage 1\\');
-        $stages .= $head . '
+    $tbody = '';
+    foreach (recupererStages() as $data) {
+        $lienTransiPro = ($data['lien_serveur'] . '_' . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . ' Transition Pro\Ma Dynamique Emploi\Stage 1\\');
+        $lienClassique = ($data['lien_serveur'] . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . '\Ma Dynamique Emploi\Stage 1\\');
+        $tbody .= '
         <tr>
             <td>' . strtoupper($data['nom_session']) . '</td>
             <td>' . strtoupper($data['nom_stagiaire']) . '</td>
@@ -42,9 +37,14 @@ if (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
             <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<a id="' . uniqid("attest_") . '" onclick="copyClipboard(this);">Si transition pro</a><a href="file:///' . $lienClassique . '">Sinon</a>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
             <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<a target="_blank" href="file:///' . $lienTransiPro . '">Si transition pro</a><a href="file:///' . $lienClassique . '">Sinon</a>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
-            <td ' . ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes') . '>' . ($data['compteur_demandes'] === 0 ? '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">Relance</a>') . '</td>
-        </tr>' . $footer;
+            <td ' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "demandes_terminees" : ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes')) . '>' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "Terminé !" : ($data['compteur_demandes'] === 0 ? '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">Relance</a>')) . '</td>
+        </tr>';
     }
+
+    $stages = $head . 
+                $tbody . 
+                '</tbody>
+            </table>';
 
     $formateurs = '';
     foreach(recupererFormateurs() as $formateur) {

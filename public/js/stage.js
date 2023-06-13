@@ -41,6 +41,8 @@ async function recupererDonnees() {
 
         });
       });
+    }).then(() => {
+      let table = new DataTable('#table-stages');
     });
 }
 
@@ -59,7 +61,7 @@ async function recupererDocumentsManquants(id_stagiaire) {
     .then((result) => {
       document.getElementById("liste_documents").innerHTML = result;
     });
-}
+  }
 
 async function envoyerMail() {
   var formData = new FormData();

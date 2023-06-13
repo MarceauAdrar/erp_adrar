@@ -42,6 +42,10 @@
     background-color: #DBA644;
 }
 
+.table-stages td[demandes_terminees] {
+    background-color: #4479db;
+}
+
 .coul-rouge {
     background-color: #e77171;
     font-weight: 600;

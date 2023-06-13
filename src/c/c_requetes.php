@@ -87,7 +87,7 @@ if ((isset($_POST['recupererDocumentsManquants']) && !empty($_POST['recupererDoc
             if(empty($html)) {
                 $html .= '
                     <input type="hidden" name="id_stagiaire" id="id_stagiaire" value="' . $id_stagiaire . '">
-                    <input type="hidden" name="relance" id="relance" value="' . ($stagiaire['compteur_demandes'] > 1 ? true : false) . '">';
+                    <input type="hidden" name="relance" id="relance" value="' . ($stagiaire['compteur_demandes'] >= 1 ? "1" : "0") . '">';
             }
             if($document === "convention_recue") {
                 $html .= '

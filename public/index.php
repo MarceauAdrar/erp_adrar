@@ -7,6 +7,9 @@ if(isset($_GET["page"]) && !empty($_GET["page"])) {
         case "formation":
             $page = "formation/index.php";
             break;
+        case "admin":
+            $page = "admin/index.php";
+            break;
         case "stage":
             $page = "stage/index.php";
             break;

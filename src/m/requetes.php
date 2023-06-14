@@ -7,11 +7,11 @@ use TCPDF;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-function recupererStages($id_formateur, $nom_session)
+function recupererStages($id_formateur = 0, $nom_session = 0)
 {
     global $db;
 
-    $sql = "SELECT stagiaires.id_stagiaire, nom_stagiaire, prenom_stagiaire, nom_session, lien_serveur, convention_recue, horaires_recues_1, horaires_recues_2, horaires_recues_3, attestation_mail_envoye, attestation_recue, evaluation_mail_envoye, evaluation_recue, compteur_demandes
+    $sql = "SELECT * 
             FROM stagiaires
             JOIN sessions ON sessions.id_session = stagiaires.id_session
             JOIN stages ON stages.id_stage = stagiaires.id_stage 
@@ -44,6 +44,17 @@ function recupererFormateurs()
     $req->execute();
     $formateurs = $req->fetchAll(PDO::FETCH_ASSOC);
     return $formateurs;
+}
+
+function recupererStagiaires()
+{
+    global $db;
+
+    $req = $db->prepare("SELECT *
+                        FROM stagiaires;");
+    $req->execute();
+    $stagiaires = $req->fetchAll(PDO::FETCH_ASSOC);
+    return $stagiaires;
 }
 
 function recupererSessions()

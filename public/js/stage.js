@@ -27,6 +27,14 @@ async function recupererDonnees() {
   formData.append('id_formateur', document.querySelector('#id_formateur').value);
   formData.append('nom_session', document.querySelector('#nom_session').value);
 
+  document.querySelectorAll('.btn-mail').forEach((element) => {
+    if(document.querySelector('#id_formateur').value == 0) {
+      element.classList.add('hidden');
+    } else {
+      element.classList.remove('hidden');
+    }
+  });
+
   await fetch("../src/c/c_requetes.php", {
     method: "POST",
     body: formData

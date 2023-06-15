@@ -62,7 +62,8 @@ function recupererSessions()
     global $db;
 
     $req = $db->prepare("SELECT *
-                        FROM sessions;");
+                        FROM sessions
+                        LEFT JOIN formateurs ON formateurs.id_formateur = sessions.id_formateur;");
     $req->execute();
     $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
     return $sessions;

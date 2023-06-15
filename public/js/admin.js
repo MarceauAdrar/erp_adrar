@@ -1,6 +1,7 @@
-async function recupererListeFormateurs() {
+async function recupererListeFormateurs(id_formateur = 0) {
     var formData = new FormData();
     formData.append('recupererListeFormateurs', 1);
+    formData.append('id_formateur', id_formateur);
 
     await fetch("../src/c/c_requetes.php", {
         method: "POST",
@@ -40,10 +41,25 @@ async function recupererListeStages() {
         });
 }
 
+async function recupererListeSessions() {
+    var formData = new FormData();
+    formData.append('recupererListeSessions', 1);
+
+    await fetch("../src/c/c_requetes.php", {
+        method: "POST",
+        body: formData
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            document.querySelector("#tbody_sessions").innerHTML = result;
+        });
+}
+
 function recupererListes() {
     recupererListeFormateurs();
     recupererListeStagiaires();
     recupererListeStages();
+    recupererListeSessions();
 }
 
 recupererListes();

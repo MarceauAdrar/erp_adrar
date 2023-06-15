@@ -34,11 +34,12 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
                 <select name="stagiaire" id="stagiaire">
                     <?php
                     foreach ($sessions as $session) { ?>
-                        <optgroup label="<?=$session['nom_session']?>">
-                            <?php foreach ($stagiaires as $stagiaire) { 
-                                if($stagiaire['id_session'] == $session['id_session']) { ?>
-                                <option value="<?= $stagiaire['id_stagiaire'] ?>"><?= $stagiaire['prenom_stagiaire'] ?>&nbsp;<?= $stagiaire['nom_stagiaire'] ?></option>
-                            <?php }} ?>
+                        <optgroup label="<?= $session['nom_session'] ?>">
+                            <?php foreach ($stagiaires as $stagiaire) {
+                                if ($stagiaire['id_session'] == $session['id_session']) { ?>
+                                    <option value="<?= $stagiaire['id_stagiaire'] ?>"><?= $stagiaire['prenom_stagiaire'] ?>&nbsp;<?= $stagiaire['nom_stagiaire'] ?></option>
+                            <?php }
+                            } ?>
                         </optgroup>
                     <?php } ?>
                 </select>
@@ -61,30 +62,96 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
             <legend>Informations du fichier</legend>
             <span id="document_convention">
                 <div>
-                    <label for="">CONVENTION:</label>
+                    <label for="nom_entreprise_attestation">Nom de l'entreprise:</label>
+                    <input type="text" name="nom_entreprise_attestation" id="nom_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="tel_entreprise_attestation">Téléphone de l'entreprise:</label>
+                    <input type="text" name="tel_entreprise_attestation" id="tel_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="fax_entreprise_attestation">Fax de l'entreprise:</label>
+                    <input type="text" name="fax_entreprise_attestation" id="fax_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="siret_entreprise_attestation">SIRET:</label>
+                    <input type="text" name="siret_entreprise_attestation" id="siret_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="effectif_entreprise_attestation">Effectif salarié:</label>
+                    <input type="number" name="effectif_entreprise_attestation" id="effectif_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="ape_entreprise_attestation">Code APE:</label>
+                    <input type="text" name="ape_entreprise_attestation" id="ape_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="representant_entreprise_attestation">Représentant (NOM Prénom):</label>
+                    <input type="text" name="representant_entreprise_attestation" id="representant_entreprise_attestation">
+                </div>
+                <div>
+                    <label for="poste_representant_entreprise_attestation">Poste du représentant:</label>
+                    <input type="text" name="poste_representant_entreprise_attestation" id="poste_representant_entreprise_attestation">
                 </div>
             </span>
             <span id="document_attestation">
                 <div>
-                    <label for="poste_occupe">Poste occupé par le stagiaire:</label>
-                    <input type="text" name="poste_occupe" id="poste_occupe">
+                    <label for="poste_occupe_attestation">Poste occupé par le stagiaire:</label>
+                    <input type="text" name="poste_occupe_attestation" id="poste_occupe_attestation">
                 </div>
-                <?php for($tache = 1 ; $tache <= 6 ; $tache++) { ?>
-                    <div class="<?=($tache > 1 ? 'hidden':'') ?>">
-                        <label for="tache_effectuee_<?=$tache?>">Tâche n°<?=$tache?> effectuée par le stagiaire:</label>
-                        <input type="text" class="tache_effectuee_" name="tache_effectuee_<?=$tache?>" id="tache_effectuee_<?=$tache?>" onchange="loadNextInput('tache_effectuee_', this, <?=$tache + 1?>);">
+                <?php for ($tache = 1; $tache <= 6; $tache++) { ?>
+                    <div class="<?= ($tache > 1 ? 'hidden' : '') ?>">
+                        <label for="tache_effectuee_attestation_<?= $tache ?>">Tâche n°<?= $tache ?> effectuée par le stagiaire:</label>
+                        <input type="text" class="tache_effectuee_attestation_" name="tache_effectuee_attestation_<?= $tache ?>" id="tache_effectuee_attestation_<?= $tache ?>" onchange="loadNextInput('tache_effectuee_attestation_', this, <?= $tache + 1 ?>);">
                     </div>
                 <?php } ?>
-                <?php for($observation = 1 ; $observation <= 4 ; $observation++) { ?>
-                    <div class="<?=($observation > 1 ? 'hidden':'') ?>">
-                        <label for="observation_tuteur_<?=$observation?>">Observation du tuteur n°<?=$observation?>:</label>
-                        <input type="text" class="observation_tuteur_" name="observation_tuteur_<?=$observation?>" id="observation_tuteur_<?=$observation?>" onchange="loadNextInput('observation_tuteur_', this, <?=$observation + 1?>);">
+                <?php for ($observation = 1; $observation <= 4; $observation++) { ?>
+                    <div class="<?= ($observation > 1 ? 'hidden' : '') ?>">
+                        <label for="observation_tuteur_attestation_<?= $observation ?>">Observation du tuteur n°<?= $observation ?>:</label>
+                        <input type="text" class="observation_tuteur_attestation_" name="observation_tuteur_attestation_<?= $observation ?>" id="observation_tuteur_attestation_<?= $observation ?>" onchange="loadNextInput('observation_tuteur_attestation_', this, <?= $observation + 1 ?>);">
                     </div>
                 <?php } ?>
             </span>
             <span id="document_evaluation">
                 <div>
-                    <label for="">EVALUATION:</label>
+                    <label for="nom_entreprise_evaluation">Nom de l'entreprise:</label>
+                    <input type="text" name="nom_entreprise_evaluation" id="nom_entreprise_evaluation">
+                </div>
+                <?php for ($tache = 1; $tache <= 10; $tache++) { ?>
+                    <div class="<?= ($tache > 1 ? 'hidden' : '') ?>">
+                        <label for="tache_effectuee_evaluation_<?= $tache ?>">Tâche n°<?= $tache ?> effectuée par le stagiaire:</label>
+                        <input type="text" class="tache_effectuee_evaluation_" name="tache_effectuee_evaluation_<?= $tache ?>" id="tache_effectuee_evaluation_<?= $tache ?>" onchange="loadNextInput('tache_effectuee_evaluation_', this, <?= $tache + 1 ?>);">
+                    </div>
+                <?php } ?>
+                <?php for ($travaux = 1; $travaux <= 2; $travaux++) { ?>
+                    <div class="<?= ($travaux > 1 ? 'hidden' : '') ?>">
+                        <label for="travaux_difficiles_evaluation_<?= $travaux ?>">Travaus ayant donnés des difficultés n°<?= $travaux ?> au stagiaire:</label>
+                        <input type="text" class="travaux_difficiles_evaluation_" name="travaux_difficiles_evaluation_<?= $travaux ?>" id="travaux_difficiles_evaluation_<?= $travaux ?>" onchange="loadNextInput('travaux_difficiles_evaluation_', this, <?= $travaux + 1 ?>);">
+                    </div>
+                <?php } ?>
+                <?php for ($ptsForts = 1; $ptsForts <= 2; $ptsForts++) { ?>
+                    <div class="<?= ($ptsForts > 1 ? 'hidden' : '') ?>">
+                        <label for="points_forts_evaluation_<?= $ptsForts ?>">Point fort n°<?= $ptsForts ?> du stagiaire:</label>
+                        <input type="text" class="points_forts_evaluation_" name="points_forts_evaluation_<?= $ptsForts ?>" id="points_forts_evaluation_<?= $ptsForts ?>" onchange="loadNextInput('points_forts_evaluation_', this, <?= $ptsForts + 1 ?>);">
+                    </div>
+                <?php } ?>
+                <?php for ($ptsATravailler = 1; $ptsATravailler <= 2; $ptsATravailler++) { ?>
+                    <div class="<?= ($ptsATravailler > 1 ? 'hidden' : '') ?>">
+                        <label for="points_a_travailler_evaluation_<?= $ptsATravailler ?>">Point à travailler n°<?= $ptsATravailler ?> du stagiaire:</label>
+                        <input type="text" class="points_a_travailler_evaluation_" name="points_a_travailler_evaluation_<?= $ptsATravailler ?>" id="points_a_travailler_evaluation_<?= $ptsATravailler ?>" onchange="loadNextInput('points_a_travailler_evaluation_', this, <?= $ptsATravailler + 1 ?>);">
+                    </div>
+                <?php } ?>
+                <?php for ($conseil = 1; $conseil <= 2; $conseil++) { ?>
+                    <div class="<?= ($conseil > 1 ? 'hidden' : '') ?>">
+                        <label for="conseil_au_stagiaire_evaluation_<?= $conseil ?>">Conseil n°<?= $conseil ?> pour le stagiaire:</label>
+                        <input type="text" class="conseil_au_stagiaire_evaluation_" name="conseil_au_stagiaire_evaluation_<?= $conseil ?>" id="conseil_au_stagiaire_evaluation_<?= $conseil ?>" onchange="loadNextInput('conseil_au_stagiaire_evaluation_', this, <?= $conseil + 1 ?>);">
+                    </div>
+                <?php } ?>
+                <div>
+                    <label for="appreciations_entreprise_evaluation">Appréciations d'ensemble de l'entreprise:</label>
+                    <div>
+                        <textarea name="appreciations_entreprise_evaluation" id="appreciations_entreprise_evaluation" cols="30" rows="10"></textarea>
+                    </div>
                 </div>
             </span>
             <span id="document_presence">

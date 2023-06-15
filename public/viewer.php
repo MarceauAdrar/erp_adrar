@@ -13,7 +13,7 @@ $req->bindParam(":id_document", $document['id_document']);
 $req->execute();
 $pages = $req->fetchAll(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, DATE_FORMAT(date_naissance_stagiaire, '%d/%m/%Y') AS date_naissance_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
+$req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, DATE_FORMAT(date_naissance_stagiaire, '%d/%m/%Y') AS date_naissance_stagiaire, mail_stagiaire, tel_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
                     FROM stagiaires 
                     JOIN sessions ON sessions.id_session = stagiaires.id_session
                     LEFT JOIN stages ON stages.id_stage = stagiaires.id_stage
@@ -60,59 +60,61 @@ if(!empty($pages)) {
                 }
                 if (isset($i['signature']) && !empty($i['signature'])) { // Gère la signature du formateur si elle est nécessaire sur le document
                     $i['signature'] = strtr($i['signature'], array(
-                        '{{FORMATEUR_NOM_PRENOM}}' => $formateur['prenom_formateur'] . "_" . $formateur['nom_formateur']
+                        '{{FORMATEUR_SIGNATURE}}' => $formateur['signature_formateur']
                     ));
-                    $html2pdf->Image(__DIR__ . "/../src/" . $i['signature'], $i['xsignature'], $i['ysignature'], 47, 27.5);
+                    $html2pdf->Image(__DIR__ . "/../src/v/formateurs/" . $i['signature'], $i['xsignature'], $i['ysignature'], 47, 27.5);
                 }
             }
         }
         
-        // Ajout des informations saisies dans le formulaires si présentes
+        // Ajout des informations saisies dans le formulaires si elles sont présentes
         if(isset($_POST['document_attestation']) && !empty($_POST['document_attestation'])) {
-            if(isset($_POST['poste_occupe']) && !empty($_POST['poste_occupe'])) {
+            if(isset($_POST['poste_occupe_attestation']) && !empty($_POST['poste_occupe_attestation'])) {
                 $html2pdf->setXY(50, 95.5);
-                $html2pdf->Cell(0, 10, filter_var($_POST['poste_occupe'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['poste_occupe_attestation'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['tache_effectuee_1']) && !empty($_POST['tache_effectuee_1'])) {
+            if(isset($_POST['tache_effectuee_attestation_1']) && !empty($_POST['tache_effectuee_attestation_1'])) {
                 $html2pdf->setXY(29, 125);
-                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_1'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_attestation_1'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['tache_effectuee_2']) && !empty($_POST['tache_effectuee_2'])) {
+            if(isset($_POST['tache_effectuee_attestation_2']) && !empty($_POST['tache_effectuee_attestation_2'])) {
                 $html2pdf->setXY(29, 132);
-                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_attestation_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['tache_effectuee_3']) && !empty($_POST['tache_effectuee_3'])) {
+            if(isset($_POST['tache_effectuee_attestation_3']) && !empty($_POST['tache_effectuee_attestation_3'])) {
                 $html2pdf->setXY(29, 139);
-                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_3'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_attestation_3'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['tache_effectuee_4']) && !empty($_POST['tache_effectuee_4'])) {
+            if(isset($_POST['tache_effectuee_attestation_4']) && !empty($_POST['tache_effectuee_attestation_4'])) {
                 $html2pdf->setXY(29, 146);
-                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_4'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_attestation_4'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['tache_effectuee_5']) && !empty($_POST['tache_effectuee_5'])) {
+            if(isset($_POST['tache_effectuee_attestation_5']) && !empty($_POST['tache_effectuee_attestation_5'])) {
                 $html2pdf->setXY(29, 153);
-                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_5'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_attestation_5'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['tache_effectuee_6']) && !empty($_POST['tache_effectuee_6'])) {
+            if(isset($_POST['tache_effectuee_attestation_6']) && !empty($_POST['tache_effectuee_attestation_attestation_6'])) {
                 $html2pdf->setXY(29, 160);
-                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_6'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['tache_effectuee_attestation_6'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['observation_tuteur_1']) && !empty($_POST['observation_tuteur_1'])) {
+            if(isset($_POST['observation_tuteur_attestation_1']) && !empty($_POST['observation_tuteur_attestation_1'])) {
                 $html2pdf->setXY(29, 191.5);
-                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_1'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_attestation_1'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['observation_tuteur_2']) && !empty($_POST['observation_tuteur_2'])) {
+            if(isset($_POST['observation_tuteur_attestation_2']) && !empty($_POST['observation_tuteur_attestation_2'])) {
                 $html2pdf->setXY(29, 198.5);
-                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_attestation_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['observation_tuteur_3']) && !empty($_POST['observation_tuteur_3'])) {
+            if(isset($_POST['observation_tuteur_attestation_3']) && !empty($_POST['observation_tuteur_attestation_3'])) {
                 $html2pdf->setXY(29, 205.5);
-                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_3'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_attestation_3'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
-            if(isset($_POST['observation_tuteur_4']) && !empty($_POST['observation_tuteur_4'])) {
+            if(isset($_POST['observation_tuteur_attestation_4']) && !empty($_POST['observation_tuteur_attestation_4'])) {
                 $html2pdf->setXY(29, 212.5);
-                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_4'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
+                $html2pdf->Cell(0, 10, filter_var($_POST['observation_tuteur_attestation_4'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
             }
+        } elseif(isset($_POST['document_convention']) && !empty($_POST['document_convention'])) {
+            
         }
     }
 }

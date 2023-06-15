@@ -15,8 +15,11 @@ Rendez-vous dans l'onglet ``` index.php?page=stage ```.
 ## Générez un PDF à la volée avec le pré-remplissage d'un document
 Rendez-vous dans l'onglet ``` index.php?page=titre ```.
 
+## Ajoutez, modifiez, supprimez tout élément depuis l'onglet d'administration
+Rendez-vous dans l'onglet ``` index.php?page=admin ```.
+
 
 
 # [WIP] TODO
 ## Ajoutez une table secteur avec le logo (pour éviter la saisie d'erreur lors d'ajouts de formateurs)
-## Gérer le CRUD formateurs/stagiaires/stages
+## Gérer le CRUD formateurs/stagiaires/stages/sessions

@@ -12,16 +12,16 @@
         <legend>Formateurs</legend>
         <form action="../src/c/c_requetes.php" method="post">
             <input type="hidden" name="form_formateurs_ajout" value="1">
-            <input type="text" placeholder="NOM" name="form_formateurs_nom">
-            <input type="text" placeholder="Prénom" name="form_formateurs_prenom">
-            <input type="text" placeholder="Mail" name="form_formateurs_mail">
-            <input type="text" placeholder="Signature" name="form_formateurs_signature">
-            <input type="text" placeholder="Secteur" name="form_formateurs_secteur">
-            <input type="text" placeholder="Rôle" name="form_formateurs_role">
-            <input type="text" placeholder="Liens (à séparer par avec ;)" name="form_formateurs_liens">
-            <input type="text" placeholder="Téléphone" name="form_formateurs_telephone">
-            <input type="text" placeholder="Portable" name="form_formateurs_portable">
-            <input type="text" placeholder="Adresse" name="form_formateurs_adresse">
+            <input type="text" placeholder="NOM" name="form_formateurs_ajout_nom">
+            <input type="text" placeholder="Prénom" name="form_formateurs_ajout_prenom">
+            <input type="text" placeholder="Mail" name="form_formateurs_ajout_mail">
+            <input type="text" placeholder="Signature" name="form_formateurs_ajout_signature">
+            <input type="text" placeholder="Secteur" name="form_formateurs_ajout_secteur">
+            <input type="text" placeholder="Rôle" name="form_formateurs_ajout_role">
+            <input type="text" placeholder="Liens (à séparer par avec ;)" name="form_formateurs_ajout_liens">
+            <input type="text" placeholder="Téléphone" name="form_formateurs_ajout_telephone">
+            <input type="text" placeholder="Portable" name="form_formateurs_ajout_portable">
+            <input type="text" placeholder="Adresse" name="form_formateurs_ajout_adresse">
             <input type="submit" value="Ajouter">
         </form>
         <table>
@@ -81,6 +81,30 @@
                 </tr>
             </thead>
             <tbody id="tbody_stages">
+            </tbody>
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend>Sessions</legend>
+        <form action="../src/c/c_requetes.php" method="post">
+            <input type="hidden" name="form_sessions_ajout" value="1">
+            <input type="submit" value="Ajouter">
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Durée (en h)</th>
+                    <th>Sigle</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                    <th>Période stage début</th>
+                    <th>Période stage fin</th>
+                    <th>Formateur associé</th>
+                    <th>Edition/Suppression</th>
+                </tr>
+            </thead>
+            <tbody id="tbody_sessions">
             </tbody>
         </table>
     </fieldset>

@@ -9,6 +9,9 @@ Importez la base de données pour obtenir l'architecture nécessaire pour le fon
 Rendez-vous ensuite dans l'onglet d'administration pour ajouter vos stagiaires 
 
 # Création
+## Découvrez toutes les possibilités en vous rendant sur la page d'accueil
+Rendez-vous dans l'onglet ``` index.php ```.
+
 ## Générez automatiquement des PDFs pré-remplis en sélectionnant les documents à envoyer au tuteur
 Rendez-vous dans l'onglet ``` index.php?page=stage ```.
 
@@ -21,6 +24,5 @@ Rendez-vous dans l'onglet ``` index.php?page=admin ```.
 
 
 # [WIP] TODO
-## Ajoutez une table secteur avec le logo (pour éviter la saisie d'erreur lors d'ajouts de formateurs)
-## Gérer le CRUD formateurs/stagiaires/stages/sessions
-## Finir de gérer les informations ajoutées à un document généré à la volée
+## Gérer le CRUD stagiaires/stages/sessions
+## Finir de gérer les informations ajoutées à un document généré à la volée + réarranger le positionnement

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration des formateurs / stagiaires / stages</title>
+    <title>Administration des CRUD</title>
     <link rel="stylesheet" href="css/_style.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="css/admin.css?v=<?= uniqid() ?>">
 </head>
@@ -37,7 +37,7 @@
                     <th>Téléphone</th>
                     <th>Portable</th>
                     <th>Adresse</th>
-                    <th>Edition/Suppression</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tbody_formateurs">
@@ -57,7 +57,7 @@
                     <th>Prénom</th>
                     <th>DOB</th>
                     <th>Lien serveur</th>
-                    <th>Edition/Suppression</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tbody_stagiaires">
@@ -77,7 +77,7 @@
                     <th>Prénom</th>
                     <th>Adresse</th>
                     <th>E-mail</th>
-                    <th>Edition/Suppression</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tbody_stages">
@@ -101,10 +101,30 @@
                     <th>Période stage début</th>
                     <th>Période stage fin</th>
                     <th>Formateur associé</th>
-                    <th>Edition/Suppression</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody id="tbody_sessions">
+            </tbody>
+        </table>
+    </fieldset>
+    <fieldset>
+        <legend>Secteurs</legend>
+        <form action="../src/c/c_requetes.php" method="post">
+            <input type="hidden" name="form_secteurs_ajout" value="1">
+            <input type="text" placeholder="Nom" name="form_secteurs_ajout_nom">
+            <input type="file" title="Image du secteur" name="form_secteurs_ajout_image">
+            <input type="submit" value="Ajouter">
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="tbody_secteurs">
             </tbody>
         </table>
     </fieldset>

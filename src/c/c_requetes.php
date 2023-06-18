@@ -8,32 +8,50 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     
     foreach (recupererFormateurs() as $formateur) {
         if($id_formateur == $formateur['id_formateur']) {
-            $tbody_formateurs .= '<tr>';
-            $tbody_formateurs .= '<td><input type="text" name="form_formateurd_editer_nom_formateur" value="' .  $formateur['id_formateur'] .'"></td>';
-            $tbody_formateurs .= '</tr>';
+            $choix_secteurs = "";
+            foreach(recupererSecteurs() as $secteur) {
+                $choix_secteurs .= '<option value="'. $secteur['id_secteur'] . '" ' . ($secteur['id_secteur'] == $formateur['id_secteur'] ? 'selected' : '') . '>' . $secteur['nom_secteur'] . '</option>';
+            }
+            $tbody_formateurs .= '
+            <tr>
+                <td><input type="text" name="form_formateur_editer_nom" value="' .  $formateur['nom_formateur'] .'"></td>
+                <td><input type="text" name="form_formateur_editer_prenom" value="' .  $formateur['prenom_formateur'] .'"></td>
+                <td><input type="text" name="form_formateur_editer_mail" value="' .  $formateur['mail_formateur'] .'"></td>
+                <td>
+                    <button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $formateur['id_formateur'] . '">Ajouter ma signature</button>
+                    <div class="hidden">
+                        <canvas class="box-signature" id="signature-pad-' . $formateur['id_formateur'] . '" data-id="' . $formateur['id_formateur'] . '" width="400" height="200"></canvas>
+                        <div>
+                            <button id="clear-' . $formateur['id_formateur'] . '">Effacer</button>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <select name="form_formateur_editer_secteur">
+                        ' . $choix_secteurs . '
+                    </select>
+                </td>
+                <td><input type="text" name="form_formateur_editer_role" value="' .  $formateur['carte_formateur_role'] .'"></td>
+                <td><textarea name="form_formateur_editer_liens">' .  $formateur['carte_formateur_liens'] .'</textarea></td>
+                <td><input type="text" name="form_formateur_editer_tel" value="' .  $formateur['carte_formateur_tel'] .'"></td>
+                <td><input type="text" name="form_formateur_editer_portable" value="' .  $formateur['carte_formateur_portable'] .'"></td>
+                <td><input type="text" name="form_formateur_editer_adresse_site" value="' .  $formateur['carte_formateur_adresse_site'] .'"></td>
+                <td><a href="#" onclick="majFormateur(' . $formateur['id_formateur'] . ');">Mise à jour</a></td>
+            </tr>';
         } else {
             $tbody_formateurs .= '
             <tr>
                 <td>' . strtoupper($formateur['nom_formateur']) . '</td>
                 <td>' . ucwords($formateur['prenom_formateur']) . '</td>
                 <td>' . $formateur['mail_formateur'] . '</td>
-                <td>' . (empty($formateur['signature_formateur']) ? '':'<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur"/>') . '<button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $formateur['id_formateur'] . '">Ajouter ma signature</button>
-                <div class="hidden">
-                    <canvas class="box-signature" id="signature-pad-' . $formateur['id_formateur'] . '" data-id="' . $formateur['id_formateur'] . '" width="400" height="200"></canvas>
-                    <div>
-                        <button id="save-' . $formateur['id_formateur'] . '">Sauvegarder</button>
-                        <button id="clear-' . $formateur['id_formateur'] . '">Effacer</button>
-                        <button id="abort-' . $formateur['id_formateur'] . '">Annuler</button>
-                    </div>
-                </div>
-                </td>
-                <td>' . $formateur['carte_formateur_logo_secteur'] . '</td>
+                <td>' . (empty($formateur['signature_formateur']) ? 'Signature manquante':'<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur"/>') . '</td>
+                <td>' . $formateur['nom_secteur'] . '</td>
                 <td>' . $formateur['carte_formateur_role'] . '</td>
                 <td>' . $formateur['carte_formateur_liens'] . '</td>
                 <td>' . $formateur['carte_formateur_tel'] . '</td>
                 <td>' . $formateur['carte_formateur_portable'] . '</td>
                 <td>' . $formateur['carte_formateur_adresse_site'] . '</td>
-                <td><a href="#" name="" onclick="recupererListeFormateurs(' . $formateur['id_formateur'] . ');">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
+                <td><a href="#" onclick="recupererListeFormateurs(' . $formateur['id_formateur'] . ');">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
             </tr>';
         }
     }
@@ -56,11 +74,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererStages() as $stage) {
         $tbody_stages .= '
         <tr>
-        <td>' . strtoupper($stage['nom_tuteur']) . '</td>
-        <td>' . ucwords($stage['prenom_tuteur']) . '</td>
-        <td>' . $stage['rue_lieu_stage'] . " " . $stage['cp_lieu_stage'] . " " . $stage['ville_lieu_stage'] . " " . $stage['pays_lieu_stage'] . '</td>
-        <td>' . $stage['mail_tuteur'] . '</td>
-        <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
+            <td>' . strtoupper($stage['nom_tuteur']) . '</td>
+            <td>' . ucwords($stage['prenom_tuteur']) . '</td>
+            <td>' . $stage['rue_lieu_stage'] . " " . $stage['cp_lieu_stage'] . " " . $stage['ville_lieu_stage'] . " " . $stage['pays_lieu_stage'] . '</td>
+            <td>' . $stage['mail_tuteur'] . '</td>
+            <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
     die(json_encode($tbody_stages));
@@ -69,18 +87,29 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererSessions() as $session) {
         $tbody_sessions .= '
         <tr>
-        <td>' . strtoupper($session['nom_session']) . '</td>
-        <td>' . $session['duree_stage'] . '</td>
-        <td>' . strtoupper($session['sigle_session']) . '</td>
-        <td>' . date_format(new DateTime($session['date_debut_session']), 'd/m/Y') . '</td>
-        <td>' . date_format(new DateTime($session['date_fin_session']), 'd/m/Y') . '</td>
-        <td>' . date_format(new DateTime($session['date_debut_stage']), 'd/m/Y') . '</td>
-        <td>' . date_format(new DateTime($session['date_fin_stage']), 'd/m/Y') . '</td>
-        <td>' . strtoupper($session['nom_formateur']) . " " . ucwords($session['prenom_formateur']) . '</td>
-        <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
+            <td>' . strtoupper($session['nom_session']) . '</td>
+            <td>' . $session['duree_stage'] . '</td>
+            <td>' . strtoupper($session['sigle_session']) . '</td>
+            <td>' . date_format(new DateTime($session['date_debut_session']), 'd/m/Y') . '</td>
+            <td>' . date_format(new DateTime($session['date_fin_session']), 'd/m/Y') . '</td>
+            <td>' . date_format(new DateTime($session['date_debut_stage']), 'd/m/Y') . '</td>
+            <td>' . date_format(new DateTime($session['date_fin_stage']), 'd/m/Y') . '</td>
+            <td>' . strtoupper($session['nom_formateur']) . " " . ucwords($session['prenom_formateur']) . '</td>
+            <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
     die(json_encode($tbody_sessions));
+} elseif (isset($_POST['recupererListeSecteurs']) && !empty($_POST['recupererListeSecteurs'])) {
+    $tbody_secteurs = '';
+    foreach (recupererSecteurs() as $secteur) {
+        $tbody_secteurs .= '
+        <tr>
+            <td>' . ucfirst($secteur['nom_secteur']) . '</td>
+            <td><img style="height:100px;" src="./img/' . $secteur['logo_secteur'] . '" alt="Logo du secteur ' . $secteur['nom_secteur'] . '"/></td>
+            <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
+        </tr>';
+    }
+    die(json_encode($tbody_secteurs));
 } elseif (isset($_POST['recupererDonneesFiltres']) && !empty($_POST['recupererDonneesFiltres'])) {
     $formateurs = '<option value="0"' . (!isset($_SESSION['filtres']['id_formateur']) || empty($_SESSION['filtres']['id_formateur']) ? " selected" : "") . '>Tous</option>';
     foreach (recupererFormateurs() as $formateur) {
@@ -250,32 +279,63 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     die(json_encode(envoyerMail($id_stagiaire, $id_formateur, $documents, $documents_libelles, $_POST['relance'])));
 } elseif (isset($_POST['form_formateurs_ajout']) && !empty($_POST['form_formateurs_ajout'])) {
-    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, carte_formateur_logo_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site) 
-            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :carte_formateur_logo_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable, :carte_formateur_adresse_site);';
+    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site) 
+            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable, :carte_formateur_adresse_site);';
     $req = $db->prepare($sql);
     $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":prenom_formateur", filter_var($_POST['form_formateurs_ajout_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":mail_formateur", filter_var($_POST['form_formateurs_ajout_mail'], FILTER_VALIDATE_EMAIL));
     $req->bindValue(":signature_formateur", 'v/formateurs/signature_' . filter_var($_POST['form_formateurs_ajout_signature'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_logo_secteur", filter_var($_POST['form_formateurs_ajout_secteur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":id_secteur", filter_var($_POST['id_secteur'], FILTER_VALIDATE_INT));
     $req->bindValue(":carte_formateur_role", filter_var($_POST['form_formateurs_ajout_role'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_liens", filter_var($_POST['form_formateurs_ajout_liens'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_tel", filter_var($_POST['form_formateurs_ajout_telephone'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_portable", filter_var($_POST['form_formateurs_ajout_portable'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_adresse_site", filter_var($_POST['form_formateurs_ajout_adresse'], FILTER_SANITIZE_SPECIAL_CHARS));
     die($req->execute());
-} elseif (isset($_POST['enregistrerSignatureFormateur']) && !empty($_POST['enregistrerSignatureFormateur'])) {
-    if(!empty($_POST['image']) && !empty($_POST['id_formateur'])) {
+} elseif (isset($_POST['form_formateur_editer']) && !empty($_POST['form_formateur_editer'])) {
+    if(!empty($_POST['signature'])) {
         $uniqid = uniqid();
         $fp = fopen("../v/formateurs/signature_" . $uniqid . ".png", "wb" );
-        fwrite($fp, base64_decode(explode(',', $_POST['image'])[1])); 
+        fwrite($fp, base64_decode(explode(',', $_POST['signature'])[1])); 
         fclose($fp);
-        $sql = 'UPDATE formateurs 
-                                SET signature_formateur=:signature 
-                                WHERE id_formateur=:id_formateur;';
-        $req = $db->prepare($sql);
-        $req->bindValue(":signature", "v/formateurs/signature_".$uniqid.".png");
-        $req->bindValue(":id_formateur", $_POST['id_formateur']);
-        die($req->execute());
     }
+    $sql = 'UPDATE formateurs  
+            SET 
+                nom_formateur=:nom_formateur, 
+                prenom_formateur=:prenom_formateur, 
+                mail_formateur=:mail_formateur, ';
+    if(!empty($_POST['signature'])) {
+        $sql .= ' signature_formateur=:signature_formateur, '; 
+
+    }
+    $sql .= '   id_secteur=:id_secteur, 
+                carte_formateur_role=:carte_formateur_role, 
+                carte_formateur_liens=:carte_formateur_liens, 
+                carte_formateur_tel=:carte_formateur_tel, 
+                carte_formateur_portable=:carte_formateur_portable,
+                carte_formateur_adresse_site=:carte_formateur_adresse_site 
+            WHERE id_formateur=:id_formateur;';
+    $req = $db->prepare($sql);
+    $req->bindValue(":nom_formateur", filter_var($_POST['nom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":prenom_formateur", filter_var($_POST['prenom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":mail_formateur", filter_var($_POST['mail_formateur'], FILTER_VALIDATE_EMAIL));
+    if(!empty($_POST['signature'])) {
+        $req->bindValue(":signature_formateur", 'v/formateurs/signature_' . $uniqid . '.png');
+    }
+    $req->bindValue(":id_secteur", filter_var($_POST['id_secteur'], FILTER_VALIDATE_INT));
+    $req->bindValue(":carte_formateur_role", filter_var($_POST['role_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":carte_formateur_liens", filter_var($_POST['liens_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":carte_formateur_tel", filter_var($_POST['tel_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":carte_formateur_portable", filter_var($_POST['portable_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":carte_formateur_adresse_site", filter_var($_POST['site_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":id_formateur", filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT));
+    die(json_encode($req->execute()));
+} elseif (isset($_POST['form_secteurs_ajout']) && !empty($_POST['form_secteurs_ajout'])) {
+    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site) 
+            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable, :carte_formateur_adresse_site);';
+    $req = $db->prepare($sql);
+    $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":carte_formateur_adresse_site", filter_var($_POST['form_formateurs_ajout_adresse'], FILTER_SANITIZE_SPECIAL_CHARS));
+    die($req->execute());
 }

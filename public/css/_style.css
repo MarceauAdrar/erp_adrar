@@ -1,3 +1,18 @@
 .hidden {
     display: none !important;
 }
+
+.cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr;
+}
+
+.card {
+    border: 1px solid #d9D9D9;
+    border-radius: 5px;
+}
+
+.card > a {
+    margin: 15px;
+}

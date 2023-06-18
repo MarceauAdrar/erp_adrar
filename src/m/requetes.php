@@ -40,7 +40,8 @@ function recupererFormateurs()
     global $db;
 
     $req = $db->prepare("SELECT *
-                        FROM formateurs;");
+                        FROM formateurs
+                        INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur;");
     $req->execute();
     $formateurs = $req->fetchAll(PDO::FETCH_ASSOC);
     return $formateurs;
@@ -67,6 +68,17 @@ function recupererSessions()
     $req->execute();
     $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
     return $sessions;
+}
+
+function recupererSecteurs()
+{
+    global $db;
+
+    $req = $db->prepare("SELECT *
+                        FROM secteurs;");
+    $req->execute();
+    $secteurs = $req->fetchAll(PDO::FETCH_ASSOC);
+    return $secteurs;
 }
 
 function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelles, $bEstRelance = false)
@@ -125,8 +137,9 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
         $req->execute();
         $documents = $req->fetchAll(PDO::FETCH_ASSOC);
 
-        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, carte_formateur_logo_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site
+        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site
                             FROM formateurs 
+                            INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur 
                             WHERE id_formateur=:id_formateur;");
         $req->bindParam(":id_formateur", $id_formateur);
         $req->execute();

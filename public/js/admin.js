@@ -55,17 +55,32 @@ async function recupererListeSessions() {
         });
 }
 
+async function recupererListeSecteurs() {
+    var formData = new FormData();
+    formData.append('recupererListeSecteurs', 1);
+
+    await fetch("../src/c/c_requetes.php", {
+        method: "POST",
+        body: formData
+    })
+        .then((response) => response.json())
+        .then((result) => {
+            document.querySelector("#tbody_secteurs").innerHTML = result;
+        });
+}
+
 function recupererListes() {
     recupererListeFormateurs();
     recupererListeStagiaires();
     recupererListeStages();
     recupererListeSessions();
+    recupererListeSecteurs();
 }
 
 recupererListes();
 
 function afficherCanvasSignature(id) {
-    var signaturePad = new SignaturePad(document.getElementById('signature-pad-' + id), {
+    var signaturePad = new SignaturePad(document.querySelector('#signature-pad-' + id), {
         backgroundColor: 'rgba(255, 255, 255, 0)',
         penColor: 'rgb(0, 0, 0)',
         velocityFilterWeight: .7,
@@ -77,29 +92,35 @@ function afficherCanvasSignature(id) {
 
     document.querySelector('#signature-pad-' + id).parentElement.classList.toggle('hidden');
 
-    var saveButton = document.querySelector('#save-' + id),
-        clearButton = document.querySelector('#clear-' + id);
+    var clearButton = document.querySelector('#clear-' + id);
 
-    saveButton.addEventListener('click', function (event) {
-        enregistrerSignatureFormateur(signaturePad, id);
-    });
     clearButton.addEventListener('click', function (event) {
         signaturePad.clear();
     });
 }
 
-async function enregistrerSignatureFormateur(signature, id_formateur) {
+async function majFormateur(id_formateur) {
     var formData = new FormData();
-    formData.append('enregistrerSignatureFormateur', 1);
-    formData.append('image', signature.toDataURL('image/png'));
+    formData.append('form_formateur_editer', 1);
     formData.append('id_formateur', id_formateur);
+    formData.append('nom_formateur', document.querySelector('input[name="form_formateur_editer_nom"]').value);
+    formData.append('prenom_formateur', document.querySelector('input[name="form_formateur_editer_prenom"]').value);
+    formData.append('mail_formateur', document.querySelector('input[name="form_formateur_editer_mail"]').value);
+    formData.append('signature', document.querySelector('#signature-pad-' + id_formateur).toDataURL('image/png'));
+    formData.append('id_secteur', document.querySelector('select[name="form_formateur_editer_secteur"]').value);
+    formData.append('role_formateur', document.querySelector('input[name="form_formateur_editer_role"]').value);
+    formData.append('liens_formateur', document.querySelector('textarea[name="form_formateur_editer_liens"]').value);
+    formData.append('tel_formateur', document.querySelector('input[name="form_formateur_editer_tel"]').value);
+    formData.append('portable_formateur', document.querySelector('input[name="form_formateur_editer_portable"]').value);
+    formData.append('site_formateur', document.querySelector('input[name="form_formateur_editer_adresse_site"]').value);
 
     await fetch("../src/c/c_requetes.php", {
         method: "POST",
         body: formData
     })
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then(() => {
-            signature.off();
+            document.querySelector('#signature-pad-' + id_formateur).off();
+            window.location.reload();
         });
 }

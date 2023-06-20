@@ -1,0 +1,13 @@
+section {
+    width: 100vw;
+    height: 100vh;
+}
+
+.gauche {
+    background-color: #F2ABBF;
+    width: 70%;
+    height: 100%;
+}
+.droit {
+    width: 30%;
+}

@@ -18,7 +18,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td><input type="text" name="form_formateur_editer_prenom" value="' .  $formateur['prenom_formateur'] .'"></td>
                 <td><input type="text" name="form_formateur_editer_mail" value="' .  $formateur['mail_formateur'] .'"></td>
                 <td>
-                    <button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $formateur['id_formateur'] . '">Ajouter ma signature</button>
+                    <div>
+                        <label>Téléverser ma signature: (png transparents uniquement)</label>
+                        <input type="file" name="form_formateur_editer_signature"/>
+                    </div>
+                    <button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $formateur['id_formateur'] . '">Signer manuellement</button>
                     <div class="hidden">
                         <canvas class="box-signature" id="signature-pad-' . $formateur['id_formateur'] . '" data-id="' . $formateur['id_formateur'] . '" width="400" height="200"></canvas>
                         <div>

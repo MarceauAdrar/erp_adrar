@@ -106,6 +106,7 @@ async function majFormateur(id_formateur) {
     formData.append('nom_formateur', document.querySelector('input[name="form_formateur_editer_nom"]').value);
     formData.append('prenom_formateur', document.querySelector('input[name="form_formateur_editer_prenom"]').value);
     formData.append('mail_formateur', document.querySelector('input[name="form_formateur_editer_mail"]').value);
+    formData.append('signature_televersee', document.querySelector('input[name="form_formateur_editer_signature"]').files[0]);
     formData.append('signature', document.querySelector('#signature-pad-' + id_formateur).toDataURL('image/png'));
     formData.append('id_secteur', document.querySelector('select[name="form_formateur_editer_secteur"]').value);
     formData.append('role_formateur', document.querySelector('input[name="form_formateur_editer_role"]').value);

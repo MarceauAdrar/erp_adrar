@@ -96,6 +96,7 @@ CREATE TABLE `formateurs` (
   `nom_formateur` varchar(25) NOT NULL,
   `prenom_formateur` varchar(25) NOT NULL,
   `mail_formateur` varchar(100) NOT NULL,
+  `mdp_formateur` varchar(60) NOT NULL,
   `signature_formateur` varchar(50) NOT NULL,
   `carte_formateur_role` varchar(255) NOT NULL,
   `carte_formateur_liens` varchar(255) DEFAULT NULL,
@@ -109,9 +110,9 @@ CREATE TABLE `formateurs` (
 -- Déchargement des données de la table `formateurs`
 --
 
-INSERT INTO `formateurs` (`id_formateur`, `nom_formateur`, `prenom_formateur`, `mail_formateur`, `signature_formateur`, `carte_formateur_role`, `carte_formateur_liens`, `carte_formateur_tel`, `carte_formateur_portable`, `carte_formateur_adresse_site`, `id_secteur`) VALUES
-(1, 'RODRIGUES', 'Marceau', 'marceaurodrigues@adrar-formation.com', 'v/formateurs/signature_6489096bf19b0.png', 'Formateur Référent Filière Numérique, Développement Web & Mobile', 'www.adrar-formation.com,www.adrar-numerique.com', '0448201712', NULL, '4657 rue de la Jeune Parque - 34070 - Montpellier', 1),
-(2, 'HABBAS', 'Emna', 'emnahabbas@adrar-formation.com', 'v/formateurs/signature_64890af41402d.png', 'Coordinatrice et Formatrice Secteur Santé & Social', 'www.adrar-formation.com', '0448201714', '0688777075', '4657 rue de la Jeune Parque - 34070 - Montpellier', 5);
+INSERT INTO `formateurs` (`id_formateur`, `nom_formateur`, `prenom_formateur`, `mail_formateur`, `mdp_formateur`, `signature_formateur`, `carte_formateur_role`, `carte_formateur_liens`, `carte_formateur_tel`, `carte_formateur_portable`, `carte_formateur_adresse_site`, `id_secteur`) VALUES
+(1, 'RODRIGUES', 'Marceau', 'marceaurodrigues@adrar-formation.com', '$2y$10$sHBExZZMBGRu.FDDqHiy7.g3BQSg/gEkz5Aev/tqIoOeZXBvWOabK', 'v/formateurs/signature_6489096bf19b0.png', 'Formateur Référent Filière Numérique, Développement Web & Mobile', 'www.adrar-formation.com,www.adrar-numerique.com', '0448201712', NULL, '4657 rue de la Jeune Parque - 34070 - Montpellier', 1),
+(2, 'HABBAS', 'Emna', 'emnahabbas@adrar-formation.com', '$2y$10$sHBExZZMBGRu.FDDqHiy7.g3BQSg/gEkz5Aev/tqIoOeZXBvWOabK', 'v/formateurs/signature_64890af41402d.png', 'Coordinatrice et Formatrice Secteur Santé & Social', 'www.adrar-formation.com', '0448201714', '0688777075', '4657 rue de la Jeune Parque - 34070 - Montpellier', 5);
 
 -- --------------------------------------------------------
 

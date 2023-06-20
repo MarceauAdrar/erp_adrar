@@ -58,6 +58,7 @@ CREATE TABLE `formateurs` (
   `nom_formateur` varchar(25) NOT NULL,
   `prenom_formateur` varchar(25) NOT NULL,
   `mail_formateur` varchar(100) NOT NULL,
+  `mdp_formateur` varchar(60) NOT NULL,
   `signature_formateur` varchar(50) NOT NULL,
   `carte_formateur_role` varchar(25) NOT NULL,
   `carte_formateur_liens` varchar(25) NOT NULL,

@@ -19,6 +19,7 @@ section {
     align-items: center;
     flex-direction: column;
     margin-top: 30%;
+    padding: 0 50px;
 }
 
 .droit form label {
@@ -36,8 +37,8 @@ form>div:nth-of-type(1) {
 
 .gauche img {
     position: absolute;
-    width: 40%;
-    height: 579px;
-    right: 50%;
+    width: 40em;
+    height: 25em;
+    right: 35em;
     transform: rotate(180deg);
 }

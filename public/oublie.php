@@ -10,10 +10,10 @@ $_SESSION['csrf_token'] = $csrfToken;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADRAR ERP - Inscription</title>
+    <title>Regénération d'un code d'accès temporaire</title>
     <link rel="stylesheet" href="css/_reset.css">
     <link rel="stylesheet" href="css/_style.css">
-    <link rel="stylesheet" href="css/inscription.css">
+    <link rel="stylesheet" href="css/oublie.css">
 </head>
 
 <body>
@@ -23,15 +23,14 @@ $_SESSION['csrf_token'] = $csrfToken;
         </div>
         <div class="droit">
             <div>
-                <h1 class="text-white">Bienvenue sur l'ERP</h1>
+                <h1 class="text-white">Regénération d'un code d'accès temporaire</h1>
                 <form action="../src/c/c_requetes.php" method="post">
-                    <input type="hidden" name="for_signup_csrf" value="<?= $csrfToken ?>">
+                    <input type="hidden" name="form_forgotten_csrf" value="<?= $csrfToken ?>">
                     <div>
-                        <label for="form_signup_code" class="text-white">Code reçu (6 chiffres, valable 1 semaine)</label>
-                        <input type="text" name="form_signup_code" placeholder="<?=random_int(100000, 999999)?>">
-                        <p class="text-white">Le code ne fonctionne pas ou n'est plus valide ? <a href="oublie.php">Génèrez-en un nouveau</a></a></p>
+                        <label for="form_forgotten_mail" class="text-white">Mail associé à la démarche</label>
+                        <input type="text" name="form_forgotten_mail" placeholder="johndoe@adrar-formation.com">
                     </div>
-                    <input type="submit" value="S'inscrire" class="btn btn-primary full-width text-white">
+                    <input type="submit" value="Envoyer" class="btn btn-primary full-width text-white">
                 </form>
             </div>
         </div>

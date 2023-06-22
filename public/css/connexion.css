@@ -1,13 +1,42 @@
 section {
     width: 100vw;
     height: 100vh;
+    display: grid;
+    grid-template-columns: 65% 35%;
 }
 
 .gauche {
-    background-color: #F2ABBF;
-    width: 70%;
-    height: 100%;
+    background-color: var(--coul-principale);
 }
+
 .droit {
-    width: 30%;
+    background: linear-gradient(180deg, #0F213B 0%, #0F213B 0.01%, #0F133B 100%);
+}
+
+.droit>div {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30%;
+}
+
+.droit form label {
+    display: block;
+    padding-top: 20px;
+}
+
+form>div:nth-of-type(1) {
+    padding-top: 25px;
+}
+
+form>div:nth-of-type(2) {
+    padding-bottom: 50px;
+}
+
+.gauche img {
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    right: 50%;
 }

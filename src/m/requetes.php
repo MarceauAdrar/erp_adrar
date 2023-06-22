@@ -137,8 +137,9 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
         $req->execute();
         $documents = $req->fetchAll(PDO::FETCH_ASSOC);
 
-        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site
+        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(adresse_num_site, ' ', adresse_rue_site, ' ', adresse_cp_site, ' ', adresse_ville_site) AS carte_formateur_adresse_site
                             FROM formateurs 
+                            INNER JOIN sites ON sites.id_site = formateurs.id_site  
                             INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur 
                             WHERE id_formateur=:id_formateur;");
         $req->bindParam(":id_formateur", $id_formateur);

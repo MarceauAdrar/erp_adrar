@@ -1,4 +1,4 @@
-# Bienvenue sur la plateforme de génération et d'automatisation des PDFs de l'ADRAR Formation
+# Bienvenue sur l'ERP de l'ADRAR Formation
 
 
 # Installation

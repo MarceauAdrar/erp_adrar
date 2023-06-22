@@ -24,5 +24,7 @@ Rendez-vous dans l'onglet ``` index.php?page=admin ```.
 
 
 # [WIP] TODO
-## Gérer le CRUD stagiaires/stages/sessions
+## Gérer le CRUD formateurs/stagiaires/stages/sessions
 ## Finir de gérer les informations ajoutées à un document généré à la volée + réarranger le positionnement
+## Implémenter le système de connexion/inscription/déconnexion
+## Envoi d'un code temporaire par défaut à la création (valable 1 semaine) et un code temporaire de réinitialisation (valable 15 minutes)

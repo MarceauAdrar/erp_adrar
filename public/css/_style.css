@@ -1,3 +1,41 @@
+/* Définition des polices */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+* {
+    font-family: 'Roboto';
+    font-size: 16px;
+}
+
+:root {
+    --coul-principale: #6BCEE8;
+    --coul-secondaire: #1A1F37;
+    --coul-ternaire: #FFFFFF;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1 {
+    font-size: 19px;
+    font-weight: bold;
+}
+
+label,
+p,
+input[type="submit"] {
+    font-family: 'Roboto', serif;
+    font-size: 16px;
+}
+
+/* Fin définition des polices */
+
 .hidden {
     display: none !important;
 }
@@ -13,15 +51,41 @@
     border-radius: 5px;
 }
 
-.card > a {
+.card>a {
     margin: 15px;
 }
 
 .btn {
     border-radius: 15px;
     border-color: transparent;
-    padding: 10px 15px;
+    padding: 10px;
+    text-transform: uppercase;
 }
+
 .btn-primary {
     background-color: #6BCEE8;
+}
+
+.text-white {
+    color: #FFFFFF !important;
+}
+input:not([type="submit"], [type="hidden"]) {
+    background-color: #163460;
+    border-color: #D9D9D9;
+    border-radius: 5px;
+    color: #FFFFFF;
+    font-size: 16px;
+    height: 30px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.full-heigt {
+    height: 100%;
+}
+
+a:link, a:visited {
+    color: var(--coul-principale);
 }

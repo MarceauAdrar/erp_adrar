@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : dim. 18 juin 2023 à 20:10
+-- Généré le : jeu. 22 juin 2023 à 05:12
 -- Version du serveur : 10.5.19-MariaDB-0+deb11u2
 -- Version de PHP : 8.2.6
 
@@ -64,7 +64,9 @@ CREATE TABLE `formateurs` (
   `carte_formateur_liens` varchar(25) NOT NULL,
   `carte_formateur_tel` varchar(10) NOT NULL,
   `carte_formateur_portable` varchar(10) NOT NULL,
-  `carte_formateur_adresse_site` varchar(100) NOT NULL,
+  `tmp_code_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code qui permet à un formateur de en cas d''oubli de mot de passe ou si la période de validité du code est échue\r\n',
+  `code_entree_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code UNIQUE qui permet à un formateur de s''identifier la première fois pour changer son mot de passe',
+  `id_site` int(11) NOT NULL,
   `id_secteur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -96,6 +98,25 @@ CREATE TABLE `sessions` (
   `date_debut_stage` date NOT NULL,
   `date_fin_stage` date NOT NULL,
   `id_formateur` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `sites`
+--
+
+CREATE TABLE `sites` (
+  `id_site` int(11) NOT NULL,
+  `libelle_site` varchar(50) NOT NULL,
+  `contact_mail_site` varchar(75) NOT NULL,
+  `contact_tel_site` varchar(10) NOT NULL,
+  `adresse_num_site` int(11) DEFAULT NULL,
+  `adresse_bis_site` tinyint(1) NOT NULL DEFAULT 0,
+  `adresse_rue_site` varchar(500) NOT NULL,
+  `adresse_cp_site` varchar(5) NOT NULL,
+  `adresse_ville_site` varchar(75) NOT NULL,
+  `adresse_supp_site` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -164,7 +185,9 @@ ALTER TABLE `documents_pages`
 --
 ALTER TABLE `formateurs`
   ADD PRIMARY KEY (`id_formateur`),
-  ADD KEY `id_secteur` (`id_secteur`);
+  ADD UNIQUE KEY `code_entree_formateur` (`code_entree_formateur`),
+  ADD KEY `id_secteur` (`id_secteur`),
+  ADD KEY `id_site` (`id_site`);
 
 --
 -- Index pour la table `secteurs`
@@ -178,6 +201,12 @@ ALTER TABLE `secteurs`
 ALTER TABLE `sessions`
   ADD PRIMARY KEY (`id_session`),
   ADD KEY `id_formateur` (`id_formateur`);
+
+--
+-- Index pour la table `sites`
+--
+ALTER TABLE `sites`
+  ADD PRIMARY KEY (`id_site`);
 
 --
 -- Index pour la table `stages`
@@ -228,6 +257,12 @@ ALTER TABLE `sessions`
   MODIFY `id_session` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT pour la table `sites`
+--
+ALTER TABLE `sites`
+  MODIFY `id_site` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT pour la table `stages`
 --
 ALTER TABLE `stages`
@@ -253,7 +288,8 @@ ALTER TABLE `documents_pages`
 -- Contraintes pour la table `formateurs`
 --
 ALTER TABLE `formateurs`
-  ADD CONSTRAINT `formateurs_ibfk_1` FOREIGN KEY (`id_secteur`) REFERENCES `secteurs` (`id_secteur`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `formateurs_ibfk_1` FOREIGN KEY (`id_secteur`) REFERENCES `secteurs` (`id_secteur`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `formateurs_ibfk_2` FOREIGN KEY (`id_site`) REFERENCES `sites` (`id_site`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `sessions`

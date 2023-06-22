@@ -39,7 +39,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td><textarea name="form_formateur_editer_liens">' .  $formateur['carte_formateur_liens'] .'</textarea></td>
                 <td><input type="text" name="form_formateur_editer_tel" value="' .  $formateur['carte_formateur_tel'] .'"></td>
                 <td><input type="text" name="form_formateur_editer_portable" value="' .  $formateur['carte_formateur_portable'] .'"></td>
-                <td><input type="text" name="form_formateur_editer_adresse_site" value="' .  $formateur['carte_formateur_adresse_site'] .'"></td>
+                <td></td>
                 <td><a href="#" onclick="majFormateur(' . $formateur['id_formateur'] . ');">Mise à jour</a></td>
             </tr>';
         } else {
@@ -54,7 +54,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td>' . $formateur['carte_formateur_liens'] . '</td>
                 <td>' . $formateur['carte_formateur_tel'] . '</td>
                 <td>' . $formateur['carte_formateur_portable'] . '</td>
-                <td>' . $formateur['carte_formateur_adresse_site'] . '</td>
+                <td></td>
                 <td><a href="#" onclick="recupererListeFormateurs(' . $formateur['id_formateur'] . ');">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
             </tr>';
         }
@@ -283,8 +283,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     die(json_encode(envoyerMail($id_stagiaire, $id_formateur, $documents, $documents_libelles, $_POST['relance'])));
 } elseif (isset($_POST['form_formateurs_ajout']) && !empty($_POST['form_formateurs_ajout'])) {
-    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site) 
-            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable, :carte_formateur_adresse_site);';
+    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable) 
+            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable);';
     $req = $db->prepare($sql);
     $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":prenom_formateur", filter_var($_POST['form_formateurs_ajout_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -295,7 +295,6 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req->bindValue(":carte_formateur_liens", filter_var($_POST['form_formateurs_ajout_liens'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_tel", filter_var($_POST['form_formateurs_ajout_telephone'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_portable", filter_var($_POST['form_formateurs_ajout_portable'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_adresse_site", filter_var($_POST['form_formateurs_ajout_adresse'], FILTER_SANITIZE_SPECIAL_CHARS));
     die($req->execute());
 } elseif (isset($_POST['form_formateur_editer']) && !empty($_POST['form_formateur_editer'])) {
     if(!empty($_POST['signature'])) {
@@ -317,8 +316,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 carte_formateur_role=:carte_formateur_role, 
                 carte_formateur_liens=:carte_formateur_liens, 
                 carte_formateur_tel=:carte_formateur_tel, 
-                carte_formateur_portable=:carte_formateur_portable,
-                carte_formateur_adresse_site=:carte_formateur_adresse_site 
+                carte_formateur_portable=:carte_formateur_portable 
             WHERE id_formateur=:id_formateur;';
     $req = $db->prepare($sql);
     $req->bindValue(":nom_formateur", filter_var($_POST['nom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -332,14 +330,12 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req->bindValue(":carte_formateur_liens", filter_var($_POST['liens_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_tel", filter_var($_POST['tel_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_portable", filter_var($_POST['portable_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_adresse_site", filter_var($_POST['site_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":id_formateur", filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT));
     die(json_encode($req->execute()));
 } elseif (isset($_POST['form_secteurs_ajout']) && !empty($_POST['form_secteurs_ajout'])) {
-    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, carte_formateur_adresse_site) 
-            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable, :carte_formateur_adresse_site);';
+    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable) 
+            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable);';
     $req = $db->prepare($sql);
     $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_adresse_site", filter_var($_POST['form_formateurs_ajout_adresse'], FILTER_SANITIZE_SPECIAL_CHARS));
     die($req->execute());
 }

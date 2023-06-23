@@ -1,25 +1,29 @@
 <?php
-include_once __DIR__ . '/m/connect.php';
+include_once __DIR__ . '/../src/m/connect.php';
 
 if(isset($_GET["page"]) && !empty($_GET["page"])) {
-    $page = "notfound.html";
-    if(isset($_SESSION['user'])) {
-        switch($_GET["page"]) {
-            case "formation":
-                $page = "formation/index.php";
-                break;
-            case "admin":
-                $page = "admin/index.php";
-                break;
-            case "stage":
-                $page = "stage/index.php";
-                break;
-            case "titre":
-                $page = "titre/index.php";
-                break;
-        }
+    if(isset($db) && !empty($db)) {
+        $page = "notfound.html";
+        // if(isset($_SESSION['user'])) {
+            switch($_GET["page"]) {
+                case "formation":
+                    $page = "formation/index.php";
+                    break;
+                case "admin":
+                    $page = "admin/index.php";
+                    break;
+                case "stage":
+                    $page = "stage/index.php";
+                    break;
+                case "titre":
+                    $page = "titre/index.php";
+                    break;
+            }
+        // } else {
+        //     $page = "connexion.php";
+        // }
     } else {
-        $page = "connexion.php";
+        $page = "maintenance.php";
     }
     include __DIR__."/".$page;die;
 } 

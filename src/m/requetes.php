@@ -1,12 +1,5 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-use TCPDF;
-
-require __DIR__ . '/../vendor/autoload.php';
-
 function recupererStages($id_formateur = 0, $nom_session = 0)
 {
     global $db;
@@ -81,9 +74,10 @@ function recupererSecteurs()
     return $secteurs;
 }
 
-function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelles, $bEstRelance = false)
+function envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $document_libelles, $bEstRelance = false)
 {
     global $db;
+    global $mailer;
 
     //Récupération des données du stage
     $req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur
@@ -95,37 +89,17 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
     $req->execute();
     $stage = $req->fetch(PDO::FETCH_ASSOC);
 
-    //Create an instance; passing `true` enables exceptions
-    $mail = new PHPMailer(true);
-
     try {
-        //Server settings
-        $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-        $mail->isSMTP();                                            //Send using SMTP
-        $mail->CharSet    = "UTF-8";                                //Enable encoding in UTF-8
-        $mail->Encoding   = 'base64';                               //Change the default encoding
-        $mail->Host       = 'smtp.gmail.com';                       //Set the SMTP server to send through
-        $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-        if(DEV) {
-            $mail->Username   = 'marceau0707@gmail.com';            //SMTP username
-            $mail->Password   = 'goemqkkzceuawntw';                 //SMTP password
-        } else {
-            $mail->Username   = 'marceau.ro@adrar-numerique.com';   //SMTP username
-            $mail->Password   = 'pleoxdpptfpkdmnd';                 //SMTP password
-        }
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable implicit TLS encryption
-        $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
-
         //Recipients
-        $mail->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+        $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
         if (DEV) {
-            $mail->addAddress('marceau0707@gmail.com', $stage['prenom_tuteur'] . " " . $stage['nom_tuteur']);
+            $mailer->addAddress('marceau0707@gmail.com', $stage['prenom_tuteur'] . " " . $stage['nom_tuteur']);
         } else {
-            $mail->addAddress($stage['mail_tuteur'], $stage['prenom_tuteur'] . " " . $stage['nom_tuteur']);
-            $mail->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            $mailer->addAddress($stage['mail_tuteur'], $stage['prenom_tuteur'] . " " . $stage['nom_tuteur']);
+            $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
         }
-        $mail->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
-        // $mail->addCC('marceaurodrigues@adrar-formation.com');
+        $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+        // $mailer->addCC('marceaurodrigues@adrar-formation.com');
 
         //Création des PDFs personnalisés
         // $documents = array('convention', 'attestation', 'evaluation', 'presence');
@@ -194,7 +168,7 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
                         }
                     }
                     $html2pdf->Output(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', 'F');
-                    $mail->addAttachment(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', str_replace(" ", "_", $document['nom_document']) . '.pdf');
+                    $mailer->addAttachment(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', str_replace(" ", "_", $document['nom_document']) . '.pdf');
                 }
             }
         }
@@ -249,16 +223,16 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
 
 
         //Content
-        $mail->isHTML(true);
+        $mailer->isHTML(true);
         if ($bEstRelance) {
-            $mail->Subject = 'Relance de demande des documents de stage';
+            $mailer->Subject = 'Relance de demande des documents de stage';
         } else {
-            $mail->Subject = 'Demande de documents de stage';
+            $mailer->Subject = 'Demande de documents de stage';
         }
-        $mail->Body    = $message;
-        $mail->AltBody = strip_tags($message);
+        $mailer->Body    = $message;
+        $mailer->AltBody = strip_tags($message);
 
-        if ($mail->send()) {
+        if ($mailer->send()) {
             if(!DEV) {
                 $req = $db->prepare("UPDATE stagiaires 
                                     SET compteur_demandes = compteur_demandes + 1
@@ -270,23 +244,36 @@ function envoyerMail($id_stagiaire, $id_formateur, $documents, $document_libelle
         }
         echo "Message délivré.";
     } catch (Exception $e) {
-        throw new Error("Message non délivré. Erreur: {$mail->ErrorInfo}");
+        throw new Error("Message non délivré. Erreur: {$mailer->ErrorInfo}");
     }
     return true;
 }
 
-function inscriptionFormateur($nom, $prenom, $mail, $role, $tel, $site, $secteur) {
+function inscriptionFormateur(string $nom, string $prenom, string $mail, string $role, string $tel, string $site, int $secteur) {
     global $db;
+    global $mailer;
 
-    $req = $db->prepare("INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, carte_formateur_role, carte_formateur_tel, code_entree_formateur, id_site, id_secteur) 
-                        VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :carte_formateur_role, :carte_formateur_tel, :code_entree_formateur, :id_site, :id_secteur);");
+    $code_entree_formateur = random_int(100000, 999999);
+
+    $req = $db->prepare("INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, carte_formateur_role, carte_formateur_tel, code_entree_formateur, date_code_entree_formateu, id_site, id_secteur) 
+                        VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :carte_formateur_role, :carte_formateur_tel, :code_entree_formateur, DATE_ADD(NOW(), INTERVAL 7 DAY), :id_site, :id_secteur);");
     $req->bindValue(":nom_formateur", filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":prenom_formateur", filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":mail_formateur", filter_var($mail, FILTER_VALIDATE_EMAIL));
     $req->bindValue(":carte_formateur_role", filter_var($role, FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":carte_formateur_tel", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":code_entree_formateur", random_int(100000, 999999));
+    $req->bindValue(":code_entree_formateur", $code_entree_formateur);
     $req->bindValue(":id_site", filter_var($site, FILTER_VALIDATE_INT));
     $req->bindValue(":id_secteur", filter_var($secteur, FILTER_VALIDATE_INT));
-    return $req->execute();
+    if($req->execute()) {
+        $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_ENTREE.html');
+        $message = strtr($message, array(
+            '{{PRENOM_TUTEUR}}' => ucwords($prenom),
+            '{{CODE_ENTREE_FORMATEUR}}' => $code_entree_formateur
+        ));
+        $mailer->Subject = '[ERP] Code UNIQUE formateur';
+        $mailer->Body    = $message;
+        $mailer->AltBody = strip_tags($message);
+        return $mailer->send();
+    }
 }

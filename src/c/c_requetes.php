@@ -249,7 +249,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         }
     }
     die($html);
-} elseif ((isset($_POST['envoyerMail']) && !empty($_POST['envoyerMail'])) && (isset($_POST['id_stagiaire']) && !empty($_POST['id_stagiaire']) && (isset($_POST['id_formateur']) && !empty($_POST['id_formateur'])))) {
+} elseif ((isset($_POST['envoyerMailTuteur']) && !empty($_POST['envoyerMailTuteur'])) && (isset($_POST['id_stagiaire']) && !empty($_POST['id_stagiaire']) && (isset($_POST['id_formateur']) && !empty($_POST['id_formateur'])))) {
     $documents = array();
     $documents_libelles = array();
     $horaires = array();
@@ -281,21 +281,9 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         array_push($documents, 'evaluation');
         array_push($documents_libelles, 'Évaluation de stage : Afin de pouvoir avoir un retour sur la prestation du stagiaire, il est important que ce document nous soit retourné.');
     }
-    die(json_encode(envoyerMail($id_stagiaire, $id_formateur, $documents, $documents_libelles, $_POST['relance'])));
+    die(json_encode(envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $documents_libelles, $_POST['relance'])));
 } elseif (isset($_POST['form_formateurs_ajout']) && !empty($_POST['form_formateurs_ajout'])) {
-    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable) 
-            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable);';
-    $req = $db->prepare($sql);
-    $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":prenom_formateur", filter_var($_POST['form_formateurs_ajout_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":mail_formateur", filter_var($_POST['form_formateurs_ajout_mail'], FILTER_VALIDATE_EMAIL));
-    $req->bindValue(":signature_formateur", 'v/formateurs/signature_' . filter_var($_POST['form_formateurs_ajout_signature'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":id_secteur", filter_var($_POST['id_secteur'], FILTER_VALIDATE_INT));
-    $req->bindValue(":carte_formateur_role", filter_var($_POST['form_formateurs_ajout_role'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_liens", filter_var($_POST['form_formateurs_ajout_liens'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_tel", filter_var($_POST['form_formateurs_ajout_telephone'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_portable", filter_var($_POST['form_formateurs_ajout_portable'], FILTER_SANITIZE_SPECIAL_CHARS));
-    die($req->execute());
+    die(inscriptionFormateur($_POST['form_formateurs_ajout_nom'], $_POST['form_formateurs_ajout_prenom'], $_POST['form_formateurs_ajout_mail'], $_POST['form_formateurs_ajout_role'], $_POST['form_formateurs_ajout_telephone'], $_POST['id_site'], $_POST['id_secteur']));
 } elseif (isset($_POST['form_formateur_editer']) && !empty($_POST['form_formateur_editer'])) {
     if(!empty($_POST['signature'])) {
         $uniqid = uniqid();

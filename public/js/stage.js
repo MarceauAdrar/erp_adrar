@@ -91,9 +91,9 @@ async function recupererDocumentsManquants(id_stagiaire) {
     });
 }
 
-async function envoyerMail() {
+async function envoyerMailTuteur() {
   var formData = new FormData();
-  formData.append('envoyerMail', 1);
+  formData.append('envoyerMailTuteur', 1);
   formData.append('id_stagiaire', document.getElementById("id_stagiaire").value);
   formData.append('id_formateur', document.getElementById("id_formateur").value);
   if (document.getElementById("convention")) formData.append('convention', document.getElementById("convention").checked);

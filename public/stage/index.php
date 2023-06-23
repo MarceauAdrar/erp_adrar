@@ -28,7 +28,7 @@
 
             </section>
             <button class="modal-exit">Annuler</button>
-            <button class="modal-send modal-exit" onclick="envoyerMail();">Envoyer</button>
+            <button class="modal-send modal-exit" onclick="envoyerMailTuteur();">Envoyer</button>
         </div>
     </div>
     <script src="../src/vendor/zenorocha/clipboardjs/dist/clipboard.min.js"></script>

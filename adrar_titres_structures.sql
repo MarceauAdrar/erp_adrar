@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : jeu. 22 juin 2023 à 05:12
+-- Généré le : ven. 23 juin 2023 à 05:19
 -- Version du serveur : 10.5.19-MariaDB-0+deb11u2
 -- Version de PHP : 8.2.6
 
@@ -65,7 +65,9 @@ CREATE TABLE `formateurs` (
   `carte_formateur_tel` varchar(10) NOT NULL,
   `carte_formateur_portable` varchar(10) NOT NULL,
   `tmp_code_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code qui permet à un formateur de en cas d''oubli de mot de passe ou si la période de validité du code est échue\r\n',
+  `date_tmp_code_formateur` datetime DEFAULT NULL COMMENT 'Validité de 5 minutes',
   `code_entree_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code UNIQUE qui permet à un formateur de s''identifier la première fois pour changer son mot de passe',
+  `date_code_entree_formateur` datetime DEFAULT NULL COMMENT 'Validité d''une semaine',
   `id_site` int(11) NOT NULL,
   `id_secteur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;

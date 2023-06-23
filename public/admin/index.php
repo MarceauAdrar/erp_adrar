@@ -16,12 +16,13 @@
             <input type="text" placeholder="Prénom" name="form_formateurs_ajout_prenom">
             <input type="text" placeholder="Mail" name="form_formateurs_ajout_mail">
             <input type="text" placeholder="Signature" name="form_formateurs_ajout_signature">
-            <input type="text" placeholder="Secteur" name="form_formateurs_ajout_secteur">
             <input type="text" placeholder="Rôle" name="form_formateurs_ajout_role">
             <input type="text" placeholder="Liens (à séparer par avec ;)" name="form_formateurs_ajout_liens">
             <input type="text" placeholder="Téléphone" name="form_formateurs_ajout_telephone">
             <input type="text" placeholder="Portable" name="form_formateurs_ajout_portable">
             <input type="text" placeholder="Adresse" name="form_formateurs_ajout_adresse">
+            <select name="form_formateurs_ajout_secteur"></select>
+            <select name="form_formateurs_ajout_site"></select>
             <input type="submit" value="Ajouter">
         </form>
         <table>

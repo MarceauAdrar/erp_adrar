@@ -421,7 +421,7 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
  *
  *
  * @param string|int    $identifiant L'identifiant *unique* du formateur, un email ou un code d'accès.
- * @param string        $identifiant L'extension de domaine pour le mail (@adrar-formation.com OU @adrar-numerique.com).
+ * @param string        $dns L'extension de domaine pour le mail (@adrar-formation.com OU @adrar-numerique.com).
  * @return boolean      Un booléen.
  */
 function connexionFormateur(string|int $identifiant, string $dns) {
@@ -430,16 +430,30 @@ function connexionFormateur(string|int $identifiant, string $dns) {
     $sql = "SELECT *  
             FROM formateurs WHERE (mail_formateur=:identifiant 
                                 OR code_entree_formateur=:identifiant 
-                                OR tmp_code_formateur=:identifiant)";
-    $sql .= ";";
+                                OR tmp_code_formateur=:identifiant);";
     
     $req = $db->prepare($sql);
     $req->bindValue(":identifiant", filter_var($identifiant.$dns, FILTER_VALIDATE_EMAIL));
     $req->execute();
     if($req->rowCount() === 1) {
         $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
+        $_SESSION['utilisateur']['id_stagiaire'] = -1;
+        $_SESSION['utilisateur']['id_session'] = NULL;
         $req->closeCursor();
         return true;
+    } else {
+        $sql = "SELECT *, mdp_stagiaire AS mdp_formateur
+                FROM stagiaires WHERE mail_stagiaire=:identifiant;";
+        $req = $db->prepare($sql);
+        $req->bindValue(":identifiant", filter_var($identifiant, FILTER_VALIDATE_EMAIL));
+        $req->execute();
+        if($req->rowCount() === 1) {
+            $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
+            $_SESSION['utilisateur']['id_formateur'] = -1;
+            $_SESSION['utilisateur']['id_session'] = NULL;
+            $req->closeCursor();
+            return true;
+        }
     }
     return false;
 }

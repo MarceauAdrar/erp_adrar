@@ -28,10 +28,10 @@ section {
 }
 
 form>div:nth-of-type(1) {
-    padding-top: 25px;
+    margin-top: 25px;
 }
 
-form>div:nth-of-type(1) {
+form>div:nth-of-type(2) {
     padding-bottom: 50px;
 }
 

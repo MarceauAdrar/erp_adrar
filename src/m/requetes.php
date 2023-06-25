@@ -1,5 +1,7 @@
 <?php
 
+use PHPMailer\PHPMailer\PHPMailer;
+
 function recupererStages($id_formateur = 0, $nom_session = 0)
 {
     global $db;
@@ -9,18 +11,18 @@ function recupererStages($id_formateur = 0, $nom_session = 0)
             JOIN sessions ON sessions.id_session = stagiaires.id_session
             JOIN stages ON stages.id_stage = stagiaires.id_stage 
             WHERE 1 ";
-    if(!empty($id_formateur)) {
+    if (!empty($id_formateur)) {
         $sql .= " AND sessions.id_formateur=:id_formateur ";
     }
-    if(!empty($nom_session)) {
+    if (!empty($nom_session)) {
         $sql .= " AND sessions.nom_session=:nom_session ";
     }
     $sql .= ";";
     $req = $db->prepare($sql);
-    if(!empty($id_formateur)) {
+    if (!empty($id_formateur)) {
         $req->bindParam(":id_formateur", $id_formateur);
     }
-    if(!empty($nom_session)) {
+    if (!empty($nom_session)) {
         $req->bindParam(":nom_session", $nom_session);
     }
     $req->execute();
@@ -74,7 +76,19 @@ function recupererSecteurs()
     return $secteurs;
 }
 
-function envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $document_libelles, $bEstRelance = false)
+/**
+ * Permet d'envoyer les documents manquants à un tuteur donné.
+ *
+ *
+ * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
+ * @param int       $id_stagiaire L'identifiant du stagiaire.
+ * @param int       $id_formateur L'identifiant du formateur associé à la démarche.
+ * @param array     $documents Tableau des documents à générer et joindre.
+ * @param array     $document_libelles Tableau des explications pour chaque document.
+ * @param boolean   $bEstRelance Permet de changer le template du mail envoyé, si rien n'est précisé, il ne s'agit pas d'une relance par défaut.
+ * @return boolean  Renvoi un simple booléen.
+ */
+function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $document_libelles, $bEstRelance = false)
 {
     global $db;
     global $mailer;
@@ -189,18 +203,17 @@ function envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $document_l
         }
         $numeros = "";
         $liens = "";
-        if(!empty($formateur['carte_formateur_tel']) && !empty($formateur['carte_formateur_portable'])) {
+        if (!empty($formateur['carte_formateur_tel']) && !empty($formateur['carte_formateur_portable'])) {
             $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_tel'] . '">' . $formateur['carte_formateur_tel'] . '</a></p>';
             $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_portable'] . '">' . $formateur['carte_formateur_portable'] . '</a></p>';
-        } elseif(!empty($formateur['carte_formateur_tel'])) {
+        } elseif (!empty($formateur['carte_formateur_tel'])) {
             $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_tel'] . '">' . $formateur['carte_formateur_tel'] . '</a></p>';
-            
-        } elseif(!empty($formateur['carte_formateur_portable'])) {
+        } elseif (!empty($formateur['carte_formateur_portable'])) {
             $numeros .= '<p style="margin:0;"><a href="tel:' . $formateur['carte_formateur_portable'] . '">' . $formateur['carte_formateur_portable'] . '</a></p>';
         }
-        if(!empty($formateur['carte_formateur_liens'])) {
-            if(str_contains(",", $formateur['carte_formateur_liens'])) {
-                foreach(explode(",", $formateur['carte_formateur_liens']) as $lien) {
+        if (!empty($formateur['carte_formateur_liens'])) {
+            if (str_contains(",", $formateur['carte_formateur_liens'])) {
+                foreach (explode(",", $formateur['carte_formateur_liens']) as $lien) {
                     $liens .= '<p style="margin:0;"><a href="' . $lien . '">' . $lien . '</a></p>';
                 }
             } else {
@@ -211,19 +224,18 @@ function envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $document_l
         $message = strtr($message, array(
             '{{NOM_TUTEUR}}' => strtoupper($stage['nom_tuteur']),
             '{{PRENOM_NOM_STAGIAIRE}}' => strtoupper($stage['nom_stagiaire']) . " " . ucwords($stage['prenom_stagiaire']),
-            '{{LISTE_DOCUMENTS}}' => $liste_documents, 
+            '{{LISTE_DOCUMENTS}}' => $liste_documents,
             '{{CARTE_PRENOM}}' => ucwords($formateur['prenom_formateur']),
             '{{CARTE_NOM}}' => strtoupper($formateur['nom_formateur']),
             '{{CARTE_LOGO_SECTEUR}}' => $formateur['carte_formateur_logo_secteur'],
             '{{CARTE_ADRESSE}}' => $formateur['carte_formateur_adresse_site'],
-            '{{CARTE_NUMEROS}}' => $numeros, 
+            '{{CARTE_NUMEROS}}' => $numeros,
             '{{CARTE_LIENS}}' => $liens,
             '{{CARTE_ROLE}}' => $formateur['carte_formateur_role']
         ));
 
 
         //Content
-        $mailer->isHTML(true);
         if ($bEstRelance) {
             $mailer->Subject = 'Relance de demande des documents de stage';
         } else {
@@ -233,7 +245,7 @@ function envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $document_l
         $mailer->AltBody = strip_tags($message);
 
         if ($mailer->send()) {
-            if(!DEV) {
+            if (!DEV) {
                 $req = $db->prepare("UPDATE stagiaires 
                                     SET compteur_demandes = compteur_demandes + 1
                                     WHERE id_stagiaire=:id_stagiaire;");
@@ -249,31 +261,185 @@ function envoyerMailTuteur($id_stagiaire, $id_formateur, $documents, $document_l
     return true;
 }
 
-function inscriptionFormateur(string $nom, string $prenom, string $mail, string $role, string $tel, string $site, int $secteur) {
+/**
+ * Permet d'enregistrer un formateur dans la table **formateurs**.
+ *
+ * Cette fonction prend un ensemble de paramètres pour un formateur donné.
+ *
+ * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
+ * @param string    $nom Le nom du formateur.
+ * @param string    $prenom Le prénom du formateur.
+ * @param string    $mail Le mail du formateur (@adrar-formation.com OU @adrar-numerique.com).
+ * @param string    $role Le rôle du formateur, format libre.
+ * @param string    $tel Le téléphone du formateur (commençant par 05, cf. Wildix).
+ * @param int       $site L'identifiant du site du formateur, cf. table **sites**.
+ * @param int       $secteur L'identifiant du secteur du formateur, cf. table **secteurs**.
+ * @return json  Un JSON avec deux index `boolean success` et `string message`.
+ */
+function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, string $mail, string $role, string $tel, int $site, int $secteur)
+{
     global $db;
-    global $mailer;
 
-    $code_entree_formateur = random_int(100000, 999999);
+    $mail_formateur = filter_var($mail, FILTER_VALIDATE_EMAIL);
 
-    $req = $db->prepare("INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, carte_formateur_role, carte_formateur_tel, code_entree_formateur, date_code_entree_formateu, id_site, id_secteur) 
-                        VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :carte_formateur_role, :carte_formateur_tel, :code_entree_formateur, DATE_ADD(NOW(), INTERVAL 7 DAY), :id_site, :id_secteur);");
-    $req->bindValue(":nom_formateur", filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":prenom_formateur", filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":mail_formateur", filter_var($mail, FILTER_VALIDATE_EMAIL));
-    $req->bindValue(":carte_formateur_role", filter_var($role, FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":carte_formateur_tel", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":code_entree_formateur", $code_entree_formateur);
-    $req->bindValue(":id_site", filter_var($site, FILTER_VALIDATE_INT));
-    $req->bindValue(":id_secteur", filter_var($secteur, FILTER_VALIDATE_INT));
-    if($req->execute()) {
-        $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_ENTREE.html');
-        $message = strtr($message, array(
-            '{{PRENOM_TUTEUR}}' => ucwords($prenom),
-            '{{CODE_ENTREE_FORMATEUR}}' => $code_entree_formateur
-        ));
-        $mailer->Subject = '[ERP] Code UNIQUE formateur';
-        $mailer->Body    = $message;
-        $mailer->AltBody = strip_tags($message);
-        return $mailer->send();
+    $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE mail_formateur=:mail_formateur;");
+    $req->bindValue(":mail_formateur", $mail_formateur);
+    $req->execute();
+    if($req->rowCount() === 0) { // Si le mail du formateur n'existe pas encore
+        $req->closeCursor();
+
+        $nom_formateur = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
+        $prenom_formateur = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
+        $code_entree_formateur = random_int(100000, 999999);
+    
+        $req = $db->prepare("INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, carte_formateur_role, carte_formateur_tel, code_entree_formateur, date_code_entree_formateur, id_site, id_secteur) 
+                            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :carte_formateur_role, :carte_formateur_tel, :code_entree_formateur, DATE_ADD(NOW(), INTERVAL 7 DAY), :id_site, :id_secteur);");
+        $req->bindValue(":nom_formateur", $nom_formateur);
+        $req->bindValue(":prenom_formateur", $prenom_formateur);
+        $req->bindValue(":mail_formateur", $mail_formateur);
+        $req->bindValue(":carte_formateur_role", filter_var($role, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":carte_formateur_tel", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":code_entree_formateur", $code_entree_formateur);
+        $req->bindValue(":id_site", filter_var($site, FILTER_VALIDATE_INT));
+        $req->bindValue(":id_secteur", filter_var($secteur, FILTER_VALIDATE_INT));
+        if ($req->execute()) {
+            $req->closeCursor();
+
+            $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_ENTREE.html');
+            $message = strtr($message, array(
+                '{{PRENOM_FORMATEUR}}' => ucwords($prenom),
+                '{{CODE_ENTREE_FORMATEUR}}' => $code_entree_formateur, 
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/erp/public/inscription.php?code=".$code_entree_formateur
+            ));
+            $mailer->Subject = '[ERP] Code UNIQUE formateur';
+            $mailer->Body    = $message;
+            $mailer->AltBody = strip_tags($message);
+            $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            if (DEV) {
+                $mailer->addAddress('marceau0707@gmail.com', $mail_formateur . " - " . $prenom_formateur . " " . $nom_formateur);
+            } else {
+                $mailer->addAddress($mail_formateur, $prenom_formateur . " " . $nom_formateur);
+                $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            }
+            $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            try {
+                $mailer->send();
+                $success = true;
+                $message = "Email envoyé.";
+            } catch (Exception $e) {
+                $success = false;
+                $message = "Erreur: " . $e->getMessage();
+            }
+        } else {
+            $success = false;
+            $message = "Une erreur s'est produite, veuillez réessayer.";
+        }
+    } else {
+        $success = false;
+        $message = "Cette adresse mail est déjà utilisée par un autre formateur.";
     }
+    return json_encode(array(
+        'success' => $success,
+        'message' => $message
+    ));
+}
+
+/**
+ * Permet de réinitialiser le mot de passe d'un formateur dans la table **formateurs**.
+ *
+ *
+ * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
+ * @param string    $mail L'identifiant du formateur.
+ * @return array    Un tableau avec deux index `string type` et `string message`.
+ */
+function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
+{
+    global $db;
+
+    $mail_formateur = filter_var($mail, FILTER_VALIDATE_EMAIL);
+    $tmp_code_formateur = random_int(100000, 999999);
+    unset($_SESSION['code_formateur']);
+
+    $req = $db->prepare("SELECT * FROM formateurs WHERE mail_formateur=:mail_formateur AND code_entree_formateur IS NULL;");
+    $req->bindValue(":mail_formateur", $mail_formateur);
+    $req->execute();
+    if($req->rowCount() === 1) { // Si le mail du formateur existe
+        $user = $req->fetch(PDO::FETCH_ASSOC);
+        $req->closeCursor();
+    
+        $req = $db->prepare("UPDATE formateurs 
+                            SET 
+                                tmp_code_formateur=:tmp_code_formateur, 
+                                date_tmp_code_formateur=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
+                            WHERE mail_formateur=:mail_formateur;");
+        $req->bindValue(":mail_formateur", $mail_formateur);
+        $req->bindValue(":tmp_code_formateur", $tmp_code_formateur);
+        if ($req->execute()) {
+            $req->closeCursor();
+
+            $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_TMP.html');
+            $message = strtr($message, array(
+                '{{PRENOM_FORMATEUR}}' => ucwords($user['prenom_formateur']),
+                '{{CODE_TMP_FORMATEUR}}' => $tmp_code_formateur, 
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/erp/public/code.php?code=".$tmp_code_formateur
+            ));
+            $mailer->Subject = '[ERP] Code TEMPORAIRE formateur';
+            $mailer->Body    = $message;
+            $mailer->AltBody = strip_tags($message);
+            $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            if (DEV) {
+                $mailer->addAddress('marceau0707@gmail.com', $mail_formateur . " - " . $user['prenom_formateur'] . " " . $user['nom_formateur']);
+            } else {
+                $mailer->addAddress($mail_formateur, $user['prenom_formateur'] . " " . $user['nom_formateur']);
+                $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            }
+            $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            try {
+                $mailer->send();
+                $type = "success";
+                $message = "Un mail a été envoyé si l'adresse mail existe.";
+            } catch (Exception $e) {
+                $type = "error";
+                $message = "Erreur: " . $e->getMessage();
+            }
+        } else {
+            $type = "error";
+            $message = "Une erreur s'est produite, veuillez réessayer.";
+        }
+    } else {
+        $type = "success";
+        $message = "Un mail a été envoyé si l'adresse mail existe.";
+    }
+    return array(
+        'type' => $type,
+        'message' => $message
+    );
+}
+
+/**
+ * Permet de connecter un formateur présent dans la table **formateurs**.
+ *
+ *
+ * @param string|int    $identifiant L'identifiant *unique* du formateur, un email ou un code d'accès.
+ * @param string        $identifiant L'extension de domaine pour le mail (@adrar-formation.com OU @adrar-numerique.com).
+ * @return boolean      Un booléen.
+ */
+function connexionFormateur(string|int $identifiant, string $dns) {
+    global $db;
+    
+    $sql = "SELECT *  
+            FROM formateurs WHERE (mail_formateur=:identifiant 
+                                OR code_entree_formateur=:identifiant 
+                                OR tmp_code_formateur=:identifiant)";
+    $sql .= ";";
+    
+    $req = $db->prepare($sql);
+    $req->bindValue(":identifiant", filter_var($identifiant.$dns, FILTER_VALIDATE_EMAIL));
+    $req->execute();
+    if($req->rowCount() === 1) {
+        $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
+        $req->closeCursor();
+        return true;
+    }
+    return false;
 }

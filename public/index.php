@@ -4,7 +4,7 @@ include_once __DIR__ . '/../src/m/connect.php';
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
         $page = "notfound.html";
-        // if(isset($_SESSION['user'])) {
+        // if(isset($_SESSION['utilisateur'])) {
         switch ($_GET["page"]) {
             case "formation":
                 $page = "formation/index.php";

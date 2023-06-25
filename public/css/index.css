@@ -1,0 +1,210 @@
+.container {
+    display: flex;
+}
+
+.sidenav {
+    height: 100%;
+    width: 14vw;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #A7B3D4;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidenav aside {
+    margin: 20px 15px 20px 20px;
+}
+
+.sidenav aside>div:nth-of-type(1),
+.sidenav aside nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.sidenav a {
+    padding: 15px 8px 6px 0;
+    text-decoration: none;
+    color: #000000;
+    display: block;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+}
+
+.sidenav .separator {
+    border-color: #0000004D;
+}
+
+.sidenav nav a i::before {
+    background-color: var(--coul-secondaire);
+    font-size: 19px;
+    border-radius: 10px;
+    padding: 5px;
+    color: var(--coul-principale);
+}
+
+.sidenav nav a i span {
+    font-weight: lighter;
+}
+
+.sidenav aside div:nth-of-type(3) {
+    position: absolute;
+    bottom: 20em;
+}
+
+.sidenav aside div:nth-of-type(4) {
+    position: absolute;
+    bottom: 2em;
+}
+
+small {
+    font-size: 14px;
+}
+
+.main {
+    margin-left: 14vw;
+    /* Same as the width of the sidenav */
+    word-wrap: break-word;
+    max-width: calc(100vw - 14vw);
+    height: calc(100vh - 40px);
+    padding: 20px 60px;
+    background-color: #D9D9D9;
+    background-image: url('../img/logo_erp.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    flex-grow: 1;
+    overflow-y: auto;
+    gap: 20px;
+}
+
+.main .contenu {
+    padding: 1vw;
+}
+
+.main .box-1,
+.main .box-2 .box,
+.main .box-3 .historique,
+.main .box-3 .convention,
+.main .box-3 .attestation,
+.main .box-4 .modules,
+.main .box-5>* {
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+}
+
+.main .box-4 .modules-box .module:not(:nth-of-type(4)) {
+    margin-right: 10px;
+}
+
+.main .box-4 .modules-box .module p {
+    padding-top: 15px;
+}
+
+.main .box-4 .modules-box .module {
+    padding: 10px;
+    background-color: var(--coul-ternaire);
+    border: 1px solid #000000;
+    width: 25%;
+    height: 12vh;
+}
+
+.main .box-1 {
+    padding: 20px;
+    text-align: end;
+    margin-bottom: 50px;
+}
+
+.main div:not(.box-1),
+.main div:not(.box-5) {
+    margin-bottom: 10px;
+}
+
+.main .box-1 input[type="search"] {
+    border-radius: 5px;
+    border: 1px solid #D9D9D9;
+    background: rgba(0, 36, 224, 0.10);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.25) inset;
+    padding: 10px;
+}
+
+.main .box-2,
+.main .box-3,
+.main .box-4,
+.main .box-5,
+.main .box-4 .card-content .modules-box {
+    display: flex;
+}
+
+.main .box-2 .box,
+.main .box-4 .modules .module {
+    cursor: pointer;
+}
+
+.main .box-2 .box {
+    width: 25%;
+}
+
+.main .box-2 .box,
+.main .box-3,
+.main .box-3,
+.main .box-4,
+.main .box-5 {
+    height: 25%;
+}
+
+.main .box-3 .historique {
+    width: 50%;
+}
+
+.main .box-4 .modules {
+    width: 100%;
+}
+
+.main .box-3 .convention,
+.main .box-3 .attestation,
+.main .box-5>* {
+    width: 25%;
+}
+
+.main .box-2 .box:not(:nth-of-type(4)),
+.main .box-5 div:not(:nth-of-type(4)) {
+    margin-right: 15px;
+}
+
+.main .box-3 .convention {
+    margin-left: 15px;
+}
+
+@media screen and (max-width: 768px) {
+
+    /* Styles pour les écrans d'une largeur maximale de 768px (tablettes et smartphones) */
+    .container {
+        flex-direction: column;
+    }
+
+    .sidenav {
+        width: 15%;
+        overflow-y: auto;
+    }
+
+    .sidenav nav {
+        justify-content: center;
+    }
+
+    .sidenav h1,
+    .sidenav span {
+        display: none;
+    }
+
+    .main {
+        width: 90%;
+    }
+}

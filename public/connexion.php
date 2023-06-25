@@ -25,15 +25,21 @@ $_SESSION['csrf_token'] = $csrfToken;
             <div>
                 <h1 class="text-white">Re bienvenue sur l'ERP</h1>
                 <form action="../src/c/c_requetes.php" method="post">
-                    <input type="hidden" name="for_login_csrf" value="<?= $csrfToken ?>">
+                    <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
+                    <input type="hidden" name="form_login_csrf" value="<?= $csrfToken ?>">
                     <div>
                         <label for="form_login_mail" class="text-white">Email</label>
-                        <input type="text" name="form_login_mail" placeholder="johndoe@adrar-formation.com">
+                        <input type="text" name="form_login_mail" placeholder="johndoe" autocomplete="off">
+                        <select name="form_login_dns">
+                            <option value="@adrar-formation.com">@adrar-formation.com</option>
+                            <option value="@adrar-numerique.com">@adrar-numerique.com</option>
+                        </select>
                     </div>
                     <div>
                         <label for="form_login_pass" class="text-white">Mot de passe</label>
-                        <input type="password" name="form_login_pass" placeholder="motdepasse">
+                        <input type="password" name="form_login_pass" placeholder="motdepasse" autocomplete="off">
                     </div>
+                    <p class="text-white">Mot de passe oublié ? <a href="oublie.php">Génèrez-en un nouveau</a></a></p>
                     <input type="submit" value="Se connecter" class="btn btn-primary full-width text-white">
                 </form>
             </div>

@@ -1,5 +1,5 @@
 <?php
-require __DIR__ . '/../../src/m/connect.php';
+require_once __DIR__ . '/../../src/m/connect.php';
 
 $documents = $db->query("SELECT * FROM documents ORDER BY nom_document;")->fetchAll(PDO::FETCH_ASSOC);
 $stagiaires = $db->query("SELECT * FROM stagiaires WHERE id_stage IS NOT NULL ORDER BY nom_stagiaire;")->fetchAll(PDO::FETCH_ASSOC);

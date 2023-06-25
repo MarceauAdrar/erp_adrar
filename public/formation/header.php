@@ -21,7 +21,7 @@
     <?php if(isset($_SESSION["utilisateur"]["id_stagiaire"])) { ?>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-                <a class="navbar-brand" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/">
+                <a class="navbar-brand" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/?page=formation">
                     <img src="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar" />
                 </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,15 +30,14 @@
                 <div class="collapse navbar-collapse" id="navbarText">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/">Accueil</a>
+                            <a class="nav-link active" aria-current="page" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/?page=formation">Accueil</a>
                         </li>
                         <?php
-                        if($_SESSION["stagiaire"]["stagiaire_username"] == "mrodrigues18") { ?>
+                        if($_SESSION["utilisateur"]["id_formateur"] !== -1) { ?>
                         <li class="nav-item">
                             <a class="nav-link active" aria-current="page" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/admin.php">Administration</a>
                         </li>
                         <?php } ?>
-                        <?php /*
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_modules" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 Modules
@@ -71,10 +70,17 @@
                                 <?php } ?>
                             </ul>
                         </li>
-                        */ ?>
                     </ul>
                     <span class="navbar-text">
-                        <?=$_SESSION["stagiaire"]["stagiaire_first_name"] . " " . $_SESSION["stagiaire"]["stagiaire_last_name"]?>
+                        <?php 
+                        if($_SESSION["utilisateur"]["id_stagiaire"] > 0) {
+                            echo ucwords($_SESSION["utilisateur"]["prenom_stagiaire"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_stagiaire"]);
+                        } elseif($_SESSION["utilisateur"]["id_formateur"] > 0) {
+                            echo ucwords($_SESSION["utilisateur"]["prenom_formateur"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_formateur"]);
+                        }
+                        ?>
+                        &nbsp;
+                        <a href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/">Retour sur l'ERP</a>
                         &nbsp;
                         <a href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/deconnexion.php">Se déconnecter</a>
                     </span>

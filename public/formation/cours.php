@@ -9,13 +9,20 @@ include_once("./header.php");
     <div class="row pt-5 cours">
         <?php 
         $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration 
-                            FROM cours c
-				            INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session)
+                            FROM cours c ";
+        if(isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
+            $sql_select_cours .= " INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session) ";
+        } else {
+            $sql_select_cours .= " INNER JOIN cours_sessions cs ON c.cours_id = cs.id_cours ";
+        }
+        $sql_select_cours .= "
                             WHERE cours_session_active = 1
                             AND cours_category=:cours_category;";
         $req_select_cours = $db->prepare($sql_select_cours);
         $req_select_cours->bindParam(":cours_category", $_GET["cours"]);
-        $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
+        if(isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
+            $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
+        }
         $req_select_cours->execute();
         $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
 

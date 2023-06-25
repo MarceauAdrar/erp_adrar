@@ -46,7 +46,7 @@ if(!empty($_POST["display_prompt_join_modal"])) {
                     <?= $goals ?>
                 </div>
                 <div class="col-6">
-                    <img class="svgs-sm" src="http://<?=$_SERVER["SERVER_NAME"]?>/public/imgs/join.svg" alt="Illustration pour l'intégration à l'évaluation"/>
+                    <img class="svgs-sm" src="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/imgs/join.svg" alt="Illustration pour l'intégration à l'évaluation"/>
                 </div>
             </div>
         </div>
@@ -75,7 +75,7 @@ if(!empty($_POST["btn_join_evaluation"])) {
 }
 
 if(!empty($_POST["save_code"])) {
-    $link = "/var/www/evaluations/public/stagiaires/" . $_SESSION["stagiaire"]["stagiaire_username"]."/" . $_POST["module"];
+    $link = "/var/www/evaluations/public/stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"]."/" . $_POST["module"];
     $file = $_POST["tp"] . "." . $_POST["extension"];
     if(!file_exists($link."/".$file)) {
         if(!mkdir($link, 0777, true)) {

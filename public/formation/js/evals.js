@@ -49,7 +49,7 @@ function addLinesToEditor(onlyBody = false, lineFromIFrame = true) {
 
 function reloadBoxs() {
     var stagiaire_username = sessionStorage.getItem("stagiaire_username");
-    var link = "http://" + SERVER_NAME + "/public/stagiaires/" + stagiaire_username + "/html-css/tp" + sessionStorage.getItem("tp");
+    var link = "http://" + SERVER_NAME + "/erp/public/formation/stagiaires/" + stagiaire_username + "/html-css/tp" + sessionStorage.getItem("tp");
     var ext;
     var lineFromIFrame = true;
     if(sessionStorage.getItem("bHtml") == "1") {
@@ -88,7 +88,7 @@ function getHtmlContent(URI) {
 
 function saveCode(extension, module, tp) {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/src/requests.php", 
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php", 
         method: "post",
         data: {
             save_code: 1, 
@@ -107,7 +107,7 @@ function saveCode(extension, module, tp) {
 
 function submitEvaluation(module, tp) {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/src/requests.php", 
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php", 
         method: "post",
         data: {
             submit_evaluation: 1,  
@@ -124,7 +124,7 @@ function submitEvaluation(module, tp) {
 
 function loadInformationsTP(tp) {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/src/requests.php", 
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php", 
         method: "post",
         dataType: "json",
         data: {

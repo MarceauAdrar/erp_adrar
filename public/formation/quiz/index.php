@@ -32,7 +32,7 @@ include_once("../header.php"); ?>
     <div class="row">
         <div class="col-8 offset-2 text-center">
             <h1>Liste des quiz disponibles</h1>
-            <img class="svgs-full" src="http://<?=$_SERVER["SERVER_NAME"]?>/public/imgs/online_test.svg" alt="Illustration code review" />
+            <img class="svgs-full" src="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/imgs/online_test.svg" alt="Illustration code review" />
             <table class="table table-bordered table-striped table-responsive mt-3">
                 <thead>
                     <th>Titre</th>
@@ -61,7 +61,7 @@ include_once("../header.php"); ?>
 
     function fetchQuizData(quiz_list_id, offset = 0) {
         $.ajax({
-            url: "../../src/requests.php", 
+            url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
             method: "post",
             data: {
                 fetch_quiz_data: 1,
@@ -88,7 +88,7 @@ include_once("../header.php"); ?>
         } else {
             $("#error").hide();
             $.ajax({
-                url: "../../src/requests.php", 
+                url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
                 method: "post",
                 data: {
                     send_quiz: 1,

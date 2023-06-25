@@ -327,10 +327,12 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
     die($req->execute());
 } elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
-    if($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_mail']) && !empty($_POST['form_login_mail']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
-        if(connexionFormateur($_POST['form_login_mail'], $_POST['form_login_dns'])) {
-            if(password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
+    if($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
+        if(connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {
+            if(array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
                 $redirect = "../../public/index.php";
+            } elseif(array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
+                $redirect = "../../public/formation/index.php";
             } else {
                 $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
             }

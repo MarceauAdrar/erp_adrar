@@ -4,13 +4,13 @@ include_once("../../src/m/connect.php");
 
 $title = " | Contrôle administration";
 
-if($_SESSION["stagiaire"]["stagiaire_username"] != "mrodrigues18") {
-    header("Location: ./index.php");
+if(array_key_exists("pseudo_stagiaire", $_SESSION["utilisateur"])) {
+    header("Location: ../index.php?page=formation");
 }
 
-$sql_select_stagiaires = "SELECT stagiaire_id, stagiaire_last_name, stagiaire_first_name, stagiaire_username, evaluation_errors_max, stagiaire_evaluation_completed, stagiaire_evaluation_correction, stagiaire_evaluation_errors_found, evaluation_id, evaluation_dd_link
+$sql_select_stagiaires = "SELECT i.id_stagiaire, nom_stagiaire, prenom_stagiaire, pseudo_stagiaire, evaluation_errors_max, stagiaire_evaluation_completed, stagiaire_evaluation_correction, stagiaire_evaluation_errors_found, evaluation_id, evaluation_dd_link
                     FROM stagiaires_evaluations ie 
-                    JOIN stagiaires i ON (i.stagiaire_id = ie.id_stagiaire) 
+                    JOIN stagiaires i ON (i.id_stagiaire = ie.id_stagiaire) 
                     JOIN evaluations e ON (e.evaluation_id = ie.id_evaluation) 
                     JOIN evaluations_dd edd ON (edd.evaluation_dd_id = e.id_evaluation_dd) 
                     ORDER BY evaluation_dd_id, evaluation_id;";

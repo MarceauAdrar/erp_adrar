@@ -98,7 +98,7 @@ include_once("./formation/header.php");
 </div>
 
 <script>
-    sessionStorage.setItem("stagiaire_username", "<?=$_SESSION["stagiaire"]["stagiaire_username"]?>");
+    sessionStorage.setItem("stagiaire_username", "<?=(array_key_exists("pseudo_stagiaire", $_SESSION['utilisateur']) ? $_SESSION["utilisateur"]["pseudo_stagiaire"] : $_SESSION["utilisateur"]["mail_formateur"])?>");
     sessionStorage.setItem("SERVER_NAME", "<?=$_SERVER["SERVER_NAME"]?>");
 </script>
 <?php

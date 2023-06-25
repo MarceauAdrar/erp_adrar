@@ -31,6 +31,7 @@ $_SESSION['csrf_token'] = $csrfToken;
                         <label for="form_login_mail" class="text-white">Email</label>
                         <input type="text" name="form_login_mail" placeholder="johndoe" autocomplete="off">
                         <select name="form_login_dns">
+                            <option value="-1">Aucun DNS</option>
                             <option value="@adrar-formation.com">@adrar-formation.com</option>
                             <option value="@adrar-numerique.com">@adrar-numerique.com</option>
                         </select>

@@ -21,10 +21,11 @@ Rendez-vous dans l'onglet ``` index.php?page=titre ```.
 ## Ajoutez, modifiez, supprimez tout élément depuis l'onglet d'administration
 Rendez-vous dans l'onglet ``` index.php?page=admin ```.
 
+## Partagez vos cours et faites passer des tests et quiz à vos stagiaires
+Rendez-vous dans l'onglet ``` index.php?page=formation ```.
+
 
 
 # [WIP] TODO
 ## Gérer le CRUD formateurs/stagiaires/stages/sessions
 ## Finir de gérer les informations ajoutées à un document généré à la volée + réarranger le positionnement
-## Implémenter le système de connexion/inscription/déconnexion
-## Envoi d'un code temporaire par défaut à la création (valable 1 semaine) et un code temporaire de réinitialisation (valable 15 minutes)

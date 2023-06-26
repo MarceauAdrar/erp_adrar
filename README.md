@@ -27,5 +27,8 @@ Rendez-vous dans l'onglet ``` index.php?page=formation ```.
 
 
 # [WIP] TODO
-## Gérer le CRUD formateurs/stagiaires/stages/sessions
-## Finir de gérer les informations ajoutées à un document généré à la volée + réarranger le positionnement
+1. Finir de gérer les informations ajoutées à un document généré à la volée + réarranger le positionnement
+2. Gérer le CRUD formateurs/stagiaires/stages/sessions/documents
+3. Générer des graphiques de statistiques
+4. Re-tester de A à Z la partie ERP et la partie formation
+### [Lien vers le figma](https://www.figma.com/file/BzNldLes9c5sNNlz4nVkzP/Evaluations?type=design&node-id=403-1933&mode=design)

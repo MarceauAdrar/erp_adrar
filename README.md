@@ -28,7 +28,9 @@ Rendez-vous dans l'onglet ``` index.php?page=formation ```.
 
 # [WIP] TODO
 1. Finir de gérer les informations ajoutées à un document généré à la volée + réarranger le positionnement
-2. Gérer le CRUD formateurs/stagiaires/stages/sessions/documents
-3. Générer des graphiques de statistiques
-4. Re-tester de A à Z la partie ERP et la partie formation
+2. Ajouter un système de dépôt de fichiers sur la partie formation pour les stagiaires (dépôt d'AT, documents de stage, justificatif d'absence, autres)
+3. Ajouter un bouton notifications pour permettre au stagiaire de savoir s'il a un TP en attente
+4. Gérer le CRUD formateurs/stagiaires/stages/sessions/documents
+5. Générer des graphiques de statistiques
+6. Re-tester de A à Z la partie ERP et la partie formation
 ### [Lien vers le figma](https://www.figma.com/file/BzNldLes9c5sNNlz4nVkzP/Evaluations?type=design&node-id=403-1933&mode=design)

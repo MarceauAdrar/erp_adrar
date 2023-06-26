@@ -332,7 +332,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             if(array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
                 $redirect = "../../public/index.php";
             } elseif(array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
-                $redirect = "../../public/formation/index.php";
+                $redirect = "../../public/?page=formation";
             } else {
                 $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
             }

@@ -78,9 +78,10 @@
                         } elseif($_SESSION["utilisateur"]["id_formateur"] > 0) {
                             echo ucwords($_SESSION["utilisateur"]["prenom_formateur"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_formateur"]);
                         }
-                        ?>
-                        &nbsp;
-                        <a href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/">Retour sur l'ERP</a>
+                        if($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
+                            &nbsp;
+                            <a href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/">Retour sur l'ERP</a>
+                        <?php } ?>
                         &nbsp;
                         <a href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/deconnexion.php">Se déconnecter</a>
                     </span>

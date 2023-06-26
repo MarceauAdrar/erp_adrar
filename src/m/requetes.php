@@ -285,13 +285,13 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
     $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE mail_formateur=:mail_formateur;");
     $req->bindValue(":mail_formateur", $mail_formateur);
     $req->execute();
-    if($req->rowCount() === 0) { // Si le mail du formateur n'existe pas encore
+    if ($req->rowCount() === 0) { // Si le mail du formateur n'existe pas encore
         $req->closeCursor();
 
         $nom_formateur = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
         $prenom_formateur = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $code_entree_formateur = random_int(100000, 999999);
-    
+
         $req = $db->prepare("INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, carte_formateur_role, carte_formateur_tel, code_entree_formateur, date_code_entree_formateur, id_site, id_secteur) 
                             VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :carte_formateur_role, :carte_formateur_tel, :code_entree_formateur, DATE_ADD(NOW(), INTERVAL 7 DAY), :id_site, :id_secteur);");
         $req->bindValue(":nom_formateur", $nom_formateur);
@@ -308,8 +308,8 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_ENTREE.html');
             $message = strtr($message, array(
                 '{{PRENOM_FORMATEUR}}' => ucwords($prenom),
-                '{{CODE_ENTREE_FORMATEUR}}' => $code_entree_formateur, 
-                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/erp/public/inscription.php?code=".$code_entree_formateur
+                '{{CODE_ENTREE_FORMATEUR}}' => $code_entree_formateur,
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/inscription.php?code=" . $code_entree_formateur
             ));
             $mailer->Subject = '[ERP] Code UNIQUE formateur';
             $mailer->Body    = $message;
@@ -363,10 +363,10 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
     $req = $db->prepare("SELECT * FROM formateurs WHERE mail_formateur=:mail_formateur AND code_entree_formateur IS NULL;");
     $req->bindValue(":mail_formateur", $mail_formateur);
     $req->execute();
-    if($req->rowCount() === 1) { // Si le mail du formateur existe
+    if ($req->rowCount() === 1) { // Si le mail du formateur existe
         $user = $req->fetch(PDO::FETCH_ASSOC);
         $req->closeCursor();
-    
+
         $req = $db->prepare("UPDATE formateurs 
                             SET 
                                 tmp_code_formateur=:tmp_code_formateur, 
@@ -380,8 +380,8 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_TMP.html');
             $message = strtr($message, array(
                 '{{PRENOM_FORMATEUR}}' => ucwords($user['prenom_formateur']),
-                '{{CODE_TMP_FORMATEUR}}' => $tmp_code_formateur, 
-                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']."/erp/public/code.php?code=".$tmp_code_formateur
+                '{{CODE_TMP_FORMATEUR}}' => $tmp_code_formateur,
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $tmp_code_formateur
             ));
             $mailer->Subject = '[ERP] Code TEMPORAIRE formateur';
             $mailer->Body    = $message;
@@ -417,29 +417,44 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
 }
 
 /**
- * Permet de connecter un formateur présent dans la table **formateurs**.
+ * Permet de connecter un formateur présent dans la table **formateurs** OU un stagiaire présent dans la table **stagiaires**.
  *
  *
  * @param string|int    $identifiant L'identifiant *unique* du formateur, un email ou un code d'accès.
- * @param string        $identifiant L'extension de domaine pour le mail (@adrar-formation.com OU @adrar-numerique.com).
+ * @param string|null   $dns L'extension de domaine pour le mail (@adrar-formation.com OU @adrar-numerique.com).
  * @return boolean      Un booléen.
  */
-function connexionFormateur(string|int $identifiant, string $dns) {
+function connexionUtilisateur(string|int $identifiant, string|int $dns)
+{
     global $db;
-    
-    $sql = "SELECT *  
+
+    if ($dns == -1) {
+        $sql = "SELECT * 
+                FROM stagiaires WHERE pseudo_stagiaire=:identifiant;";
+        $req = $db->prepare($sql);
+        $req->bindValue(":identifiant", filter_var($identifiant, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->execute();
+        if ($req->rowCount() === 1) {
+            $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
+            $_SESSION['utilisateur']['id_formateur'] = -1;
+            $req->closeCursor();
+            return true;
+        }
+    } else {
+        $sql = "SELECT *  
             FROM formateurs WHERE (mail_formateur=:identifiant 
                                 OR code_entree_formateur=:identifiant 
-                                OR tmp_code_formateur=:identifiant)";
-    $sql .= ";";
-    
-    $req = $db->prepare($sql);
-    $req->bindValue(":identifiant", filter_var($identifiant.$dns, FILTER_VALIDATE_EMAIL));
-    $req->execute();
-    if($req->rowCount() === 1) {
-        $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
-        $req->closeCursor();
-        return true;
+                                OR tmp_code_formateur=:identifiant);";
+        $req = $db->prepare($sql);
+        $req->bindValue(":identifiant", filter_var($identifiant . $dns, FILTER_VALIDATE_EMAIL));
+        $req->execute();
+        if ($req->rowCount() === 1) {
+            $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
+            $_SESSION['utilisateur']['id_stagiaire'] = -1;
+            $_SESSION['utilisateur']['id_session'] = NULL;
+            $req->closeCursor();
+            return true;
+        }
     }
     return false;
 }

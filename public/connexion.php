@@ -28,9 +28,10 @@ $_SESSION['csrf_token'] = $csrfToken;
                     <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
                     <input type="hidden" name="form_login_csrf" value="<?= $csrfToken ?>">
                     <div>
-                        <label for="form_login_mail" class="text-white">Email</label>
-                        <input type="text" name="form_login_mail" placeholder="johndoe" autocomplete="off">
+                        <label for="form_login_username" class="text-white">Nom d'utilisateur</label>
+                        <input type="text" name="form_login_username" placeholder="johndoe" autocomplete="off">
                         <select name="form_login_dns">
+                            <option value="-1">Aucun DNS</option>
                             <option value="@adrar-formation.com">@adrar-formation.com</option>
                             <option value="@adrar-numerique.com">@adrar-numerique.com</option>
                         </select>

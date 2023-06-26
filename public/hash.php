@@ -1,4 +1,4 @@
 <?php 
-
-echo password_hash($_GET[0], PASSWORD_BCRYPT);
+var_dump($_GET["code"]);
+echo password_hash($_GET["code"], PASSWORD_BCRYPT);
 ?>

@@ -61,6 +61,11 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                     <nav>
                         <ul>
                             <li><a href="./"><i class="fa-solid fa-house fa-sm">&nbsp;</i><span>Accueil</span></a></li>
+                            <li><a href="#" id="nav-administration"><i class="fa-solid fa-hammer fa-sm">&nbsp;</i><span>Administration</span></a></li>
+                            <li><a href="#" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
+                            <li><a href="#" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
+                            <li><a href="#" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
+                            <li><a href="#" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
                         </ul>
                     </nav>
                 </div>
@@ -87,7 +92,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
             <div class="box-2">
                 <div class="box">
                     <div class="contenu">
-                        <h2>Ajouter un formateur</h2>
+                        <h2>Ajouter un référent</h2>
                     </div>
                 </div>
                 <div class="box">
@@ -155,11 +160,11 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                                     <h2>Formation</h2>
                                     <p>Petit module sur lequel vous pouvez rendre vos cours disponibles pour vos stagiaires et faire des quiz.</p>
                                 </div>
-                                <div class="module" id="module-stage">
+                                <div class="module" id="module-stages">
                                     <h2>Stage</h2>
                                     <p>Cette page reprend un tableau de suivi de stage filtrable avec la posibilité de télécharge le tableau et de lancer/relancer la demande de documents (pré-remplis et pré-signés) auprès du tuteur.</p>
                                 </div>
-                                <div class="module" id="module-titre">
+                                <div class="module" id="module-titres">
                                     <h2>Titre</h2>
                                     <p>Cette page vous permet de générer un document pour un stagiaire donné. Vous avez également la possibilité d'ajouter toutes les informations manuellement pour chaque document.</p>
                                 </div>

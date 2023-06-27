@@ -1,6 +1,11 @@
 <?php
 include_once __DIR__ . '/../src/m/connect.php';
 
+if(isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
+    header("Location: ?page=formation");
+    die;
+}
+
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
         $page = "notfound.html";

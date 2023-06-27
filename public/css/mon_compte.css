@@ -1,0 +1,20 @@
+.main .formulaire {
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+    height: 93vh;
+}
+
+.main .contenu .card-title div { 
+    display: flex;
+}
+.main .formulaire form div {
+    display: flex;
+    flex-direction: row;
+}
+.main .formulaire form div div {
+    display: flex;
+    flex-direction: column;
+}
+.main .formulaire form div div:not(:nth-of-type(0)) {
+    margin-right: 15px;
+}

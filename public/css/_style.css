@@ -45,6 +45,128 @@ form input[type="submit"] {
 
 /* Fin définition des polices */
 
+/* Définition style de base de la page */
+.container {
+    display: flex;
+}
+
+.sidenav {
+    height: 100%;
+    width: 14vw;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #C4C8DA;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.sidenav aside {
+    margin: 20px 15px 20px 20px;
+}
+
+.sidenav aside>div:nth-of-type(1),
+.sidenav aside nav {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.sidenav a {
+    padding: 15px 8px 6px 0;
+    text-decoration: none;
+    color: #000000;
+    display: block;
+}
+
+@media screen and (max-height: 450px) {
+    .sidenav {
+        padding-top: 15px;
+    }
+}
+
+.sidenav .separator {
+    border-color: #0000004D;
+}
+
+.sidenav nav a i::before {
+    background-color: var(--coul-secondaire);
+    font-size: 19px;
+    border-radius: 10px;
+    padding: 5px;
+    color: var(--coul-principale);
+}
+
+.sidenav nav a i span {
+    font-weight: lighter;
+}
+
+.sidenav aside div:nth-of-type(3) {
+    position: absolute;
+    bottom: 20em;
+}
+
+.sidenav aside div:nth-of-type(4) {
+    position: absolute;
+    bottom: 2em;
+}
+
+.main {
+    margin-left: 14vw;
+    /* Same as the width of the sidenav */
+    word-wrap: break-word;
+    max-width: calc(100vw - 14vw);
+    height: calc(100vh - 40px);
+    padding: 20px 60px;
+    background-color: #D9D9D9;
+    background-image: url('../img/logo_erp.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    flex-grow: 1;
+    overflow-y: auto;
+    gap: 20px;
+}
+
+@media screen and (max-width: 768px) {
+
+    /* Styles pour les écrans d'une largeur maximale de 768px (tablettes et smartphones) */
+    .container {
+        flex-direction: column;
+    }
+
+    .sidenav {
+        width: 15%;
+        overflow-y: auto;
+    }
+
+    .sidenav nav {
+        justify-content: center;
+    }
+
+    .sidenav h1,
+    .sidenav span {
+        display: none;
+    }
+
+    .main {
+        width: 90%;
+    }
+}
+
+.main .contenu {
+    padding: 1vw;
+}
+nav span {
+    color: #000000;
+}
+.main .contenu .card-title div input { 
+    position: absolute;
+    left: calc(100vw - 15em);
+}
+/* Fin définition style de base de la page */
+
 .hidden {
     display: none !important;
 }
@@ -87,14 +209,19 @@ form input[type="submit"] {
 }
 
 .btn {
-    border-radius: 15px;
+    border-radius: 5px;
     border-color: transparent;
-    padding: 10px;
+    padding: 7px;
     text-transform: uppercase;
 }
 
 .btn-primary {
     background-color: #6BCEE8;
+}
+
+.btn-success {
+    background-color: #21b700;
+    color: var(--coul-ternaire);
 }
 
 .text-white {
@@ -131,6 +258,7 @@ a:visited {
 .d-block {
     display: block;
 }
+
 .small-separator {
     width: 33%;
     border: 2px solid var(--coul-principale);

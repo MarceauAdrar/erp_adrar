@@ -74,7 +74,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                     <h2 class="d-block">Pages de comptes</h2>
                     <nav>
                         <ul>
-                            <li><a href="#"><i class="fa-solid fa-user fa-sm">&nbsp;</i><span>Mon compte</span></a></li>
+                            <li><a href="./mon-compte.php"><i class="fa-solid fa-user fa-sm">&nbsp;</i><span>Mon compte</span></a></li>
                             <li><a href="./deconnexion.php"><i class="fa-solid fa-arrow-right-from-bracket fa-sm">&nbsp;</i><span>Me déconnecter</span></a></li>
                         </ul>
                     </nav>

@@ -396,4 +396,19 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         );
     }
     header("Location: ../../public/code.php?type=".$resultat['type']."&message=".$resultat['message']);
+} elseif(isset($_POST['form_update_formateur']) && !empty($_POST['form_update_formateur'])) {
+    $req = $db->prepare("UPDATE formateurs 
+                        SET 
+                            nom_formateur=:nom_formateur, 
+                            prenom_formateur=:prenom_formateur, 
+                            mdp_formateur=:mdp_formateur, 
+                            carte_formateur_role=:carte_formateur_role, 
+                            carte_formateur_liens=:carte_formateur_liens, 
+                            carte_formateur_tel=:carte_formateur_tel, 
+                            carte_formateur_portable=:carte_formateur_portable 
+                        WHERE id_formateur=:id_formateur;");
+    $req->bindValue(':nom_formateur', filter_var($_POST['form_update_formateur_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':prenom_formateur', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':mdp_formateur', password_hash(filter_var($_POST['form_update_formateur_pass'], FILTER_SANITIZE_SPECIAL_CHARS), PASSWORD_BCRYPT));
+    $req->bindValue(':carte_formateur_role', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
 }

@@ -2,6 +2,14 @@
 
 include_once __DIR__ . '/../src/m/connect.php';
 
+$req = $db->prepare("SELECT * FROM formateurs WHERE id_formateur=:id_formateur;");
+$req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+$req->execute();
+$utilisateur = $req->fetch(PDO::FETCH_ASSOC);
+$req->closeCursor();
+
+$sites = $db->query("SELECT * FROM sites;")->fetchAll(PDO::FETCH_ASSOC);
+$secteurs = $db->query("SELECT * FROM secteurs;")->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -61,7 +69,7 @@ include_once __DIR__ . '/../src/m/connect.php';
                     <div class="card-title">
                         <div>
                             <h2>Mise à jour des informations</h2>
-                            <input type="submit" value="Mettre à jour" form="form_update_formateur" class="btn btn-success">
+                            <input type="submit" value="Mettre à jour" name="form_update_formateur" form="form_update_formateur" class="btn btn-success">
                         </div>
                         <hr class="small-separator">
                     </div>
@@ -70,23 +78,27 @@ include_once __DIR__ . '/../src/m/connect.php';
                             <div>
                                 <div>
                                     <label for="form_update_formateur_nom">NOM:</label>
-                                    <input type="text" name="form_update_formateur_nom">
+                                    <input type="text" name="form_update_formateur_nom" value="<?=$utilisateur['nom_formateur']?>">
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_prenom">Prénom:</label>
-                                    <input type="text" name="form_update_formateur_prenom">
+                                    <input type="text" name="form_update_formateur_prenom" value="<?=$utilisateur['prenom_formateur']?>">
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_mail">Mail (sans le nom de domaine):</label>
-                                    <input type="text" name="form_update_formateur_mail">
+                                    <input type="text" name="form_update_formateur_mail" value="<?=$utilisateur['mail_formateur']?>" disabled>
+                                </div>
+                                <div>
+                                    <label for="form_update_formateur_pass">Mot de passe:</label>
+                                    <input type="text" name="form_update_formateur_pass">
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_role">Rôle:</label>
-                                    <input type="text" name="form_update_formateur_role">
+                                    <input type="text" name="form_update_formateur_role" value="<?=$utilisateur['carte_formateur_role']?>">
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_liens">Liens:</label>
-                                    <input type="text" name="form_update_formateur_liens">
+                                    <input type="text" name="form_update_formateur_liens" value="<?=$utilisateur['carte_formateur_liens']?>">
                                 </div>
                             </div>
                             <div>
@@ -100,11 +112,19 @@ include_once __DIR__ . '/../src/m/connect.php';
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_site">Site:</label>
-                                    <select name="form_update_formateur_site"></select>
+                                    <select name="form_update_formateur_site">
+                                        <?php foreach($sites as $site) { ?>
+                                        <option value="<?=$site['id_site']?>"<?=($utilisateur['id_site'] == $site['id_site'] ? " selected" : "")?>><?=$site['libelle_site']?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_secteur">Secteur:</label>
-                                    <select name="form_update_formateur_secteur"></select>
+                                    <select name="form_update_formateur_secteur">
+                                        <?php foreach($secteurs as $secteur) { ?>
+                                        <option value="<?=$secteur['id_secteur']?>"<?=($utilisateur['id_secteur'] == $secteur['id_secteur'] ? " selected" : "")?>><?=$secteur['nom_secteur']?></option>
+                                        <?php } ?>
+                                    </select>
                                 </div>
                             </div>
                         </form>

@@ -17,6 +17,19 @@
     --st11: #000000;
 }
 
+.st0{fill:var(--st0);}
+.st1{fill:var(--st1);}
+.st2{fill:var(--st2);}
+.st3{fill:var(--st3);}
+.st4{fill:var(--st4);}
+.st5{fill:var(--st5);}
+.st6{fill:var(--st6);}
+.st7{fill:var(--st7);}
+.st8{fill:var(--st8);}
+.st9{fill:var(--st9);}
+.st10{fill:var(--st10);}
+.st11{fill:var(--st11);}
+
 html, body {
     height: calc(100% - 25px);
     margin: 0;

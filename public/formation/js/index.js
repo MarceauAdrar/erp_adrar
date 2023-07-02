@@ -29,7 +29,7 @@ function addCourse() {
         method: "post",
         data: {
             add_cours: 1, 
-            form_cours_title: form_cours_title, 
+            form_cours_module: $("#form_cours_module").val(), 
             form_cours_title: $("#form_cours_title").val(), 
             form_cours_synopsis: $("#form_cours_synopsis").val(), 
             form_cours_text: $("#form_cours_text").val(), 
@@ -38,10 +38,8 @@ function addCourse() {
             form_cours_active: $("#form_cours_active").is(":checked"), 
         }, 
         success: function(r) {
-            if(r == "ok") {
-                $("#modalCourse .modal-content").html("");
-                $("#modalCourse").modal("hide");
-            }
+            $("#modalCourse .modal-content").html("");
+            $("#modalCourse").modal("hide");
         }
     });
 }

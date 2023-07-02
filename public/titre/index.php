@@ -62,36 +62,36 @@ $formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fe
             <legend>Informations du fichier</legend>
             <span id="document_convention">
                 <div>
-                    <label for="nom_entreprise_attestation">Nom de l'entreprise:</label>
-                    <input type="text" name="nom_entreprise_attestation" id="nom_entreprise_attestation">
+                    <label for="nom_entreprise_convention">Nom de l'entreprise:</label>
+                    <input type="text" name="nom_entreprise_convention" id="nom_entreprise_convention">
                 </div>
                 <div>
-                    <label for="tel_entreprise_attestation">Téléphone de l'entreprise:</label>
-                    <input type="text" name="tel_entreprise_attestation" id="tel_entreprise_attestation">
+                    <label for="tel_entreprise_convention">Téléphone de l'entreprise:</label>
+                    <input type="text" name="tel_entreprise_convention" id="tel_entreprise_convention">
                 </div>
                 <div>
-                    <label for="fax_entreprise_attestation">Fax de l'entreprise:</label>
-                    <input type="text" name="fax_entreprise_attestation" id="fax_entreprise_attestation">
+                    <label for="fax_entreprise_convention">Fax de l'entreprise:</label>
+                    <input type="text" name="fax_entreprise_convention" id="fax_entreprise_convention">
                 </div>
                 <div>
-                    <label for="siret_entreprise_attestation">SIRET:</label>
-                    <input type="text" name="siret_entreprise_attestation" id="siret_entreprise_attestation">
+                    <label for="siret_entreprise_convention">SIRET:</label>
+                    <input type="text" name="siret_entreprise_convention" id="siret_entreprise_convention">
                 </div>
                 <div>
-                    <label for="effectif_entreprise_attestation">Effectif salarié:</label>
-                    <input type="number" name="effectif_entreprise_attestation" id="effectif_entreprise_attestation">
+                    <label for="effectif_entreprise_convention">Effectif salarié:</label>
+                    <input type="number" name="effectif_entreprise_convention" id="effectif_entreprise_convention">
                 </div>
                 <div>
-                    <label for="ape_entreprise_attestation">Code APE:</label>
-                    <input type="text" name="ape_entreprise_attestation" id="ape_entreprise_attestation">
+                    <label for="ape_entreprise_convention">Code APE:</label>
+                    <input type="text" name="ape_entreprise_convention" id="ape_entreprise_convention">
                 </div>
                 <div>
-                    <label for="representant_entreprise_attestation">Représentant (NOM Prénom):</label>
-                    <input type="text" name="representant_entreprise_attestation" id="representant_entreprise_attestation">
+                    <label for="representant_entreprise_convention">Représentant (NOM Prénom):</label>
+                    <input type="text" name="representant_entreprise_convention" id="representant_entreprise_convention">
                 </div>
                 <div>
-                    <label for="poste_representant_entreprise_attestation">Poste du représentant:</label>
-                    <input type="text" name="poste_representant_entreprise_attestation" id="poste_representant_entreprise_attestation">
+                    <label for="poste_representant_entreprise_convention">Poste du représentant:</label>
+                    <input type="text" name="poste_representant_entreprise_convention" id="poste_representant_entreprise_convention">
                 </div>
             </span>
             <span id="document_attestation">

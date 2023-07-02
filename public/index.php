@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../src/m/connect.php';
 
-if(isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
+if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
     header("Location: ?page=formation");
     die;
 }
@@ -23,6 +23,18 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
             case "titre":
                 $page = "titre/index.php";
                 break;
+            case "mon-compte":
+                $page = "mon-compte.php";
+                break;
+        }
+        if($_SESSION['utilisateur']['id_formateur'] > 0) {
+            $req = $db->prepare('REPLACE INTO historiques(id_formateur, page_visitee, page_nom, ip_visiteur, date_visite)
+                                VALUES(:id_formateur, :page_visitee, :page_nom, :ip_visiteur, NOW());');
+            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+            $req->bindValue(':page_visitee', '?page='.filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS));
+            $req->bindValue(':page_nom', ucfirst(filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS)));
+            $req->bindValue(':ip_visiteur', filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP));
+            $req->execute();
         }
         // } else {
         //     $page = "connexion.php";
@@ -74,7 +86,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                     <h2 class="d-block">Pages de comptes</h2>
                     <nav>
                         <ul>
-                            <li><a href="./mon-compte.php"><i class="fa-solid fa-user fa-sm">&nbsp;</i><span>Mon compte</span></a></li>
+                            <li><a href="./?page=mon-compte"><i class="fa-solid fa-user fa-sm">&nbsp;</i><span>Mon compte</span></a></li>
                             <li><a href="./deconnexion.php"><i class="fa-solid fa-arrow-right-from-bracket fa-sm">&nbsp;</i><span>Me déconnecter</span></a></li>
                         </ul>
                     </nav>
@@ -119,6 +131,21 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                             <hr class="small-separator">
                         </div>
                         <div class="card-content">
+                            <?php
+                            $req = $db->prepare('SELECT * FROM historiques WHERE id_formateur=:id_formateur ORDER BY date_visite DESC LIMIT 3;');
+                            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                            $req->execute();
+                            $historiques = $req->fetchAll(PDO::FETCH_ASSOC);
+                            $req->closeCursor();
+                            if (!empty($historiques)) {
+                                foreach ($historiques as $historique) { ?>
+                                    <p><a href="<?=$historique['page_visitee']?>"><?= $historique['page_nom'] ?></a></p>
+                                <?php
+                                }
+                            } else { ?>
+                                <p>Aucun historique disponible</p>
+                            <?php
+                            } ?>
                         </div>
                     </div>
                 </div>
@@ -219,7 +246,31 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
     </div>
     <script src="./js/index.js"></script>
     <script src="https://cdn.websitepolicies.io/lib/cconsent/cconsent.min.js" defer></script>
-    <script>window.addEventListener("load",function(){window.wpcb.init({"border":"thin","corners":"small","colors":{"popup":{"background":"#D9D9D9","text":"#000000","border":"#45BEEB"},"button":{"background":"#45BEEB","text":"#ffffff"}},"content":{"href":"<?=$_SERVER['REQUEST_SCHEME']."://".$_SERVER['SERVER_NAME']?>/erp/public/cookies.php","message":"Ce site utilise des cookies pour vous assurer une meilleure navigation. ","link":"En savoir plus","button":"Accepter"}})});</script>
+    <script>
+        window.addEventListener("load", function() {
+            window.wpcb.init({
+                "border": "thin",
+                "corners": "small",
+                "colors": {
+                    "popup": {
+                        "background": "#D9D9D9",
+                        "text": "#000000",
+                        "border": "#45BEEB"
+                    },
+                    "button": {
+                        "background": "#45BEEB",
+                        "text": "#ffffff"
+                    }
+                },
+                "content": {
+                    "href": "<?= $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] ?>/erp/public/cookies.php",
+                    "message": "Ce site utilise des cookies pour vous assurer une meilleure navigation. ",
+                    "link": "En savoir plus",
+                    "button": "Accepter"
+                }
+            })
+        });
+    </script>
 </body>
 
 </html>

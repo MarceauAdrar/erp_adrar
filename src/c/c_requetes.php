@@ -5,18 +5,18 @@ include_once __DIR__ . '/../m/connect.php';
 if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFormateurs'])) {
     $tbody_formateurs = '';
     $id_formateur = filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT);
-    
+
     foreach (recupererFormateurs() as $formateur) {
-        if($id_formateur == $formateur['id_formateur']) {
+        if ($id_formateur == $formateur['id_formateur']) {
             $choix_secteurs = "";
-            foreach(recupererSecteurs() as $secteur) {
-                $choix_secteurs .= '<option value="'. $secteur['id_secteur'] . '" ' . ($secteur['id_secteur'] == $formateur['id_secteur'] ? 'selected' : '') . '>' . $secteur['nom_secteur'] . '</option>';
+            foreach (recupererSecteurs() as $secteur) {
+                $choix_secteurs .= '<option value="' . $secteur['id_secteur'] . '" ' . ($secteur['id_secteur'] == $formateur['id_secteur'] ? 'selected' : '') . '>' . $secteur['nom_secteur'] . '</option>';
             }
             $tbody_formateurs .= '
             <tr>
-                <td><input type="text" name="form_formateur_editer_nom" value="' .  $formateur['nom_formateur'] .'"></td>
-                <td><input type="text" name="form_formateur_editer_prenom" value="' .  $formateur['prenom_formateur'] .'"></td>
-                <td><input type="text" name="form_formateur_editer_mail" value="' .  $formateur['mail_formateur'] .'"></td>
+                <td><input type="text" name="form_formateur_editer_nom" value="' .  $formateur['nom_formateur'] . '"></td>
+                <td><input type="text" name="form_formateur_editer_prenom" value="' .  $formateur['prenom_formateur'] . '"></td>
+                <td><input type="text" name="form_formateur_editer_mail" value="' .  $formateur['mail_formateur'] . '"></td>
                 <td>
                     <div>
                         <label>Téléverser ma signature: (png transparents uniquement)</label>
@@ -35,10 +35,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                         ' . $choix_secteurs . '
                     </select>
                 </td>
-                <td><input type="text" name="form_formateur_editer_role" value="' .  $formateur['carte_formateur_role'] .'"></td>
-                <td><textarea name="form_formateur_editer_liens">' .  $formateur['carte_formateur_liens'] .'</textarea></td>
-                <td><input type="text" name="form_formateur_editer_tel" value="' .  $formateur['carte_formateur_tel'] .'"></td>
-                <td><input type="text" name="form_formateur_editer_portable" value="' .  $formateur['carte_formateur_portable'] .'"></td>
+                <td><input type="text" name="form_formateur_editer_role" value="' .  $formateur['carte_formateur_role'] . '"></td>
+                <td><textarea name="form_formateur_editer_liens">' .  $formateur['carte_formateur_liens'] . '</textarea></td>
+                <td><input type="text" name="form_formateur_editer_tel" value="' .  $formateur['carte_formateur_tel'] . '"></td>
+                <td><input type="text" name="form_formateur_editer_portable" value="' .  $formateur['carte_formateur_portable'] . '"></td>
                 <td></td>
                 <td><a href="#" onclick="majFormateur(' . $formateur['id_formateur'] . ');">Mise à jour</a></td>
             </tr>';
@@ -48,7 +48,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td>' . strtoupper($formateur['nom_formateur']) . '</td>
                 <td>' . ucwords($formateur['prenom_formateur']) . '</td>
                 <td>' . $formateur['mail_formateur'] . '</td>
-                <td>' . (empty($formateur['signature_formateur']) ? 'Signature manquante':'<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur"/>') . '</td>
+                <td>' . (empty($formateur['signature_formateur']) ? 'Signature manquante' : '<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur"/>') . '</td>
                 <td>' . $formateur['nom_secteur'] . '</td>
                 <td>' . $formateur['carte_formateur_role'] . '</td>
                 <td>' . $formateur['carte_formateur_liens'] . '</td>
@@ -285,10 +285,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif (isset($_POST['form_formateurs_ajout']) && !empty($_POST['form_formateurs_ajout'])) {
     die(inscriptionFormateur($mailer, $_POST['form_formateurs_ajout_nom'], $_POST['form_formateurs_ajout_prenom'], $_POST['form_formateurs_ajout_mail'], $_POST['form_formateurs_ajout_role'], $_POST['form_formateurs_ajout_telephone'], $_POST['id_site'], $_POST['id_secteur']));
 } elseif (isset($_POST['form_formateur_editer']) && !empty($_POST['form_formateur_editer'])) {
-    if(!empty($_POST['signature'])) {
+    if (!empty($_POST['signature'])) {
         $uniqid = uniqid();
-        $fp = fopen("../v/formateurs/signature_" . $uniqid . ".png", "wb" );
-        fwrite($fp, base64_decode(explode(',', $_POST['signature'])[1])); 
+        $fp = fopen("../v/formateurs/signature_" . $uniqid . ".png", "wb");
+        fwrite($fp, base64_decode(explode(',', $_POST['signature'])[1]));
         fclose($fp);
     }
     $sql = 'UPDATE formateurs  
@@ -296,9 +296,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 nom_formateur=:nom_formateur, 
                 prenom_formateur=:prenom_formateur, 
                 mail_formateur=:mail_formateur, ';
-    if(!empty($_POST['signature'])) {
-        $sql .= ' signature_formateur=:signature_formateur, '; 
-
+    if (!empty($_POST['signature'])) {
+        $sql .= ' signature_formateur=:signature_formateur, ';
     }
     $sql .= '   id_secteur=:id_secteur, 
                 carte_formateur_role=:carte_formateur_role, 
@@ -310,7 +309,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req->bindValue(":nom_formateur", filter_var($_POST['nom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":prenom_formateur", filter_var($_POST['prenom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":mail_formateur", filter_var($_POST['mail_formateur'], FILTER_VALIDATE_EMAIL));
-    if(!empty($_POST['signature'])) {
+    if (!empty($_POST['signature'])) {
         $req->bindValue(":signature_formateur", 'v/formateurs/signature_' . $uniqid . '.png');
     }
     $req->bindValue(":id_secteur", filter_var($_POST['id_secteur'], FILTER_VALIDATE_INT));
@@ -327,11 +326,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
     die($req->execute());
 } elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
-    if($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
-        if(connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {
-            if(array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
+    if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
+        if (connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {
+            if (array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
                 $redirect = "../../public/index.php";
-            } elseif(array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
+            } elseif (array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
                 $redirect = "../../public/?page=formation";
             } else {
                 $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
@@ -345,12 +344,12 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_signup_csrf']) && !empty($_POST['form_signup_csrf'])) {
     unset($_SESSION['code_formateur']);
-    if($_SESSION['csrf_token'] === $_POST['form_signup_csrf'] && isset($_POST['form_signup_code']) && !empty($_POST['form_signup_code'])) {
+    if ($_SESSION['csrf_token'] === $_POST['form_signup_csrf'] && isset($_POST['form_signup_code']) && !empty($_POST['form_signup_code'])) {
         $code_formateur = filter_var($_POST['form_signup_code'], FILTER_VALIDATE_INT);
         $req = $db->prepare("SELECT * FROM formateurs WHERE (code_entree_formateur=:code_formateur OR tmp_code_formateur=:code_formateur) AND NOW() <= date_code_entree_formateur;");
         $req->bindValue(":code_formateur", $code_formateur);
         $req->execute();
-        if($req->rowCount()) {
+        if ($req->rowCount()) {
             $req->closeCursor();
             $_SESSION['code_formateur'] = $code_formateur;
             $redirect = "../../public/changer-mdp.php";
@@ -362,8 +361,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_change_pass_csrf']) && !empty($_POST['form_change_pass_csrf'])) {
-    if($_SESSION['csrf_token'] === $_POST['form_change_pass_csrf']) {
-        if(isset($_POST['form_change_pass']) && !empty($_POST['form_change_pass']) && isset($_POST['form_change_pass_bis']) && !empty($_POST['form_change_pass_bis']) && $_POST['form_change_pass'] === $_POST['form_change_pass_bis']) {
+    if ($_SESSION['csrf_token'] === $_POST['form_change_pass_csrf']) {
+        if (isset($_POST['form_change_pass']) && !empty($_POST['form_change_pass']) && isset($_POST['form_change_pass_bis']) && !empty($_POST['form_change_pass_bis']) && $_POST['form_change_pass'] === $_POST['form_change_pass_bis']) {
             $req = $db->prepare("UPDATE formateurs 
                                 SET 
                                     code_entree_formateur=NULL, 
@@ -372,7 +371,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                                 WHERE (code_entree_formateur=:code_formateur OR tmp_code_formateur=:code_formateur);");
             $req->bindValue(":mdp_formateur", password_hash(htmlspecialchars($_POST['form_change_pass']), PASSWORD_BCRYPT));
             $req->bindValue(":code_formateur", filter_var($_SESSION['code_formateur'], FILTER_VALIDATE_INT));
-            if($req->execute()) {
+            if ($req->execute()) {
                 $req->closeCursor();
                 $redirect = "../../public/connexion.php";
                 unset($_SESSION);
@@ -387,28 +386,91 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_forgotten_csrf']) && !empty($_POST['form_forgotten_csrf'])) {
-    if($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
+    if ($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
         $resultat = reinitialiserMotDePasse($mailer, $_POST['form_forgotten_mail']);
     } else {
         $resultat = array(
-            'type' => 'error', 
+            'type' => 'error',
             'message' => "Jeton incorrect"
         );
     }
-    header("Location: ../../public/code.php?type=".$resultat['type']."&message=".$resultat['message']);
-} elseif(isset($_POST['form_update_formateur']) && !empty($_POST['form_update_formateur'])) {
-    $req = $db->prepare("UPDATE formateurs 
-                        SET 
-                            nom_formateur=:nom_formateur, 
-                            prenom_formateur=:prenom_formateur, 
-                            mdp_formateur=:mdp_formateur, 
-                            carte_formateur_role=:carte_formateur_role, 
-                            carte_formateur_liens=:carte_formateur_liens, 
-                            carte_formateur_tel=:carte_formateur_tel, 
-                            carte_formateur_portable=:carte_formateur_portable 
-                        WHERE id_formateur=:id_formateur;");
-    $req->bindValue(':nom_formateur', filter_var($_POST['form_update_formateur_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(':prenom_formateur', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(':mdp_formateur', password_hash(filter_var($_POST['form_update_formateur_pass'], FILTER_SANITIZE_SPECIAL_CHARS), PASSWORD_BCRYPT));
-    $req->bindValue(':carte_formateur_role', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
+    header("Location: ../../public/code.php?type=" . $resultat['type'] . "&message=" . $resultat['message']);
+} elseif (isset($_POST['form_update_formateur']) && !empty($_POST['form_update_formateur'])) {
+    $type = "error";
+    $message = "";
+
+    if (isset($_POST['form_update_formateur_pass']) && !empty($_POST['form_update_formateur_pass'])) {
+        $password = trim(filter_var($_POST['form_update_formateur_pass'], FILTER_SANITIZE_SPECIAL_CHARS));
+    }
+    $liens = trim(filter_var($_POST['form_update_formateur_liens'], FILTER_SANITIZE_SPECIAL_CHARS));
+
+    $telephone = trim(filter_var($_POST['form_update_formateur_telephone'], FILTER_SANITIZE_SPECIAL_CHARS));
+    if (strlen($telephone) !== 10) {
+        $message = "<li>Le format du numéro de téléphone ne correspond pas</li>";
+    }
+    if (isset($_POST['form_update_formateur_portable']) && !empty($_POST['form_update_formateur_portable'])) {
+        $portable = trim(filter_var($_POST['form_update_formateur_portable'], FILTER_SANITIZE_SPECIAL_CHARS));
+        if (strlen($portable) !== 10) {
+            $message = "<li>Le format du numéro de portable ne correspond pas</li>";
+        }
+    }
+    if (!empty($_POST['form_update_formateur_signature'])) {
+        $uniqid = uniqid("v/formateurs/signature_") . ".png";
+        $fp = fopen("../" . $uniqid, "wb");
+        fwrite($fp, base64_decode(explode(',', $_POST['form_update_formateur_signature'])[1]));
+        fclose($fp);
+    }
+
+    if (empty($message)) {
+        $sql = "UPDATE formateurs 
+                SET 
+                    nom_formateur=:nom_formateur, 
+                    prenom_formateur=:prenom_formateur, ";
+        if (isset($password)) {
+            $sql .= "  mdp_formateur=:mdp_formateur, ";
+        }
+        $sql .= "       carte_formateur_role=:carte_formateur_role, ";
+        if (!empty($liens)) {
+            $sql .= "   carte_formateur_liens=:carte_formateur_liens, ";
+        } else {
+            $sql .= "   carte_formateur_liens = NULL, ";
+        }
+        $sql .= "   carte_formateur_tel=:carte_formateur_tel, ";
+        if (isset($portable)) {
+            $sql .= "   carte_formateur_portable=:carte_formateur_portable, ";
+        } else {
+            $sql .= "   carte_formateur_portable = NULL, ";
+        }
+        if (isset($uniqid)) {
+            $sql .= "   signature_formateur=:signature_formateur, ";
+        }
+        $sql .= "   id_site=:id_site, 
+                    id_secteur=:id_secteur 
+                WHERE id_formateur=:id_formateur;";
+        $req = $db->prepare($sql);
+        $req->bindValue(':nom_formateur', filter_var($_POST['form_update_formateur_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(':prenom_formateur', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
+        if(isset($password)) {
+            $req->bindValue(':mdp_formateur', password_hash($password, PASSWORD_BCRYPT));
+        }
+        $req->bindValue(':carte_formateur_role', filter_var($_POST['form_update_formateur_role'], FILTER_SANITIZE_SPECIAL_CHARS));
+        if (!empty($liens)) {
+            $req->bindValue(':carte_formateur_liens', $liens);
+        }
+        $req->bindValue(':carte_formateur_tel', $telephone);
+        if (isset($portable)) {
+            $req->bindValue(':carte_formateur_portable', $portable);
+        }
+        if (isset($uniqid)) {
+            $req->bindValue(':signature_formateur', $uniqid);
+        }
+        $req->bindValue(':id_site', filter_var($_POST['form_update_formateur_site'], FILTER_VALIDATE_INT));
+        $req->bindValue(':id_secteur', filter_var($_POST['form_update_formateur_secteur'], FILTER_VALIDATE_INT));
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->execute();
+        $req->closeCursor();
+        $type = "info";
+        $message = "Les informations du compte ont été mises à jour.";
+    }
+    header("Location: ../../public/mon-compte.php?type=" . $type . "&message=" . $message);
 }

@@ -72,16 +72,16 @@ include_once("./header.php"); ?>
                             ?>
                                 <tr>
                                     <td class="text-center"><?=$stagiaire["evaluation_id"]?></td>
-                                    <td>(<?=$stagiaire["stagiaire_id"]?>)&nbsp;<?=$stagiaire["stagiaire_first_name"]?> <?=$stagiaire["stagiaire_last_name"]?></td>
-                                    <td><a href="./achieved.php?module=html-css&tp=<?=$stagiaire["evaluation_id"]?>&stagiaire_username=<?=$stagiaire["stagiaire_username"]?>&stagiaire_id=<?=$stagiaire["stagiaire_id"]?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
+                                    <td>(<?=$stagiaire["id_stagiaire"]?>)&nbsp;<?=$stagiaire["nom_stagiaire"]?> <?=$stagiaire["prenom_stagiaire"]?></td>
+                                    <td><a href="./achieved.php?module=html-css&tp=<?=$stagiaire["evaluation_id"]?>&stagiaire_username=<?=$stagiaire["pseudo_stagiaire"]?>&stagiaire_id=<?=$stagiaire["id_stagiaire"]?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
                                     <td><?=(!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>')?></td>
-                                    <td><?=(!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" style="cursor: pointer;" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>')?></td>
+                                    <td><?=(!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" style="cursor: pointer;" onclick="validInternCorrection(' . $stagiaire["id_stagiaire"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>')?></td>
                                     <td class="text-center">
                                         <?php if(!empty($stagiaire["evaluation_errors_max"])) { ?>
-                                            <?=(!empty($stagiaire["stagiaire_evaluation_errors_found"]) ? '<i class="fa-solid fa-circle-minus" style="cursor: pointer; float: left; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'minus\');"></i>' : '')?>
-                                            <span id="errors_found_plus_one_<?=$stagiaire["evaluation_id"]?>_<?=$stagiaire["stagiaire_id"]?>" value="<?=intval($stagiaire["stagiaire_evaluation_errors_found"])?>"><?=$stagiaire["stagiaire_evaluation_errors_found"]?></span>
+                                            <?=(!empty($stagiaire["stagiaire_evaluation_errors_found"]) ? '<i class="fa-solid fa-circle-minus" style="cursor: pointer; float: left; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["id_stagiaire"] . ', ' . $stagiaire["evaluation_id"] . ', \'minus\');"></i>' : '')?>
+                                            <span id="errors_found_plus_one_<?=$stagiaire["evaluation_id"]?>_<?=$stagiaire["id_stagiaire"]?>" value="<?=intval($stagiaire["stagiaire_evaluation_errors_found"])?>"><?=$stagiaire["stagiaire_evaluation_errors_found"]?></span>
                                             /
-                                            <?=$stagiaire["evaluation_errors_max"]?><?=($stagiaire["stagiaire_evaluation_errors_found"] < $stagiaire["evaluation_errors_max"] ? '<i class="fa-solid fa-plus-circle" style="cursor: pointer; float: right; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');"></i>' : '')?>
+                                            <?=$stagiaire["evaluation_errors_max"]?><?=($stagiaire["stagiaire_evaluation_errors_found"] < $stagiaire["evaluation_errors_max"] ? '<i class="fa-solid fa-plus-circle" style="cursor: pointer; float: right; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["id_stagiaire"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');"></i>' : '')?>
                                         <?php } ?>
                                     </td>
                                     <td class="text-center"><?=(!empty($stagiaire["evaluation_errors_max"]) ? number_format(floatval($stagiaire["stagiaire_evaluation_errors_found"]/$stagiaire["evaluation_errors_max"])*100, 0) : "")?></td>
@@ -124,7 +124,7 @@ include_once("./header.php"); ?>
                             ?>
                                 <tr>
                                     <td class="text-center"><?=$stagiaire["evaluation_id"]?></td>
-                                    <td>(<?=$stagiaire["stagiaire_id"]?>)&nbsp;<?=$stagiaire["stagiaire_first_name"]?> <?=$stagiaire["stagiaire_last_name"]?></td>
+                                    <td>(<?=$stagiaire["stagiaire_id"]?>)&nbsp;<?=$stagiaire["nom_stagiaire"]?> <?=$stagiaire["prenom_stagiaire"]?></td>
                                     <td><a href="achieved.php?module=bootstrap&tp=<?=$stagiaire["evaluation_id"]?>&stagiaire_username=<?=$stagiaire["stagiaire_username"]?>&stagiaire_id=<?=$stagiaire["stagiaire_id"]?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
                                     <td><?=(!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>')?></td>
                                     <td><?=(!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>')?></td>
@@ -157,6 +157,10 @@ include_once("./header.php"); ?>
             <div class="modal-body">
                 <form action="../src/requests.php" method="post">
                     <div class="mb-3">
+                        <label for="form_cours_module" class="form-label">Nom du module:</label>
+                        <input type="text" class="form-control" name="form_cours_module" id="form_cours_module" placeholder="html">
+                    </div>
+                    <div class="mb-3">
                         <label for="form_cours_title" class="form-label">Titre du cours:</label>
                         <input type="text" class="form-control" name="form_cours_title" id="form_cours_title" placeholder="HTML...">
                     </div>
@@ -173,8 +177,8 @@ include_once("./header.php"); ?>
                         <input type="text" class="form-control" name="form_cours_keywords" id="form_cours_keywords" placeholder="...">
                     </div>
                     <div class="mb-3">
-                        <label for="form_cours_link" class="form-label">Lien du cours:</label>
-                        <input type="text" class="form-control" name="form_cours_link" id="form_cours_link" placeholder="https://...">
+                        <label for="form_cours_link" class="form-label">Lien de l'intégration du cours:</label>
+                        <input type="text" class="form-control" name="form_cours_link" id="form_cours_link" placeholder="2PACX-...">
                     </div>
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" id="form_cours_active">
@@ -198,6 +202,22 @@ include_once("./header.php"); ?>
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalManagecoursTitle">Gérer les cours</h5>
+                &nbsp;
+                <select name="form_session_cours" onchange="showModalManagecours();">
+                    <option value="0">Toutes mes sessions</option>
+                    <?php 
+                        $sql = "SELECT * 
+                                FROM sessions 
+                                WHERE id_formateur=:id_formateur
+                                ORDER BY nom_session;";
+                        $req = $db->prepare($sql);
+                        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                        $req->execute();
+                        $sessions_formateur = $req->fetchAll(PDO::FETCH_ASSOC);
+                        foreach($sessions_formateur as $session) { ?>
+                            <option value="<?=$session['id_session']?>"><?=$session['nom_session']?></option>
+                    <?php } ?>
+                </select>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -216,7 +236,7 @@ include_once("./js.php"); ?>
         if(operation === 'plus') errors_found++;
 
         $.ajax({
-            url: "../src/requests.php", 
+            url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
             method: "post",
             data: {
                 valid_stagiaire_correction: 1,
@@ -233,10 +253,11 @@ include_once("./js.php"); ?>
 
     function showModalManagecours() {
         $.ajax({
-            url: "../src/requests.php", 
+            url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
             method: "post",
             data: {
-                show_modal_manage_cours: 1 
+                show_modal_manage_cours: 1, 
+                id_session: document.querySelector('select[name="form_session_cours"]').value
             }, 
             success: function(r) {
                 $("#modalManagecours .modal-content .modal-body").html(r);
@@ -244,15 +265,16 @@ include_once("./js.php"); ?>
         });
     }
 
-    function updateStatusCourse(cours_id) {
-        var cours_active = ($("#cours_" + cours_id + " span").hasClass("cours-active") ? 0 : 1);
+    function updateStatusCourse(cours_id, id_session) {
+        var cours_active = ($("#cours_" + cours_id + "_" + id_session + " span").hasClass("cours-active") ? 0 : 1);
 
         $.ajax({
-            url: "../src/requests.php", 
+            url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
             method: "post",
             data: {
                 update_status_cours: 1, 
                 cours_id: cours_id, 
+                id_session: id_session, 
                 cours_active: cours_active
             }, 
             success: function(r) {

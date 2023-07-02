@@ -1,7 +1,7 @@
 <?php 
 include_once("../../src/m/connect.php");
 // TODO: remove this redirection
-header("Location: ./index.php");
+// header("Location: ./index.php");
 
 if (!empty($_SESSION["utilisateur"]["id_stagiaire"]) && isset($_SESSION["utilisateur"]["id_stagiaire"]) && !isset($_GET["token"])) {
     header("Location: ./index.php");
@@ -23,10 +23,10 @@ $tp = 0;
 $bHtml = 0;
 $bCss = 0;
 if($req_check_token->rowCount() > 0) {
-    $data = array('stagiaire_username' => $_SESSION["stagiaire"]["stagiaire_username"]);
+    $data = array('stagiaire_username' => $_SESSION["utilisateur"]["pseudo_stagiaire"]);
     $postdata = http_build_query(
         array(
-            'stagiaire_username' => $_SESSION["stagiaire"]["stagiaire_username"]
+            'stagiaire_username' => $_SESSION["utilisateur"]["pseudo_stagiaire"]
         )
     );
     
@@ -39,8 +39,8 @@ if($req_check_token->rowCount() > 0) {
     );
     
     $context  = stream_context_create($opts);
-    $link_template_html = "../modules/html-css/templates";
-    $link_stagiaire_html = "../public/stagiaires/" . $_SESSION["stagiaire"]["stagiaire_username"]."/html-css";
+    $link_template_html = "./modules/html-css/templates";
+    $link_stagiaire_html = "./stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"]."/html-css";
     if(!is_dir($link_stagiaire_html)) {
         if(!mkdir($link_stagiaire_html, 0664, true)) {
             die("Erreur lors de la création de l'arborescence");
@@ -57,7 +57,7 @@ if($req_check_token->rowCount() > 0) {
             $bCss = 0;
             $file = "tp1.html";
 
-            $html = file_get_contents("../modules/html-css/tp1.php", false, $context);
+            $html = file_get_contents("./modules/html-css/tp1.php", false, $context);
             break;
         case 2:
             $tp = 2;
@@ -67,7 +67,7 @@ if($req_check_token->rowCount() > 0) {
             $bCss = 0;
             $file = "tp2.html";
             
-            $html = file_get_contents("../modules/html-css/tp2.php", false, $context);
+            $html = file_get_contents("./modules/html-css/tp2.php", false, $context);
             break;
         case 3:
             $tp = 3;
@@ -82,7 +82,7 @@ if($req_check_token->rowCount() > 0) {
                 touch($link_stagiaire_html."/tp3.css");
             }
 
-            $html = file_get_contents("../modules/html-css/tp3.php", false, $context);
+            $html = file_get_contents("./modules/html-css/tp3.php", false, $context);
             break;
         case 4:
             $tp = 4;
@@ -97,7 +97,7 @@ if($req_check_token->rowCount() > 0) {
                 touch($link_stagiaire_html."/tp4.css");
             }
 
-            $html = file_get_contents("../modules/html-css/tp4.php", false, $context);
+            $html = file_get_contents("./modules/html-css/tp4.php", false, $context);
             break;
         case 5:
             $tp = 5;
@@ -130,7 +130,7 @@ if($req_check_token->rowCount() > 0) {
                             </div>
                         </div>
                         <div class="col-12" id="box_preview">
-                            <iframe id="web_preview_full" src="http://' . $_SERVER["SERVER_ADDR"] . '/eval/public/stagiaires/' . $_SESSION["stagiaire"]["stagiaire_username"] . '/html-css/rando_nuit/index.html" frameborder="0"></iframe>
+                            <iframe id="web_preview_full" src="http://' . $_SERVER["SERVER_ADDR"] . '/erp/public/formation/stagiaires/' . $_SESSION["stagiaire"]["pseudo_stagiaire"] . '/html-css/rando_nuit/index.html" frameborder="0"></iframe>
                         </div>
                     </div>
                 </div>';
@@ -140,7 +140,7 @@ if($req_check_token->rowCount() > 0) {
             $title = " | Erreur - Page introuvable";
             $html = file_get_contents("./error404.php");
     }
-    if(!empty($file) && !file_exists($link_stagiaire_html."/".$file)) {
+    if(!empty($file) && !file_exists($link_stagiaire_html."/".$file) && isset($link_template_html)) {
         copy($link_template_html."/".$file, $link_stagiaire_html."/".$file);
     }
 } else {

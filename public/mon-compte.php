@@ -75,56 +75,72 @@ $secteurs = $db->query("SELECT * FROM secteurs;")->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                     <div class="card-content">
                         <form action="../src/c/c_requetes.php" method="post" id="form_update_formateur">
+                            <div class="<?= (isset($_GET['type']) ? "" : "hidden") ?><?= (isset($_GET['type']) && $_GET['type'] == "info" ? "alert-info" : "alert-danger") ?>"><?= @$_GET['message'] ?></div>
                             <div>
                                 <div>
-                                    <label for="form_update_formateur_nom">NOM:</label>
-                                    <input type="text" name="form_update_formateur_nom" value="<?=$utilisateur['nom_formateur']?>">
+                                    <label for="form_update_formateur_nom">NOM:*</label>
+                                    <input type="text" name="form_update_formateur_nom" value="<?= $utilisateur['nom_formateur'] ?>">
                                 </div>
                                 <div>
-                                    <label for="form_update_formateur_prenom">Prénom:</label>
-                                    <input type="text" name="form_update_formateur_prenom" value="<?=$utilisateur['prenom_formateur']?>">
+                                    <label for="form_update_formateur_prenom">Prénom:*</label>
+                                    <input type="text" name="form_update_formateur_prenom" value="<?= $utilisateur['prenom_formateur'] ?>">
                                 </div>
                                 <div>
-                                    <label for="form_update_formateur_mail">Mail (sans le nom de domaine):</label>
-                                    <input type="text" name="form_update_formateur_mail" value="<?=$utilisateur['mail_formateur']?>" disabled>
+                                    <label for="form_update_formateur_mail">Mail (sans le nom de domaine):*</label>
+                                    <input type="text" name="form_update_formateur_mail" value="<?= $utilisateur['mail_formateur'] ?>" disabled>
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_pass">Mot de passe:</label>
-                                    <input type="text" name="form_update_formateur_pass">
+                                    <input type="password" autocomplete="new-password" name="form_update_formateur_pass">
                                 </div>
                                 <div>
-                                    <label for="form_update_formateur_role">Rôle:</label>
-                                    <input type="text" name="form_update_formateur_role" value="<?=$utilisateur['carte_formateur_role']?>">
+                                    <label for="form_update_formateur_role">Rôle:*</label>
+                                    <input type="text" name="form_update_formateur_role" value="<?= $utilisateur['carte_formateur_role'] ?>">
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_liens">Liens:</label>
-                                    <input type="text" name="form_update_formateur_liens" value="<?=$utilisateur['carte_formateur_liens']?>">
+                                    <input type="text" name="form_update_formateur_liens" value="<?= $utilisateur['carte_formateur_liens'] ?>">
                                 </div>
                             </div>
                             <div>
                                 <div>
-                                    <label for="form_update_formateur_telephone">Téléphone:</label>
-                                    <input type="text" name="form_update_formateur_telephone">
+                                    <label for="form_update_formateur_telephone">Téléphone:*</label>
+                                    <input type="text" name="form_update_formateur_telephone" value="<?= $utilisateur['carte_formateur_tel'] ?>">
                                 </div>
                                 <div>
                                     <label for="form_update_formateur_portable">Portable:</label>
-                                    <input type="text" name="form_update_formateur_portable">
+                                    <input type="text" name="form_update_formateur_portable" value="<?= $utilisateur['carte_formateur_portable'] ?>">
                                 </div>
                                 <div>
-                                    <label for="form_update_formateur_site">Site:</label>
+                                    <label for="form_update_formateur_site">Site:*</label>
                                     <select name="form_update_formateur_site">
-                                        <?php foreach($sites as $site) { ?>
-                                        <option value="<?=$site['id_site']?>"<?=($utilisateur['id_site'] == $site['id_site'] ? " selected" : "")?>><?=$site['libelle_site']?></option>
+                                        <?php foreach ($sites as $site) { ?>
+                                            <option value="<?= $site['id_site'] ?>" <?= ($utilisateur['id_site'] == $site['id_site'] ? " selected" : "") ?>><?= $site['libelle_site'] ?></option>
                                         <?php } ?>
                                     </select>
                                 </div>
                                 <div>
-                                    <label for="form_update_formateur_secteur">Secteur:</label>
+                                    <label for="form_update_formateur_secteur">Secteur:*</label>
                                     <select name="form_update_formateur_secteur">
-                                        <?php foreach($secteurs as $secteur) { ?>
-                                        <option value="<?=$secteur['id_secteur']?>"<?=($utilisateur['id_secteur'] == $secteur['id_secteur'] ? " selected" : "")?>><?=$secteur['nom_secteur']?></option>
+                                        <?php foreach ($secteurs as $secteur) { ?>
+                                            <option value="<?= $secteur['id_secteur'] ?>" <?= ($utilisateur['id_secteur'] == $secteur['id_secteur'] ? " selected" : "") ?>><?= $secteur['nom_secteur'] ?></option>
                                         <?php } ?>
                                     </select>
+                                </div>
+                            </div>
+                            <div>
+                                <div>
+                                    <label for="form_update_formateur_signature">Signature:</label>
+                                    <input type="hidden" name="form_update_formateur_signature">
+                                    <canvas class="box-signature" id="signature-pad" width="400" height="200"></canvas>
+                                    <span>
+                                        <button id="approve-signature" type="button">Approuver</button>
+                                        <button id="clear-signature" type="button">Effacer</button>
+                                    </span>
+                                </div>
+                                <div>
+                                    <label>Signature actuelle:</label>
+                                    <img class="box-signature" src="../src/<?= $utilisateur['signature_formateur'] ?>" alt="Signature du formateur" width="250" height="125">
                                 </div>
                             </div>
                         </form>
@@ -133,6 +149,9 @@ $secteurs = $db->query("SELECT * FROM secteurs;")->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
     </div>
+    <script src="//cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+    <script src="js/index.js"></script>
+    <script src="js/mon-compte.js"></script>
 </body>
 
 </html>

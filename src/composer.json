@@ -5,5 +5,8 @@
         "tecnickcom/tcpdf": "^6.6",
         "phpoffice/phpspreadsheet": "^1.28",
         "zenorocha/clipboardjs": "^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.2"
     }
 }

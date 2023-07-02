@@ -18,3 +18,9 @@
 .main .formulaire form div div:not(:nth-of-type(0)) {
     margin-right: 15px;
 }
+
+.box-signature {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}

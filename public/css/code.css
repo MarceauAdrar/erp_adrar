@@ -39,6 +39,6 @@ form>div:nth-of-type(2) {
     position: absolute;
     width: 40em;
     height: 25em;
-    right: 35em;
+    right: 60em;
     transform: rotate(180deg);
 }

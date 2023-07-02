@@ -387,7 +387,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_forgotten_csrf']) && !empty($_POST['form_forgotten_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
-        $resultat = reinitialiserMotDePasse($mailer, $_POST['form_forgotten_mail']);
+        $resultat = reinitialiserMotDePasseFormateur($mailer, $_POST['form_forgotten_mail']);
     } else {
         $resultat = array(
             'type' => 'error',
@@ -472,5 +472,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $type = "info";
         $message = "Les informations du compte ont été mises à jour.";
     }
-    header("Location: ../../public/mon-compte.php?type=" . $type . "&message=" . $message);
+    header("Location: ../../public/index.php?page=mon-compte&type=" . $type . "&message=" . $message);
+} elseif (isset($_POST['form_add_formateur']) && !empty($_POST['form_add_formateur'])) {
+    $resultat = json_decode(inscriptionFormateur($mailer, $_POST['form_add_formateur_nom'], $_POST['form_add_formateur_prenom'], $_POST['form_add_formateur_mail']."@adrar-formation.com", $_POST['form_add_formateur_role'], $_POST['form_add_formateur_telephone'], $_POST['form_add_formateur_site'], $_POST['form_add_formateur_secteur']), true);
+    header("Location: ../../public/index.php?page=ajouter_referent&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
+} elseif (isset($_POST['form_add_stagiaire']) && !empty($_POST['form_add_stagiaire'])) {
+    $resultat = json_decode(inscriptionStagiaire($mailer, $_POST['form_add_stagiaire_nom'], $_POST['form_add_stagiaire_prenom'], $_POST['form_add_stagiaire_mail'], $_POST['form_add_stagiaire_pseudo'], $_POST['form_add_stagiaire_telephone'], $_POST['form_add_stagiaire_date_naissance'], $_POST['form_add_stagiaire_session'], empty($_POST['form_add_stagiaire_stage']) ? null : $_POST['form_add_stagiaire_stage']), true);
+    header("Location: ../../public/index.php?page=ajouter_stagiaire&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
 }

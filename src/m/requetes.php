@@ -53,13 +53,21 @@ function recupererStagiaires()
     return $stagiaires;
 }
 
-function recupererSessions()
+function recupererSessions($id_formateur = 0)
 {
     global $db;
 
-    $req = $db->prepare("SELECT *
-                        FROM sessions
-                        LEFT JOIN formateurs ON formateurs.id_formateur = sessions.id_formateur;");
+    $sql = "SELECT *
+            FROM sessions
+            LEFT JOIN formateurs ON formateurs.id_formateur = sessions.id_formateur 
+            WHERE 1 ";
+    if (!empty($id_formateur)) {
+        $sql .= " AND sessions.id_formateur=:id_formateur ";
+    }
+    $req = $db->prepare($sql);
+    if (!empty($id_formateur)) {
+        $req->bindValue(':id_formateur', filter_var($id_formateur, FILTER_VALIDATE_INT));
+    }
     $req->execute();
     $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
     return $sessions;
@@ -274,7 +282,7 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
  * @param string    $tel Le téléphone du formateur (commençant par 05, cf. Wildix).
  * @param int       $site L'identifiant du site du formateur, cf. table **sites**.
  * @param int       $secteur L'identifiant du secteur du formateur, cf. table **secteurs**.
- * @return json  Un JSON avec deux index `boolean success` et `string message`.
+ * @return string   Un JSON avec deux index `boolean success` et `string message`.
  */
 function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, string $mail, string $role, string $tel, int $site, int $secteur)
 {
@@ -309,7 +317,7 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
             $message = strtr($message, array(
                 '{{PRENOM_FORMATEUR}}' => ucwords($prenom),
                 '{{CODE_ENTREE_FORMATEUR}}' => $code_entree_formateur,
-                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/inscription.php?code=" . $code_entree_formateur
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $code_entree_formateur
             ));
             $mailer->Subject = '[ERP] Code UNIQUE formateur';
             $mailer->Body    = $message;
@@ -345,6 +353,95 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
 }
 
 /**
+ * Permet d'enregistrer un stagiaire dans la table **stagiaires**.
+ *
+ *
+ * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
+ * @param string    $nom Le nom du stagiaire.
+ * @param string    $prenom Le prénom du stagiaire.
+ * @param string    $mail Le mail du stagiaire.
+ * @param string    $pseudo Le pseudo du stagiaire.
+ * @param string    $tel Le téléphone du stagiaire.
+ * @param string    $date_anniversaire La date d'anniversaire du stagiaire (format libre).
+ * @param int       $id_session L'identifiant de la session du stagiaire, cf. table **sessions**.
+ * @param int|null  $id_stage L'identifiant du stage en entreprise du stagiaire, cf. table **stages**.
+ * @return string   Un JSON avec deux index `boolean success` et `string message`.
+ */
+function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, string $mail, string $pseudo, string $tel, string $date_anniversaire, int $id_session, int $id_stage = null)
+{
+    global $db;
+
+    $mail_stagiaire = filter_var($mail, FILTER_VALIDATE_EMAIL);
+
+    $req = $db->prepare("SELECT id_stagiaire FROM stagiaires WHERE mail_stagiaire=:mail_stagiaire;");
+    $req->bindValue(":mail_stagiaire", $mail_stagiaire);
+    $req->execute();
+    if ($req->rowCount() === 0) { // Si le mail du stagiaire n'existe pas encore
+        $req->closeCursor();
+
+        $nom_stagiaire = filter_var($nom, FILTER_SANITIZE_SPECIAL_CHARS);
+        $prenom_stagiaire = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
+        $mdp_stagiaire = readable_random_string(10);
+
+        $req = $db->prepare("INSERT INTO stagiaires(nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, mdp_stagiaire, mdp_decode_stagiaire, tel_stagiaire, date_naissance_stagiaire, lien_serveur, id_session".(isset($id_stage) ? ", id_stage" : "").") 
+                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :lien_serveur, :id_session".(isset($id_stage) ? ", :id_stage" : "").");");
+        $req->bindValue(":nom_stagiaire", $nom_stagiaire);
+        $req->bindValue(":prenom_stagiaire", $prenom_stagiaire);
+        $req->bindValue(":mail_stagiaire", $mail_stagiaire);
+        $req->bindValue(":pseudo_stagiaire", filter_var($pseudo, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":mdp_stagiaire", password_hash(filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS), PASSWORD_BCRYPT));
+        $req->bindValue(":mdp_decode_stagiaire", filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":tel_stagiaire", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":date_naissance_stagiaire", filter_var($date_anniversaire, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":lien_serveur", filter_var("lien/vers/serveur/T", FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":id_session", filter_var($id_session, FILTER_VALIDATE_INT));
+        if(isset($id_stage)) {
+            $req->bindValue(":id_stage", filter_var($id_stage, FILTER_VALIDATE_INT));
+        }
+        if ($req->execute()) {
+            $req->closeCursor();
+
+            $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_STAGIAIRE.html');
+            $message = strtr($message, array(
+                '{{PRENOM_STAGIAIRE}}' => ucwords($prenom),
+                '{{LOGIN_STAGIAIRE}}' => $pseudo,
+                '{{MDP_STAGIAIRE}}' => $mdp_stagiaire,
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/connexion.php"
+            ));
+            $mailer->Subject = '[ERP] - ADRAR - Votre session stagiaire';
+            $mailer->Body    = $message;
+            $mailer->AltBody = strip_tags($message);
+            $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            if (DEV) {
+                $mailer->addAddress('marceau0707@gmail.com', $mail_stagiaire . " - " . $prenom_stagiaire . " " . $nom_stagiaire);
+            } else {
+                $mailer->addAddress($mail_stagiaire, $prenom_stagiaire . " " . $nom_stagiaire);
+                $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            }
+            $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            try {
+                $mailer->send();
+                $success = true;
+                $message = "Email envoyé.";
+            } catch (Exception $e) {
+                $success = false;
+                $message = "Erreur: " . $e->getMessage();
+            }
+        } else {
+            $success = false;
+            $message = "Une erreur s'est produite, veuillez réessayer.";
+        }
+    } else {
+        $success = false;
+        $message = "Cette adresse mail est déjà utilisée par un autre stagiaire.";
+    }
+    return json_encode(array(
+        'success' => $success,
+        'message' => $message
+    ));
+}
+
+/**
  * Permet de réinitialiser le mot de passe d'un formateur dans la table **formateurs**.
  *
  *
@@ -352,7 +449,7 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
  * @param string    $mail L'identifiant du formateur.
  * @return array    Un tableau avec deux index `string type` et `string message`.
  */
-function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
+function reinitialiserMotDePasseFormateur(PHPMailer $mailer, string $mail)
 {
     global $db;
 
@@ -457,4 +554,32 @@ function connexionUtilisateur(string|int $identifiant, string|int $dns)
         }
     }
     return false;
+}
+
+/**
+ * Generates human-readable string.
+ * 
+ * @param string $length Desired length of random string.
+ * @credits sepehr readable_random_string.php
+ * 
+ * @return string Random string.
+ */ 
+function readable_random_string($length = 6)
+{  
+    $string = '';
+    $vowels = array("a","e","i","o","u");  
+    $consonants = array(
+        'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 
+        'n', 'p', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'
+    );  
+
+    $max = $length / 2;
+    for ($i = 1; $i <= $max; $i++)
+    {
+        $string .= $consonants[rand(0,19)];
+        $string .= $vowels[rand(0,4)];
+        $string .= '-';
+    }
+
+    return $string;
 }

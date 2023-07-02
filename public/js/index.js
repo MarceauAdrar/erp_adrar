@@ -9,3 +9,9 @@ document.querySelector('#module-stages').addEventListener('click', () => { windo
 
 document.querySelector('#nav-titres').addEventListener('click', () => { window.location.href = '?page=titre'; });
 document.querySelector('#module-titres').addEventListener('click', () => { window.location.href = '?page=titre'; });
+
+document.querySelector("input[name='search']").addEventListener('keyup', function (e) {
+    if (e.keyCode === 13) {
+        window.location.href = 'search.php?q=' + this.value;
+    }
+});

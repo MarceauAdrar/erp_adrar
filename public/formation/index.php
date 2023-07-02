@@ -1,9 +1,25 @@
 <?php
 include_once("../src/m/connect.php");
 
-$req = $db->prepare("SELECT * FROM cours GROUP BY cours_category ORDER BY cours_category;");
-$req->execute();
-$modules = $req->fetchAll(PDO::FETCH_ASSOC);
+if($_SESSION['utilisateur']['id_formateur'] > 0) {
+    $req = $db->prepare("SELECT * 
+                        FROM cours 
+                        WHERE id_secteur=:id_secteur  
+                        GROUP BY cours_category 
+                        ORDER BY cours_category;");
+    $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    $req->execute();
+    $modules = $req->fetchAll(PDO::FETCH_ASSOC);
+} else {
+    $req = $db->prepare("SELECT * 
+                        FROM cours 
+                        JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session AND cours_session_active = 1) 
+                        GROUP BY cours_category 
+                        ORDER BY cours_category;");
+    $req->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
+    $req->execute();
+    $modules = $req->fetchAll(PDO::FETCH_ASSOC);
+}
 
 $title = " | Accueil";
 

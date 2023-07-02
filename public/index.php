@@ -24,14 +24,23 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                 $page = "titre/index.php";
                 break;
             case "mon-compte":
-                $page = "mon-compte.php";
+                $_GET['form'] = "mon-compte";
+                $page = "formulaire.php";
+                break;
+            case "ajouter_referent":
+                $_GET['form'] = "ajouter_referent";
+                $page = "formulaire.php";
+                break;
+            case "ajouter_stagiaire":
+                $_GET['form'] = "ajouter_stagiaire";
+                $page = "formulaire.php";
                 break;
         }
-        if($_SESSION['utilisateur']['id_formateur'] > 0) {
+        if ($_SESSION['utilisateur']['id_formateur'] > 0 && $page !== "notfound.html") {
             $req = $db->prepare('REPLACE INTO historiques(id_formateur, page_visitee, page_nom, ip_visiteur, date_visite)
                                 VALUES(:id_formateur, :page_visitee, :page_nom, :ip_visiteur, NOW());');
             $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
-            $req->bindValue(':page_visitee', '?page='.filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS));
+            $req->bindValue(':page_visitee', '?page=' . filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS));
             $req->bindValue(':page_nom', ucfirst(filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS)));
             $req->bindValue(':ip_visiteur', filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP));
             $req->execute();
@@ -63,39 +72,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
 <body>
     <div class="container">
         <div class="sidenav">
-            <aside>
-                <div>
-                    <img src="./img/logo_adrar.png" alt="Logo de l'ADRAR" style="width: 3em;">
-                    &nbsp;<h1>erp adrar</h1>
-                </div>
-                <div>
-                    <hr class="separator">
-                    <nav>
-                        <ul>
-                            <li><a href="./"><i class="fa-solid fa-house fa-sm">&nbsp;</i><span>Accueil</span></a></li>
-                            <li><a href="#" id="nav-administration"><i class="fa-solid fa-hammer fa-sm">&nbsp;</i><span>Administration</span></a></li>
-                            <li><a href="#" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
-                            <li><a href="#" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
-                            <li><a href="#" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
-                            <li><a href="#" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div>
-                    <hr class="separator">
-                    <h2 class="d-block">Pages de comptes</h2>
-                    <nav>
-                        <ul>
-                            <li><a href="./?page=mon-compte"><i class="fa-solid fa-user fa-sm">&nbsp;</i><span>Mon compte</span></a></li>
-                            <li><a href="./deconnexion.php"><i class="fa-solid fa-arrow-right-from-bracket fa-sm">&nbsp;</i><span>Me déconnecter</span></a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div>
-                    <small>&copy; ADRAR - Fait par Marceau RODRIGUES</small>
-                </div>
-            </aside>
-
+            <?= file_get_contents('sidenav.php') ?>
         </div>
         <div class="main">
             <div class="box-1">
@@ -103,24 +80,32 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
             </div>
             <div class="box-2">
                 <div class="box">
-                    <div class="contenu">
-                        <h2>Ajouter un référent</h2>
-                    </div>
+                    <a href="index.php?page=ajouter_referent">
+                        <div class="contenu">
+                            <h2>Ajouter un référent</h2>
+                        </div>
+                    </a>
                 </div>
                 <div class="box">
-                    <div class="contenu">
-                        <h2>Ajouter un stagiaire</h2>
-                    </div>
+                    <a href="index.php?page=ajouter_stagiaire">
+                        <div class="contenu">
+                            <h2>Ajouter un stagiaire</h2>
+                        </div>
+                    </a>
                 </div>
                 <div class="box">
-                    <div class="contenu">
-                        <h2>Ajouter un tuteur</h2>
-                    </div>
+                    <a href="index.php?page=ajouter_tuteur">
+                        <div class="contenu">
+                            <h2>Ajouter un tuteur</h2>
+                        </div>
+                    </a>
                 </div>
                 <div class="box">
-                    <div class="contenu">
-                        <h2>Ajouter un document</h2>
-                    </div>
+                    <a href="index.php?page=ajouter_document">
+                        <div class="contenu">
+                            <h2>Ajouter un document</h2>
+                        </div>
+                    </a>
                 </div>
             </div>
             <div class="box-3">
@@ -139,7 +124,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                             $req->closeCursor();
                             if (!empty($historiques)) {
                                 foreach ($historiques as $historique) { ?>
-                                    <p><a href="<?=$historique['page_visitee']?>"><?= $historique['page_nom'] ?></a></p>
+                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= $historique['page_nom'] ?></a></p>
                                 <?php
                                 }
                             } else { ?>

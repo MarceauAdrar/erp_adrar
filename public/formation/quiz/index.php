@@ -3,27 +3,33 @@ include_once("../../../src/m/connect.php");
 
 $title = " | Quiz";
 
-$sql_quiz_list = "SELECT quiz_list_id, quiz_list_title, quiz_dd_link
-                FROM quiz_lists ql
-                JOIN quiz_dd qd ON (qd.quiz_dd_id = ql.id_dd_quiz)
-                WHERE quiz_dd_link=:quiz_dd_link;";
+$sql_quiz_list = "SELECT quiz_id, quiz_module, quiz_lien, quiz_difficulte, id_secteur 
+                FROM quiz 
+                WHERE quiz_module=:quiz_module;";
 $req_quiz_list = $db->prepare($sql_quiz_list);
-$req_quiz_list->bindParam(":quiz_dd_link", $_GET["cours"]);
+$req_quiz_list->bindParam(":quiz_module", $_GET["cours"]);
 $req_quiz_list->execute();
 $quiz_list = $req_quiz_list->fetchAll(PDO::FETCH_ASSOC);
 
 $lignes = '';
 if(!empty($quiz_list)) {
     foreach($quiz_list as $value) {
+        $difficulte = "Facile";
+        if($value['quiz_difficulte'] == 3) {
+            $difficulte = "Extrême";
+        } elseif($value['quiz_difficulte'] == 2) {
+            $difficulte = "Difficile";
+        } elseif($value['quiz_difficulte'] == 1) {
+            $difficulte = "Modéré";
+        }
         $lignes .= '<tr>';
-        $lignes .= '    <td>' . $value['quiz_list_title'] . '</td>';
-        $lignes .= '    <td>' . strtoupper($value['quiz_dd_link']) . '</td>';
-        $lignes .= '    <td><button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalDisplayQuiz" onclick="fetchQuizData(' . $value['quiz_list_id'] . ');">Commencer</button></td>';
-        $lignes .= '    <td><span class="circle awaiting"></span></td>';
+        $lignes .= '    <td>' . strtoupper($value['quiz_module']) . "\n" . $difficulte . '</td>';
+        $lignes .= '    <td>' . strtoupper($value['quiz_module']) . '</td>';
+        $lignes .= '    <td><button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalDisplayQuiz" onclick="fetchQuizData(' . $value['quiz_id'] . ');">Commencer</button></td>';
         $lignes .= '</tr>';
     }
 } else {
-    $lignes = '<tr><td colspan="4">Aucune donnée à afficher...</td></tr>';
+    $lignes = '<tr><td colspan="3">Aucune donnée à afficher...</td></tr>';
 }
 
 ob_start();
@@ -32,13 +38,12 @@ include_once("../header.php"); ?>
     <div class="row">
         <div class="col-8 offset-2 text-center">
             <h1>Liste des quiz disponibles</h1>
-            <img class="svgs-full" src="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/imgs/online_test.svg" alt="Illustration code review" />
+            <?php include_once("../imgs/online_test.svg");?>
             <table class="table table-bordered table-striped table-responsive mt-3">
                 <thead>
                     <th>Titre</th>
                     <th>Type</th>
                     <th>Lien</th>
-                    <th>État</th>
                 </thead>
                 <tbody>
                     <?=$lignes?>
@@ -59,50 +64,18 @@ include_once("../header.php"); ?>
 <script>
     sessionStorage.setItem("previous_uri", "<?=$_SERVER["REQUEST_URI"]?>");
 
-    function fetchQuizData(quiz_list_id, offset = 0) {
+    function fetchQuizData(quiz_id) {
         $.ajax({
             url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
             method: "post",
             data: {
                 fetch_quiz_data: 1,
-                quiz_list_id: quiz_list_id, 
-                offset: offset
+                quiz_id: quiz_id 
             }, 
             success: function(r) {
                 $("#modalDisplayQuiz .modal-content").html(r);
             }
         });
-    }
-
-    function sendQuiz(quiz_id, id_quiz_list, offset) {
-        var answers = "";
-        $(".quiz_propositions").each(function() {
-            if($(this).is(":checked")) {
-                answers += $(this).data("quiz-id") + ";";
-            }
-        });
-
-        if(answers === "") {
-            $("#error").show();
-            return false;
-        } else {
-            $("#error").hide();
-            $.ajax({
-                url: "http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php", 
-                method: "post",
-                data: {
-                    send_quiz: 1,
-                    quiz_id: quiz_id, 
-                    answers: answers
-                }, 
-                success: function(r) {
-                    $("#modalDisplayQuiz .modal-content").html(r);
-                }
-            });
-            if(offset != 0) {
-                fetchQuizData(id_quiz_list, offset);
-            }
-        }
     }
 </script>
 <?php 

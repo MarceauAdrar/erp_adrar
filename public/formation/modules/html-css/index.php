@@ -57,7 +57,7 @@ include_once("../../header.php"); ?>
     <div class="row">
         <div class="col-8 offset-2 text-center">
             <h1>Liste des évaluations disponibles</h1>
-            <img class="svgs-full" src="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/imgs/inspection.svg" alt="Illustration code review" />
+            <?php include_once("../../imgs/inspection.svg"); ?>
             <table class="table table-bordered table-striped table-responsive mt-3">
                 <thead>
                     <th>N°</th>

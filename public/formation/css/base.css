@@ -30,6 +30,13 @@
 .st10{fill:var(--st10);}
 .st11{fill:var(--st11);}
 
+.coul-1 {
+    fill: var(--st4);
+}
+.coul-2 {
+    fill: var(--st11);
+}
+
 html, body {
     height: calc(100% - 25px);
     margin: 0;
@@ -252,10 +259,10 @@ i[class] {
     word-wrap: break-word;
 }
 
-.cours-active {
+.cours-active, .quiz-active {
     opacity: 1;
 }
-.cours-inactive {
+.cours-inactive, .quiz-inactive {
     opacity: 0.4;
 }
 

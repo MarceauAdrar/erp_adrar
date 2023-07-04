@@ -7,7 +7,10 @@ $req->bindValue(':recherche', filter_var($_GET['q'], FILTER_SANITIZE_SPECIAL_CHA
 $req->execute();
 $resultats = $req->fetchAll(PDO::FETCH_ASSOC);
 $req->closeCursor();
-foreach($resultats as $cours) {
-    echo $cours['cours_title'];
-}
-?>
+if(!empty($resultats)) {
+    foreach($resultats as $cours) {
+        echo $cours['cours_title'];
+    }
+} else { ?>
+    <p>Aucun résultat</p>
+<?php } ?>

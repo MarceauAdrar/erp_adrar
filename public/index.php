@@ -6,6 +6,7 @@ if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur'][
     die;
 }
 
+var_dump($_GET['page']);die;
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
         $page = "notfound.html";
@@ -124,7 +125,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                             $req->closeCursor();
                             if (!empty($historiques)) {
                                 foreach ($historiques as $historique) { ?>
-                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= $historique['page_nom'] ?></a></p>
+                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= str_replace('_', ' un ', $historique['page_nom']) ?></a></p>
                                 <?php
                                 }
                             } else { ?>

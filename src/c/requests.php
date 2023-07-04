@@ -169,7 +169,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 <div class="row">
                     <h2><?= $session['nom_session'] ?></h2>
                     <?php foreach ($cours as $cour) { ?>
-                        <div class="col-3" id="cours_<?=$cour['cours_id']?>_<?=$session['id_session']?>" onclick="updateStatusCourse(<?= $cour['cours_id'] ?>, <?= $session['id_session'] ?>);">
+                        <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="updateStatusCourse(<?= $cour['cours_id'] ?>, <?= $session['id_session'] ?>);">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
                                 <span class="<?= (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive") ?>"><?php include("../../public/formation/imgs/" . strtolower($cour['cours_category']) . ".svg") ?></span>
                             </span>
@@ -187,7 +187,68 @@ if (!empty($_POST["show_modal_manage_cours"])) {
     </div>
 <?php
     die(ob_get_clean());
-} 
+}
+
+if (!empty($_POST["show_modal_manage_quiz"])) {
+    $sql = "SELECT * 
+            FROM sessions 
+            WHERE id_formateur=:id_formateur ";
+    if (!empty($_POST['id_session'])) {
+        $sql .= " AND id_session=:id_session ";
+    }
+    $sql .= " ORDER BY nom_session;";
+    $req = $db->prepare($sql);
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    if (!empty($_POST['id_session'])) {
+        $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
+    $req->closeCursor();
+
+    ob_start(); ?>
+    <div class="container-fluid">
+        <?php if (!empty($sessions)) {
+            foreach ($sessions as $session) {
+                $sql_select_quiz = "SELECT *
+                                    FROM quiz 
+                                    LEFT JOIN quiz_sessions ON (quiz_id = id_quiz AND id_session=:id_session) 
+                                    ORDER BY quiz_module;";
+                $req_select_quiz = $db->prepare($sql_select_quiz);
+                $req_select_quiz->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
+                $req_select_quiz->execute();
+                $quiz = $req_select_quiz->fetchAll(PDO::FETCH_ASSOC);
+                $req_select_quiz->closeCursor(); ?>
+                <div class="row">
+                    <h2><?= $session['nom_session'] ?></h2>
+                    <?php foreach ($quiz as $value) {
+                        $difficulte = "Facile";
+                        if($value['quiz_difficulte'] == 3) {
+                            $difficulte = "Extrême";
+                        } elseif($value['quiz_difficulte'] == 2) {
+                            $difficulte = "Difficile";
+                        } elseif($value['quiz_difficulte'] == 1) {
+                            $difficulte = "Modéré";
+                        } ?>
+                        <div class="col-3" id="quiz_<?= $value['quiz_id'] ?>_<?= $session['id_session'] ?>" onclick="updateStatusQuiz(<?= $value['quiz_id'] ?>, <?= $session['id_session'] ?>);">
+                            <span class="admin-manage-imgs" id="quiz_<?= $value['quiz_id'] ?>">
+                                <span class="<?= (!empty($value['quiz_session_active']) ? "quiz-active" : "quiz-inactive") ?>"><?php include("../../public/formation/imgs/video_game_night.svg") ?></span>
+                            </span>
+                            <p class="admin-manage-text"><strong>[<?= strtoupper($value['quiz_module']) ?>]</strong>&nbsp;<?= $difficulte ?></p>
+                        </div>
+                    <?php } ?>
+                </div>
+            <?php }
+        } else { ?>
+            <div class="row">
+                <p>Aucune session assignée</p>
+                <?php include_once("../../public/formation/imgs/under_construction.svg") ?>
+            </div>
+        <?php } ?>
+    </div>
+<?php
+    die(ob_get_clean());
+}
 
 if (!empty($_POST["add_cours"])) {
     $req = $db->prepare("INSERT INTO cours(cours_title, cours_synopsis, cours_text, cours_keywords, cours_link, cours_category, cours_illustration)
@@ -199,14 +260,14 @@ if (!empty($_POST["add_cours"])) {
     $req->bindValue(':cours_keywords', filter_var($_POST['form_cours_keywords'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_link', filter_var($_POST['form_cours_link'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_category', filter_var(strtolower($_POST['form_cours_module']), FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(':cours_illustration', filter_var(strtolower($_POST['form_cours_module']).".svg", FILTER_SANITIZE_SPECIAL_CHARS));
-    if($req->execute() && !empty($_POST['form_cours_active'])) {
+    $req->bindValue(':cours_illustration', filter_var(strtolower($_POST['form_cours_module']) . ".svg", FILTER_SANITIZE_SPECIAL_CHARS));
+    if ($req->execute() && !empty($_POST['form_cours_active'])) {
         $id_cours = $req->fetch(PDO::FETCH_ASSOC)['cours_id'];
         $req = $db->prepare("SELECT id_session FROM sessions WHERE id_formateur=:id_formateur;");
         $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
         $req->execute();
         $sessions = $req->fetchAll(PDO::FETCH_COLUMN);
-        foreach($sessions as $session) {
+        foreach ($sessions as $session) {
             $req = $db->prepare("REPLACE INTO cours_sessions(id_session, id_cours, cours_session_active)
                                 VALUES(:id_session, :id_cours, :cours_session_active);");
             $req->bindValue(':id_session', filter_var($session, FILTER_VALIDATE_INT));
@@ -217,6 +278,33 @@ if (!empty($_POST["add_cours"])) {
     }
     $req->closeCursor();
     die("ok");
+}
+
+if (!empty($_POST["add_quiz"])) {
+    $req = $db->prepare("INSERT INTO quiz(quiz_module, quiz_lien, quiz_difficulte, id_secteur)
+                        VALUES(:quiz_module, :quiz_lien, :quiz_difficulte, :id_secteur) 
+                        RETURNING quiz_id;");
+    $req->bindValue(':quiz_module', filter_var($_POST['form_quiz_module'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':quiz_lien', filter_var($_POST['form_quiz_lien'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':quiz_difficulte', filter_var($_POST['form_quiz_difficulte'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    if ($req->execute() && !empty($_POST['form_quiz_active'])) {
+        $id_quiz = $req->fetch(PDO::FETCH_ASSOC)['quiz_id'];
+        $req = $db->prepare("SELECT id_session FROM sessions WHERE id_formateur=:id_formateur;");
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->execute();
+        $sessions = $req->fetchAll(PDO::FETCH_COLUMN);
+        foreach ($sessions as $session) {
+            $req = $db->prepare("REPLACE INTO quiz_sessions(id_session, id_quiz, quiz_session_active)
+                                VALUES(:id_session, :id_quiz, :quiz_session_active);");
+            $req->bindValue(':id_session', filter_var($session, FILTER_VALIDATE_INT));
+            $req->bindValue(':id_quiz', filter_var($id_quiz, FILTER_VALIDATE_INT));
+            $req->bindValue(':quiz_session_active', filter_var($_POST['form_quiz_active'], FILTER_VALIDATE_BOOL));
+            $req->execute();
+        }
+    }
+    $req->closeCursor();
+    header("Location: ../../public/formation/admin.php");
 }
 
 if (!empty($_POST["update_status_cours"])) {
@@ -232,33 +320,29 @@ if (!empty($_POST["update_status_cours"])) {
     die("ko");
 }
 
+if (!empty($_POST["update_status_quiz"])) {
+    $sql_update_quiz = "REPLACE INTO quiz_sessions(id_session, id_quiz, quiz_session_active) 
+                        VALUES(:id_session, :id_quiz, :quiz_session_active);";
+    $req_update_quiz = $db->prepare($sql_update_quiz);
+    $req_update_quiz->bindParam(":id_session", $_POST["id_session"]);
+    $req_update_quiz->bindParam(":id_quiz", $_POST["quiz_id"]);
+    $req_update_quiz->bindParam(":quiz_session_active", $_POST["quiz_active"]);
+    if ($req_update_quiz->execute()) {
+        die("ok");
+    }
+    die("ko");
+}
+
 if (!empty($_POST["fetch_quiz_data"])) {
-    $sql_select_quiz = "SELECT quiz_id, quiz_question, quiz_proposition_1, quiz_proposition_2, quiz_proposition_3, quiz_proposition_4, quiz_type, id_quiz_list 
+    $sql_select_quiz = "SELECT * 
                         FROM quiz 
-                        WHERE id_quiz_list=:id_quiz_list
-                        LIMIT :offset, 1;";
+                        LEFT JOIN quiz_sessions ON (quiz_id = id_quiz AND id_session=:id_session) 
+                        WHERE quiz_id=:quiz_id;";
     $req_select_quiz = $db->prepare($sql_select_quiz);
-    $req_select_quiz->bindParam(":id_quiz_list", $_POST['quiz_list_id']);
-    $offset = $_POST['offset'];
-    $req_select_quiz->bindParam(":offset", $offset, PDO::PARAM_INT);
+    $req_select_quiz->bindValue(":quiz_id", filter_var($_POST['quiz_id'], FILTER_VALIDATE_INT));
+    $req_select_quiz->bindValue(":id_session", filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
     $req_select_quiz->execute();
     $quiz = $req_select_quiz->fetch(PDO::FETCH_ASSOC);
-
-    $offset++;
-    $nb_colonnes = 0;
-    for ($i = 0; $i < 4; $i++) {
-        if (!empty($quiz["quiz_proposition_" . $i])) $nb_colonnes++;
-    }
-
-    $sql_check_next_quiz = "SELECT quiz_id 
-                            FROM quiz 
-                            WHERE id_quiz_list=:id_quiz_list
-                            LIMIT :offset, 1;";
-    $req_check_next_quiz = $db->prepare($sql_check_next_quiz);
-    $req_check_next_quiz->bindParam(":id_quiz_list", $_POST['quiz_list_id']);
-    $req_check_next_quiz->bindParam(":offset", $offset, PDO::PARAM_INT);
-    $req_check_next_quiz->execute();
-    $next_quiz = $req_check_next_quiz->fetch(PDO::FETCH_COLUMN);
 
     ob_start(); ?>
     <div class="modal-header">
@@ -269,46 +353,15 @@ if (!empty($_POST["fetch_quiz_data"])) {
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h6><?= $quiz['quiz_question'] ?><span id="error">&nbsp;Vous devez sélectionner une réponse pour continuer</span></h6>
+                    <h6><?= strtoupper($quiz['quiz_module']) ?></h6>
                 </div>
             </div>
             <div class="row">
-                <?php for ($i = 1; $i <= $nb_colonnes; $i++) { ?>
-                    <div class="col-<?= 12 / $nb_colonnes ?>">
-                        <?php if ($quiz['quiz_type'] == 0) { ?>
-                            <input type="checkbox" data-quiz-id="<?= $i ?>" class="quiz_propositions" name="quiz_proposition_<?= $i ?>" id="quiz_proposition_<?= $i ?>" />
-                            <label for="quiz_proposition_<?= $i ?>"><?= $quiz['quiz_proposition_' . $i] ?></label>
-                        <?php } else { ?>
-                            <input type="radio" data-quiz-id="<?= $i ?>" class="quiz_propositions" name="quiz_proposition" id="quiz_proposition_<?= $i ?>" />
-                            <label for="quiz_proposition_<?= $i ?>"><?= $quiz['quiz_proposition_' . $i] ?></label>
-                        <?php } ?>
-                    </div>
-                <?php } ?>
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px;min-height:635px;"><iframe src="https://quizizz.com/join?gc=<?=$quiz['quiz_lien']?>" title="Test - Quizizz" style="flex:1;" frameBorder="0" allowfullscreen></iframe></div>
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <?php if (!empty($next_quiz)) { ?>
-            <span class="btn btn-success" onclick="sendQuiz(<?= $quiz['quiz_id'] ?>, <?= $quiz['id_quiz_list'] ?>, <?= $offset ?>);"><i class="fa-solid fa-circle-chevron-right"></i>&nbsp;&nbsp;Suivant</span>
-        <?php } else {
-            $offset = 0;
-        } ?>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close" onclick="sendQuiz(<?= $quiz['quiz_id'] ?>, <?= $quiz['id_quiz_list'] ?>, <?= $offset ?>);">Terminer</button>
-    </div>
 <?php
     die(ob_get_clean());
-}
-
-if (!empty($_POST["send_quiz"])) {
-    $sql_replace_quiz = "REPLACE INTO stagiaires_quiz(stagiaire_quiz_answers, id_quiz, id_stagiaire)
-                        VALUES(:stagiaire_quiz_answers, :id_quiz, :id_stagiaire);";
-    $req_replace_quiz = $db->prepare($sql_replace_quiz);
-    $req_replace_quiz->bindParam(":stagiaire_quiz_answers", $_POST["answers"]);
-    $req_replace_quiz->bindParam(":id_quiz", $_POST["quiz_id"]);
-    $req_replace_quiz->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["id_stagiaire"]);
-    if ($req_replace_quiz->execute()) {
-        die("ok");
-    }
-    die("ko");
 }
 ?>

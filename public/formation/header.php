@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <!-- CSS only -->
-    <link href="//cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/base.css" />
     <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/connexion.css" />
@@ -35,8 +35,12 @@
                         <?php
                         if($_SESSION["utilisateur"]["id_formateur"] !== -1) { ?>
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/admin.php">Administration</a>
+                            <a class="nav-link" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/admin.php">Administration</a>
                         </li>
+                        <?php } else { ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/?page=boite-aux-lettres">Déposer un fichier</a>
+                            </li>
                         <?php } ?>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_modules" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -54,22 +58,34 @@
                                 <?php } ?>
                             </ul>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_quiz" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Quiz
-                            </a>
-                            <?php 
-                            $sql_quiz = "SELECT quiz_dd_name, quiz_dd_link 
-                                                FROM quiz_dd
-                                                WHERE quiz_dd_active = 1;";
-                            $req_quiz = $db->prepare($sql_quiz);
-                            $req_quiz->execute(); ?>
-                            <ul class="dropdown-menu" aria-labelledby="navbar_dropdown_quiz">
-                                <?php foreach($req_quiz->fetchAll(PDO::FETCH_ASSOC) as $eval) { ?>
-                                    <li><a class="dropdown-item" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/quiz?cours=<?=$eval["quiz_dd_link"]?>"><?=$eval["quiz_dd_name"]?></a></li>
-                                <?php } ?>
-                            </ul>
-                        </li>
+                        <?php 
+                        $sql_quiz = "SELECT quiz_module  
+                                    FROM quiz 
+                                    LEFT JOIN quiz_sessions ON(quiz_id = id_quiz AND quiz_session_active = 1)
+                                    WHERE 1 ";
+                        if(isset($_SESSION['utilisateur']['id_session']) && $_SESSION['utilisateur']['id_session'] > 0) {
+                            $sql_quiz .= " AND id_session=:id_session ";
+                        }
+                        $sql_quiz .= " GROUP BY quiz_module;";
+                        $req_quiz = $db->prepare($sql_quiz);
+                        if(isset($_SESSION['utilisateur']['id_session']) && $_SESSION['utilisateur']['id_session'] > 0) {
+                            $req_quiz->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
+                        }
+                        $req_quiz->execute();
+                        $quizs = $req_quiz->fetchAll(PDO::FETCH_ASSOC);
+                        $req_quiz->closeCursor(); 
+                        if(!empty($quizs)) { ?>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_quiz" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Quiz
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbar_dropdown_quiz">
+                                    <?php foreach($quizs as $quiz) { ?>
+                                        <li><a class="dropdown-item" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/quiz?cours=<?=strtolower($quiz["quiz_module"])?>"><?=$quiz["quiz_module"]?></a></li>
+                                    <?php } ?>
+                                </ul>
+                            </li>
+                        <?php } ?>
                     </ul>
                     <span class="navbar-text">
                         <?php 

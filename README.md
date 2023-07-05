@@ -28,4 +28,4 @@ Rendez-vous dans l'onglet ``` index.php?page=formation ```.
 
 # [Liens]
 ### [Lien vers le figma](https://www.figma.com/file/BzNldLes9c5sNNlz4nVkzP/Evaluations?type=design&node-id=403-1933&mode=design)
-### [Lien vers le trello](https://www.figma.com/file/BzNldLes9c5sNNlz4nVkzP/Evaluations?type=design&node-id=403-1933&mode=design)
+### [Lien vers le trello](https://trello.com/b/iHmxCMJM/trello-erp-adrar)

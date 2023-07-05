@@ -6,7 +6,6 @@ if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur'][
     die;
 }
 
-var_dump($_GET['page']);die;
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
         $page = "notfound.html";

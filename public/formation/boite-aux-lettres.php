@@ -15,7 +15,9 @@ include_once("./header.php");
     
     <div class="row pt-5">
         <h3>Déposer un fichier</h3>
-
+        <form action="http://<?=$_SERVER["SERVER_NAME"]?>/erp/src/c/requests.php" method="post">
+            <input type="file" name="form_formation_fichier" multiple>
+        </form>
     </div>
 </div>
 

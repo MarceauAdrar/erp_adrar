@@ -35,6 +35,10 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                 $_GET['form'] = "ajouter_stagiaire";
                 $page = "formulaire.php";
                 break;
+            case "ajouter_document":
+                $_GET['form'] = "ajouter_document";
+                $page = "formulaire.php";
+                break;
         }
         if ($_SESSION['utilisateur']['id_formateur'] > 0 && $page !== "notfound.html") {
             $req = $db->prepare('REPLACE INTO historiques(id_formateur, page_visitee, page_nom, ip_visiteur, date_visite)
@@ -54,6 +58,17 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
     include __DIR__ . "/" . $page;
     die;
 }
+
+$req = $db->prepare("SELECT * FROM sessions WHERE id_formateur=:id_formateur;");
+$req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+$req->execute();
+$sessions = $req->fetchAll(PDO::FETCH_ASSOC); 
+
+if(isset($_POST['form_filter_session'])) {
+    $_SESSION['filtres']['id_session'] = filter_var($_POST['form_filter_session'], FILTER_VALIDATE_INT);
+} else {
+    $_SESSION['filtres']['id_session'] = -1;
+}
 ?>
 
 <!DOCTYPE html>
@@ -63,9 +78,9 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/_reset.css">
-    <link rel="stylesheet" href="css/_style.css">
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/_reset.css?v=<?=uniqid()?>">
+    <link rel="stylesheet" href="css/_style.css?v=<?=uniqid()?>">
+    <link rel="stylesheet" href="css/index.css?v=<?=uniqid()?>">
     <title>Accueil - ERP</title>
 </head>
 
@@ -76,6 +91,17 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
         </div>
         <div class="main">
             <div class="box-1">
+                <form method="post" onchange="this.submit();">
+                    <select name="form_filter_session">
+                        <option value="-1">Tout le secteur</option>
+                        <option value="0"<?=(empty($_SESSION['filtres']['id_session']) ? " selected":"")?>>Toutes mes sessions</option>
+                        <?php if(!empty($sessions)) {
+                            foreach($sessions as $session) { ?>
+                                <option value="<?=$session['id_session']?>"<?=(isset($_SESSION['filtres']['id_session']) && $_SESSION['filtres']['id_session'] == $session['id_session'] ? " selected":"")?>><?=$session['nom_session']?></option>
+                            <?php }
+                        } ?>
+                    </select>
+                </form>
                 <input type="search" name="search" placeholder="Rechercher...">
             </div>
             <div class="box-2">
@@ -229,7 +255,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
             </div>
         </div>
     </div>
-    <script src="./js/index.js"></script>
+    <script src="./js/index.js?v=<?=uniqid()?>"></script>
     <script src="https://cdn.websitepolicies.io/lib/cconsent/cconsent.min.js" defer></script>
     <script>
         window.addEventListener("load", function() {
@@ -259,62 +285,3 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
 </body>
 
 </html>
-
-
-
-
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/_reset.css">
-    <link rel="stylesheet" href="css/_style.css">
-    <title>Accueil - ERP</title>
-</head>
-<body>
-    <div class="wrapper">
-        <div class="cards">
-            <div class="card">
-                <div class="card-title">Accueil</div>
-                <div class="card-body"></div>
-                <div class="card-footer">
-                    <a class="card-btn" href="?page=">Recharger</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title">Administration</div>
-                <div class="card-body"></div>
-                <div class="card-footer">
-                    <a class="card-btn" href="?page=admin">Administrer</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title">Formation</div>
-                <div class="card-body"></div>
-                <div class="card-footer">
-                    <a class="card-btn" href="?page=formation">WIP !</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title">Stage</div>
-                <div class="card-body"></div>
-                <div class="card-footer">
-                    <a class="card-btn" href="?page=stage">Envoyer !</a>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-title">Titre</div>
-                <div class="card-body"></div>
-                <div class="card-footer">
-                    <a class="card-btn" href="?page=titre">Générer</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</body>
-</html> -->

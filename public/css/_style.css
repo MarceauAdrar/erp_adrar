@@ -228,7 +228,7 @@ nav span {
     color: #FFFFFF !important;
 }
 
-form input:not([type="submit"], form input[type="hidden"]),
+form input:not([type="submit"], form input[type="hidden"], form input[type="file"]),
 form select {
     background-color: #163460;
     border-color: #D9D9D9;

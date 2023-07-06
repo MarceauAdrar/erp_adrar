@@ -583,3 +583,58 @@ function readable_random_string($length = 6)
 
     return $string;
 }
+
+/**
+ * Permet la prise en charge d'un nouveau document.
+ * 
+ * @param string $nom_document Le nom du document.
+ * @param array $fichier Le fichier a importer.
+ * 
+ * 
+ * @return array Un tableau avec deux index `string type` et `string message`..
+ */ 
+function ajouterDocument($nom_document, $fichier)
+{
+    if(!mkdir("../src/v/templates_documents/$nom_document")) {
+        $type = "error";
+        $message = "Le dossier n'a pas pu être créé.";
+    }
+
+    $nom_dossier = $nom_document;
+
+    switch($fichier['type']) {
+        case "application/pdf":
+            $extension = "pdf";
+            break;
+        default:
+            $extension = "";
+            $type = "error";
+            $message = "Extension non prise en charge. Seuls les PDF sont acceptés.";
+    }
+    
+    if(!empty($extension)) {
+        // Création de l'objet Imagick
+        $imagick = new \Imagick();
+
+        // Réglage de la résolution pour améliorer la qualité de l'image PNG
+        $imagick->setResolution(300, 300);
+
+        // Lire le fichier PDF
+        $imagick->readImage($fichier['tmp_name']);
+
+        // Convertir chaque page du PDF en PNG
+        foreach ($imagick as $pageNumber => $image) {
+            // Enregistrer l'image au format PNG
+            $image->setImageFormat('png');
+            $image->writeImage('../src/v/templates_documents/'. $nom_dossier . '/' . $nom_document . '_' . ($pageNumber + 1) . '.png');
+        }
+        // Libérer la mémoire
+        $imagick->clear();
+        $imagick->destroy();
+    }
+
+    return array(
+        'type' => $type,
+        'message' => $message
+    );
+}

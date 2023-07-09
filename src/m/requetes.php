@@ -595,9 +595,14 @@ function readable_random_string($length = 6)
  */ 
 function ajouterDocument($nom_document, $fichier)
 {
-    if(!mkdir("../src/v/templates_documents/$nom_document")) {
-        $type = "error";
-        $message = "Le dossier n'a pas pu être créé.";
+    $type = "info";
+    $message = "Document ajouté";
+
+    if(!is_dir("../v/templates_documents/$nom_document")) {
+        if(!mkdir("../v/templates_documents/$nom_document", 0777, true)) {
+            $type = "error";
+            $message = "Le dossier n'a pas pu être créé.";
+        }
     }
 
     $nom_dossier = $nom_document;
@@ -615,7 +620,7 @@ function ajouterDocument($nom_document, $fichier)
     if(!empty($extension)) {
         // Création de l'objet Imagick
         $imagick = new \Imagick();
-
+        
         // Réglage de la résolution pour améliorer la qualité de l'image PNG
         $imagick->setResolution(300, 300);
 
@@ -625,8 +630,7 @@ function ajouterDocument($nom_document, $fichier)
         // Convertir chaque page du PDF en PNG
         foreach ($imagick as $pageNumber => $image) {
             // Enregistrer l'image au format PNG
-            $image->setImageFormat('png');
-            $image->writeImage('../src/v/templates_documents/'. $nom_dossier . '/' . $nom_document . '_' . ($pageNumber + 1) . '.png');
+            $image->writeImage('../v/templates_documents/'. $nom_dossier . '/' . $nom_document . '_' . ($pageNumber + 1) . '.jpg');
         }
         // Libérer la mémoire
         $imagick->clear();

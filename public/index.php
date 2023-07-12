@@ -1,6 +1,11 @@
 <?php
 include_once __DIR__ . '/../src/m/connect.php';
 
+if(!isset($_SESSION['utilisateur']) || !isset($_SESSION['utilisateur']['id_formateur'])) {
+    header("Location: connexion.php?type=info&message=Session+expirée");
+    die;
+}
+
 if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
     header("Location: ?page=formation");
     die;

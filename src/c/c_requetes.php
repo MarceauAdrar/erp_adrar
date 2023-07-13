@@ -450,7 +450,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $req = $db->prepare($sql);
         $req->bindValue(':nom_formateur', filter_var($_POST['form_update_formateur_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(':prenom_formateur', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
-        if(isset($password)) {
+        if (isset($password)) {
             $req->bindValue(':mdp_formateur', password_hash($password, PASSWORD_BCRYPT));
         }
         $req->bindValue(':carte_formateur_role', filter_var($_POST['form_update_formateur_role'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -474,13 +474,88 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     header("Location: ../../public/index.php?page=mon-compte&type=" . $type . "&message=" . $message);
 } elseif (isset($_POST['form_add_formateur']) && !empty($_POST['form_add_formateur'])) {
-    $resultat = json_decode(inscriptionFormateur($mailer, $_POST['form_add_formateur_nom'], $_POST['form_add_formateur_prenom'], $_POST['form_add_formateur_mail']."@adrar-formation.com", $_POST['form_add_formateur_role'], $_POST['form_add_formateur_telephone'], $_POST['form_add_formateur_site'], $_POST['form_add_formateur_secteur']), true);
+    $resultat = json_decode(inscriptionFormateur($mailer, $_POST['form_add_formateur_nom'], $_POST['form_add_formateur_prenom'], $_POST['form_add_formateur_mail'] . "@adrar-formation.com", $_POST['form_add_formateur_role'], $_POST['form_add_formateur_telephone'], $_POST['form_add_formateur_site'], $_POST['form_add_formateur_secteur']), true);
     header("Location: ../../public/index.php?page=ajouter_referent&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
 } elseif (isset($_POST['form_add_stagiaire']) && !empty($_POST['form_add_stagiaire'])) {
     $resultat = json_decode(inscriptionStagiaire($mailer, $_POST['form_add_stagiaire_nom'], $_POST['form_add_stagiaire_prenom'], $_POST['form_add_stagiaire_mail'], $_POST['form_add_stagiaire_pseudo'], $_POST['form_add_stagiaire_telephone'], $_POST['form_add_stagiaire_date_naissance'], $_POST['form_add_stagiaire_session'], empty($_POST['form_add_stagiaire_stage']) ? null : $_POST['form_add_stagiaire_stage']), true);
     header("Location: ../../public/index.php?page=ajouter_stagiaire&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
 } elseif (isset($_POST['form_add_document']) && !empty($_POST['form_add_document'])) {
-    var_dump(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), $_FILES['form_add_document_fichier']);die;
-    $resultat = json_decode(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), true);   
+    var_dump(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), $_FILES['form_add_document_fichier']);
+    die;
+    $resultat = json_decode(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), true);
     header("Location: ../../public/index.php?page=ajouter_document&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
+} elseif (isset($_POST['get_ratio_presence']) && !empty($_POST['get_ratio_presence'])) {
+    $sql = "SELECT horaires_recues_1, horaires_recues_2, horaires_recues_3 
+            FROM stagiaires 
+            WHERE 1 ";
+    // if(isset($_POST['filtre_session'])) {
+    //     $sql = " AND ";
+    // }
+    $req = $db->prepare($sql);
+    // if(isset($_POST['filtre_session'])) {
+    // $req->bindValue("", $_);
+    // }
+    $req->execute();
+    $somme = 0;
+    foreach($req->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        $somme += $value['horaires_recues_1'];
+        $somme += $value['horaires_recues_2'];
+        $somme += $value['horaires_recues_3'];
+    }
+    $total = $req->rowCount();
+    die(number_format(($somme / $total)*100, 2, ","));
+} elseif (isset($_POST['get_ratio_attestation']) && !empty($_POST['get_ratio_attestation'])) {
+    $sql = "SELECT attestation_recue 
+            FROM stagiaires 
+            WHERE 1 ";
+    // if(isset($_POST['filtre_session'])) {
+    //     $sql = " AND ";
+    // }
+    $req = $db->prepare($sql);
+    // if(isset($_POST['filtre_session'])) {
+    // $req->bindValue("", $_);
+    // }
+    $req->execute();
+    $somme = 0;
+    foreach($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+    $total = $req->rowCount();
+    die(number_format(($somme / $total)*100, 2, ","));
+} elseif (isset($_POST['get_ratio_evaluation']) && !empty($_POST['get_ratio_evaluation'])) {
+    $sql = "SELECT evaluation_recue 
+            FROM stagiaires 
+            WHERE 1 ";
+    // if(isset($_POST['filtre_session'])) {
+    //     $sql = " AND ";
+    // }
+    $req = $db->prepare($sql);
+    // if(isset($_POST['filtre_session'])) {
+    // $req->bindValue("", $_);
+    // }
+    $req->execute();
+    $somme = 0;
+    foreach($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+    $total = $req->rowCount();
+    die(number_format(($somme / $total)*100, 2, ","));
+} elseif (isset($_POST['get_ratio_convention']) && !empty($_POST['get_ratio_convention'])) {
+    $sql = "SELECT convention_recue 
+            FROM stagiaires 
+            WHERE 1 ";
+    // if(isset($_POST['filtre_session'])) {
+    //     $sql = " AND ";
+    // }
+    $req = $db->prepare($sql);
+    // if(isset($_POST['filtre_session'])) {
+    // $req->bindValue("", $_);
+    // }
+    $req->execute();
+    $somme = 0;
+    foreach($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+    $total = $req->rowCount();
+    die(number_format(($somme / $total)*100, 2, ","));
 }

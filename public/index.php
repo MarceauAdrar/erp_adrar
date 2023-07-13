@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../src/m/connect.php';
 
-if(!isset($_SESSION['utilisateur']) || !isset($_SESSION['utilisateur']['id_formateur'])) {
+if (!isset($_SESSION['utilisateur']) || !isset($_SESSION['utilisateur']['id_formateur'])) {
     header("Location: connexion.php?type=info&message=Session+expirée");
     die;
 }
@@ -67,9 +67,9 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
 $req = $db->prepare("SELECT * FROM sessions WHERE id_formateur=:id_formateur;");
 $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
 $req->execute();
-$sessions = $req->fetchAll(PDO::FETCH_ASSOC); 
+$sessions = $req->fetchAll(PDO::FETCH_ASSOC);
 
-if(isset($_POST['form_filter_session'])) {
+if (isset($_POST['form_filter_session'])) {
     $_SESSION['filtres']['id_session'] = filter_var($_POST['form_filter_session'], FILTER_VALIDATE_INT);
 } else {
     $_SESSION['filtres']['id_session'] = -1;
@@ -83,9 +83,9 @@ if(isset($_POST['form_filter_session'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/_reset.css?v=<?=uniqid()?>">
-    <link rel="stylesheet" href="css/_style.css?v=<?=uniqid()?>">
-    <link rel="stylesheet" href="css/index.css?v=<?=uniqid()?>">
+    <link rel="stylesheet" href="css/_reset.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="css/_style.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="css/index.css?v=<?= uniqid() ?>">
     <title>Accueil - ERP</title>
 </head>
 
@@ -99,11 +99,11 @@ if(isset($_POST['form_filter_session'])) {
                 <form method="post" onchange="this.submit();">
                     <select name="form_filter_session">
                         <option value="-1">Tout le secteur</option>
-                        <option value="0"<?=(empty($_SESSION['filtres']['id_session']) ? " selected":"")?>>Toutes mes sessions</option>
-                        <?php if(!empty($sessions)) {
-                            foreach($sessions as $session) { ?>
-                                <option value="<?=$session['id_session']?>"<?=(isset($_SESSION['filtres']['id_session']) && $_SESSION['filtres']['id_session'] == $session['id_session'] ? " selected":"")?>><?=$session['nom_session']?></option>
-                            <?php }
+                        <option value="0" <?= (empty($_SESSION['filtres']['id_session']) ? " selected" : "") ?>>Toutes mes sessions</option>
+                        <?php if (!empty($sessions)) {
+                            foreach ($sessions as $session) { ?>
+                                <option value="<?= $session['id_session'] ?>" <?= (isset($_SESSION['filtres']['id_session']) && $_SESSION['filtres']['id_session'] == $session['id_session'] ? " selected" : "") ?>><?= $session['nom_session'] ?></option>
+                        <?php }
                         } ?>
                     </select>
                 </form>
@@ -171,7 +171,8 @@ if(isset($_POST['form_filter_session'])) {
                             <h2>Convention de stage</h2>
                             <hr class="small-separator">
                         </div>
-                        <div class="card-content">
+                        <div class="card-content ratios">
+                            <span id="ratio_convention_de_stage"></span>
                         </div>
                     </div>
                 </div>
@@ -181,7 +182,8 @@ if(isset($_POST['form_filter_session'])) {
                             <h2>Attestations de stage</h2>
                             <hr class="small-separator">
                         </div>
-                        <div class="card-content">
+                        <div class="card-content ratios">
+                            <span id="ratio_attestation_de_stage"></span>
                         </div>
                     </div>
                 </div>
@@ -223,7 +225,8 @@ if(isset($_POST['form_filter_session'])) {
                             <h2>Évaluations de stage</h2>
                             <hr class="small-separator">
                         </div>
-                        <div class="card-content">
+                        <div class="card-content ratios">
+                            <span id="ratio_evaluation_de_stage"></span>
                         </div>
                     </div>
                 </div>
@@ -233,7 +236,8 @@ if(isset($_POST['form_filter_session'])) {
                             <h2>Présence en entreprise</h2>
                             <hr class="small-separator">
                         </div>
-                        <div class="card-content">
+                        <div class="card-content ratios">
+                            <span id="ratio_presence_en_entreprise"></span>
                         </div>
                     </div>
                 </div>
@@ -260,7 +264,7 @@ if(isset($_POST['form_filter_session'])) {
             </div>
         </div>
     </div>
-    <script src="./js/index.js?v=<?=uniqid()?>"></script>
+    <script src="./js/index.js?v=<?= uniqid() ?>"></script>
     <script src="https://cdn.websitepolicies.io/lib/cconsent/cconsent.min.js" defer></script>
     <script>
         window.addEventListener("load", function() {

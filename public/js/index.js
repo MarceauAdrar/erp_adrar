@@ -15,3 +15,68 @@ document.querySelector("input[name='search']").addEventListener('keyup', functio
         window.location.href = 'search.php?q=' + this.value;
     }
 });
+
+function getRatios() {
+    getRatioAttestation();
+    getRatioConvention();
+    getRatioEvaluation();
+    getRatioPresence();
+}
+getRatios();
+
+async function getRatioConvention() {
+    var formData = new FormData();
+    formData.append('get_ratio_convention', 1);
+    formData.append('filtre_session', document.querySelector('select[name="form_filter_session"]').value);
+
+    await fetch("../src/c/c_requetes.php", {
+        method: "POST",
+        body: formData
+    })
+    .then((response) => response.text())
+    .then((result) => {
+        document.querySelector("#ratio_convention_de_stage").textContent = result + "%";
+    });
+}
+async function getRatioAttestation() {
+    var formData = new FormData();
+    formData.append('get_ratio_attestation', 1);
+    formData.append('filtre_session', document.querySelector('select[name="form_filter_session"]').value);
+
+    await fetch("../src/c/c_requetes.php", {
+        method: "POST",
+        body: formData
+    })
+    .then((response) => response.text())
+    .then((result) => {
+        document.querySelector("#ratio_attestation_de_stage").textContent = result + "%";
+    });
+}
+async function getRatioEvaluation() {
+    var formData = new FormData();
+    formData.append('get_ratio_evaluation', 1);
+    formData.append('filtre_session', document.querySelector('select[name="form_filter_session"]').value);
+
+    await fetch("../src/c/c_requetes.php", {
+        method: "POST",
+        body: formData
+    })
+    .then((response) => response.text())
+    .then((result) => {
+        document.querySelector("#ratio_evaluation_de_stage").textContent = result + "%";
+    });
+}
+async function getRatioPresence() {
+    var formData = new FormData();
+    formData.append('get_ratio_presence', 1);
+    formData.append('filtre_session', document.querySelector('select[name="form_filter_session"]').value);
+
+    await fetch("../src/c/c_requetes.php", {
+        method: "POST",
+        body: formData
+    })
+    .then((response) => response.text())
+    .then((result) => {
+        document.querySelector("#ratio_presence_en_entreprise").textContent = result + "%";
+    });
+}

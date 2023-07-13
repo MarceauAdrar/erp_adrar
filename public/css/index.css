@@ -96,3 +96,11 @@ small {
 .main .box-3 .convention {
     margin-left: 15px;
 }
+
+.main .ratios {
+    text-align: center;
+    padding-top: 1em;
+}
+.main .ratios > span {
+    font-size: 5em;
+}

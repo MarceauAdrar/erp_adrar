@@ -29,6 +29,7 @@ async function getRatioConvention() {
     .then((response) => response.json())
     .then((result) => {
         document.querySelector("#ratio_convention_de_stage").textContent = result.value + "%";
+        document.querySelector("#ratio_convention_de_stage").classList.remove("col-bad", "col-medium", "col-good");
         document.querySelector("#ratio_convention_de_stage").classList.add(result.color);
     });
 }
@@ -44,6 +45,7 @@ async function getRatioAttestation() {
     .then((response) => response.json())
     .then((result) => {
         document.querySelector("#ratio_attestation_de_stage").textContent = result.value + "%";
+        document.querySelector("#ratio_attestation_de_stage").classList.remove("col-bad", "col-medium", "col-good");
         document.querySelector("#ratio_attestation_de_stage").classList.add(result.color);
     });
 }
@@ -59,6 +61,7 @@ async function getRatioEvaluation() {
     .then((response) => response.json())
     .then((result) => {
         document.querySelector("#ratio_evaluation_de_stage").textContent = result.value + "%";
+        document.querySelector("#ratio_evaluation_de_stage").classList.remove("col-bad", "col-medium", "col-good");
         document.querySelector("#ratio_evaluation_de_stage").classList.add(result.color);
     });
 }
@@ -74,6 +77,7 @@ async function getRatioPresence() {
     .then((response) => response.json())
     .then((result) => {
         document.querySelector("#ratio_presence_en_entreprise").textContent = result.value + "%";
+        document.querySelector("#ratio_presence_en_entreprise").classList.remove("col-bad", "col-medium", "col-good");
         document.querySelector("#ratio_presence_en_entreprise").classList.add(result.color);
     });
 }

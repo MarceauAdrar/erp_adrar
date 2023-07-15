@@ -32,17 +32,20 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                 $_GET['form'] = "mon-compte";
                 $page = "formulaire.php";
                 break;
-            case "ajouter_referent":
-                $_GET['form'] = "ajouter_referent";
+            case "ajouter-referent":
+                $_GET['form'] = "ajouter-referent";
                 $page = "formulaire.php";
                 break;
-            case "ajouter_stagiaire":
-                $_GET['form'] = "ajouter_stagiaire";
+            case "ajouter-stagiaire":
+                $_GET['form'] = "ajouter-stagiaire";
                 $page = "formulaire.php";
                 break;
-            case "ajouter_document":
-                $_GET['form'] = "ajouter_document";
+            case "ajouter-document":
+                $_GET['form'] = "ajouter-document";
                 $page = "formulaire.php";
+                break;
+            case "boite-aux-lettres":
+                $page = "formation/boite-aux-lettres.php";
                 break;
         }
         if ($_SESSION['utilisateur']['id_formateur'] > 0 && $page !== "notfound.html") {
@@ -98,8 +101,8 @@ if (isset($_POST['form_filter_session'])) {
         </div>
         <div class="main">
             <div class="box-1">
-                <form method="post" onchange="this.submit();">
-                    <select name="form_filter_session">
+                <form method="post" class="d-inline">
+                    <select name="form_filter_session" onchange="getRatios();">
                         <option value="-1">Tout le secteur</option>
                         <option value="0" <?= (empty($_SESSION['filtres']['id_session']) ? " selected" : "") ?>>Toutes mes sessions</option>
                         <?php if (!empty($sessions)) {
@@ -109,18 +112,18 @@ if (isset($_POST['form_filter_session'])) {
                         } ?>
                     </select>
                 </form>
-                <input type="search" name="search" placeholder="Rechercher...">
+                <input type="search" name="search" onsubmit="return false;" autocomplete="off" placeholder="Rechercher...">
             </div>
             <div class="box-2">
                 <div class="box">
-                    <a href="index.php?page=ajouter_referent">
+                    <a href="index.php?page=ajouter-referent">
                         <div class="contenu">
                             <h2>Ajouter un référent</h2>
                         </div>
                     </a>
                 </div>
                 <div class="box">
-                    <a href="index.php?page=ajouter_stagiaire">
+                    <a href="index.php?page=ajouter-stagiaire">
                         <div class="contenu">
                             <h2>Ajouter un stagiaire</h2>
                         </div>
@@ -134,7 +137,7 @@ if (isset($_POST['form_filter_session'])) {
                     </a>
                 </div>
                 <div class="box">
-                    <a href="index.php?page=ajouter_document">
+                    <a href="index.php?page=ajouter-document">
                         <div class="contenu">
                             <h2>Ajouter un document</h2>
                         </div>

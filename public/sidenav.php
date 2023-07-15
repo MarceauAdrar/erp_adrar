@@ -12,7 +12,7 @@
                 <li><a href="?page=formation" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
                 <li><a href="?page=stage" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
                 <li><a href="?page=titre" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
-                <li><a href="?page=fichiers" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
+                <li><a href="?page=boite-aux-lettres" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
             </ul>
         </nav>
     </div>

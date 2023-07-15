@@ -98,7 +98,7 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                 </div>
                             </form>';
             break;
-        case 'ajouter_referent';
+        case 'ajouter-referent';
             $sites = $db->query("SELECT * FROM sites ORDER BY libelle_site;")->fetchAll(PDO::FETCH_ASSOC);
             $secteurs = $db->query("SELECT * FROM secteurs ORDER BY nom_secteur;")->fetchAll(PDO::FETCH_ASSOC);
             $options_sites = "";
@@ -154,7 +154,7 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                 </div>
                             </form>';
             break;
-        case 'ajouter_stagiaire';
+        case 'ajouter-stagiaire';
             $options_sessions = "";
             foreach (recupererSessions($_SESSION['utilisateur']['id_formateur']) as $session) {
                 $options_sessions .= '<option value="' . $session['id_session'] . '">' . $session['nom_session'] . '</option>';
@@ -213,7 +213,7 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                     </div>
                                 </form>';
             break;
-        case 'ajouter_document':
+        case 'ajouter-document':
             $nom_formulaire = 'form_add_document';
             $title = 'Ajouter un template de document';
             $card_title = 'Ajouter un template de document';

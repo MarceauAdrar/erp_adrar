@@ -1,10 +1,10 @@
 <?php
-include_once("../../src/m/connect.php");
+include_once("../src/m/connect.php");
 
 $title = " | Boîte aux lettres";
 
 ob_start();
-include_once("./header.php");
+include_once("./formation/header.php");
 ?> 
 <div class="container">
     <div class="row">
@@ -22,7 +22,7 @@ include_once("./header.php");
 </div>
 
 <?php
-include_once("./js.php");
-include_once("./footer.php");
+include_once("./formation/js.php");
+include_once("./formation/footer.php");
 die(ob_get_clean());
 ?> 

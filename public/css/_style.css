@@ -264,3 +264,13 @@ a:visited {
     border: 2px solid var(--coul-principale);
     margin-left: 0;
 }
+
+.col-bad {
+    color: red;
+}
+.col-medium {
+    color: orange;
+}
+.col-good {
+    color: green;
+}

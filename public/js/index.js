@@ -33,9 +33,10 @@ async function getRatioConvention() {
         method: "POST",
         body: formData
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((result) => {
-        document.querySelector("#ratio_convention_de_stage").textContent = result + "%";
+        document.querySelector("#ratio_convention_de_stage").textContent = result.value + "%";
+        document.querySelector("#ratio_convention_de_stage").classList.add(result.color);
     });
 }
 async function getRatioAttestation() {
@@ -47,9 +48,10 @@ async function getRatioAttestation() {
         method: "POST",
         body: formData
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((result) => {
-        document.querySelector("#ratio_attestation_de_stage").textContent = result + "%";
+        document.querySelector("#ratio_attestation_de_stage").textContent = result.value + "%";
+        document.querySelector("#ratio_attestation_de_stage").classList.add(result.color);
     });
 }
 async function getRatioEvaluation() {
@@ -61,9 +63,10 @@ async function getRatioEvaluation() {
         method: "POST",
         body: formData
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((result) => {
-        document.querySelector("#ratio_evaluation_de_stage").textContent = result + "%";
+        document.querySelector("#ratio_evaluation_de_stage").textContent = result.value + "%";
+        document.querySelector("#ratio_evaluation_de_stage").classList.add(result.color);
     });
 }
 async function getRatioPresence() {
@@ -75,8 +78,9 @@ async function getRatioPresence() {
         method: "POST",
         body: formData
     })
-    .then((response) => response.text())
+    .then((response) => response.json())
     .then((result) => {
-        document.querySelector("#ratio_presence_en_entreprise").textContent = result + "%";
+        document.querySelector("#ratio_presence_en_entreprise").textContent = result.value + "%";
+        document.querySelector("#ratio_presence_en_entreprise").classList.add(result.color);
     });
 }

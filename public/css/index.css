@@ -103,4 +103,7 @@ small {
 }
 .main .ratios > span {
     font-size: 5em;
+    border: 2px solid #000;
+    background-color: #fff;
+    padding: 0 1vw;
 }

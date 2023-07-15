@@ -8,11 +8,11 @@
         <nav>
             <ul>
                 <li><a href="./"><i class="fa-solid fa-house fa-sm">&nbsp;</i><span>Accueil</span></a></li>
-                <li><a href="#" id="nav-administration"><i class="fa-solid fa-hammer fa-sm">&nbsp;</i><span>Administration</span></a></li>
-                <li><a href="#" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
-                <li><a href="#" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
-                <li><a href="#" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
-                <li><a href="#" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
+                <li><a href="?page=admin" id="nav-administration"><i class="fa-solid fa-hammer fa-sm">&nbsp;</i><span>Administration</span></a></li>
+                <li><a href="?page=formation" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
+                <li><a href="?page=stage" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
+                <li><a href="?page=titre" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
+                <li><a href="?page=fichiers" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
             </ul>
         </nav>
     </div>

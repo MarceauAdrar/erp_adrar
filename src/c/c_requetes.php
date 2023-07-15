@@ -480,8 +480,6 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $resultat = json_decode(inscriptionStagiaire($mailer, $_POST['form_add_stagiaire_nom'], $_POST['form_add_stagiaire_prenom'], $_POST['form_add_stagiaire_mail'], $_POST['form_add_stagiaire_pseudo'], $_POST['form_add_stagiaire_telephone'], $_POST['form_add_stagiaire_date_naissance'], $_POST['form_add_stagiaire_session'], empty($_POST['form_add_stagiaire_stage']) ? null : $_POST['form_add_stagiaire_stage']), true);
     header("Location: ../../public/index.php?page=ajouter_stagiaire&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
 } elseif (isset($_POST['form_add_document']) && !empty($_POST['form_add_document'])) {
-    var_dump(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), $_FILES['form_add_document_fichier']);
-    die;
     $resultat = json_decode(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), true);
     header("Location: ../../public/index.php?page=ajouter_document&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
 } elseif (isset($_POST['get_ratio_presence']) && !empty($_POST['get_ratio_presence'])) {

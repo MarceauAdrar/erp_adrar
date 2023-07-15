@@ -591,9 +591,9 @@ function readable_random_string($length = 6)
  * @param array $fichier Le fichier a importer.
  * 
  * 
- * @return array Un tableau avec deux index `string type` et `string message`..
+ * @return string Un tableau avec deux index `string type` et `string message`..
  */ 
-function ajouterDocument($nom_document, $fichier)
+function ajouterDocument(string $nom_document, array $fichier)
 {
     $type = "info";
     $message = "Document ajouté";

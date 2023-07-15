@@ -7,8 +7,8 @@
     text-align: center;
 }
 
-.table-stages {
-    margin-bottom: 2vh;
+.dataTables_length {
+    margin-bottom: 1.25vh;
 }
 
 .table-stages tbody tr td {
@@ -55,17 +55,13 @@
     background-color: #A9D08E;
 }
 
-.container {
-    margin-top: 5vh;
-    height: 100vh;
-}
-
-.container a {
-    padding: 30px;
-    background: teal;
-    color: #fff;
+.container a.btn {
+    margin: 5px;
+    padding: 10px;
+    background: var(--coul-secondaire);
+    color: var(--coul-ternaire);
     font-weight: bold;
-    font-size: 24px;
+    font-size: 12px;
     border-radius: 10px;
     cursor: pointer;
 }

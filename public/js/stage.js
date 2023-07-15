@@ -65,13 +65,17 @@ async function recupererDonnees() {
     }).then(() => {
       document.querySelectorAll('.btn-mail').forEach((element) => {
         console.log(document.querySelector('#id_formateur').value);
-        if(document.querySelector('#id_formateur').value == 0) {
+        if (document.querySelector('#id_formateur').value == 0) {
           element.classList.add('hidden');
         } else {
           element.classList.remove('hidden');
         }
       });
-      let table = new DataTable('#table-stages');
+      let table = new DataTable('#table-stages', {
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.5/i18n/fr-FR.json',
+        },
+      });
       new ClipboardJS('.btn');
     });
 }

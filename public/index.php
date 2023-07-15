@@ -13,7 +13,7 @@ if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur'][
 
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
-        $page = "notfound.html";
+        $page = "notfound.php";
         // if(isset($_SESSION['utilisateur'])) {
         switch ($_GET["page"]) {
             case "formation":

@@ -125,7 +125,7 @@
             </fieldset>
             <fieldset>
                 <legend>Secteurs</legend>
-                <form action="../src/c/c_requetes.php" method="post">
+                <form action="../src/c/c_requetes.php" method="post" enctype="multipart/form-data">
                     <input type="hidden" name="form_secteurs_ajout" value="1">
                     <input type="text" placeholder="Nom" name="form_secteurs_ajout_nom">
                     <input type="file" title="Image du secteur" name="form_secteurs_ajout_image">

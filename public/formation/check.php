@@ -80,8 +80,6 @@ if($_GET["module"] == "html-css") {
         default:
             $error404 = true;
     }
-} elseif($_GET["category"] == "quiz") {
-    $sql_select_quiz = "SELECT ";
 }
 
 

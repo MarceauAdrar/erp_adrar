@@ -319,12 +319,25 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req->bindValue(":carte_formateur_portable", filter_var($_POST['portable_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":id_formateur", filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT));
     die(json_encode($req->execute()));
-} elseif (isset($_POST['form_secteurs_ajout']) && !empty($_POST['form_secteurs_ajout'])) {
-    $sql = 'INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, signature_formateur, id_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable) 
-            VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :signature_formateur, :id_secteur, :carte_formateur_role, :carte_formateur_liens, :carte_formateur_tel, :carte_formateur_portable);';
-    $req = $db->prepare($sql);
-    $req->bindValue(":nom_formateur", filter_var($_POST['form_formateurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
-    die($req->execute());
+} elseif (isset($_POST['form_secteurs_ajout']) && !empty($_POST['form_secteurs_ajout'])) { // TODO: vérifier cette partie une fois le CRUD fait
+    $nom_secteur = filter_var($_POST['form_secteurs_ajout_nom'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $logo_secteur = "";
+    $success = false;
+    if(isset($_FILES['form_secteurs_ajout_image']) && !empty($_FILES['form_secteurs_ajout_image'])) {
+        $fp = fopen("../../public/img/logo_" . $nom_secteur . ".png", "wb");
+        fwrite($fp, $_FILES['form_secteurs_ajout_image']['tmp_name']);
+        fclose($fp);
+    }
+    if(!empty($logo_secteur)) {
+        $sql = 'INSERT INTO secteurs(nom_secteur, logo_secteur) 
+                VALUES(:nom_secteur, :logo_secteur);';
+        $req = $db->prepare($sql);
+        $req->bindValue(":nom_secteur", $nom_secteur);
+        $req->bindValue(":logo_secteur", $logo_secteur);
+        $success = $req->execute();
+        $req->closeCursor();
+    }
+    die($success);
 } elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
         if (connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {

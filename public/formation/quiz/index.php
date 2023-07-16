@@ -3,7 +3,7 @@ include_once("../../../src/m/connect.php");
 
 $title = " | Quiz";
 
-$sql_quiz_list = "SELECT quiz_id, quiz_module, quiz_lien, quiz_difficulte, id_secteur 
+$sql_quiz_list = "SELECT quiz_id, quiz_module, quiz_lien, quiz_difficulte, id_formateur 
                 FROM quiz 
                 WHERE quiz_module=:quiz_module;";
 $req_quiz_list = $db->prepare($sql_quiz_list);

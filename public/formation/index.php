@@ -4,12 +4,12 @@ include_once("../src/m/connect.php");
 if($_SESSION['utilisateur']['id_formateur'] > 0) {
     $req = $db->prepare("SELECT * 
                         FROM cours 
-                        WHERE id_secteur=:id_secteur  
+                        JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur)  
                         GROUP BY cours_category 
                         ORDER BY cours_category;");
-    $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
     $req->execute();
     $modules = $req->fetchAll(PDO::FETCH_ASSOC);
+    $req->closeCursor();
 } else {
     $req = $db->prepare("SELECT * 
                         FROM cours 
@@ -19,6 +19,7 @@ if($_SESSION['utilisateur']['id_formateur'] > 0) {
     $req->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
     $req->execute();
     $modules = $req->fetchAll(PDO::FETCH_ASSOC);
+    $req->closeCursor();
 }
 
 $title = " | Accueil";

@@ -251,8 +251,8 @@ if (!empty($_POST["show_modal_manage_quiz"])) {
 }
 
 if (!empty($_POST["add_cours"])) {
-    $req = $db->prepare("INSERT INTO cours(cours_title, cours_synopsis, cours_text, cours_keywords, cours_link, cours_category, cours_illustration)
-                        VALUES(:cours_title, :cours_synopsis, :cours_text, :cours_keywords, :cours_link, :cours_category, :cours_illustration) 
+    $req = $db->prepare("INSERT INTO cours(cours_title, cours_synopsis, cours_text, cours_keywords, cours_link, cours_category, cours_illustration, id_formateur)
+                        VALUES(:cours_title, :cours_synopsis, :cours_text, :cours_keywords, :cours_link, :cours_category, :cours_illustration, :id_formateur) 
                         RETURNING cours_id;");
     $req->bindValue(':cours_title', filter_var($_POST['form_cours_title'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_synopsis', filter_var($_POST['form_cours_synopsis'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -261,6 +261,7 @@ if (!empty($_POST["add_cours"])) {
     $req->bindValue(':cours_link', filter_var($_POST['form_cours_link'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_category', filter_var(strtolower($_POST['form_cours_module']), FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_illustration', filter_var(strtolower($_POST['form_cours_module']) . ".svg", FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
     if ($req->execute() && !empty($_POST['form_cours_active'])) {
         $id_cours = $req->fetch(PDO::FETCH_ASSOC)['cours_id'];
         $req = $db->prepare("SELECT id_session FROM sessions WHERE id_formateur=:id_formateur;");
@@ -281,13 +282,13 @@ if (!empty($_POST["add_cours"])) {
 }
 
 if (!empty($_POST["add_quiz"])) {
-    $req = $db->prepare("INSERT INTO quiz(quiz_module, quiz_lien, quiz_difficulte, id_secteur)
-                        VALUES(:quiz_module, :quiz_lien, :quiz_difficulte, :id_secteur) 
+    $req = $db->prepare("INSERT INTO quiz(quiz_module, quiz_lien, quiz_difficulte, id_formateur)
+                        VALUES(:quiz_module, :quiz_lien, :quiz_difficulte, :id_formateur) 
                         RETURNING quiz_id;");
     $req->bindValue(':quiz_module', filter_var($_POST['form_quiz_module'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':quiz_lien', filter_var($_POST['form_quiz_lien'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':quiz_difficulte', filter_var($_POST['form_quiz_difficulte'], FILTER_VALIDATE_INT));
-    $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
     if ($req->execute() && !empty($_POST['form_quiz_active'])) {
         $id_quiz = $req->fetch(PDO::FETCH_ASSOC)['quiz_id'];
         $req = $db->prepare("SELECT id_session FROM sessions WHERE id_formateur=:id_formateur;");

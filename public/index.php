@@ -13,7 +13,7 @@ if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur'][
 
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
-        $page = "notfound.php";
+        $page = "erreurs/404.php";
         // if(isset($_SESSION['utilisateur'])) {
         switch ($_GET["page"]) {
             case "formation":
@@ -48,7 +48,7 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                 $page = "formation/boite-aux-lettres.php";
                 break;
         }
-        if ($_SESSION['utilisateur']['id_formateur'] > 0 && $page !== "notfound.html") {
+        if ($_SESSION['utilisateur']['id_formateur'] > 0 && $page !== "erreurs/404.php") {
             $req = $db->prepare('REPLACE INTO historiques(id_formateur, page_visitee, page_nom, ip_visiteur, date_visite)
                                 VALUES(:id_formateur, :page_visitee, :page_nom, :ip_visiteur, NOW());');
             $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));

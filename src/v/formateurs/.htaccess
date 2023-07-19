@@ -1,0 +1,9 @@
+#Permet de rendre le dossier inaccessible
+Order Deny,Allow
+Deny from all
+
+#Permet de rendre les images accessibles pour les utiliser de manière unitaire
+<FilesMatch "\.(png)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>

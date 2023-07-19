@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost
--- Généré le : dim. 02 juil. 2023 à 21:59
+-- Généré le : mer. 19 juil. 2023 à 12:31
 -- Version du serveur : 10.5.19-MariaDB-0+deb11u2
 -- Version de PHP : 8.2.6
 
@@ -36,14 +36,14 @@ CREATE TABLE `cours` (
   `cours_link` varchar(255) NOT NULL,
   `cours_category` varchar(50) NOT NULL,
   `cours_illustration` varchar(255) NOT NULL,
-  `id_secteur` int(11) NOT NULL
+  `id_formateur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours`
 --
 
-INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_text`, `cours_keywords`, `cours_link`, `cours_category`, `cours_illustration`, `id_secteur`) VALUES
+INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_text`, `cours_keywords`, `cours_link`, `cours_category`, `cours_illustration`, `id_formateur`) VALUES
 (1, 'Introduction au HTML', 'Plongez-vous dans l\'informatique et découvrez les fondements de la programmation.', 'Ici, vous allez apprendre les bases pour construire une page web.', 'balises par paires;balises orphelines;éditeur;web;internet;url;parents;enfants;chevrons;slash;attribut;valeur;indentation;camelcase;commentaires', '2PACX-1vSk4_yItzv4-2qxw0Lt7UqTsuNcli83Muf-E4ek0-qQwPfmJbcN2HJ6L44hCbga4Q', 'html', 'html_css.svg', 1),
 (2, 'Les balises', 'Attaquez la programmation en découvrant les balises HTML', '', 'chrevrons;balises par paires;balises orphelines;block;inline;parent;enfant;paragraphe;div;span;ancre;chemin relatif;chemin absolu;identifiant;camelcase;snakecase;href;src;alt;listes ordonnées;listes non-ordonnées;header;footer;nav;section;article;aside;balises sémantiques', '2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', 'html', 'html_css.svg', 1),
 (17, 'Introduction', 'Attaquez les bases des feuilles de style.', '', 'styliser;style;link;sélecteurs;propriétés;valeurs;séparateurs;commentaires;cascade;ordre d\'éxécution;héritage;règles;déclarations', '2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', 'css', 'html_css.svg', 1),
@@ -72,6 +72,28 @@ INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_text`, 
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `cours_ressources`
+--
+
+CREATE TABLE `cours_ressources` (
+  `cours_ressource_id` int(11) NOT NULL,
+  `cours_ressource_titre` varchar(50) NOT NULL,
+  `cours_ressource_resume` text DEFAULT NULL,
+  `cours_ressource_lien` varchar(255) NOT NULL,
+  `cours_ressource_type` varchar(30) NOT NULL COMMENT 'tp;exercice',
+  `id_cours` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `cours_ressources`
+--
+
+INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `cours_ressource_resume`, `cours_ressource_lien`, `cours_ressource_type`, `id_cours`) VALUES
+(1, 'Exercice 1 sur la charte graphique', 'Petit résumé montrant de quoi retourne le sujet de l\'exercice.\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice. Petit résumé montrant de quoi retourne le sujet de l\'exercice.', 'https://docs.google.com/spreadsheets/d/1bjH6PlkO7S419u5kBgcwZAU6dxLyNknK/edit#gid=2066838886', 'exercice', 38);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `cours_sessions`
 --
 
@@ -87,7 +109,6 @@ CREATE TABLE `cours_sessions` (
 --
 
 INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cours_session_active`) VALUES
-(22, 2, 21, 0),
 (25, 2, 27, 1),
 (27, 1, 25, 1),
 (28, 1, 26, 1),
@@ -111,15 +132,16 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 (84, 1, 19, 1),
 (85, 1, 18, 1),
 (86, 1, 22, 1),
-(87, 1, 34, 1),
 (88, 1, 35, 1),
 (90, 1, 36, 1),
 (91, 2, 36, 1),
 (92, 1, 37, 1),
 (93, 2, 37, 1),
 (94, 1, 38, 1),
-(95, 2, 38, 1),
-(98, 2, 35, 0);
+(98, 2, 35, 0),
+(103, 2, 21, 0),
+(105, 2, 38, 1),
+(107, 1, 34, 0);
 
 -- --------------------------------------------------------
 
@@ -288,14 +310,16 @@ CREATE TABLE `historiques` (
 --
 
 INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `page_nom`, `ip_visiteur`, `date_visite`) VALUES
-(21, 1, '?page=admin', 'Admin', '192.168.43.97', '2023-07-01 14:48:29'),
-(25, 1, '?page=stage', 'Stage', '192.168.43.97', '2023-07-01 14:57:25'),
 (132, 1, '?page=mon-compte', 'Mon-compte', '192.168.43.164', '2023-07-02 21:44:37'),
-(133, 1, '?page=titre', 'Titre', '192.168.43.164', '2023-07-02 21:48:18'),
 (153, 21, '?page=formation', 'Formation', '192.168.43.164', '2023-07-02 22:08:20'),
-(155, 1, '?page=ajouter_referent', 'Ajouter_referent', '192.168.43.164', '2023-07-02 22:24:59'),
-(159, 1, '?page=ajouter_stagiaire', 'Ajouter_stagiaire', '192.168.43.164', '2023-07-02 23:34:09'),
-(160, 1, '?page=formation', 'Formation', '192.168.43.164', '2023-07-02 23:40:59');
+(169, 1, '?page=ajouter_stagiaire', 'Ajouter_stagiaire', '192.168.19.119', '2023-07-03 12:13:48'),
+(234, 1, '?page=ajouter_referent', 'Ajouter_referent', '192.168.19.119', '2023-07-06 14:08:09'),
+(252, 1, '?page=ajouter_document', 'Ajouter_document', '192.168.19.119', '2023-07-07 02:47:06'),
+(275, 1, '?page=stage', 'Stage', '192.168.2.57', '2023-07-17 16:54:34'),
+(277, 1, '?page=titre', 'Titre', '192.168.2.57', '2023-07-17 16:57:48'),
+(279, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '192.168.2.57', '2023-07-17 16:58:34'),
+(281, 1, '?page=formation', 'Formation', '192.168.2.57', '2023-07-17 17:00:02'),
+(283, 1, '?page=admin', 'Admin', '192.168.19.119', '2023-07-19 14:29:42');
 
 -- --------------------------------------------------------
 
@@ -305,65 +329,39 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 
 CREATE TABLE `quiz` (
   `quiz_id` int(11) NOT NULL,
-  `quiz_question` varchar(50) NOT NULL,
-  `quiz_proposition_1` varchar(100) NOT NULL,
-  `quiz_proposition_2` varchar(100) NOT NULL,
-  `quiz_proposition_3` varchar(100) DEFAULT NULL,
-  `quiz_proposition_4` varchar(100) DEFAULT NULL,
-  `quiz_answer` varchar(10) NOT NULL,
-  `quiz_type` tinyint(1) NOT NULL COMMENT '0: checkbox ; 1: radio',
-  `id_quiz_list` int(11) NOT NULL
+  `quiz_module` varchar(50) NOT NULL,
+  `quiz_lien` varchar(255) NOT NULL,
+  `quiz_difficulte` int(1) NOT NULL COMMENT '0: Facile ; 1: Modéré ; 2: Difficile ; 3: Extrême',
+  `id_formateur` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `quiz`
 --
 
-INSERT INTO `quiz` (`quiz_id`, `quiz_question`, `quiz_proposition_1`, `quiz_proposition_2`, `quiz_proposition_3`, `quiz_proposition_4`, `quiz_answer`, `quiz_type`, `id_quiz_list`) VALUES
-(1, 'Que signifie HTML ?', 'HypraTop MarqueUp Language', 'HyperText Markup Language', NULL, NULL, '2', 1, 1),
-(2, 'Qu\'est ce qu\'un navigateur web ?\n', 'HypraTop MarqueUp Language', 'HyperText Markup Language', NULL, NULL, '2', 1, 1);
+INSERT INTO `quiz` (`quiz_id`, `quiz_module`, `quiz_lien`, `quiz_difficulte`, `id_formateur`) VALUES
+(3, 'html', '78736813', 0, 1);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `quiz_dd`
+-- Structure de la table `quiz_sessions`
 --
 
-CREATE TABLE `quiz_dd` (
-  `quiz_dd_id` int(11) NOT NULL,
-  `quiz_dd_name` varchar(50) NOT NULL,
-  `quiz_dd_link` varchar(100) NOT NULL,
-  `quiz_dd_active` tinyint(1) NOT NULL
+CREATE TABLE `quiz_sessions` (
+  `quiz_sessions_id` int(11) NOT NULL,
+  `id_session` int(11) NOT NULL,
+  `id_quiz` int(11) NOT NULL,
+  `quiz_session_active` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Déchargement des données de la table `quiz_dd`
+-- Déchargement des données de la table `quiz_sessions`
 --
 
-INSERT INTO `quiz_dd` (`quiz_dd_id`, `quiz_dd_name`, `quiz_dd_link`, `quiz_dd_active`) VALUES
-(1, 'HTML', 'html', 1),
-(2, 'CSS', 'css', 1),
-(3, 'Bootstrap', 'bootstrap', 0);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `quiz_lists`
---
-
-CREATE TABLE `quiz_lists` (
-  `quiz_list_id` int(11) NOT NULL,
-  `quiz_list_title` varchar(100) NOT NULL,
-  `id_dd_quiz` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Déchargement des données de la table `quiz_lists`
---
-
-INSERT INTO `quiz_lists` (`quiz_list_id`, `quiz_list_title`, `id_dd_quiz`) VALUES
-(1, 'HTML niveau débutant', 1),
-(2, 'HTML niveau intermédiaire', 1);
+INSERT INTO `quiz_sessions` (`quiz_sessions_id`, `id_session`, `id_quiz`, `quiz_session_active`) VALUES
+(42, 1, 3, 1),
+(48, 2, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -560,19 +558,6 @@ CREATE TABLE `stagiaires_evaluations` (
 INSERT INTO `stagiaires_evaluations` (`stagiaire_evaluation_id`, `stagiaire_evaluation_completed`, `stagiaire_evaluation_correction`, `stagiaire_evaluation_errors_found`, `id_stagiaire`, `id_evaluation`) VALUES
 (4, 0, NULL, NULL, 23, 1);
 
--- --------------------------------------------------------
-
---
--- Structure de la table `stagiaires_quiz`
---
-
-CREATE TABLE `stagiaires_quiz` (
-  `stagiaire_quiz_id` int(11) NOT NULL,
-  `stagiaire_quiz_answers` varchar(10) NOT NULL,
-  `id_quiz` int(11) NOT NULL,
-  `id_stagiaire` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 --
 -- Index pour les tables déchargées
 --
@@ -582,7 +567,15 @@ CREATE TABLE `stagiaires_quiz` (
 --
 ALTER TABLE `cours`
   ADD PRIMARY KEY (`cours_id`),
-  ADD KEY `id_secteur` (`id_secteur`);
+  ADD UNIQUE KEY `cours_link` (`cours_link`),
+  ADD KEY `id_formateur` (`id_formateur`) USING BTREE;
+
+--
+-- Index pour la table `cours_ressources`
+--
+ALTER TABLE `cours_ressources`
+  ADD PRIMARY KEY (`cours_ressource_id`),
+  ADD KEY `id_cours` (`id_cours`);
 
 --
 -- Index pour la table `cours_sessions`
@@ -642,20 +635,17 @@ ALTER TABLE `historiques`
 --
 ALTER TABLE `quiz`
   ADD PRIMARY KEY (`quiz_id`),
-  ADD KEY `id_quiz_list` (`id_quiz_list`);
+  ADD UNIQUE KEY `quiz_lien` (`quiz_lien`),
+  ADD KEY `id_formateur` (`id_formateur`) USING BTREE;
 
 --
--- Index pour la table `quiz_dd`
+-- Index pour la table `quiz_sessions`
 --
-ALTER TABLE `quiz_dd`
-  ADD PRIMARY KEY (`quiz_dd_id`);
-
---
--- Index pour la table `quiz_lists`
---
-ALTER TABLE `quiz_lists`
-  ADD PRIMARY KEY (`quiz_list_id`),
-  ADD KEY `id_dd_quiz` (`id_dd_quiz`);
+ALTER TABLE `quiz_sessions`
+  ADD PRIMARY KEY (`quiz_sessions_id`),
+  ADD UNIQUE KEY `id_session_2` (`id_session`,`id_quiz`),
+  ADD KEY `id_session` (`id_session`),
+  ADD KEY `id_quiz` (`id_quiz`);
 
 --
 -- Index pour la table `secteurs`
@@ -701,15 +691,6 @@ ALTER TABLE `stagiaires_evaluations`
   ADD KEY `id_evaluation` (`id_evaluation`);
 
 --
--- Index pour la table `stagiaires_quiz`
---
-ALTER TABLE `stagiaires_quiz`
-  ADD PRIMARY KEY (`stagiaire_quiz_id`),
-  ADD UNIQUE KEY `id_quiz_2` (`id_quiz`,`id_stagiaire`),
-  ADD KEY `id_quiz` (`id_quiz`),
-  ADD KEY `id_stagiaire` (`id_stagiaire`);
-
---
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
@@ -720,10 +701,16 @@ ALTER TABLE `cours`
   MODIFY `cours_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
+-- AUTO_INCREMENT pour la table `cours_ressources`
+--
+ALTER TABLE `cours_ressources`
+  MODIFY `cours_ressource_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT pour la table `cours_sessions`
 --
 ALTER TABLE `cours_sessions`
-  MODIFY `cours_session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+  MODIFY `cours_session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT pour la table `documents`
@@ -759,25 +746,19 @@ ALTER TABLE `formateurs`
 -- AUTO_INCREMENT pour la table `historiques`
 --
 ALTER TABLE `historiques`
-  MODIFY `id_historique` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
+  MODIFY `id_historique` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=284;
 
 --
 -- AUTO_INCREMENT pour la table `quiz`
 --
 ALTER TABLE `quiz`
-  MODIFY `quiz_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `quiz_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT pour la table `quiz_dd`
+-- AUTO_INCREMENT pour la table `quiz_sessions`
 --
-ALTER TABLE `quiz_dd`
-  MODIFY `quiz_dd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `quiz_lists`
---
-ALTER TABLE `quiz_lists`
-  MODIFY `quiz_list_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `quiz_sessions`
+  MODIFY `quiz_sessions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
 
 --
 -- AUTO_INCREMENT pour la table `secteurs`
@@ -816,14 +797,14 @@ ALTER TABLE `stagiaires_evaluations`
   MODIFY `stagiaire_evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT pour la table `stagiaires_quiz`
---
-ALTER TABLE `stagiaires_quiz`
-  MODIFY `stagiaire_quiz_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `cours_ressources`
+--
+ALTER TABLE `cours_ressources`
+  ADD CONSTRAINT `cours_ressources_ibfk_1` FOREIGN KEY (`id_cours`) REFERENCES `cours` (`cours_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `cours_sessions`
@@ -861,13 +842,14 @@ ALTER TABLE `historiques`
 -- Contraintes pour la table `quiz`
 --
 ALTER TABLE `quiz`
-  ADD CONSTRAINT `quiz_ibfk_1` FOREIGN KEY (`id_quiz_list`) REFERENCES `quiz_lists` (`quiz_list_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `quiz_ibfk_1` FOREIGN KEY (`id_formateur`) REFERENCES `secteurs` (`id_secteur`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `quiz_lists`
+-- Contraintes pour la table `quiz_sessions`
 --
-ALTER TABLE `quiz_lists`
-  ADD CONSTRAINT `quiz_lists_ibfk_1` FOREIGN KEY (`id_dd_quiz`) REFERENCES `quiz_dd` (`quiz_dd_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `quiz_sessions`
+  ADD CONSTRAINT `quiz_sessions_ibfk_1` FOREIGN KEY (`id_quiz`) REFERENCES `quiz` (`quiz_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `quiz_sessions_ibfk_2` FOREIGN KEY (`id_session`) REFERENCES `sessions` (`id_session`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `sessions`
@@ -888,13 +870,6 @@ ALTER TABLE `stagiaires`
 ALTER TABLE `stagiaires_evaluations`
   ADD CONSTRAINT `stagiaires_evaluations_ibfk_1` FOREIGN KEY (`id_evaluation`) REFERENCES `evaluations` (`evaluation_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `stagiaires_evaluations_ibfk_2` FOREIGN KEY (`id_stagiaire`) REFERENCES `stagiaires` (`id_stagiaire`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `stagiaires_quiz`
---
-ALTER TABLE `stagiaires_quiz`
-  ADD CONSTRAINT `stagiaires_quiz_ibfk_1` FOREIGN KEY (`id_quiz`) REFERENCES `quiz` (`quiz_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `stagiaires_quiz_ibfk_2` FOREIGN KEY (`id_stagiaire`) REFERENCES `stagiaires` (`id_stagiaire`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

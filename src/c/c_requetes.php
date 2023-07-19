@@ -531,7 +531,15 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
 
     $total = $req->rowCount();
-    $value = ($somme / $total) * 100;
+    $color = "";
+    $value = 0;
+    $success = true;
+    if(!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+    
     if ($value <= 30) {
         $color = "col-bad";
     } elseif ($value <= 70) {
@@ -542,7 +550,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 
     die(json_encode(array(
         'value' => number_format($value, 2, ","),
-        'color' => $color
+        'color' => $color, 
+        'success' => $success
     )));
 } elseif (isset($_POST['get_ratio_attestation']) && !empty($_POST['get_ratio_attestation'])) {
     $sql = "SELECT attestation_recue 
@@ -578,7 +587,15 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
 
     $total = $req->rowCount();
-    $value = ($somme / $total) * 100;
+    $color = "";
+    $value = 0;
+    $success = true;
+    if(!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+    
     if ($value <= 30) {
         $color = "col-bad";
     } elseif ($value <= 70) {
@@ -589,7 +606,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 
     die(json_encode(array(
         'value' => number_format($value, 2, ","),
-        'color' => $color
+        'color' => $color, 
+        'success' => $success
     )));
 } elseif (isset($_POST['get_ratio_evaluation']) && !empty($_POST['get_ratio_evaluation'])) {
     $sql = "SELECT evaluation_recue 
@@ -625,7 +643,15 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
 
     $total = $req->rowCount();
-    $value = ($somme / $total) * 100;
+    $color = "";
+    $value = 0;
+    $success = true;
+    if(!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+    
     if ($value <= 30) {
         $color = "col-bad";
     } elseif ($value <= 70) {
@@ -636,7 +662,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 
     die(json_encode(array(
         'value' => number_format($value, 2, ","),
-        'color' => $color
+        'color' => $color, 
+        'success' => $success
     )));
 } elseif (isset($_POST['get_ratio_convention']) && !empty($_POST['get_ratio_convention'])) {
     $sql = "SELECT convention_recue 
@@ -672,7 +699,15 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
 
     $total = $req->rowCount();
-    $value = ($somme / $total) * 100;
+    $color = "";
+    $value = 0;
+    $success = true;
+    if(!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+    
     if ($value <= 30) {
         $color = "col-bad";
     } elseif ($value <= 70) {
@@ -683,6 +718,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 
     die(json_encode(array(
         'value' => number_format($value, 2, ","),
-        'color' => $color
+        'color' => $color, 
+        'success' => $success
     )));
 }

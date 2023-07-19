@@ -2,9 +2,16 @@
 include_once("../src/m/connect.php");
 
 if($_SESSION['utilisateur']['id_formateur'] > 0) {
+    $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE id_secteur=:id_secteur;");
+    $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    $req->execute();
+    $ids_formateurs = $req->fetchAll(PDO::FETCH_COLUMN);
+    $req->closeCursor();
+    
     $req = $db->prepare("SELECT * 
                         FROM cours 
-                        JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur)  
+                        JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
+                        WHERE formateurs.id_formateur IN(" . implode(", ", $ids_formateurs) . ")  
                         GROUP BY cours_category 
                         ORDER BY cours_category;");
     $req->execute();
@@ -37,9 +44,11 @@ include_once("./formation/header.php");
     <div class="row pt-5">
         <h3>Les modules</h3>
 
-        <?php foreach($modules as $module) { ?>
+        <?php 
+        if(!empty($modules)) {
+        foreach($modules as $module) { ?>
             <div class="col-3 mb-3">
-                <a href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/cours.php?cours=<?=$module['cours_category']?>" class="text-black">
+                <a title="Cours fait par" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/cours.php?cours=<?=$module['cours_category']?>" class="text-black">
                     <div class="card">
                         <span class="card-img-top" alt="Illustration <?=$module['cours_category']?>">
                             <?php include_once("./formation/imgs/" . $module['cours_category'] . ".svg"); ?>
@@ -50,6 +59,8 @@ include_once("./formation/header.php");
                     </div>
                 </a>
             </div>
+        <?php }} else { ?>
+            <p>Vous n'avez pas de cours dans votre secteur</p>
         <?php } ?>
 
     </div>

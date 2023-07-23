@@ -244,6 +244,11 @@ fieldset {
     color: #FFFFFF !important;
 }
 
+form input:not([type="submit"], form input[type="file"]):disabled,
+form select:disabled, textarea:disabled {
+    background-color: black;
+    opacity: 0.3;
+}
 form input:not([type="submit"], form input[type="hidden"], form input[type="file"]),
 form select, textarea {
     background-color: var(--coul-quaternaire);

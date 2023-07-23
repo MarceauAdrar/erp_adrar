@@ -213,6 +213,40 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                     </div>
                                 </form>';
             break;
+        case 'ajouter-tuteur';
+            $js = '<script src="js/formulaire-tuteur.js"></script>';
+            
+            $nom_formulaire = 'form_add_tuteur';
+            $label_btn = "Ajouter";
+            $title = "Ajouter un tuteur";
+            $card_title = "Ajouter un tuteur";
+            $card_content = '<form action="../src/c/c_requetes.php" method="post" id="' . $nom_formulaire . '">
+                                    <div class="' . (isset($_GET['type']) ? "" : "hidden") . (isset($_GET['type']) && $_GET['type'] == "info" ? "alert-info" : "alert-danger") . '">' . @$_GET['message'] . '</div>
+                                    <div>
+                                        <div>
+                                            <label for="form_add_tuteur_nom">NOM:*</label>
+                                            <input autocomplete="none" type="text" name="form_add_tuteur_nom">
+                                        </div>
+                                        <div>
+                                            <label for="form_add_tuteur_prenom">Prénom:*</label>
+                                            <input autocomplete="none" type="text" name="form_add_tuteur_prenom">
+                                        </div>
+                                        <div>
+                                            <label for="form_add_tuteur_mail">Mail:*</label>
+                                            <input autocomplete="none" type="text" name="form_add_tuteur_mail">
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <label for="form_add_tuteur_address">Adresse:*</label>
+                                            <input autocomplete="none" type="text" name="form_add_tuteur_address_search">
+                                            <div id="address_suggestions">
+                                            </div>
+                                            <input type="hidden" name="form_add_tuteur_address">
+                                        </div>
+                                    </div>
+                                </form>';
+            break;
         case 'ajouter-document':
             $nom_formulaire = 'form_add_document';
             $title = 'Ajouter un template de document';

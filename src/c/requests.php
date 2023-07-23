@@ -365,4 +365,21 @@ if (!empty($_POST["fetch_quiz_data"])) {
 <?php
     die(ob_get_clean());
 }
+
+if (!empty($_POST["form_ressource_add"])) {
+    $req = $db->prepare("SELECT cours_id FROM cours WHERE cours_link=:cours_link;");
+    $req->bindValue(':cours_link', filter_var($_POST['form_ressource_cours_id'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->execute();
+    $id_cours = $req->fetch(PDO::FETCH_COLUMN);
+    
+    $req = $db->prepare("INSERT INTO cours_ressources(id_cours, cours_ressource_type, cours_ressource_titre, cours_ressource_resume, cours_ressource_lien) 
+                        VALUES(:id_cours, :cours_ressource_type, :cours_ressource_titre, :cours_ressource_resume, :cours_ressource_lien);");
+    $req->bindValue(':id_cours', filter_var($id_cours, FILTER_VALIDATE_INT));
+    $req->bindValue(':cours_ressource_type', filter_var($_POST['form_ressource_type'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':cours_ressource_titre', filter_var($_POST['form_ressource_titre'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':cours_ressource_resume', filter_var($_POST['form_ressource_synopsis'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':cours_ressource_lien', filter_var($_POST['form_ressource_lien'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->execute();
+    header('Location: /erp/public/formation/embed.php?slide='.$_POST['form_ressource_cours_id']);
+}
 ?>

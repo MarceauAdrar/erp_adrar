@@ -15,7 +15,7 @@
 <body>
     <div class="container">
         <div class="sidenav">
-            <?= file_get_contents('../sidenav.php') ?>
+            <?= file_get_contents('./sidenav.php') ?>
         </div>
         <div class="main">
             <h2>Erreur 404</h2>

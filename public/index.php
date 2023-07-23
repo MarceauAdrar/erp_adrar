@@ -40,6 +40,10 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                 $_GET['form'] = "ajouter-stagiaire";
                 $page = "formulaire.php";
                 break;
+            case "ajouter-tuteur":
+                $_GET['form'] = "ajouter-tuteur";
+                $page = "formulaire.php";
+                break;
             case "ajouter-document":
                 $_GET['form'] = "ajouter-document";
                 $page = "formulaire.php";
@@ -67,10 +71,16 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
     die;
 }
 
-$req = $db->prepare("SELECT * FROM sessions WHERE id_formateur=:id_formateur;");
+$req = $db->prepare("SELECT * 
+                    FROM sessions
+                    LEFT JOIN stagiaires ON (sessions.id_session = stagiaires.id_session)
+                    WHERE id_formateur=:id_formateur
+                    AND id_stage IS NOT NULL
+                    GROUP BY nom_session;");
 $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
 $req->execute();
 $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
+$req->closeCursor();
 
 if (isset($_POST['form_filter_session'])) {
     $_SESSION['filtres']['id_session'] = filter_var($_POST['form_filter_session'], FILTER_VALIDATE_INT);
@@ -130,7 +140,7 @@ if (isset($_POST['form_filter_session'])) {
                     </a>
                 </div>
                 <div class="box">
-                    <a href="index.php?page=ajouter_tuteur">
+                    <a href="index.php?page=ajouter-tuteur">
                         <div class="contenu">
                             <h2>Ajouter un tuteur</h2>
                         </div>
@@ -160,7 +170,7 @@ if (isset($_POST['form_filter_session'])) {
                             $req->closeCursor();
                             if (!empty($historiques)) {
                                 foreach ($historiques as $historique) { ?>
-                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= str_replace('_', ' un ', $historique['page_nom']) ?></a></p>
+                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= str_replace(array('_', '-'), ' un ', $historique['page_nom']) ?></a></p>
                                 <?php
                                 }
                             } else { ?>

@@ -48,7 +48,7 @@ include_once("./formation/header.php");
         if(!empty($modules)) {
         foreach($modules as $module) { ?>
             <div class="col-3 mb-3">
-                <a title="Cours fait par" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/cours.php?cours=<?=$module['cours_category']?>" class="text-black">
+                <a title="Cours fait par <?=ucwords($module['prenom_formateur']) . " " . strtoupper($module['nom_formateur'])?>" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/cours.php?cours=<?=$module['cours_category']?>" class="text-black">
                     <div class="card">
                         <span class="card-img-top" alt="Illustration <?=$module['cours_category']?>">
                             <?php include_once("./formation/imgs/" . $module['cours_category'] . ".svg"); ?>

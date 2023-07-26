@@ -8,11 +8,11 @@
     <!-- CSS only -->
     <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/base.css" />
-    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/connexion.css" />
-    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/tables.css" />
-    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/evals.css" />
-    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/animations.css" />
+    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/base.css?v=<?=uniqid()?>" />
+    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/connexion.css?v=<?=uniqid()?>" />
+    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/tables.css?v=<?=uniqid()?>" />
+    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/evals.css?v=<?=uniqid()?>" />
+    <link rel="stylesheet" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/css/animations.css?v=<?=uniqid()?>" />
     <title>Evaluation finale<?= $title ?></title>
 </head>
 
@@ -106,6 +106,6 @@
             </div>
         </nav>
         <div id="notifications" class="hidden">
-            <div><p>Il vous reste le TP {{TP}} à compléter !</p></div>
+            <div></div>
         </div>
     <?php } ?>

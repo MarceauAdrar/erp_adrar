@@ -1,6 +1,10 @@
 <?php
 include_once("../src/m/connect.php");
 
+// echo '<pre>';
+// var_dump($_SESSION['utilisateur']);
+// echo '</pre>';die;
+
 if($_SESSION['utilisateur']['id_formateur'] > 0) {
     $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE id_secteur=:id_secteur;");
     $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
@@ -20,6 +24,7 @@ if($_SESSION['utilisateur']['id_formateur'] > 0) {
 } else {
     $req = $db->prepare("SELECT * 
                         FROM cours 
+                        JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
                         JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session AND cours_session_active = 1) 
                         GROUP BY cours_category 
                         ORDER BY cours_category;");

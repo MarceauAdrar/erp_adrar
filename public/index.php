@@ -170,7 +170,7 @@ if (isset($_POST['form_filter_session'])) {
                             $req->closeCursor();
                             if (!empty($historiques)) {
                                 foreach ($historiques as $historique) { ?>
-                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= str_replace(array('_', '-'), ' un ', $historique['page_nom']) ?></a></p>
+                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= str_replace(array('_', '-'), '&nbsp;', $historique['page_nom']) ?></a></p>
                                 <?php
                                 }
                             } else { ?>

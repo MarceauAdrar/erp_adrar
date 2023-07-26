@@ -35,3 +35,11 @@ function btnJoinEvaluation(id) {
         }
     });
 }
+
+function majInputRessource() {
+    document.querySelector("#div_form_ressource_file").classList.remove('d-block');
+    document.querySelector("#div_form_ressource_file").classList.remove('d-none');
+    if(document.querySelector("#form_ressource_type").value !== "autre") {
+        document.querySelector("#div_form_ressource_file").classList.add('d-none');
+    }
+}

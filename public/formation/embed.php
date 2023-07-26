@@ -3,6 +3,11 @@ include_once("../../src/m/connect.php");
 
 $title = " | Cours";
 
+$req = $db->prepare("SELECT * FROM cours_ressources WHERE id_cours= (SELECT cours_id FROM cours WHERE cours_link=:cours_link) AND cours_ressource_type = 'autre';");
+$req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
+$req->execute();
+$ressources = $req->fetchAll(PDO::FETCH_ASSOC);
+
 $req = $db->prepare("SELECT * FROM cours_ressources WHERE id_cours= (SELECT cours_id FROM cours WHERE cours_link=:cours_link) AND cours_ressource_type = 'exercice';");
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
 $req->execute();
@@ -29,13 +34,36 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
 <iframe src="https://docs.google.com/presentation/d/e/<?= @$_GET['slide'] ?>/embed?start=true&loop=true&delayms=60000" frameborder="0" width="1280" height="749" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 <div class="container">
     <div class="row">
+        <?php if (!empty($ressources)) { ?>
+            <div class="col-12">
+                <h2>Les ressources</h2>
+                <?php foreach ($ressources as $ressource) { ?>
+                    <a target="_blank" href="download.php?q=<?= $ressource['cours_ressource_archive_lien'] ?>" class="w-25 d-block text-black text-decoration-none">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="card-title text-decoration-underline"><?=$ressource['cours_ressource_titre']?></p>
+                                <i class="fa-solid fa-circle-down text-black" style="position: absolute;right: 1vw;bottom: 0.5vh;font-size: 3rem;opacity: 0.5;"></i>
+                            </div>
+                        </div>
+                    </a>
+                <?php } ?>
+            </div>
+            <hr>
+        <?php } ?>
         <?php if (!empty($exercices)) { ?>
             <div class="col-12">
                 <h2>Les exercices</h2>
                 <?php foreach ($exercices as $exercice) { ?>
-                    <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>">
-                        <p><?= $exercice['cours_ressource_titre'] ?></p>
-                        <small><?= $exercice['cours_ressource_resume'] ?></small>
+                    <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>" class="w-25 d-block text-black text-decoration-none">
+                        <div class="card">
+                            <span class="card-img-top" alt="Illustration devoirs à la maison">
+                                <?php include_once("./imgs/homeworks.svg"); ?>
+                            </span>
+                            <div class="card-body">
+                                <p class="card-title text-decoration-underline"><?=$exercice['cours_ressource_titre']?></p>
+                                <small><?= $exercice['cours_ressource_resume'] ?></small>
+                            </div>
+                        </div>
                     </a>
                 <?php } ?>
             </div>
@@ -45,9 +73,16 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
             <div class="col-12">
                 <h2>Les TPs</h2>
                 <?php foreach ($tps as $tp) { ?>
-                    <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>">
-                        <p><?= $tp['cours_ressource_titre'] ?></p>
-                        <small><?= $tp['cours_ressource_resume'] ?></small>
+                    <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="w-25 text-black text-decoration-none">
+                        <div class="card">
+                            <span class="card-img-top" alt="Illustration devoirs à la maison">
+                                <?php include_once("./imgs/homeworks.svg"); ?>
+                            </span>
+                            <div class="card-body">
+                                <p class="card-title text-decoration-underline"><?=strtoupper($tp['cours_ressource_titre'])?></p>
+                                <small><?= $tp['cours_ressource_resume'] ?></small>
+                            </div>
+                        </div>
                     </a>
                 <?php } ?>
             </div>
@@ -63,7 +98,7 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="../../src/c/requests.php" method="post" id="form_ressource_add">
+                <form action="../../src/c/requests.php" method="post" id="form_ressource_add" enctype="multipart/form-data">
                     <input type="hidden" name="form_ressource_cours_id" value="<?=$_GET['slide']?>">
                     <div class="mb-3">
                         <label for="form_ressource_titre" class="form-label">Titre de la ressource:</label>
@@ -79,10 +114,15 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
                     </div>
                     <div class="mb-3">
                         <label for="form_ressource_type" class="form-label">Type de ressource:</label>
-                        <select name="form_ressource_type" id="form_ressource_type">
+                        <select name="form_ressource_type" id="form_ressource_type" class="form-control" onchange="majInputRessource();">
+                            <option value="autre">Autre</option>
                             <option value="exercice">Exercice</option>
                             <option value="tp">TP</option>
                         </select>
+                    </div>
+                    <div class="mb-3" id="div_form_ressource_file">
+                        <label for="form_ressource_file" class="form-label">Archive à joindre:</label>
+                        <input type="file" name="form_ressource_file" id="form_ressource_file" class="form-control" accept=".gz,.tar,.zip,.rar">
                     </div>
                 </form>
             </div>

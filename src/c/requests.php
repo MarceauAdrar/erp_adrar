@@ -223,11 +223,11 @@ if (!empty($_POST["show_modal_manage_quiz"])) {
                     <h2><?= $session['nom_session'] ?></h2>
                     <?php foreach ($quiz as $value) {
                         $difficulte = "Facile";
-                        if($value['quiz_difficulte'] == 3) {
+                        if ($value['quiz_difficulte'] == 3) {
                             $difficulte = "Extrême";
-                        } elseif($value['quiz_difficulte'] == 2) {
+                        } elseif ($value['quiz_difficulte'] == 2) {
                             $difficulte = "Difficile";
-                        } elseif($value['quiz_difficulte'] == 1) {
+                        } elseif ($value['quiz_difficulte'] == 1) {
                             $difficulte = "Modéré";
                         } ?>
                         <div class="col-3" id="quiz_<?= $value['quiz_id'] ?>_<?= $session['id_session'] ?>" onclick="updateStatusQuiz(<?= $value['quiz_id'] ?>, <?= $session['id_session'] ?>);">
@@ -358,7 +358,7 @@ if (!empty($_POST["fetch_quiz_data"])) {
                 </div>
             </div>
             <div class="row">
-                <div style="width:100%;display:flex;flex-direction:column;gap:8px;min-height:635px;"><iframe src="https://quizizz.com/join?gc=<?=$quiz['quiz_lien']?>" title="Test - Quizizz" style="flex:1;" frameBorder="0" allowfullscreen></iframe></div>
+                <div style="width:100%;display:flex;flex-direction:column;gap:8px;min-height:635px;"><iframe src="https://quizizz.com/join?gc=<?= $quiz['quiz_lien'] ?>" title="Test - Quizizz" style="flex:1;" frameBorder="0" allowfullscreen></iframe></div>
             </div>
         </div>
     </div>
@@ -371,15 +371,44 @@ if (!empty($_POST["form_ressource_add"])) {
     $req->bindValue(':cours_link', filter_var($_POST['form_ressource_cours_id'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->execute();
     $id_cours = $req->fetch(PDO::FETCH_COLUMN);
-    
-    $req = $db->prepare("INSERT INTO cours_ressources(id_cours, cours_ressource_type, cours_ressource_titre, cours_ressource_resume, cours_ressource_lien) 
-                        VALUES(:id_cours, :cours_ressource_type, :cours_ressource_titre, :cours_ressource_resume, :cours_ressource_lien);");
+
+    $ressource_lien = NULL;
+    if (isset($_POST['form_ressource_lien']) && !empty($_POST['form_ressource_lien'])) {
+        $ressource_lien = filter_var($_POST['form_ressource_lien'], FILTER_SANITIZE_SPECIAL_CHARS);
+    }
+    $archive = NULL;
+    $archive_lien = NULL;
+    if (isset($_FILES['form_ressource_file']) && !empty($_FILES['form_ressource_file'])) {
+        $extensions_ok = array("gz", "tar", "zip", "rar");
+        $extension = substr(strrchr($_FILES['form_ressource_file']['name'], '.'), 1);
+        if (in_array($extension, $extensions_ok)) {
+            $pseudo_formateur = strtolower(substr($_SESSION['utilisateur']['prenom_formateur'], 0, 1) . $_SESSION['utilisateur']['nom_formateur']);
+            $lien = "../v/formateurs/" . $pseudo_formateur;
+            $archive = uniqid("_") . "_ressource_cours_" . $id_cours . "." . $extension;
+            $archive_lien = sha1($archive);
+            if (!is_dir($lien)) {
+                mkdir($lien);
+            }
+            move_uploaded_file($_FILES['form_ressource_file']['tmp_name'], $lien . "/" . $archive);
+        }
+    }
+    $req = $db->prepare("INSERT INTO cours_ressources(id_cours, cours_ressource_type, cours_ressource_titre, cours_ressource_resume, cours_ressource_lien, cours_ressource_archive, cours_ressource_archive_lien) 
+                        VALUES(:id_cours, :cours_ressource_type, :cours_ressource_titre, :cours_ressource_resume, :cours_ressource_lien, :cours_ressource_archive, :cours_ressource_archive_lien);");
     $req->bindValue(':id_cours', filter_var($id_cours, FILTER_VALIDATE_INT));
     $req->bindValue(':cours_ressource_type', filter_var($_POST['form_ressource_type'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_ressource_titre', filter_var($_POST['form_ressource_titre'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_ressource_resume', filter_var($_POST['form_ressource_synopsis'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(':cours_ressource_lien', filter_var($_POST['form_ressource_lien'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(':cours_ressource_lien', $ressource_lien);
+    $req->bindValue(':cours_ressource_archive', $archive);
+    $req->bindValue(':cours_ressource_archive_lien', $archive_lien);
     $req->execute();
-    header('Location: /erp/public/formation/embed.php?slide='.$_POST['form_ressource_cours_id']);
+    header('Location: /erp/public/formation/embed.php?slide=' . $_POST['form_ressource_cours_id']);
+}
+
+if (!empty($_POST["load_new_notifications"])) {
+    die(json_encode(array(
+        "notifications" => array("Test"),
+        "notifications_count" => 1
+    )));
 }
 ?>

@@ -214,6 +214,11 @@ i[class] {
 .card-connexion {
     height: 470px;
 }
+/* 
+.card-homework {
+    width: 200px;
+    max-width: 200px;
+} */
 
 .card-img-top {
     height: 230px;
@@ -228,7 +233,7 @@ i[class] {
     height: 55vh;
 }
 
-.cours .card-body {
+.card-body {
     overflow-y: auto;
     max-height: 31vh;
 }

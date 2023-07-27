@@ -406,9 +406,28 @@ if (!empty($_POST["form_ressource_add"])) {
 }
 
 if (!empty($_POST["load_new_notifications"])) {
+    $notifications = [];
+    $notifications_count = 0;
+    if($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+        $req = $db->prepare("SELECT notification_titre, notification_lien 
+                            FROM notifications 
+                            WHERE id_stagiaire=:id_stagiaire;");
+        $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+        $req->execute();
+        $notifications = $req->fetchAll(PDO::FETCH_ASSOC);
+        $notifications_count = sizeof($notifications);
+        $req->closeCursor();
+        if(isset($_POST['opened']) && $_POST['opened'] === "true") {
+            $req = $db->prepare("DELETE FROM notifications WHERE id_stagiaire=:id_stagiaire;");
+            $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+            $req->execute();
+            $req->closeCursor();
+        }
+    }
+
     die(json_encode(array(
-        "notifications" => array("Test"),
-        "notifications_count" => 1
+        "notifications" => $notifications,
+        "notifications_count" => $notifications_count
     )));
 }
 ?>

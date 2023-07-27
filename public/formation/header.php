@@ -90,7 +90,7 @@
                     <span class="navbar-text">
                         <?php 
                         if($_SESSION["utilisateur"]["id_stagiaire"] > 0) {
-                            echo '<a href="#" onclick="document.querySelector(\'#notifications\').classList.toggle(\'hidden\');"><i class="fas fa-bell fa-lg bg-grey"></i></a>&nbsp;';
+                            echo '<a href="#" onclick="loadNewNotifications(true);" class="text-decoration-none"><i class="fas fa-bell fa-lg bg-grey position-relative"><span class="notifications-count"></span></i></a>&nbsp;';
                             echo ucwords($_SESSION["utilisateur"]["prenom_stagiaire"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_stagiaire"]);
                         } elseif($_SESSION["utilisateur"]["id_formateur"] > 0) {
                             echo ucwords($_SESSION["utilisateur"]["prenom_formateur"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_formateur"]);

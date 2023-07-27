@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    if (document.querySelector('#notifications div') !== null) {
+    if (document.querySelector('.notifications-count') !== null) {
         loadNewNotifications();
 
         setInterval(function () {
@@ -8,32 +8,25 @@ $(document).ready(function () {
     }
 });
 
-function loadNewNotifications(opened = false) {
+function loadNewNotifications() {
     $.ajax({
         url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "POST",
         dataType: "json",
         data: {
-            load_new_notifications: 1,
-            opened: opened
+            load_new_notifications: 1
         },
         success: function (data) {
             if (data.notifications_count > 0) {
-                if (opened) {
-                    var notifications = "";
-                    data.notifications.forEach(notification => {
-                        notifications += "<a href=\"" + notification.notification_lien + "\"><p>" + notification.notification_titre + "</p></a>";
-                    });
-                    document.querySelector('#notifications div').innerHTML = notifications;
-                    document.querySelector('#notifications').classList.remove('hidden');
-                } else {
-                    document.querySelector('.notifications-count').setAttribute("data-count", data.notifications_count);
-                }
+                var notifications = "";
+                data.notifications.forEach(notification => {
+                    notifications += "<a href=\"" + notification.notification_lien + "\"><p>" + notification.notification_titre + "</p></a>";
+                });
+                document.querySelector('#notifications div').innerHTML = notifications;
+                document.querySelector('#notifications').classList.remove('hidden');
+                document.querySelector('.notifications-count').setAttribute("data-count", data.notifications_count);
             } else {
                 document.querySelector('.notifications-count').removeAttribute("data-count");
-                if (opened) {
-                    document.querySelector('#notifications').classList.add('hidden');
-                }
             }
         }
     });

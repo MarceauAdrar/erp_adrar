@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Hôte : localhost
--- Généré le : mer. 19 juil. 2023 à 12:31
--- Version du serveur : 10.5.19-MariaDB-0+deb11u2
--- Version de PHP : 8.2.6
+-- Hôte : 127.0.0.1:3306
+-- Généré le : jeu. 27 juil. 2023 à 04:58
+-- Version du serveur : 8.0.31
+-- Version de PHP : 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,17 +27,21 @@ SET time_zone = "+00:00";
 -- Structure de la table `cours`
 --
 
-CREATE TABLE `cours` (
-  `cours_id` int(11) NOT NULL,
-  `cours_title` varchar(50) NOT NULL,
-  `cours_synopsis` text NOT NULL,
-  `cours_text` mediumtext NOT NULL,
-  `cours_keywords` longtext NOT NULL,
-  `cours_link` varchar(255) NOT NULL,
-  `cours_category` varchar(50) NOT NULL,
-  `cours_illustration` varchar(255) NOT NULL,
-  `id_formateur` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `cours`;
+CREATE TABLE IF NOT EXISTS `cours` (
+  `cours_id` int NOT NULL AUTO_INCREMENT,
+  `cours_title` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_synopsis` text COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_text` mediumtext COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_keywords` longtext COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_link` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_category` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_illustration` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_formateur` int NOT NULL,
+  PRIMARY KEY (`cours_id`),
+  UNIQUE KEY `cours_link` (`cours_link`),
+  KEY `id_formateur` (`id_formateur`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours`
@@ -75,21 +79,27 @@ INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_text`, 
 -- Structure de la table `cours_ressources`
 --
 
-CREATE TABLE `cours_ressources` (
-  `cours_ressource_id` int(11) NOT NULL,
-  `cours_ressource_titre` varchar(50) NOT NULL,
-  `cours_ressource_resume` text DEFAULT NULL,
-  `cours_ressource_lien` varchar(255) NOT NULL,
-  `cours_ressource_type` varchar(30) NOT NULL COMMENT 'tp;exercice',
-  `id_cours` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `cours_ressources`;
+CREATE TABLE IF NOT EXISTS `cours_ressources` (
+  `cours_ressource_id` int NOT NULL AUTO_INCREMENT,
+  `cours_ressource_titre` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `cours_ressource_resume` text COLLATE utf8mb4_general_ci,
+  `cours_ressource_lien` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cours_ressource_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tp;exercice;autre',
+  `cours_ressource_archive` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `cours_ressource_archive_lien` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `id_cours` int NOT NULL,
+  PRIMARY KEY (`cours_ressource_id`),
+  KEY `id_cours` (`id_cours`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_ressources`
 --
 
-INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `cours_ressource_resume`, `cours_ressource_lien`, `cours_ressource_type`, `id_cours`) VALUES
-(1, 'Exercice 1 sur la charte graphique', 'Petit résumé montrant de quoi retourne le sujet de l\'exercice.\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice. Petit résumé montrant de quoi retourne le sujet de l\'exercice.', 'https://docs.google.com/spreadsheets/d/1bjH6PlkO7S419u5kBgcwZAU6dxLyNknK/edit#gid=2066838886', 'exercice', 38);
+INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `cours_ressource_resume`, `cours_ressource_lien`, `cours_ressource_type`, `cours_ressource_archive`, `cours_ressource_archive_lien`, `id_cours`) VALUES
+(1, 'Exercice 1 sur la charte graphique', 'Petit résumé montrant de quoi retourne le sujet de l\'exercice.\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice. Petit résumé montrant de quoi retourne le sujet de l\'exercice.', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'exercice', NULL, NULL, 38),
+(6, 'Ressource 1', 'Images...', NULL, 'autre', '_64c1a2a330a9b_ressource_cours_38.zip', '80df89e0bba4db90a2149bd28522faaf1d79fe0d', 38);
 
 -- --------------------------------------------------------
 
@@ -97,12 +107,17 @@ INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `
 -- Structure de la table `cours_sessions`
 --
 
-CREATE TABLE `cours_sessions` (
-  `cours_session_id` int(11) NOT NULL,
-  `id_session` int(11) NOT NULL,
-  `id_cours` int(11) NOT NULL,
-  `cours_session_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `cours_sessions`;
+CREATE TABLE IF NOT EXISTS `cours_sessions` (
+  `cours_session_id` int NOT NULL AUTO_INCREMENT,
+  `id_session` int NOT NULL,
+  `id_cours` int NOT NULL,
+  `cours_session_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`cours_session_id`),
+  UNIQUE KEY `id_session_2` (`id_session`,`id_cours`),
+  KEY `id_session` (`id_session`),
+  KEY `id_course` (`id_cours`)
+) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_sessions`
@@ -149,11 +164,13 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 -- Structure de la table `documents`
 --
 
-CREATE TABLE `documents` (
-  `id_document` int(11) NOT NULL,
-  `index_document` varchar(20) NOT NULL,
-  `nom_document` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `documents`;
+CREATE TABLE IF NOT EXISTS `documents` (
+  `id_document` int NOT NULL AUTO_INCREMENT,
+  `index_document` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `nom_document` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id_document`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `documents`
@@ -172,13 +189,16 @@ INSERT INTO `documents` (`id_document`, `index_document`, `nom_document`) VALUES
 -- Structure de la table `documents_pages`
 --
 
-CREATE TABLE `documents_pages` (
-  `id` int(11) NOT NULL,
-  `num_page` int(11) NOT NULL,
-  `lien` varchar(100) NOT NULL,
-  `textes_ajoutes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`textes_ajoutes`)),
-  `id_document` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `documents_pages`;
+CREATE TABLE IF NOT EXISTS `documents_pages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `num_page` int NOT NULL,
+  `lien` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `textes_ajoutes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  `id_document` int NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_document` (`id_document`)
+) ;
 
 --
 -- Déchargement des données de la table `documents_pages`
@@ -213,15 +233,18 @@ INSERT INTO `documents_pages` (`id`, `num_page`, `lien`, `textes_ajoutes`, `id_d
 -- Structure de la table `evaluations`
 --
 
-CREATE TABLE `evaluations` (
-  `evaluation_id` int(11) NOT NULL,
-  `evaluation_title` varchar(100) NOT NULL,
-  `evaluation_goals` longtext NOT NULL,
-  `evaluation_synopsis` text NOT NULL,
-  `evaluation_token` varchar(255) NOT NULL,
-  `evaluation_errors_max` int(2) NOT NULL,
-  `id_evaluation_dd` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `evaluations`;
+CREATE TABLE IF NOT EXISTS `evaluations` (
+  `evaluation_id` int NOT NULL AUTO_INCREMENT,
+  `evaluation_title` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `evaluation_goals` longtext COLLATE utf8mb4_general_ci NOT NULL,
+  `evaluation_synopsis` text COLLATE utf8mb4_general_ci NOT NULL,
+  `evaluation_token` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `evaluation_errors_max` int NOT NULL,
+  `id_evaluation_dd` int NOT NULL,
+  PRIMARY KEY (`evaluation_id`),
+  KEY `id_evaluation_dd` (`id_evaluation_dd`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `evaluations`
@@ -240,12 +263,14 @@ INSERT INTO `evaluations` (`evaluation_id`, `evaluation_title`, `evaluation_goal
 -- Structure de la table `evaluations_dd`
 --
 
-CREATE TABLE `evaluations_dd` (
-  `evaluation_dd_id` int(11) NOT NULL,
-  `evaluation_dd_name` varchar(50) NOT NULL,
-  `evaluation_dd_link` varchar(100) NOT NULL,
-  `evaluation_dd_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `evaluations_dd`;
+CREATE TABLE IF NOT EXISTS `evaluations_dd` (
+  `evaluation_dd_id` int NOT NULL AUTO_INCREMENT,
+  `evaluation_dd_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `evaluation_dd_link` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `evaluation_dd_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`evaluation_dd_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `evaluations_dd`
@@ -261,24 +286,30 @@ INSERT INTO `evaluations_dd` (`evaluation_dd_id`, `evaluation_dd_name`, `evaluat
 -- Structure de la table `formateurs`
 --
 
-CREATE TABLE `formateurs` (
-  `id_formateur` int(11) NOT NULL,
-  `nom_formateur` varchar(25) NOT NULL,
-  `prenom_formateur` varchar(25) NOT NULL,
-  `mail_formateur` varchar(100) NOT NULL,
-  `mdp_formateur` varchar(60) DEFAULT NULL,
-  `signature_formateur` varchar(50) DEFAULT NULL,
-  `carte_formateur_role` varchar(25) NOT NULL,
-  `carte_formateur_liens` varchar(25) DEFAULT NULL,
-  `carte_formateur_tel` varchar(10) NOT NULL,
-  `carte_formateur_portable` varchar(10) DEFAULT NULL,
-  `tmp_code_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code qui permet à un formateur de en cas d''oubli de mot de passe ou si la période de validité du code est échue\r\n',
+DROP TABLE IF EXISTS `formateurs`;
+CREATE TABLE IF NOT EXISTS `formateurs` (
+  `id_formateur` int NOT NULL AUTO_INCREMENT,
+  `nom_formateur` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `prenom_formateur` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `mail_formateur` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `mdp_formateur` varchar(60) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `signature_formateur` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `carte_formateur_role` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `carte_formateur_liens` varchar(25) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `carte_formateur_tel` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `carte_formateur_portable` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `tmp_code_formateur` varchar(6) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Contient un code qui permet à un formateur de en cas d''oubli de mot de passe ou si la période de validité du code est échue\r\n',
   `date_tmp_code_formateur` datetime DEFAULT NULL COMMENT 'Validité de 5 minutes',
-  `code_entree_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code UNIQUE qui permet à un formateur de s''identifier la première fois pour changer son mot de passe',
+  `code_entree_formateur` varchar(6) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Contient un code UNIQUE qui permet à un formateur de s''identifier la première fois pour changer son mot de passe',
   `date_code_entree_formateur` datetime DEFAULT NULL COMMENT 'Validité d''une semaine',
-  `id_site` int(11) NOT NULL,
-  `id_secteur` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_site` int NOT NULL,
+  `id_secteur` int NOT NULL,
+  PRIMARY KEY (`id_formateur`),
+  UNIQUE KEY `mail_formateur` (`mail_formateur`),
+  UNIQUE KEY `code_entree_formateur` (`code_entree_formateur`),
+  KEY `id_secteur` (`id_secteur`),
+  KEY `id_site` (`id_site`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `formateurs`
@@ -296,14 +327,18 @@ INSERT INTO `formateurs` (`id_formateur`, `nom_formateur`, `prenom_formateur`, `
 -- Structure de la table `historiques`
 --
 
-CREATE TABLE `historiques` (
-  `id_historique` int(11) NOT NULL,
-  `id_formateur` int(11) NOT NULL,
-  `page_visitee` varchar(255) NOT NULL,
-  `page_nom` varchar(50) NOT NULL,
-  `ip_visiteur` varchar(15) NOT NULL,
-  `date_visite` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `historiques`;
+CREATE TABLE IF NOT EXISTS `historiques` (
+  `id_historique` int NOT NULL AUTO_INCREMENT,
+  `id_formateur` int NOT NULL,
+  `page_visitee` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `page_nom` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `ip_visiteur` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
+  `date_visite` datetime NOT NULL,
+  PRIMARY KEY (`id_historique`),
+  UNIQUE KEY `id_formateur_2` (`id_formateur`,`page_visitee`),
+  KEY `id_formateur` (`id_formateur`)
+) ENGINE=InnoDB AUTO_INCREMENT=300 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `historiques`
@@ -317,9 +352,10 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 (252, 1, '?page=ajouter_document', 'Ajouter_document', '192.168.19.119', '2023-07-07 02:47:06'),
 (275, 1, '?page=stage', 'Stage', '192.168.2.57', '2023-07-17 16:54:34'),
 (277, 1, '?page=titre', 'Titre', '192.168.2.57', '2023-07-17 16:57:48'),
-(279, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '192.168.2.57', '2023-07-17 16:58:34'),
-(281, 1, '?page=formation', 'Formation', '192.168.2.57', '2023-07-17 17:00:02'),
-(283, 1, '?page=admin', 'Admin', '192.168.19.119', '2023-07-19 14:29:42');
+(287, 1, '?page=admin', 'Admin', '::1', '2023-07-26 21:50:05'),
+(290, 1, '?page=ajouter-referent', 'Ajouter-referent', '::1', '2023-07-26 22:02:32'),
+(291, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '::1', '2023-07-26 22:02:39'),
+(299, 1, '?page=formation', 'Formation', '::1', '2023-07-26 23:47:24');
 
 -- --------------------------------------------------------
 
@@ -327,13 +363,17 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 -- Structure de la table `quiz`
 --
 
-CREATE TABLE `quiz` (
-  `quiz_id` int(11) NOT NULL,
-  `quiz_module` varchar(50) NOT NULL,
-  `quiz_lien` varchar(255) NOT NULL,
-  `quiz_difficulte` int(1) NOT NULL COMMENT '0: Facile ; 1: Modéré ; 2: Difficile ; 3: Extrême',
-  `id_formateur` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `quiz`;
+CREATE TABLE IF NOT EXISTS `quiz` (
+  `quiz_id` int NOT NULL AUTO_INCREMENT,
+  `quiz_module` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `quiz_lien` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `quiz_difficulte` int NOT NULL COMMENT '0: Facile ; 1: Modéré ; 2: Difficile ; 3: Extrême',
+  `id_formateur` int NOT NULL,
+  PRIMARY KEY (`quiz_id`),
+  UNIQUE KEY `quiz_lien` (`quiz_lien`),
+  KEY `id_formateur` (`id_formateur`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `quiz`
@@ -348,12 +388,17 @@ INSERT INTO `quiz` (`quiz_id`, `quiz_module`, `quiz_lien`, `quiz_difficulte`, `i
 -- Structure de la table `quiz_sessions`
 --
 
-CREATE TABLE `quiz_sessions` (
-  `quiz_sessions_id` int(11) NOT NULL,
-  `id_session` int(11) NOT NULL,
-  `id_quiz` int(11) NOT NULL,
-  `quiz_session_active` tinyint(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `quiz_sessions`;
+CREATE TABLE IF NOT EXISTS `quiz_sessions` (
+  `quiz_sessions_id` int NOT NULL AUTO_INCREMENT,
+  `id_session` int NOT NULL,
+  `id_quiz` int NOT NULL,
+  `quiz_session_active` tinyint(1) NOT NULL,
+  PRIMARY KEY (`quiz_sessions_id`),
+  UNIQUE KEY `id_session_2` (`id_session`,`id_quiz`),
+  KEY `id_session` (`id_session`),
+  KEY `id_quiz` (`id_quiz`)
+) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `quiz_sessions`
@@ -369,11 +414,13 @@ INSERT INTO `quiz_sessions` (`quiz_sessions_id`, `id_session`, `id_quiz`, `quiz_
 -- Structure de la table `secteurs`
 --
 
-CREATE TABLE `secteurs` (
-  `id_secteur` int(11) NOT NULL,
-  `nom_secteur` varchar(50) NOT NULL,
-  `logo_secteur` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `secteurs`;
+CREATE TABLE IF NOT EXISTS `secteurs` (
+  `id_secteur` int NOT NULL AUTO_INCREMENT,
+  `nom_secteur` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `logo_secteur` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id_secteur`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `secteurs`
@@ -392,17 +439,20 @@ INSERT INTO `secteurs` (`id_secteur`, `nom_secteur`, `logo_secteur`) VALUES
 -- Structure de la table `sessions`
 --
 
-CREATE TABLE `sessions` (
-  `id_session` int(11) NOT NULL,
-  `nom_session` varchar(25) NOT NULL,
-  `duree_stage` int(11) NOT NULL,
-  `sigle_session` varchar(50) NOT NULL,
+DROP TABLE IF EXISTS `sessions`;
+CREATE TABLE IF NOT EXISTS `sessions` (
+  `id_session` int NOT NULL AUTO_INCREMENT,
+  `nom_session` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `duree_stage` int NOT NULL,
+  `sigle_session` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   `date_debut_session` date NOT NULL,
   `date_fin_session` date NOT NULL,
   `date_debut_stage` date NOT NULL,
   `date_fin_stage` date NOT NULL,
-  `id_formateur` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_formateur` int NOT NULL,
+  PRIMARY KEY (`id_session`),
+  KEY `id_formateur` (`id_formateur`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `sessions`
@@ -418,18 +468,20 @@ INSERT INTO `sessions` (`id_session`, `nom_session`, `duree_stage`, `sigle_sessi
 -- Structure de la table `sites`
 --
 
-CREATE TABLE `sites` (
-  `id_site` int(11) NOT NULL,
-  `libelle_site` varchar(50) NOT NULL,
-  `contact_mail_site` varchar(75) NOT NULL,
-  `contact_tel_site` varchar(10) NOT NULL,
-  `adresse_num_site` int(11) DEFAULT NULL,
-  `adresse_bis_site` tinyint(1) NOT NULL DEFAULT 0,
-  `adresse_rue_site` varchar(500) NOT NULL,
-  `adresse_cp_site` varchar(5) NOT NULL,
-  `adresse_ville_site` varchar(75) NOT NULL,
-  `adresse_supp_site` varchar(100) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `sites`;
+CREATE TABLE IF NOT EXISTS `sites` (
+  `id_site` int NOT NULL AUTO_INCREMENT,
+  `libelle_site` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `contact_mail_site` varchar(75) COLLATE utf8mb4_general_ci NOT NULL,
+  `contact_tel_site` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+  `adresse_num_site` int DEFAULT NULL,
+  `adresse_bis_site` tinyint(1) NOT NULL DEFAULT '0',
+  `adresse_rue_site` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
+  `adresse_cp_site` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `adresse_ville_site` varchar(75) COLLATE utf8mb4_general_ci NOT NULL,
+  `adresse_supp_site` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`id_site`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `sites`
@@ -448,16 +500,18 @@ INSERT INTO `sites` (`id_site`, `libelle_site`, `contact_mail_site`, `contact_te
 -- Structure de la table `stages`
 --
 
-CREATE TABLE `stages` (
-  `id_stage` int(11) NOT NULL,
-  `rue_lieu_stage` varchar(100) NOT NULL,
-  `cp_lieu_stage` varchar(5) NOT NULL,
-  `ville_lieu_stage` varchar(50) NOT NULL,
-  `pays_lieu_stage` varchar(25) NOT NULL,
-  `nom_tuteur` varchar(50) NOT NULL,
-  `prenom_tuteur` varchar(50) NOT NULL,
-  `mail_tuteur` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+DROP TABLE IF EXISTS `stages`;
+CREATE TABLE IF NOT EXISTS `stages` (
+  `id_stage` int NOT NULL AUTO_INCREMENT,
+  `rue_lieu_stage` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `cp_lieu_stage` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `ville_lieu_stage` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `pays_lieu_stage` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
+  `nom_tuteur` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `prenom_tuteur` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `mail_tuteur` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  PRIMARY KEY (`id_stage`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stages`
@@ -483,29 +537,34 @@ INSERT INTO `stages` (`id_stage`, `rue_lieu_stage`, `cp_lieu_stage`, `ville_lieu
 -- Structure de la table `stagiaires`
 --
 
-CREATE TABLE `stagiaires` (
-  `id_stagiaire` int(11) NOT NULL,
-  `nom_stagiaire` varchar(50) NOT NULL,
-  `prenom_stagiaire` varchar(50) NOT NULL,
-  `mail_stagiaire` varchar(100) NOT NULL,
-  `pseudo_stagiaire` varchar(50) DEFAULT NULL,
-  `mdp_stagiaire` varchar(60) NOT NULL,
-  `mdp_decode_stagiaire` varchar(50) NOT NULL,
-  `tel_stagiaire` varchar(10) NOT NULL,
+DROP TABLE IF EXISTS `stagiaires`;
+CREATE TABLE IF NOT EXISTS `stagiaires` (
+  `id_stagiaire` int NOT NULL AUTO_INCREMENT,
+  `nom_stagiaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `prenom_stagiaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `mail_stagiaire` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+  `pseudo_stagiaire` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `mdp_stagiaire` varchar(60) COLLATE utf8mb4_general_ci NOT NULL,
+  `mdp_decode_stagiaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `tel_stagiaire` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
   `date_naissance_stagiaire` date NOT NULL,
-  `lien_serveur` varchar(255) NOT NULL,
-  `id_session` int(11) NOT NULL,
-  `id_stage` int(11) DEFAULT NULL,
-  `convention_recue` tinyint(1) NOT NULL DEFAULT 0,
-  `horaires_recues_1` tinyint(1) NOT NULL DEFAULT 0,
-  `horaires_recues_2` tinyint(1) NOT NULL DEFAULT 0,
-  `horaires_recues_3` tinyint(1) NOT NULL DEFAULT 0,
-  `attestation_mail_envoye` tinyint(1) NOT NULL DEFAULT 0,
+  `lien_serveur` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_session` int NOT NULL,
+  `id_stage` int DEFAULT NULL,
+  `convention_recue` tinyint(1) NOT NULL DEFAULT '0',
+  `horaires_recues_1` tinyint(1) NOT NULL DEFAULT '0',
+  `horaires_recues_2` tinyint(1) NOT NULL DEFAULT '0',
+  `horaires_recues_3` tinyint(1) NOT NULL DEFAULT '0',
+  `attestation_mail_envoye` tinyint(1) NOT NULL DEFAULT '0',
   `attestation_recue` tinyint(1) DEFAULT NULL,
-  `evaluation_mail_envoye` tinyint(1) NOT NULL DEFAULT 0,
+  `evaluation_mail_envoye` tinyint(1) NOT NULL DEFAULT '0',
   `evaluation_recue` tinyint(1) DEFAULT NULL,
-  `compteur_demandes` int(1) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `compteur_demandes` int NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id_stagiaire`),
+  UNIQUE KEY `pseudo_stagiaire` (`pseudo_stagiaire`),
+  KEY `id_session` (`id_session`),
+  KEY `id_stage` (`id_stage`)
+) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stagiaires`
@@ -542,14 +601,19 @@ INSERT INTO `stagiaires` (`id_stagiaire`, `nom_stagiaire`, `prenom_stagiaire`, `
 -- Structure de la table `stagiaires_evaluations`
 --
 
-CREATE TABLE `stagiaires_evaluations` (
-  `stagiaire_evaluation_id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `stagiaires_evaluations`;
+CREATE TABLE IF NOT EXISTS `stagiaires_evaluations` (
+  `stagiaire_evaluation_id` int NOT NULL AUTO_INCREMENT,
   `stagiaire_evaluation_completed` tinyint(1) NOT NULL,
   `stagiaire_evaluation_correction` tinyint(1) DEFAULT NULL,
-  `stagiaire_evaluation_errors_found` int(2) DEFAULT NULL,
-  `id_stagiaire` int(11) NOT NULL,
-  `id_evaluation` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `stagiaire_evaluation_errors_found` int DEFAULT NULL,
+  `id_stagiaire` int NOT NULL,
+  `id_evaluation` int NOT NULL,
+  PRIMARY KEY (`stagiaire_evaluation_id`),
+  UNIQUE KEY `id_intern_2` (`id_stagiaire`,`id_evaluation`),
+  KEY `id_stagiaire` (`id_stagiaire`),
+  KEY `id_evaluation` (`id_evaluation`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stagiaires_evaluations`
@@ -557,244 +621,6 @@ CREATE TABLE `stagiaires_evaluations` (
 
 INSERT INTO `stagiaires_evaluations` (`stagiaire_evaluation_id`, `stagiaire_evaluation_completed`, `stagiaire_evaluation_correction`, `stagiaire_evaluation_errors_found`, `id_stagiaire`, `id_evaluation`) VALUES
 (4, 0, NULL, NULL, 23, 1);
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `cours`
---
-ALTER TABLE `cours`
-  ADD PRIMARY KEY (`cours_id`),
-  ADD UNIQUE KEY `cours_link` (`cours_link`),
-  ADD KEY `id_formateur` (`id_formateur`) USING BTREE;
-
---
--- Index pour la table `cours_ressources`
---
-ALTER TABLE `cours_ressources`
-  ADD PRIMARY KEY (`cours_ressource_id`),
-  ADD KEY `id_cours` (`id_cours`);
-
---
--- Index pour la table `cours_sessions`
---
-ALTER TABLE `cours_sessions`
-  ADD PRIMARY KEY (`cours_session_id`),
-  ADD UNIQUE KEY `id_session_2` (`id_session`,`id_cours`),
-  ADD KEY `id_session` (`id_session`),
-  ADD KEY `id_course` (`id_cours`);
-
---
--- Index pour la table `documents`
---
-ALTER TABLE `documents`
-  ADD PRIMARY KEY (`id_document`) USING BTREE;
-
---
--- Index pour la table `documents_pages`
---
-ALTER TABLE `documents_pages`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `id_document` (`id_document`);
-
---
--- Index pour la table `evaluations`
---
-ALTER TABLE `evaluations`
-  ADD PRIMARY KEY (`evaluation_id`),
-  ADD KEY `id_evaluation_dd` (`id_evaluation_dd`);
-
---
--- Index pour la table `evaluations_dd`
---
-ALTER TABLE `evaluations_dd`
-  ADD PRIMARY KEY (`evaluation_dd_id`);
-
---
--- Index pour la table `formateurs`
---
-ALTER TABLE `formateurs`
-  ADD PRIMARY KEY (`id_formateur`),
-  ADD UNIQUE KEY `mail_formateur` (`mail_formateur`),
-  ADD UNIQUE KEY `code_entree_formateur` (`code_entree_formateur`),
-  ADD KEY `id_secteur` (`id_secteur`),
-  ADD KEY `id_site` (`id_site`);
-
---
--- Index pour la table `historiques`
---
-ALTER TABLE `historiques`
-  ADD PRIMARY KEY (`id_historique`),
-  ADD UNIQUE KEY `id_formateur_2` (`id_formateur`,`page_visitee`),
-  ADD KEY `id_formateur` (`id_formateur`);
-
---
--- Index pour la table `quiz`
---
-ALTER TABLE `quiz`
-  ADD PRIMARY KEY (`quiz_id`),
-  ADD UNIQUE KEY `quiz_lien` (`quiz_lien`),
-  ADD KEY `id_formateur` (`id_formateur`) USING BTREE;
-
---
--- Index pour la table `quiz_sessions`
---
-ALTER TABLE `quiz_sessions`
-  ADD PRIMARY KEY (`quiz_sessions_id`),
-  ADD UNIQUE KEY `id_session_2` (`id_session`,`id_quiz`),
-  ADD KEY `id_session` (`id_session`),
-  ADD KEY `id_quiz` (`id_quiz`);
-
---
--- Index pour la table `secteurs`
---
-ALTER TABLE `secteurs`
-  ADD PRIMARY KEY (`id_secteur`);
-
---
--- Index pour la table `sessions`
---
-ALTER TABLE `sessions`
-  ADD PRIMARY KEY (`id_session`),
-  ADD KEY `id_formateur` (`id_formateur`);
-
---
--- Index pour la table `sites`
---
-ALTER TABLE `sites`
-  ADD PRIMARY KEY (`id_site`);
-
---
--- Index pour la table `stages`
---
-ALTER TABLE `stages`
-  ADD PRIMARY KEY (`id_stage`);
-
---
--- Index pour la table `stagiaires`
---
-ALTER TABLE `stagiaires`
-  ADD PRIMARY KEY (`id_stagiaire`),
-  ADD UNIQUE KEY `pseudo_stagiaire` (`pseudo_stagiaire`),
-  ADD KEY `id_session` (`id_session`),
-  ADD KEY `id_stage` (`id_stage`);
-
---
--- Index pour la table `stagiaires_evaluations`
---
-ALTER TABLE `stagiaires_evaluations`
-  ADD PRIMARY KEY (`stagiaire_evaluation_id`),
-  ADD UNIQUE KEY `id_intern_2` (`id_stagiaire`,`id_evaluation`),
-  ADD KEY `id_stagiaire` (`id_stagiaire`),
-  ADD KEY `id_evaluation` (`id_evaluation`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `cours`
---
-ALTER TABLE `cours`
-  MODIFY `cours_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
-
---
--- AUTO_INCREMENT pour la table `cours_ressources`
---
-ALTER TABLE `cours_ressources`
-  MODIFY `cours_ressource_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `cours_sessions`
---
-ALTER TABLE `cours_sessions`
-  MODIFY `cours_session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
-
---
--- AUTO_INCREMENT pour la table `documents`
---
-ALTER TABLE `documents`
-  MODIFY `id_document` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `documents_pages`
---
-ALTER TABLE `documents_pages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
-
---
--- AUTO_INCREMENT pour la table `evaluations`
---
-ALTER TABLE `evaluations`
-  MODIFY `evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `evaluations_dd`
---
-ALTER TABLE `evaluations_dd`
-  MODIFY `evaluation_dd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT pour la table `formateurs`
---
-ALTER TABLE `formateurs`
-  MODIFY `id_formateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
-
---
--- AUTO_INCREMENT pour la table `historiques`
---
-ALTER TABLE `historiques`
-  MODIFY `id_historique` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=284;
-
---
--- AUTO_INCREMENT pour la table `quiz`
---
-ALTER TABLE `quiz`
-  MODIFY `quiz_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
--- AUTO_INCREMENT pour la table `quiz_sessions`
---
-ALTER TABLE `quiz_sessions`
-  MODIFY `quiz_sessions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
-
---
--- AUTO_INCREMENT pour la table `secteurs`
---
-ALTER TABLE `secteurs`
-  MODIFY `id_secteur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `sessions`
---
-ALTER TABLE `sessions`
-  MODIFY `id_session` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
-
---
--- AUTO_INCREMENT pour la table `sites`
---
-ALTER TABLE `sites`
-  MODIFY `id_site` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT pour la table `stages`
---
-ALTER TABLE `stages`
-  MODIFY `id_stage` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT pour la table `stagiaires`
---
-ALTER TABLE `stagiaires`
-  MODIFY `id_stagiaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
-
---
--- AUTO_INCREMENT pour la table `stagiaires_evaluations`
---
-ALTER TABLE `stagiaires_evaluations`
-  MODIFY `stagiaire_evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Contraintes pour les tables déchargées

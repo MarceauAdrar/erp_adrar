@@ -1,34 +1,43 @@
 $(document).ready(function () {
-    function loadNewNotifications() {
-        $.ajax({
-            url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
-            method: "POST",
-            dataType: "json",
-            data: { 
-                load_new_notifications: 1
-            },
-            success: function (data) {
-                if(data.notifications_count > 0) {
+    if (document.querySelector('#notifications div') !== null) {
+        loadNewNotifications();
+
+        setInterval(function () {
+            loadNewNotifications();
+        }, 4000);
+    }
+});
+
+function loadNewNotifications(opened = false) {
+    $.ajax({
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "POST",
+        dataType: "json",
+        data: {
+            load_new_notifications: 1,
+            opened: opened
+        },
+        success: function (data) {
+            if (data.notifications_count > 0) {
+                if (opened) {
+                    var notifications = "";
                     data.notifications.forEach(notification => {
-                        document.querySelector('#notifications div').innerHTML = document.querySelector('#notifications div').outerHTML + "<p>Il vous reste le TP {{TP}} à compléter !</p>";
+                        notifications += "<a href=\"" + notification.notification_lien + "\"><p>" + notification.notification_titre + "</p></a>";
                     });
-                    document.querySelector('.notifications_count').innerHTML = data.notifications_count;
+                    document.querySelector('#notifications div').innerHTML = notifications;
+                    document.querySelector('#notifications').classList.remove('hidden');
+                } else {
+                    document.querySelector('.notifications-count').setAttribute("data-count", data.notifications_count);
+                }
+            } else {
+                document.querySelector('.notifications-count').removeAttribute("data-count");
+                if (opened) {
+                    document.querySelector('#notifications').classList.add('hidden');
                 }
             }
-        });
-    }
-    loadNewNotifications();
-
-    // Charger les nouvelles notifications // TODO: supprimer ou modifier le code ci-dessous
-    // $(document).on('click', '.dropdown-toggle', function () {
-    //     $('.count').html('');
-    //     load_new_notification('yes');
-    // });
-
-    setInterval(function () {
-        loadNewNotifications();;
-    }, 4000);
-});
+        }
+    });
+}
 
 function showInformationsModal() {
     $(".help-resource").toggleClass("fade-in");

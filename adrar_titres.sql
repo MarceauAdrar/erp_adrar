@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 27 juil. 2023 à 23:36
+-- Généré le : dim. 30 juil. 2023 à 01:32
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.2.0
 
@@ -91,16 +91,16 @@ CREATE TABLE IF NOT EXISTS `cours_ressources` (
   `id_cours` int NOT NULL,
   PRIMARY KEY (`cours_ressource_id`),
   KEY `id_cours` (`id_cours`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_ressources`
 --
 
 INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `cours_ressource_resume`, `cours_ressource_lien`, `cours_ressource_type`, `cours_ressource_archive`, `cours_ressource_archive_lien`, `id_cours`) VALUES
-(1, 'Exercice 1 sur la charte graphique', 'Petit résumé montrant de quoi retourne le sujet de l\'exercice.\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice\r\nPetit résumé montrant de quoi retourne le sujet de l\'exercice. Petit résumé montrant de quoi retourne le sujet de l\'exercice.', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'exercice', NULL, NULL, 38),
+(1, 'Exercice 1 sur la charte graphique', 'Petit résumé montrant de quoi retourne le sujet de l\'exercice.\nPetit résumé montrant de quoi retourne le sujet de l\'exercice\nPetit résumé montrant de quoi retourne le sujet de l\'exercice. Petit résumé montrant de quoi retourne le sujet de l\'exercice.', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'exercice', NULL, NULL, 38),
 (6, 'Ressource 1', 'Images...', NULL, 'autre', '_64c1a2a330a9b_ressource_cours_38.zip', '80df89e0bba4db90a2149bd28522faaf1d79fe0d', 38),
-(7, 'Exo 1', 'Test...', 'https://cemantix.certitudes.org', 'exercice', NULL, NULL, 38);
+(9, 'TP CDC', 'Petit résumé montrant de quoi retourne le sujet de l&#39;exercice.', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'tp', NULL, NULL, 38);
 
 -- --------------------------------------------------------
 
@@ -118,7 +118,7 @@ CREATE TABLE IF NOT EXISTS `cours_sessions` (
   UNIQUE KEY `id_session_2` (`id_session`,`id_cours`),
   KEY `id_session` (`id_session`),
   KEY `id_course` (`id_cours`)
-) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_sessions`
@@ -158,7 +158,7 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 (105, 2, 38, 1),
 (117, 2, 29, 0),
 (118, 2, 21, 1),
-(119, 1, 34, 1);
+(125, 1, 34, 1);
 
 -- --------------------------------------------------------
 
@@ -285,6 +285,30 @@ INSERT INTO `evaluations_dd` (`evaluation_dd_id`, `evaluation_dd_name`, `evaluat
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `evaluations_sessions`
+--
+
+DROP TABLE IF EXISTS `evaluations_sessions`;
+CREATE TABLE IF NOT EXISTS `evaluations_sessions` (
+  `evaluation_session_active` tinyint(1) NOT NULL,
+  `id_dd_evaluation` int NOT NULL,
+  `id_session` int NOT NULL,
+  PRIMARY KEY (`id_dd_evaluation`,`id_session`),
+  KEY `id_session` (`id_session`),
+  KEY `id_dd_evaluation` (`id_dd_evaluation`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `evaluations_sessions`
+--
+
+INSERT INTO `evaluations_sessions` (`evaluation_session_active`, `id_dd_evaluation`, `id_session`) VALUES
+(1, 1, 1),
+(0, 1, 2);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `formateurs`
 --
 
@@ -340,7 +364,7 @@ CREATE TABLE IF NOT EXISTS `historiques` (
   PRIMARY KEY (`id_historique`),
   UNIQUE KEY `id_formateur_2` (`id_formateur`,`page_visitee`),
   KEY `id_formateur` (`id_formateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=309 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `historiques`
@@ -352,12 +376,12 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 (169, 1, '?page=ajouter_stagiaire', 'Ajouter_stagiaire', '192.168.19.119', '2023-07-03 12:13:48'),
 (234, 1, '?page=ajouter_referent', 'Ajouter_referent', '192.168.19.119', '2023-07-06 14:08:09'),
 (252, 1, '?page=ajouter_document', 'Ajouter_document', '192.168.19.119', '2023-07-07 02:47:06'),
-(275, 1, '?page=stage', 'Stage', '192.168.2.57', '2023-07-17 16:54:34'),
-(287, 1, '?page=admin', 'Admin', '::1', '2023-07-26 21:50:05'),
 (290, 1, '?page=ajouter-referent', 'Ajouter-referent', '::1', '2023-07-26 22:02:32'),
 (291, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '::1', '2023-07-26 22:02:39'),
 (304, 1, '?page=titre', 'Titre', '::1', '2023-07-27 22:55:58'),
-(308, 1, '?page=formation', 'Formation', '::1', '2023-07-28 01:20:27');
+(316, 1, '?page=admin', 'Admin', '::1', '2023-07-30 01:49:56'),
+(317, 1, '?page=stage', 'Stage', '::1', '2023-07-30 01:52:20'),
+(321, 1, '?page=formation', 'Formation', '::1', '2023-07-30 03:01:07');
 
 -- --------------------------------------------------------
 
@@ -380,41 +404,16 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 --
 
 INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notification_date`, `id_stagiaire`) VALUES
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 34),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 35),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 36),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 37),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 38),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 39),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 40),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 41),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 42),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 43),
-('[CSS] Nouveau cours disponible: Flexbox', 'embed.php?slide=2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', '0000-00-00 00:00:00', 51),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '2023-07-28 01:17:49', 23),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 24),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 25),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 26),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 27),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 28),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 29),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 30),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 31),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 32),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 33),
-('[HTML] Nouveau quiz disponible: html - 0/3', 'https://quizizz.com/join?gc=78736813', '0000-00-00 00:00:00', 44),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-28 01:17:21', 23),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 24),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 25),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 26),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 27),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 28),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 29),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 30),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 31),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 32),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 33),
-('[SASS] Nouveau cours disponible: SASS', 'embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '0000-00-00 00:00:00', 44);
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 25),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 26),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 27),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 28),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 29),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 30),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 31),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 32),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 33),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 44);
 
 -- --------------------------------------------------------
 
@@ -672,18 +671,51 @@ CREATE TABLE IF NOT EXISTS `stagiaires_evaluations` (
   UNIQUE KEY `id_intern_2` (`id_stagiaire`,`id_evaluation`),
   KEY `id_stagiaire` (`id_stagiaire`),
   KEY `id_evaluation` (`id_evaluation`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stagiaires_evaluations`
 --
 
 INSERT INTO `stagiaires_evaluations` (`stagiaire_evaluation_id`, `stagiaire_evaluation_completed`, `stagiaire_evaluation_correction`, `stagiaire_evaluation_errors_found`, `id_stagiaire`, `id_evaluation`) VALUES
-(4, 0, NULL, NULL, 23, 1);
+(6, 1, 1, 5, 23, 1),
+(7, 1, 1, 2, 23, 2),
+(10, 1, 1, 1, 23, 3),
+(11, 1, 1, 0, 23, 4),
+(12, 0, NULL, NULL, 23, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `stagiaires_ressources`
+--
+
+DROP TABLE IF EXISTS `stagiaires_ressources`;
+CREATE TABLE IF NOT EXISTS `stagiaires_ressources` (
+  `id_stagiaire` int NOT NULL,
+  `id_ressource` int NOT NULL,
+  `lien_ressource_rendue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  PRIMARY KEY (`id_stagiaire`,`id_ressource`),
+  KEY `id_stagiaire` (`id_stagiaire`),
+  KEY `id_ressource` (`id_ressource`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `stagiaires_ressources`
+--
+
+INSERT INTO `stagiaires_ressources` (`id_stagiaire`, `id_ressource`, `lien_ressource_rendue`) VALUES
+(23, 9, 'ressource_9_adrar_titres.sql');
 
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `cours`
+--
+ALTER TABLE `cours`
+  ADD CONSTRAINT `cours_ibfk_1` FOREIGN KEY (`id_formateur`) REFERENCES `formateurs` (`id_formateur`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `cours_ressources`
@@ -709,6 +741,13 @@ ALTER TABLE `documents_pages`
 --
 ALTER TABLE `evaluations`
   ADD CONSTRAINT `evaluations_ibfk_1` FOREIGN KEY (`id_evaluation_dd`) REFERENCES `evaluations_dd` (`evaluation_dd_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `evaluations_sessions`
+--
+ALTER TABLE `evaluations_sessions`
+  ADD CONSTRAINT `evaluations_sessions_ibfk_1` FOREIGN KEY (`id_dd_evaluation`) REFERENCES `evaluations_dd` (`evaluation_dd_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `evaluations_sessions_ibfk_2` FOREIGN KEY (`id_session`) REFERENCES `sessions` (`id_session`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Contraintes pour la table `formateurs`
@@ -761,6 +800,13 @@ ALTER TABLE `stagiaires`
 ALTER TABLE `stagiaires_evaluations`
   ADD CONSTRAINT `stagiaires_evaluations_ibfk_1` FOREIGN KEY (`id_evaluation`) REFERENCES `evaluations` (`evaluation_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `stagiaires_evaluations_ibfk_2` FOREIGN KEY (`id_stagiaire`) REFERENCES `stagiaires` (`id_stagiaire`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Contraintes pour la table `stagiaires_ressources`
+--
+ALTER TABLE `stagiaires_ressources`
+  ADD CONSTRAINT `stagiaires_ressources_ibfk_1` FOREIGN KEY (`id_stagiaire`) REFERENCES `stagiaires` (`id_stagiaire`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `stagiaires_ressources_ibfk_2` FOREIGN KEY (`id_ressource`) REFERENCES `cours_ressources` (`cours_ressource_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

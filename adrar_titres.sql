@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : dim. 30 juil. 2023 à 01:32
+-- Généré le : dim. 30 juil. 2023 à 23:08
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.2.0
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `cours` (
   PRIMARY KEY (`cours_id`),
   UNIQUE KEY `cours_link` (`cours_link`),
   KEY `id_formateur` (`id_formateur`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours`
@@ -71,7 +71,8 @@ INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_text`, 
 (35, 'Cours sur Git', 'Dans ce cours, vous allez apprendre à quoi sert git, comment vous en servir avec les commandes les plus utilisées.', '', 'git;git flow;github;gitlab', '2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', 'git', 'git.svg', 1),
 (36, 'MCD', 'Nous allons ici aborder la notion de MCD. &#10;Modèle Conceptuel des Données.&#10;Il s&#39;agit d&#39;une haute représentation graphique qui permet de comprendre facilement comment les éléments sont liés entre eux.', '', 'merise;mcd;modèle conceptuel des données;pattes;entités;propriétés;associations', '2PACX-1vRVMjFeSLZaPjrfE1g3xV6Vp9UguObvaKC93763kBaIr2G5T5uVNq6HaZeJPUvp101iLzczAR-W3GZn', 'merise', 'merise.svg', 1),
 (37, 'MLD', 'Nous allons ici aborder la notion de MLD. &#10;Modèle Logique des Données.&#10;Il s’agit de la représentation en ligne du schéma représentant la structure de la base de données.', '', 'merise;mld;modèle logique des données;clé primaire; clé étrangère;tables;tables d&#39;associations;champs', '2PACX-1vRAjZXsOP18FsgQKZohzExDboUw3E_Tugedrw7u-UQ9873SjXR2MsBosfGMgmB6R7Qtf_MOPDcpSZHJ', 'merise', 'merise.svg', 1),
-(38, 'Cahier des Charges', 'C&#39;est dans ce cours que vous pouvez retrouver la façon d&#39;élaborer un CDC. C&#39;est une partie essentielle du métier, afin de mettre à plat les choses dès le début avec le client sur les tâches à effectuer et pour quel prix par exemple.', '', 'cdc;cahier des charges;contraintes;clients', '2PACX-1vRvnxXMY7e1x6zFkzcN515FXoEPta2HiHJSsS4JVNEgYERRcqVSsSHRxS7SslRPrrl9bx3LSQs-Bt_H', 'cdc', 'cdc.svg', 1);
+(38, 'Cahier des Charges', 'C&#39;est dans ce cours que vous pouvez retrouver la façon d&#39;élaborer un CDC. C&#39;est une partie essentielle du métier, afin de mettre à plat les choses dès le début avec le client sur les tâches à effectuer et pour quel prix par exemple.', '', 'cdc;cahier des charges;contraintes;clients', '2PACX-1vRvnxXMY7e1x6zFkzcN515FXoEPta2HiHJSsS4JVNEgYERRcqVSsSHRxS7SslRPrrl9bx3LSQs-Bt_H', 'cdc', 'cdc.svg', 1),
+(40, 'Présentation', 'Apprenez à réaliser des maquettes de vos applications et sites web afin de gagner du temps sur la totalité du projet et pouvoir faire des choix, sans coder.', '', 'maquette;maquettage;zoning;wireframe;prototype', '2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', 'maquettage', 'maquettage.svg', 1);
 
 -- --------------------------------------------------------
 
@@ -91,16 +92,59 @@ CREATE TABLE IF NOT EXISTS `cours_ressources` (
   `id_cours` int NOT NULL,
   PRIMARY KEY (`cours_ressource_id`),
   KEY `id_cours` (`id_cours`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_ressources`
 --
 
 INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `cours_ressource_resume`, `cours_ressource_lien`, `cours_ressource_type`, `cours_ressource_archive`, `cours_ressource_archive_lien`, `id_cours`) VALUES
-(1, 'Exercice 1 sur la charte graphique', 'Petit résumé montrant de quoi retourne le sujet de l\'exercice.\nPetit résumé montrant de quoi retourne le sujet de l\'exercice\nPetit résumé montrant de quoi retourne le sujet de l\'exercice. Petit résumé montrant de quoi retourne le sujet de l\'exercice.', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'exercice', NULL, NULL, 38),
-(6, 'Ressource 1', 'Images...', NULL, 'autre', '_64c1a2a330a9b_ressource_cours_38.zip', '80df89e0bba4db90a2149bd28522faaf1d79fe0d', 38),
-(9, 'TP CDC', 'Petit résumé montrant de quoi retourne le sujet de l&#39;exercice.', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'tp', NULL, NULL, 38);
+(9, 'TP CDC', 'TP sur le CDC', 'https://docs.google.com/document/d/17xHjg31bdiHJfEpvWC6ld--a8lPoV7dVx-BoVbGlS4o/edit?usp=sharing', 'tp', NULL, NULL, 38),
+(10, 'CDC plan type', 'Retrouvez ici le plan type d&#39;un cahier des charges', 'https://docs.google.com/document/d/1KI5W3VtYcP1jH1553_T3inckC9JqdcVeC4-PE25T7BY/edit?usp=sharing', 'autre', NULL, NULL, 38),
+(11, 'Exemple CDC Liny', 'Vous retrouverez ici le CDC de l&#39;application de rencontre Liny.', 'https://drive.google.com/file/d/1p2rjnNlyAuvl6zSksKcT65iMxMnY_0h5/view?usp=sharing', 'autre', NULL, NULL, 38),
+(12, 'Exemple CDC Katastrophyk', 'Vous retrouverez ici le CDC de l&#39;application Katastrophyk.', 'https://drive.google.com/file/d/1WWjyg1JaPhCNSZm-sd4dfJmZil_dQCiV/view?usp=sharing', 'autre', NULL, NULL, 38),
+(13, '01. TP Bedflix', 'Réalisez le Modèle Conceptuel de Données de l&#39;application de VOD Bedflix.', 'https://docs.google.com/document/d/1XreuDeKMMH1oKX2wWOprwZGAvVqKNQEYbcRFJict_-c/edit?usp=sharing', 'tp', NULL, NULL, 36),
+(14, '02. TP Adnum', 'Réalisez le Modèle Conceptuel de Données de l&#39;Adnum pour gérer les flux.', 'https://docs.google.com/document/d/1z0DQDkwkGoMbRR1ABzNctn-KIwTQg2mwZxdHORdtTDQ/edit?usp=sharing', 'tp', NULL, NULL, 36),
+(15, '03. TP ADRAR Classrooms', 'Réalisez le Modèle Conceptuel de Données de l&#39;ADRAR pour sa plateforme de cours en ligne.', 'https://docs.google.com/document/d/1XklOk60sarwFo3a1R1TQ16Fa5Gr8NaE5AaHj3QFh6RA/edit?usp=sharing', 'tp', NULL, NULL, 36),
+(16, '04. TP e-commerce', 'Réalisez le Modèle Conceptuel de Données pour un site de e-commerce standard.', 'https://docs.google.com/document/d/17WS6MkgIo3uXZfiJznP1YZ7XKc51BH4z0zEBS7AWQKE/edit?usp=drive_link', 'tp', NULL, NULL, 36),
+(17, '05. TP Hôtellade', 'Réalisez le Modèle Conceptuel de Données pour gérer un système de réservation de chambres en ligne.', 'https://docs.google.com/document/d/1Xepr-CiIE2H4JC2yIro2uBtZSjmCJUQ5e7J1You7Q1E/edit?usp=drive_link', 'tp', NULL, NULL, 36),
+(18, '06. TP Adrarthèque', 'Réalisez le Modèle Conceptuel de Données d&#39;une bibliothèque interne à l&#39;ADRAR.', 'https://docs.google.com/document/d/1kyietVRgszx7qfVuDoJ1ciMDS5pU87r3r1C_55gzBnI/edit?usp=drive_link', 'tp', NULL, NULL, 36),
+(19, '07. TP Add.rar', 'Réalisez le Modèle Conceptuel de Données d&#39;un réseau social basique.', 'https://docs.google.com/document/d/1M8Ig5nxPpsj5xNhuJZyyWlI9tYQmeqvO4uDRbQMiDQg/edit?usp=drive_link', 'tp', NULL, NULL, 36),
+(20, '08. TP AdCash', 'Réalisez le Modèle Conceptuel de Données du service de distributeur de monnaie interne à l&#39;ADRAR.', 'https://docs.google.com/document/d/1W2SuYthEbdgzIz-jipFOQDVrvvP-TPC-QY5cyZH7TGs/edit?usp=drive_link', 'tp', NULL, NULL, 36),
+(21, '01. TP Bedflix', 'Réalisez le Modèle Logique de Données de l&#39;application de VOD Bedflix.', 'https://docs.google.com/document/d/1jSFKkUo7K4km6IaqA7PU-HWj6oXRY8D5b8-VWrDFdDo/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(22, '02. TP Adnum', 'Réalisez le Modèle Logique de Données de l&#39;Adnum pour gérer les flux.', 'https://docs.google.com/document/d/1aC5dUqNY095bf6MoFjexdPK8OZQFjKvXny73ghaGKQ8/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(23, '03. TP ADRAR Classrooms', 'Réalisez le Modèle Logique de Données de l&#39;ADRAR pour sa plateforme de cours en ligne.', 'https://docs.google.com/document/d/1C-f6gQyAp66MU9OKoR9ObGUt39W5C31AsU-5no4CTbA/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(24, '04. TP e-commerce', 'Réalisez le Modèle Logique de Données pour un site de e-commerce standard.', 'https://docs.google.com/document/d/1Ct2j_V_Z41LEsIocnurB7uVllEkiTqDM-wHfmApikgU/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(25, '05. TP Hôtellade', 'Réalisez le Modèle Logique de Données pour gérer un système de réservation de chambres en ligne.', 'https://docs.google.com/document/d/1gmPBZ6g8I65Hc5bd6y9b5pVZSbd4mkeBwhx9UbSFloQ/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(26, '06. TP Adrarthèque', 'Réalisez le Modèle Logique de Données d&#39;une bibliothèque interne à l&#39;ADRAR.', 'https://docs.google.com/document/d/1IOQX5RcBFhUdfH5Zl7qnbsVMd7MC5HMHBS3yxcAIAh4/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(27, '07. TP Add.rar', 'Réalisez le Modèle Logique de Données d&#39;un réseau social basique.', 'https://docs.google.com/document/d/1_859GUSdPlhL2HLxu_tu-A6t60XpSOR38FDx8xMm5UA/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(28, '08. TP AdCash', 'Réalisez le Modèle Logique de Données du service de distributeur de monnaie interne à l&#39;ADRAR.', 'https://docs.google.com/document/d/1JKduJA_pLSVbf-wf254z-OByztpiNJ9xzUsdsm_kDhs/edit?usp=sharing', 'tp', NULL, NULL, 37),
+(29, 'CORRECTION TP AdCash', 'CORRECTION TP AdCash', 'https://drive.google.com/file/d/1_GIUA3Xw_7p8oChHiw_RFT-EU7VA-yBP/view?usp=sharing', 'autre', NULL, NULL, 37),
+(30, 'CORRECTION TP Add.rar', 'CORRECTION TP Add.rar', 'https://drive.google.com/file/d/1j3_3PxKELHoSNXnH5Ba53W_8O3YzThI_/view?usp=sharing', 'autre', NULL, NULL, 37),
+(31, 'CORRECTION TP Adnum', 'CORRECTION TP Adnum', 'https://drive.google.com/file/d/1ZNii9P40CtnlpLNeRiCTNroSbpz1x-wB/view?usp=sharing', 'autre', NULL, NULL, 37),
+(32, 'CORRECTION TP ADRAR Classrooms', 'CORRECTION TP ADRAR Classrooms', 'https://drive.google.com/file/d/1hrDOWUIq5poLLeT2WIkJeqUEPn-1hcOB/view?usp=sharing', 'autre', NULL, NULL, 37),
+(33, 'CORRECTION TP Adrartheque', 'CORRECTION TP Adrartheque', 'https://drive.google.com/file/d/1E_h4lKLhbEJpYF7JuPGePtOvP664LLS6/view?usp=sharing', 'autre', NULL, NULL, 37),
+(34, 'CORRECTION TP Bedflix', 'CORRECTION TP Bedflix', 'https://drive.google.com/file/d/16EjkpiAi4DXEdUxRLBwx7So_hMm4lcW2/view?usp=sharing', 'autre', NULL, NULL, 37),
+(35, 'CORRECTION TP e-commerce', 'CORRECTION TP e-commerce', 'https://drive.google.com/file/d/13aE3RtePP4kwPCGw2xTeR1QYDww75OEh/view?usp=sharing', 'autre', NULL, NULL, 37),
+(36, 'CORRECTION TP Hotellade', 'CORRECTION TP Hotellade', 'https://drive.google.com/file/d/1boBW-xqZ-qadh0YdAcJXsaZsWS2SrUYG/view?usp=sharing', 'autre', NULL, NULL, 37),
+(37, '01. Quiz Environnement Merise', '01. Quiz Environnement Merise', 'https://forms.gle/4p749ouUCJ7HH5r19\r\n', 'autre', NULL, NULL, 36),
+(38, 'Exercices bootstrap', 'Exercez vous sur la mise en forme d&#39;éléments et l&#39;utilisation des classes de bootstrap.', 'https://docs.google.com/document/d/1S0KnzN35uDMzMJ7pMzcoiO4Sf5tHvvqpQGPyG2uFrcs/edit?usp=sharing', 'exercice', NULL, NULL, 32),
+(39, 'TP Bootstrap', 'Vous allez devoir réaliser une petite intégration pour un site de VOD en utilisant le framework bootstrap.', 'https://docs.google.com/document/d/1wed9U5UWSYZzNrX_lF-ZUTcTxqjSsj-HyPbJgep4Udg/edit?usp=sharing', 'tp', NULL, NULL, 32),
+(40, 'Évaluation Git', 'Retrouvez l&#39;ensemble des instructions afin de vérifier vos acquis sur le module Git.', 'https://docs.google.com/document/d/10tyBETYdZz7T5w3wkEBCqHhbeyzwDo53kAmtUIjaylo/edit?usp=sharing', 'tp', NULL, NULL, 35),
+(41, 'TP 1', 'Seconde évaluation pour vérifier vos acquis.', 'https://docs.google.com/document/d/1Jx4mRmUt-RV4QdLop2yh56NbFtgsw8JHPKbYUPMFY5E/edit?usp=sharing', 'tp', NULL, NULL, 35),
+(42, 'TP 2', 'Troisième évaluation permettant de vous évaluer.', 'https://docs.google.com/document/d/1STBd6ZOx40bHZAxzT1F9_pvB24q8nu_BLFstmtSjYfg/edit?usp=sharing', 'tp', NULL, NULL, 35),
+(43, 'TP page simple', 'Complétez ce TP afin d&#39;évaluer vos compétences sur l&#39;HTML et le CSS', 'https://docs.google.com/document/d/1PNqTvnLP866GQWq43_-_TxaqjsYYFdv-WOI5J5E2bo8/edit?usp=sharing', 'tp', NULL, NULL, 25),
+(44, 'La piscinette', 'TP en groupe', 'https://docs.google.com/document/d/1gbcrZwH3alOc9EcqCgmkPwCCBjgvFtmrLyYizvOclmM/edit?usp=sharing', 'tp', NULL, NULL, 25),
+(45, 'TP fin module', 'Évaluation de fin de module', 'https://docs.google.com/document/d/1IQ-A3GalrB8M1rNtlmsi7EJ34KT3tlSo-w6Kf8MNeTM/edit?usp=sharing', 'tp', NULL, NULL, 25),
+(46, 'TP CV ness', 'Utilisation du framework NES.css pour réaliser un CV digital et voir le fonctionnement d&#39;un autre framework.', 'https://docs.google.com/document/d/1o8iVSWZiTC0v9FE8vZXvSiuxD1zkmjRr6UPND8L4RtY/edit?usp=sharing', 'tp', NULL, NULL, 28),
+(47, 'TP Requêtes de médias', 'TP pour vérifier l&#39;acquisition du principe de fonctionnement des requêtes de médias.', 'https://docs.google.com/document/d/1Z95jq1m9jXNgIrYgEysuBwelXAs3TTemu3lTB1fwhLY/edit?usp=sharing', 'tp', NULL, NULL, 28),
+(48, 'Assets Bedflix (logos)', 'Retrouvez ici les logos pour le TP Bedflix', NULL, 'autre', '_64c6e94f2eae8_ressource_cours_40.zip', '812814a945b6e9d18c3664c06ee4b7ecbced1eaa', 40),
+(49, 'TP Black Maquette zoning', 'Premier TP sur lequel vous devez réaliser la maquette avec la plus basse fidélité.', 'https://docs.google.com/document/d/1vClzq1TE4vyShQzvjWp5QeGK_1WWb6hn8F0v1XnuAH4/edit?usp=sharing', 'tp', NULL, NULL, 40),
+(50, 'TP Black Maquette wireframes', 'TP pour réaliser une maquette de fil de fer, légèrement plus étoffée que la première.', 'https://docs.google.com/document/d/1SdTGWJXEDUT5T3pj6bRzj3mByczjITsVhS3qYZcEFdo/edit?usp=sharing', 'tp', NULL, NULL, 40),
+(51, 'TP Black Maquette mock-up', 'Réalisez ici la plus haute fidélité de maquette, elle doit ressembler au produit final attendu.', 'https://docs.google.com/document/d/1jtERQ6dzTuW419zOinNFRoWGXY1mnTdfikm_O9Ic-A8/edit?usp=sharing', 'tp', NULL, NULL, 40),
+(52, 'TP Black Maquette prototypage', 'TP permettant de rendre interactive la maquette, permettant de mieux se projeter, de voir les enchaînements d&#39;écrans...', 'https://docs.google.com/document/d/1z_lncyeC9OzyROntQy5PsoATEJc4rJPdW8yj1k2S3hc/edit?usp=sharing', 'tp', NULL, NULL, 40),
+(53, 'TP Bedflix', 'Réaliser le TP pour le client Bedflix', 'https://docs.google.com/document/d/1HLIXcGHEWBtSoEAIHnv8kkR2SIJGH4EUJWZG_nFYqd0/edit?usp=sharing', 'tp', NULL, NULL, 40),
+(54, 'TP BONUS', 'Ce TP est optionnel, vous devrez réaliser la maquette de Black Maquette au format Desktop.', 'https://docs.google.com/document/d/1XdAWKvktPiuoDGk9DtsAA1cY4rQH3FsrkKVaUH1tpVQ/edit?usp=sharing', 'tp', NULL, NULL, 40);
 
 -- --------------------------------------------------------
 
@@ -118,7 +162,7 @@ CREATE TABLE IF NOT EXISTS `cours_sessions` (
   UNIQUE KEY `id_session_2` (`id_session`,`id_cours`),
   KEY `id_session` (`id_session`),
   KEY `id_course` (`id_cours`)
-) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_sessions`
@@ -158,7 +202,8 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 (105, 2, 38, 1),
 (117, 2, 29, 0),
 (118, 2, 21, 1),
-(125, 1, 34, 1);
+(125, 1, 34, 1),
+(126, 1, 40, 1);
 
 -- --------------------------------------------------------
 
@@ -364,7 +409,7 @@ CREATE TABLE IF NOT EXISTS `historiques` (
   PRIMARY KEY (`id_historique`),
   UNIQUE KEY `id_formateur_2` (`id_formateur`,`page_visitee`),
   KEY `id_formateur` (`id_formateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=322 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=344 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `historiques`
@@ -377,11 +422,11 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 (234, 1, '?page=ajouter_referent', 'Ajouter_referent', '192.168.19.119', '2023-07-06 14:08:09'),
 (252, 1, '?page=ajouter_document', 'Ajouter_document', '192.168.19.119', '2023-07-07 02:47:06'),
 (290, 1, '?page=ajouter-referent', 'Ajouter-referent', '::1', '2023-07-26 22:02:32'),
-(291, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '::1', '2023-07-26 22:02:39'),
 (304, 1, '?page=titre', 'Titre', '::1', '2023-07-27 22:55:58'),
-(316, 1, '?page=admin', 'Admin', '::1', '2023-07-30 01:49:56'),
 (317, 1, '?page=stage', 'Stage', '::1', '2023-07-30 01:52:20'),
-(321, 1, '?page=formation', 'Formation', '::1', '2023-07-30 03:01:07');
+(323, 1, '?page=admin', 'Admin', '::1', '2023-07-30 20:07:23'),
+(324, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '::1', '2023-07-30 22:56:48'),
+(343, 1, '?page=formation', 'Formation', '::1', '2023-07-31 01:05:52');
 
 -- --------------------------------------------------------
 
@@ -404,6 +449,18 @@ CREATE TABLE IF NOT EXISTS `notifications` (
 --
 
 INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notification_date`, `id_stagiaire`) VALUES
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 23),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 24),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 25),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 26),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 27),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 28),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 29),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 30),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 31),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 32),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 33),
+('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 44),
 ('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 25),
 ('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 26),
 ('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 27),

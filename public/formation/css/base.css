@@ -3,6 +3,7 @@
     --col_base_foncee: #5950ff;
     --col_base_tres_foncee: #3b31fc;
     --col_base_gris: #606060;
+    --col_base_green: #56af38;
     --st0: #F2F2F2;
     --st1: #CCCCCC;
     --st2: #FFB6B6;
@@ -80,8 +81,12 @@ body {
     margin: 0;
 }
 
-.bg-grey {
+.text-grey {
     color: var(--col_base_gris) !important;
+}
+
+.text-green {
+    color: var(--col_base_green) !important;
 }
 
 .wrapper {
@@ -279,6 +284,12 @@ i[class] {
     height: 55vh;
 }
 
+.upload-file {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+
 .card-body {
     overflow-y: auto;
     max-height: 31vh;
@@ -336,6 +347,28 @@ i[class] {
     background-color: #d9D9D9;
     max-height: 40vh;
     overflow-y: auto;
+}
+
+#notifications div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#notifications>hr {
+    margin: 0;
+}
+
+#notifications div a {
+    text-decoration: none;
+    border-bottom: 1px solid #CACACA;
+    padding: 1em;
+}
+
+#notifications div>button {
+    width: 100%;
+    border: none;
+    background-color: transparent;
 }
 
 .notifications-count[data-count]:after {

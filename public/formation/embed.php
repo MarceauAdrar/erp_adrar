@@ -13,7 +13,19 @@ $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECI
 $req->execute();
 $exercices = $req->fetchAll(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT * FROM cours_ressources WHERE id_cours= (SELECT cours_id FROM cours WHERE cours_link=:cours_link) AND cours_ressource_type = 'tp';");
+$sql = "SELECT * 
+        FROM cours_ressources ";
+if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+    $sql .= " LEFT JOIN stagiaires_ressources ON (id_stagiaire=:id_stagiaire AND id_ressource=cours_ressource_id) ";
+}
+$sql .= " WHERE id_cours= (SELECT cours_id 
+                        FROM cours 
+                        WHERE cours_link=:cours_link) 
+        AND cours_ressource_type = 'tp';";
+$req = $db->prepare($sql);
+if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+    $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+}
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
 $req->execute();
 $tps = $req->fetchAll(PDO::FETCH_ASSOC);
@@ -41,7 +53,7 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
                     <a target="_blank" href="download.php?q=<?= $ressource['cours_ressource_archive_lien'] ?>" class="w-25 d-block text-black text-decoration-none">
                         <div class="card">
                             <div class="card-body">
-                                <p class="card-title text-decoration-underline"><?=$ressource['cours_ressource_titre']?></p>
+                                <p class="card-title text-decoration-underline"><?= $ressource['cours_ressource_titre'] ?></p>
                                 <i class="fa-solid fa-circle-down text-black" style="position: absolute;right: 1vw;bottom: 0.5vh;font-size: 3rem;opacity: 0.5;"></i>
                             </div>
                         </div>
@@ -57,10 +69,10 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
                     <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>" class="w-25 d-block text-black text-decoration-none">
                         <div class="card">
                             <span class="card-img-top" alt="Illustration devoirs à la maison">
-                                <?php include_once("./imgs/homeworks.svg"); ?>
+                                <?php include("./imgs/homeworks.svg"); ?>
                             </span>
                             <div class="card-body">
-                                <p class="card-title text-decoration-underline"><?=$exercice['cours_ressource_titre']?></p>
+                                <p class="card-title text-decoration-underline"><?= $exercice['cours_ressource_titre'] ?></p>
                                 <small><?= $exercice['cours_ressource_resume'] ?></small>
                             </div>
                         </div>
@@ -73,17 +85,24 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
             <div class="col-12">
                 <h2>Les TPs</h2>
                 <?php foreach ($tps as $tp) { ?>
-                    <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="w-25 text-black text-decoration-none">
-                        <div class="card">
-                            <span class="card-img-top" alt="Illustration devoirs à la maison">
-                                <?php include_once("./imgs/homeworks.svg"); ?>
-                            </span>
-                            <div class="card-body">
-                                <p class="card-title text-decoration-underline"><?=strtoupper($tp['cours_ressource_titre'])?></p>
+                    <div class="card w-25">
+                        <span class="card-img-top" alt="Illustration devoirs à la maison">
+                            <?php if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+                                if (empty($tp['lien_ressource_rendue'])) { ?>
+                                    <i class="fa-solid fa-arrow-up-from-bracket text-grey upload-file" title="Rendre le TP" onclick="document.querySelector('#file_input_tp_<?= $tp['cours_ressource_id'] ?>').click();"></i>
+                                    <input type="file" name="file_input_tp_<?= $tp['cours_ressource_id'] ?>" id="file_input_tp_<?= $tp['cours_ressource_id'] ?>" class="hidden" onchange="sendTp(<?= $tp['cours_ressource_id'] ?>, this.name);">
+                            <?php } else { ?>
+                                <i class="fa-solid fa-check-to-slot text-green upload-file"></i>
+                            <?php }} ?>
+                            <?php include("./imgs/homeworks.svg"); ?>
+                        </span>
+                        <div class="card-body">
+                            <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
+                                <p class="card-title text-decoration-underline"><?= $tp['cours_ressource_titre'] ?></p>
                                 <small><?= $tp['cours_ressource_resume'] ?></small>
-                            </div>
+                            </a>
                         </div>
-                    </a>
+                    </div>
                 <?php } ?>
             </div>
         <?php } ?>
@@ -99,7 +118,7 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
             </div>
             <div class="modal-body">
                 <form action="../../src/c/requests.php" method="post" id="form_ressource_add" enctype="multipart/form-data">
-                    <input type="hidden" name="form_ressource_cours_id" value="<?=$_GET['slide']?>">
+                    <input type="hidden" name="form_ressource_cours_id" value="<?= $_GET['slide'] ?>">
                     <div class="mb-3">
                         <label for="form_ressource_titre" class="form-label">Titre de la ressource:</label>
                         <input type="text" class="form-control" name="form_ressource_titre" id="form_ressource_titre" placeholder="TP sur... / Exercice sur...">

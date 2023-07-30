@@ -42,35 +42,34 @@
                                 <a class="nav-link" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/?page=boite-aux-lettres">Déposer un fichier</a>
                             </li>
                         <?php } ?>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_modules" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Modules
-                            </a>
-                            <?php 
-                            $sql_evaluations = "SELECT evaluation_dd_name, evaluation_dd_link 
-                                                FROM evaluations_dd
-                                                WHERE evaluation_dd_active = 1;";
-                            $req_evaluations = $db->prepare($sql_evaluations);
-                            $req_evaluations->execute(); ?>
-                            <ul class="dropdown-menu" aria-labelledby="navbar_dropdown_modules">
-                                <?php foreach($req_evaluations->fetchAll(PDO::FETCH_ASSOC) as $eval) { ?>
-                                    <li><a class="dropdown-item" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/modules/<?=$eval["evaluation_dd_link"]?>/"><?=$eval["evaluation_dd_name"]?></a></li>
-                                <?php } ?>
-                            </ul>
-                        </li>
                         <?php 
+                        $sql_evaluations = "SELECT evaluation_dd_name, evaluation_dd_link 
+                                            FROM evaluations_dd 
+                                            JOIN evaluations_sessions ON(id_dd_evaluation=evaluation_dd_id AND id_session=:id_session AND evaluation_session_active = 1)
+                                            WHERE evaluation_dd_active = 1;";
+                        $req_evaluations = $db->prepare($sql_evaluations);
+                        $req_evaluations->bindValue(":id_session", filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT)); 
+                        $req_evaluations->execute();
+                        $evaluations = $req_evaluations->fetchAll(PDO::FETCH_ASSOC);
+                        $req_evaluations->closeCursor();
+                        if(!empty($evaluations)) { ?>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_modules" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Évaluations
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbar_dropdown_modules">
+                                    <?php foreach($evaluations as $eval) { ?>
+                                        <li><a class="dropdown-item" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/modules/<?=$eval["evaluation_dd_link"]?>/"><?=$eval["evaluation_dd_name"]?></a></li>
+                                    <?php } ?>
+                                </ul>
+                            </li>
+                        <?php } 
                         $sql_quiz = "SELECT quiz_module  
                                     FROM quiz 
-                                    LEFT JOIN quiz_sessions ON(quiz_id = id_quiz AND quiz_session_active = 1)
-                                    WHERE 1 ";
-                        if(isset($_SESSION['utilisateur']['id_session']) && $_SESSION['utilisateur']['id_session'] > 0) {
-                            $sql_quiz .= " AND id_session=:id_session ";
-                        }
-                        $sql_quiz .= " GROUP BY quiz_module;";
+                                    JOIN quiz_sessions ON(quiz_id = id_quiz AND id_session=:id_session AND quiz_session_active = 1)
+                                    GROUP BY quiz_module;";
                         $req_quiz = $db->prepare($sql_quiz);
-                        if(isset($_SESSION['utilisateur']['id_session']) && $_SESSION['utilisateur']['id_session'] > 0) {
-                            $req_quiz->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
-                        }
+                        $req_quiz->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
                         $req_quiz->execute();
                         $quizs = $req_quiz->fetchAll(PDO::FETCH_ASSOC);
                         $req_quiz->closeCursor(); 
@@ -81,7 +80,7 @@
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbar_dropdown_quiz">
                                     <?php foreach($quizs as $quiz) { ?>
-                                        <li><a class="dropdown-item" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/quiz?cours=<?=strtolower($quiz["quiz_module"])?>"><?=$quiz["quiz_module"]?></a></li>
+                                        <li><a class="dropdown-item" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/quiz?cours=<?=strtolower($quiz["quiz_module"])?>"><?=strtoupper($quiz["quiz_module"])?></a></li>
                                     <?php } ?>
                                 </ul>
                             </li>
@@ -90,7 +89,7 @@
                     <span class="navbar-text">
                         <?php 
                         if($_SESSION["utilisateur"]["id_stagiaire"] > 0) {
-                            echo '<a href="#" onclick="loadNewNotifications(true);" class="text-decoration-none"><i class="fas fa-bell fa-lg bg-grey position-relative"><span class="notifications-count"></span></i></a>&nbsp;';
+                            echo '<a href="#" onclick="loadNewNotifications(true);" class="text-decoration-none"><i class="fas fa-bell fa-lg text-grey position-relative"><span class="notifications-count"></span></i></a>&nbsp;';
                             echo ucwords($_SESSION["utilisateur"]["prenom_stagiaire"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_stagiaire"]);
                         } elseif($_SESSION["utilisateur"]["id_formateur"] > 0) {
                             echo ucwords($_SESSION["utilisateur"]["prenom_formateur"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_formateur"]);
@@ -106,6 +105,8 @@
             </div>
         </nav>
         <div id="notifications" class="hidden">
+            <h3>Notifications</h3>
+            <hr>
             <div></div>
         </div>
     <?php } ?>

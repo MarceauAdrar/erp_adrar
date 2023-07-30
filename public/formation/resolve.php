@@ -130,7 +130,7 @@ if($req_check_token->rowCount() > 0) {
                             </div>
                         </div>
                         <div class="col-12" id="box_preview">
-                            <iframe id="web_preview_full" src="http://' . $_SERVER["SERVER_ADDR"] . '/erp/public/formation/stagiaires/' . $_SESSION["stagiaire"]["pseudo_stagiaire"] . '/html-css/rando_nuit/index.html" frameborder="0"></iframe>
+                            <iframe id="web_preview_full" src="http://' . $_SERVER["SERVER_ADDR"] . '/erp/public/formation/stagiaires/' . $_SESSION["utilisateur"]["pseudo_stagiaire"] . '/html-css/rando_nuit/index.html" frameborder="0"></iframe>
                         </div>
                     </div>
                 </div>';

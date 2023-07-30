@@ -8,7 +8,7 @@ $(document).ready(function () {
     }
 });
 
-function loadNewNotifications() {
+function loadNewNotifications(opened = false) {
     $.ajax({
         url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "POST",
@@ -18,16 +18,29 @@ function loadNewNotifications() {
         },
         success: function (data) {
             if (data.notifications_count > 0) {
-                var notifications = "";
-                data.notifications.forEach(notification => {
-                    notifications += "<a href=\"" + notification.notification_lien + "\"><p>" + notification.notification_titre + "</p></a>";
-                });
-                document.querySelector('#notifications div').innerHTML = notifications;
-                document.querySelector('#notifications').classList.remove('hidden');
                 document.querySelector('.notifications-count').setAttribute("data-count", data.notifications_count);
             } else {
                 document.querySelector('.notifications-count').removeAttribute("data-count");
             }
+            document.querySelector('#notifications div').innerHTML = data.notifications;
+            if (opened) {
+                document.querySelector('#notifications').classList.toggle('hidden');
+            }
+        }
+    });
+}
+
+function deleteNotification(notification_lien = "") {
+    $.ajax({
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "POST",
+        dataType: "json",
+        data: {
+            delete_notification: 1,
+            lien_notification: notification_lien
+        },
+        success: function (data) {
+            loadNewNotifications();
         }
     });
 }
@@ -53,6 +66,24 @@ function showCourse(cours_id) {
                 $("#modalCourse .modal-content").html(r.modal_content);
                 $("#modalCourse").modal("show");
             }
+        }
+    });
+}
+
+function sendTp(tp_id, input) {
+    var formData = new FormData();
+    formData.append("send_tp", 1);
+    formData.append("tp_id", tp_id);
+    formData.append("fichier", document.querySelector('#' + input).files[0]);
+    $.ajax({
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "post",
+        dataType: "json",
+        processData: false,
+        contentType: false,
+        data: formData,
+        success: function (r) {
+            document.location.reload();
         }
     });
 }

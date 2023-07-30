@@ -10,6 +10,7 @@ if(empty($_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && exp
 }
 
 define("DEV", true);
+define("LIEN_FORMATION", "/erp/public/formation/");
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;

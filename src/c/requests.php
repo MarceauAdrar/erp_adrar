@@ -75,7 +75,7 @@ if (!empty($_POST["btn_join_evaluation"])) {
 }
 
 if (!empty($_POST["save_code"])) {
-    $link = "/var/www/html/erp/public/formation/stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"] . "/" . $_POST["module"];
+    $link = "../../public/formation/stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"] . "/" . $_POST["module"];
     $file = $_POST["tp"] . "." . $_POST["extension"];
     if (!file_exists($link . "/" . $file)) {
         if (!mkdir($link, 0777, true)) {
@@ -336,7 +336,7 @@ if (!empty($_POST["update_status_cours"])) {
                 $req = $db->prepare("INSERT INTO notifications(notification_titre, notification_lien, notification_date, id_stagiaire) 
                                     VALUES(:notification_titre, :notification_lien, NOW(), :id_stagiaire);");
                 $req->bindValue(':notification_titre', "[" . strtoupper($cours['cours_category']) . "] Nouveau cours disponible: " . $cours['cours_title']);
-                $req->bindValue(':notification_lien', "embed.php?slide=" . $cours['cours_link']);
+                $req->bindValue(':notification_lien', LIEN_FORMATION . "embed.php?slide=" . $cours['cours_link']);
                 $req->bindValue(':id_stagiaire', $id_stagiaire);
                 $req->execute();
                 $req->closeCursor();
@@ -346,7 +346,7 @@ if (!empty($_POST["update_status_cours"])) {
                 $req = $db->prepare("DELETE FROM notifications 
                                     WHERE notification_lien=:notification_lien 
                                     AND id_stagiaire=:id_stagiaire;");
-                $req->bindValue(':notification_lien', "embed.php?slide=" . $cours['cours_link']);
+                $req->bindValue(':notification_lien', LIEN_FORMATION . "embed.php?slide=" . $cours['cours_link']);
                 $req->bindValue(':id_stagiaire', $id_stagiaire);
                 $req->execute();
                 $req->closeCursor();
@@ -358,7 +358,6 @@ if (!empty($_POST["update_status_cours"])) {
 }
 
 if (!empty($_POST["update_status_quiz"])) {
-    // var_dump($_POST['quiz_active']);die;
     $sql_update_quiz = "REPLACE INTO quiz_sessions(id_session, id_quiz, quiz_session_active) 
                         VALUES(:id_session, :id_quiz, :quiz_session_active);";
     $req_update_quiz = $db->prepare($sql_update_quiz);
@@ -396,7 +395,7 @@ if (!empty($_POST["update_status_quiz"])) {
                 $req = $db->prepare("DELETE FROM notifications 
                                     WHERE notification_lien=:notification_lien 
                                     AND id_stagiaire=:id_stagiaire;");
-                $req->bindValue(':notification_lien', "embed.php?slide=" . $quiz['quiz_lien']);
+                $req->bindValue(':notification_lien', "https://quizizz.com/join?gc=" . $quiz['quiz_lien']);
                 $req->bindValue(':id_stagiaire', $id_stagiaire);
                 $req->execute();
                 $req->closeCursor();
@@ -439,7 +438,7 @@ if (!empty($_POST["fetch_quiz_data"])) {
     die(ob_get_clean());
 }
 
-if (!empty($_POST["form_ressource_add"])) { // TODO: vérifier la notification envoyée ici 
+if (!empty($_POST["form_ressource_add"])) { 
     $req = $db->prepare("SELECT cours_id FROM cours WHERE cours_link=:cours_link;");
     $req->bindValue(':cours_link', filter_var($_POST['form_ressource_cours_id'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->execute();
@@ -506,29 +505,61 @@ if (!empty($_POST["form_ressource_add"])) { // TODO: vérifier la notification e
 }
 
 if (!empty($_POST["load_new_notifications"])) {
-    $notifications = [];
+    $notifications = "";
     $notifications_count = 0;
     if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
-        $req = $db->prepare("SELECT notification_titre, notification_lien 
+        $req = $db->prepare("SELECT notification_titre, notification_date, notification_lien 
                             FROM notifications 
                             WHERE id_stagiaire=:id_stagiaire 
                             ORDER BY notification_date ASC;");
         $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
         $req->execute();
-        $notifications = $req->fetchAll(PDO::FETCH_ASSOC);
-        $notifications_count = sizeof($notifications);
-        $req->closeCursor();
-        if (isset($_POST['opened']) && $_POST['opened'] === "true") {
-            $req = $db->prepare("DELETE FROM notifications WHERE id_stagiaire=:id_stagiaire;");
-            $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
-            $req->execute();
-            $req->closeCursor();
+        $result = $req->fetchAll(PDO::FETCH_ASSOC);
+        if(!empty($result)) {
+            foreach($result as $notification) {
+                $notifications .= "<a onclick=\"deleteNotification('".$notification['notification_lien']."');\"" . (substr($notification['notification_lien'], 0, 5) == "https" ? 'target="_blank"':'') . " href=\"" . $notification['notification_lien'] . "\"><span>" . $notification['notification_titre'] . "</span><em class=\"d-block\">Le ".date_format(new DateTimeImmutable($notification['notification_date']), "d/m/y à H:i:s")."</em></a>";
+            }
+            $notifications .= "<button onclick=\"deleteNotification();\"><i class=\"fa-solid fa-trash text-grey\"></i></button>";
+        } else {
+            $notifications = "Aucune notification pour le moment";
         }
+        $notifications_count = $req->rowCount();
+        $req->closeCursor();
     }
 
     die(json_encode(array(
         "notifications" => $notifications,
         "notifications_count" => $notifications_count
     )));
+}
+
+if (isset($_POST['delete_notification'])) {
+    $sql = "DELETE FROM notifications 
+            WHERE id_stagiaire=:id_stagiaire";
+    if (isset($_POST['lien_notification']) && !empty($_POST['lien_notification'])) {
+        $sql .= " AND notification_lien=:notification_lien";
+    }
+    $sql .= ";";
+    $req = $db->prepare($sql);
+    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+    if (isset($_POST['lien_notification']) && !empty($_POST['lien_notification'])) {
+        $req->bindValue(":notification_lien", filter_var($_POST['lien_notification'], FILTER_SANITIZE_SPECIAL_CHARS));
+    }
+    die(json_encode($req->execute()));
+}
+
+if (isset($_POST['send_tp']) && isset($_FILES['fichier']) && !empty($_FILES['fichier'])) {
+    $tp_id = filter_var($_POST['tp_id'], FILTER_VALIDATE_INT);
+    $lien_ressource_rendue = filter_var("ressource_".$tp_id."_".$_FILES['fichier']['name'], FILTER_SANITIZE_SPECIAL_CHARS);
+    if(!is_dir("../../public/formation/stagiaires/".$_SESSION['utilisateur']['pseudo_stagiaire']."/tps/")) {
+        mkdir("../../public/formation/stagiaires/".$_SESSION['utilisateur']['pseudo_stagiaire']."/tps/");
+    }
+    move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/".$_SESSION['utilisateur']['pseudo_stagiaire']."/tps/".$lien_ressource_rendue);
+    $req = $db->prepare("REPLACE INTO stagiaires_ressources(id_stagiaire, id_ressource, lien_ressource_rendue) 
+                        VALUES(:id_stagiaire, :id_ressource, :lien_ressource_rendue);");
+    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_ressource", $tp_id);
+    $req->bindValue(":lien_ressource_rendue", $lien_ressource_rendue);
+    die(json_encode($req->execute()));
 }
 ?>

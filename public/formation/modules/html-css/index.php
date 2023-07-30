@@ -29,7 +29,7 @@ if ($req_lignes->rowCount() > 0) {
         } elseif(empty($eval["stagiaire_evaluation_correction"])) {
             $lignes .= '    <td><div class="alert alert-warning mb-0">En attente de correction</div></td>';
         } elseif($eval["evaluation_errors_max"] > $eval["stagiaire_evaluation_errors_found"]) {
-            $lignes .= '    <td><a class="btn btn-dark" href="http://' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/achieved.php?module=html-css&tp=' . $eval["evaluation_id"] . '">Voir mes erreurs</a></td>';
+            $lignes .= '    <td><a class="btn btn-dark" href="http://' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/achieved.php?module=html-css&tp=' . $eval["evaluation_id"] . '&stagiaire_username='.$_SESSION['utilisateur']['pseudo_stagiaire'].'">Voir mes erreurs</a></td>';
         } else {
             $lignes .= '    <td><div class="alert alert-success mb-0">Félicitations, vous avez terminé ce TP !</div></td>';
         }

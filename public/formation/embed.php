@@ -49,8 +49,14 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
         <?php if (!empty($ressources)) { ?>
             <div class="col-12">
                 <h2>Les ressources</h2>
-                <?php foreach ($ressources as $ressource) { ?>
-                    <a target="_blank" href="download.php?q=<?= $ressource['cours_ressource_archive_lien'] ?>" class="w-25 d-block text-black text-decoration-none">
+                <?php foreach ($ressources as $ressource) { 
+                    $lien = "";
+                    if(empty($ressource['cours_ressource_lien'])) {
+                        $lien = "download.php?q=".$ressource['cours_ressource_archive_lien'];
+                    } else {
+                        $lien = $ressource['cours_ressource_lien'];
+                    } ?>
+                    <a target="_blank" href="<?=$lien?>" class="w-25 d-block text-black text-decoration-none">
                         <div class="card">
                             <div class="card-body">
                                 <p class="card-title text-decoration-underline"><?= $ressource['cours_ressource_titre'] ?></p>

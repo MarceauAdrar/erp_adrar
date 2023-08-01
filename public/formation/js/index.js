@@ -1,10 +1,16 @@
 $(document).ready(function () {
     if (document.querySelector('.notifications-count') !== null) {
         loadNewNotifications();
-
+        
         setInterval(function () {
             loadNewNotifications();
         }, 4000);
+    }
+    if (document.querySelector('#liste_modules') !== null) {
+        getModules();
+    }
+    if (document.querySelector('#liste_cours') !== null) {
+        getCourses(document.querySelector('#hidden_input_module').value);
     }
 });
 
@@ -50,6 +56,43 @@ function showInformationsModal() {
     if (!$(".help-resource").hasClass("fade-in")) {
         $(".help-resource").toggleClass("fade-out");
     }
+}
+
+function getModules(recherche = '') {
+    $.ajax({
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "post",
+        dataType: "json",
+        data: {
+            get_modules: 1, 
+            recherche: recherche
+        },
+        success: function (r) {
+            document.querySelector('#liste_modules').innerHTML = "";
+            if (r.success) {
+                document.querySelector('#liste_modules').innerHTML += r.modules;
+            }
+        }
+    });
+}
+
+function getCourses(module, recherche = '') {
+    $.ajax({
+        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "post",
+        dataType: "json",
+        data: {
+            get_courses: 1, 
+            module: module, 
+            recherche: recherche
+        },
+        success: function (r) {
+            document.querySelector('#liste_cours').innerHTML = "";
+            if (r.success) {
+                document.querySelector('#liste_cours').innerHTML += r.cours;
+            }
+        }
+    });
 }
 
 function showCourse(cours_id) {

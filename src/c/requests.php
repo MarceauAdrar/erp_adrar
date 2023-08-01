@@ -438,7 +438,7 @@ if (!empty($_POST["fetch_quiz_data"])) {
     die(ob_get_clean());
 }
 
-if (!empty($_POST["form_ressource_add"])) { 
+if (!empty($_POST["form_ressource_add"])) {
     $req = $db->prepare("SELECT cours_id FROM cours WHERE cours_link=:cours_link;");
     $req->bindValue(':cours_link', filter_var($_POST['form_ressource_cours_id'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->execute();
@@ -515,9 +515,9 @@ if (!empty($_POST["load_new_notifications"])) {
         $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
         $req->execute();
         $result = $req->fetchAll(PDO::FETCH_ASSOC);
-        if(!empty($result)) {
-            foreach($result as $notification) {
-                $notifications .= "<a onclick=\"deleteNotification('".$notification['notification_lien']."');\"" . (substr($notification['notification_lien'], 0, 5) == "https" ? 'target="_blank"':'') . " href=\"" . $notification['notification_lien'] . "\"><span>" . $notification['notification_titre'] . "</span><em class=\"d-block\">Le ".date_format(new DateTimeImmutable($notification['notification_date']), "d/m/y à H:i:s")."</em></a>";
+        if (!empty($result)) {
+            foreach ($result as $notification) {
+                $notifications .= "<a onclick=\"deleteNotification('" . $notification['notification_lien'] . "');\"" . (substr($notification['notification_lien'], 0, 5) == "https" ? 'target="_blank"' : '') . " href=\"" . $notification['notification_lien'] . "\"><span>" . $notification['notification_titre'] . "</span><em class=\"d-block\">Le " . date_format(new DateTimeImmutable($notification['notification_date']), "d/m/y à H:i:s") . "</em></a>";
             }
             $notifications .= "<button onclick=\"deleteNotification();\"><i class=\"fa-solid fa-trash text-grey\"></i></button>";
         } else {
@@ -550,16 +550,150 @@ if (isset($_POST['delete_notification'])) {
 
 if (isset($_POST['send_tp']) && isset($_FILES['fichier']) && !empty($_FILES['fichier'])) {
     $tp_id = filter_var($_POST['tp_id'], FILTER_VALIDATE_INT);
-    $lien_ressource_rendue = filter_var("ressource_".$tp_id."_".$_FILES['fichier']['name'], FILTER_SANITIZE_SPECIAL_CHARS);
-    if(!is_dir("../../public/formation/stagiaires/".$_SESSION['utilisateur']['pseudo_stagiaire']."/tps/")) {
-        mkdir("../../public/formation/stagiaires/".$_SESSION['utilisateur']['pseudo_stagiaire']."/tps/");
+    $lien_ressource_rendue = filter_var("ressource_" . $tp_id . "_" . $_FILES['fichier']['name'], FILTER_SANITIZE_SPECIAL_CHARS);
+    if (!is_dir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['pseudo_stagiaire'] . "/tps/")) {
+        mkdir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['pseudo_stagiaire'] . "/tps/");
     }
-    move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/".$_SESSION['utilisateur']['pseudo_stagiaire']."/tps/".$lien_ressource_rendue);
+    move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/" . $_SESSION['utilisateur']['pseudo_stagiaire'] . "/tps/" . $lien_ressource_rendue);
     $req = $db->prepare("REPLACE INTO stagiaires_ressources(id_stagiaire, id_ressource, lien_ressource_rendue) 
                         VALUES(:id_stagiaire, :id_ressource, :lien_ressource_rendue);");
     $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
     $req->bindValue(":id_ressource", $tp_id);
     $req->bindValue(":lien_ressource_rendue", $lien_ressource_rendue);
     die(json_encode($req->execute()));
+}
+
+if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
+    $success = true;
+
+    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
+        $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE id_secteur=:id_secteur;");
+        $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+        $req->execute();
+        $ids_formateurs = $req->fetchAll(PDO::FETCH_COLUMN);
+        $req->closeCursor();
+
+        $sql = "SELECT * 
+                FROM cours 
+                JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
+                WHERE formateurs.id_formateur IN(" . implode(", ", $ids_formateurs) . ") ";
+        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+            $sql .= " AND cours_keywords LIKE CONCAT('%', :recherche, '%') ";
+        }
+        $sql .= " GROUP BY cours_category 
+        ORDER BY cours_category;";
+        $req = $db->prepare($sql);
+        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+            $req->bindValue(':recherche', filter_var(trim($_POST['recherche']), FILTER_SANITIZE_SPECIAL_CHARS));
+        }
+        $req->execute();
+        $modules = $req->fetchAll(PDO::FETCH_ASSOC);
+        $req->closeCursor();
+    } else {
+        $sql = "SELECT * 
+                FROM cours 
+                JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
+                JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session AND cours_session_active = 1) 
+                WHERE 1 ";
+        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+            $sql .= " AND cours_keywords LIKE CONCAT('%', :recherche, '%') ";
+        }
+        $sql .= " GROUP BY cours_category 
+                ORDER BY cours_category;";
+        $req = $db->prepare($sql);
+        $req->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
+        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+            $req->bindValue(':recherche', filter_var(trim($_POST['recherche']), FILTER_SANITIZE_SPECIAL_CHARS));
+        }
+        $req->execute();
+        $modules = $req->fetchAll(PDO::FETCH_ASSOC);
+        $req->closeCursor();
+    }
+
+    $liste_modules = "";
+    if (!empty($modules)) {
+        foreach ($modules as $module) {
+            $liste_modules .= '<div class="col-3 mb-3">
+                <a title="Cours fait par ' . ucwords($module['prenom_formateur']) . " " . strtoupper($module['nom_formateur']) . '" href="http://' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_category'] . '" class="text-black">
+                    <div class="card">
+                        <span class="card-img-top" alt="Illustration ' . $module['cours_category'] . '">
+                            ' . file_get_contents("../../public/formation/imgs/" . $module['cours_category'] . ".svg") . '
+                        </span>
+                        <div class="card-body">
+                            <h5 class="card-title text-decoration-underline">' . strtoupper($module['cours_category']) . '</h5>
+                        </div>
+                    </div>
+                </a>
+            </div>';
+        }
+    } else {
+        $liste_modules = "<p>Vous n'avez pas de cours dans votre secteur</p>";
+    }
+
+    die(json_encode(array(
+        'success' => $success,
+        'modules' => $liste_modules
+    )));
+}
+
+if (isset($_POST['get_courses']) && !empty($_POST['get_courses'])) {
+    $success = true;
+
+    $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration 
+                        FROM cours c ";
+    if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
+        $sql_select_cours .= " INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session) ";
+    } else {
+        $sql_select_cours .= " INNER JOIN cours_sessions cs ON c.cours_id = cs.id_cours ";
+    }
+    $sql_select_cours .= "
+                            WHERE cours_session_active = 1
+                            AND cours_category=:cours_category ";
+    if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+        $sql_select_cours .= " AND cours_keywords LIKE CONCAT('%', :recherche, '%') ";
+    }
+    if (!isset($_SESSION["utilisateur"]["id_session"]) || empty($_SESSION["utilisateur"]["id_session"])) {
+        $sql_select_cours .= " GROUP BY cours_id ";
+    }
+    $sql_select_cours .= " ORDER BY cours_title;";
+    $req_select_cours = $db->prepare($sql_select_cours);
+    $req_select_cours->bindParam(":cours_category", $_POST["module"]);
+    if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+        $req_select_cours->bindValue(':recherche', filter_var(trim($_POST['recherche']), FILTER_SANITIZE_SPECIAL_CHARS));
+    }
+    if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
+        $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
+    }
+    $req_select_cours->execute();
+    $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
+
+    $liste_cours = "";
+    if (!empty($cours)) {
+        foreach ($cours as $cours) {
+            $liste_cours .= '<div class="col-3 mb-3">
+                    <a href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
+                        <div class="card">
+                            <span class="card-img-top" alt="Illustration HTML/CSS/JS">
+                                ' . file_get_contents("../../public/formation/imgs/" . $cours["cours_illustration"]) . '
+                            </span>
+                            <div class="card-body">
+                                <h5 class="card-title text-decoration-underline">' . $cours["cours_title"] . '</h5>
+                                <p class="card-text">' . $cours["cours_synopsis"] . '</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>';
+        }
+    } else {
+        $liste_cours = '<div class="col-3 offset-4 mt-5 text-center">
+                    ' . file_get_contents("../../public/formation/imgs/no_data.svg") . '
+                            <h3 class="mt-3">Aucun cours trouvé...</h3>
+                        </div>';
+    }
+
+    die(json_encode(array(
+        'success' => $success,
+        'cours' => $liste_cours
+    )));
 }
 ?>

@@ -11,7 +11,8 @@
     },
     "config": {
         "allow-plugins": {
-            "composer/installers": true
+            "composer/installers": true,
+            "oomphinc/composer-installers-extender": false
         }
     }
 }

@@ -1,39 +1,6 @@
 <?php
 include_once("../src/m/connect.php");
 
-// echo '<pre>';
-// var_dump($_SESSION['utilisateur']);
-// echo '</pre>';die;
-
-if($_SESSION['utilisateur']['id_formateur'] > 0) {
-    $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE id_secteur=:id_secteur;");
-    $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
-    $req->execute();
-    $ids_formateurs = $req->fetchAll(PDO::FETCH_COLUMN);
-    $req->closeCursor();
-    
-    $req = $db->prepare("SELECT * 
-                        FROM cours 
-                        JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
-                        WHERE formateurs.id_formateur IN(" . implode(", ", $ids_formateurs) . ")  
-                        GROUP BY cours_category 
-                        ORDER BY cours_category;");
-    $req->execute();
-    $modules = $req->fetchAll(PDO::FETCH_ASSOC);
-    $req->closeCursor();
-} else {
-    $req = $db->prepare("SELECT * 
-                        FROM cours 
-                        JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
-                        JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session AND cours_session_active = 1) 
-                        GROUP BY cours_category 
-                        ORDER BY cours_category;");
-    $req->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
-    $req->execute();
-    $modules = $req->fetchAll(PDO::FETCH_ASSOC);
-    $req->closeCursor();
-}
-
 $title = " | Accueil";
 
 ob_start();
@@ -47,26 +14,14 @@ include_once("./formation/header.php");
     </div>
     
     <div class="row pt-5">
-        <h3>Les modules</h3>
+        <input type="search" class="form-control" onkeyup="getModules(this.value);" placeholder="Votre recherche...">
+    </div>
 
-        <?php 
-        if(!empty($modules)) {
-        foreach($modules as $module) { ?>
-            <div class="col-3 mb-3">
-                <a title="Cours fait par <?=ucwords($module['prenom_formateur']) . " " . strtoupper($module['nom_formateur'])?>" href="http://<?=$_SERVER["SERVER_NAME"]?>/erp/public/formation/cours.php?cours=<?=$module['cours_category']?>" class="text-black">
-                    <div class="card">
-                        <span class="card-img-top" alt="Illustration <?=$module['cours_category']?>">
-                            <?php include_once("./formation/imgs/" . $module['cours_category'] . ".svg"); ?>
-                        </span>
-                        <div class="card-body">
-                            <h5 class="card-title text-decoration-underline"><?=strtoupper($module['cours_category'])?></h5>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        <?php }} else { ?>
-            <p>Vous n'avez pas de cours dans votre secteur</p>
-        <?php } ?>
+    <div class="row pt-5">
+        <h3>Les modules</h3>
+        <div class="col-12">
+            <div class="row" id="liste_modules"></div>
+        </div>
 
     </div>
 </div>

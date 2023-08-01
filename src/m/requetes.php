@@ -189,6 +189,9 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
                             }
                         }
                     }
+                    if(!is_dir(__DIR__ . '/../v/tmp/')) {
+                        mkdir(__DIR__ . '/../v/tmp/');
+                    }
                     $html2pdf->Output(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', 'F');
                     $mailer->addAttachment(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', str_replace(" ", "_", $document['nom_document']) . '.pdf');
                 }

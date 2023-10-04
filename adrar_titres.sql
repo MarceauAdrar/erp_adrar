@@ -871,6 +871,7 @@ INSERT INTO `stagiaires_ressources` (`id_stagiaire`, `id_ressource`, `lien_resso
 --
 ALTER TABLE `cours`
   ADD CONSTRAINT `cours_ibfk_1` FOREIGN KEY (`id_formateur`) REFERENCES `formateurs` (`id_formateur`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE cours ADD FULLTEXT INDEX idx_cours_keywords (cours_keywords);
 
 --
 -- Contraintes pour la table `cours_ressources`

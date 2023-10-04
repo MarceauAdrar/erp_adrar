@@ -16,7 +16,7 @@ $(document).ready(function () {
 
 function loadNewNotifications(opened = false) {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "POST",
         dataType: "json",
         data: {
@@ -38,7 +38,7 @@ function loadNewNotifications(opened = false) {
 
 function deleteNotification(notification_lien = "") {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "POST",
         dataType: "json",
         data: {
@@ -60,7 +60,7 @@ function showInformationsModal() {
 
 function getModules(recherche = '') {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "post",
         dataType: "json",
         data: {
@@ -78,7 +78,7 @@ function getModules(recherche = '') {
 
 function getCourses(module, recherche = '') {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "post",
         dataType: "json",
         data: {
@@ -97,7 +97,7 @@ function getCourses(module, recherche = '') {
 
 function showCourse(cours_id) {
     $.ajax({
-        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "post",
         dataType: "json",
         data: {
@@ -119,7 +119,7 @@ function sendTp(tp_id, input) {
     formData.append("tp_id", tp_id);
     formData.append("fichier", document.querySelector('#' + input).files[0]);
     $.ajax({
-        url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "post",
         dataType: "json",
         processData: false,

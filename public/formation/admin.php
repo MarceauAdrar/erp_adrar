@@ -44,7 +44,7 @@ include_once("./header.php"); ?>
             <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManageQuiz" onclick="showModalManageQuiz();">Gérer les quiz</button>
         </div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-8 offset-2">
 
             <div class="modules mt-3">
@@ -147,7 +147,7 @@ include_once("./header.php"); ?>
             </div>
 
         </div>
-    </div>
+    </div> -->
 </div>
 
 
@@ -205,24 +205,35 @@ include_once("./header.php"); ?>
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalManagecoursTitle">Gérer les cours</h5>
-                &nbsp;
-                <select name="form_session_cours" onchange="showModalManagecours();">
-                    <option value="0">Toutes mes sessions</option>
-                    <?php
-                    $sql = "SELECT * 
-                                FROM sessions 
-                                WHERE id_formateur=:id_formateur
-                                ORDER BY nom_session;";
-                    $req = $db->prepare($sql);
-                    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
-                    $req->execute();
-                    $sessions_formateur = $req->fetchAll(PDO::FETCH_ASSOC);
-                    foreach ($sessions_formateur as $session) { ?>
-                        <option value="<?= $session['id_session'] ?>"><?= $session['nom_session'] ?></option>
-                    <?php } ?>
-                </select>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="container">
+                    <div class="row">
+                        <h5 class="modal-title w-auto" id="modalManagecoursTitle">Gérer les cours</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        &nbsp;
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <select name="form_session_cours" class="form-select" onchange="showModalManagecours();">
+                                <option value="0">Toutes mes sessions</option>
+                                <?php
+                                $sql = "SELECT * 
+                                        FROM sessions 
+                                        WHERE id_formateur=:id_formateur
+                                        ORDER BY nom_session;";
+                                $req = $db->prepare($sql);
+                                $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                                $req->execute();
+                                $sessions_formateur = $req->fetchAll(PDO::FETCH_ASSOC);
+                                foreach ($sessions_formateur as $session) { ?>
+                                    <option value="<?= $session['id_session'] ?>"><?= $session['nom_session'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <input type="text" name="form_search_cours" placeholder="Cours, mot-clé, ..." class="form-control" onkeyup="showModalManagecours();">
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
             </div>
@@ -238,7 +249,7 @@ include_once("./header.php"); ?>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="http://<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php" method="post" id="form_add_quiz">
+                <form action="//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php" method="post" id="form_add_quiz">
                     <div class="mb-3">
                         <label for="form_quiz_module" class="form-label">Nom du module:</label>
                         <input type="text" class="form-control" name="form_quiz_module" placeholder="html">
@@ -321,7 +332,7 @@ include_once("./js.php"); ?>
         if (operation === 'plus') errors_found++;
 
         $.ajax({
-            url: "http://<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 valid_stagiaire_correction: 1,
@@ -338,11 +349,12 @@ include_once("./js.php"); ?>
 
     function showModalManagecours() {
         $.ajax({
-            url: "http://<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 show_modal_manage_cours: 1,
-                id_session: document.querySelector('select[name="form_session_cours"]').value
+                id_session: document.querySelector('select[name="form_session_cours"]').value,
+                search: document.querySelector('input[name="form_search_cours"]').value
             },
             success: function(r) {
                 $("#modalManagecours .modal-content .modal-body").html(r);
@@ -352,7 +364,7 @@ include_once("./js.php"); ?>
 
     function showModalManageQuiz() {
         $.ajax({
-            url: "http://<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 show_modal_manage_quiz: 1,
@@ -368,7 +380,7 @@ include_once("./js.php"); ?>
         var cours_active = ($("#cours_" + cours_id + "_" + id_session + " span > span").hasClass("cours-active") ? 0 : 1);
 
         $.ajax({
-            url: "http://<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 update_status_cours: 1,
@@ -388,7 +400,7 @@ include_once("./js.php"); ?>
         var quiz_active = ($("#quiz_" + quiz_id + "_" + id_session + " span > span").hasClass("quiz-active") ? 0 : 1);
 
         $.ajax({
-            url: "http://<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 update_status_quiz: 1,
@@ -406,7 +418,7 @@ include_once("./js.php"); ?>
 
     function addCourse() {
         $.ajax({
-            url: "http://" + SERVER_NAME + "/erp/src/c/requests.php",
+            url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
             method: "post",
             data: {
                 add_cours: 1,

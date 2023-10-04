@@ -20,7 +20,7 @@ use TCPDF;
 require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $db = new PDO("mysql:host=localhost;dbname=adrar_titres", "root", "");
+    $db = new PDO("mysql:host=localhost;dbname=adrar_titres", "debian", "Adr4r!");
 } catch(PDOException $e) {
     if(DEV) throw $e;
 }

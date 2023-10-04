@@ -159,7 +159,16 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 $sql_select_cours = "SELECT *
                                     FROM cours 
                                     LEFT JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session) 
-                                    ORDER BY cours_category, cours_title;";
+                                    WHERE 1 ";
+                if (!empty($_POST['search'])) {
+                    $mots_cles = explode(" ", filter_var(trim($_POST['search'], FILTER_SANITIZE_SPECIAL_CHARS)));
+                    $conditions = array();
+                    foreach ($mots_cles as $mot) {
+                        $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+                    }
+                    $sql_select_cours .= " AND ". implode(' AND ', $conditions);
+                }
+                $sql_select_cours .= " ORDER BY cours_category, cours_title;";
                 $req_select_cours = $db->prepare($sql_select_cours);
                 $req_select_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
                 $req_select_cours->execute();
@@ -578,14 +587,16 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
                 JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
                 WHERE formateurs.id_formateur IN(" . implode(", ", $ids_formateurs) . ") ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-            $sql .= " AND cours_keywords LIKE CONCAT('%', :recherche, '%') ";
+            $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
+            $conditions = array();
+            foreach ($mots_cles as $mot) {
+                $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+            }
+            $sql .= " AND ". implode(' AND ', $conditions);
         }
         $sql .= " GROUP BY cours_category 
-        ORDER BY cours_category;";
+                ORDER BY cours_category;";
         $req = $db->prepare($sql);
-        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-            $req->bindValue(':recherche', filter_var(trim($_POST['recherche']), FILTER_SANITIZE_SPECIAL_CHARS));
-        }
         $req->execute();
         $modules = $req->fetchAll(PDO::FETCH_ASSOC);
         $req->closeCursor();
@@ -596,15 +607,17 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
                 JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session AND cours_session_active = 1) 
                 WHERE 1 ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-            $sql .= " AND cours_keywords LIKE CONCAT('%', :recherche, '%') ";
+            $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
+            $conditions = array();
+            foreach ($mots_cles as $mot) {
+                $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+            }
+            $sql .= " AND ". implode(' AND ', $conditions);
         }
         $sql .= " GROUP BY cours_category 
                 ORDER BY cours_category;";
         $req = $db->prepare($sql);
         $req->bindValue(':id_session', filter_var($_SESSION['utilisateur']['id_session'], FILTER_VALIDATE_INT));
-        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-            $req->bindValue(':recherche', filter_var(trim($_POST['recherche']), FILTER_SANITIZE_SPECIAL_CHARS));
-        }
         $req->execute();
         $modules = $req->fetchAll(PDO::FETCH_ASSOC);
         $req->closeCursor();
@@ -650,7 +663,12 @@ if (isset($_POST['get_courses']) && !empty($_POST['get_courses'])) {
                             WHERE cours_session_active = 1
                             AND cours_category=:cours_category ";
     if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-        $sql_select_cours .= " AND cours_keywords LIKE CONCAT('%', :recherche, '%') ";
+        $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
+        $conditions = array();
+        foreach ($mots_cles as $mot) {
+            $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+        }
+        $sql_select_cours .= " AND ". implode(' AND ', $conditions);
     }
     if (!isset($_SESSION["utilisateur"]["id_session"]) || empty($_SESSION["utilisateur"]["id_session"])) {
         $sql_select_cours .= " GROUP BY cours_id ";
@@ -658,9 +676,6 @@ if (isset($_POST['get_courses']) && !empty($_POST['get_courses'])) {
     $sql_select_cours .= " ORDER BY cours_title;";
     $req_select_cours = $db->prepare($sql_select_cours);
     $req_select_cours->bindParam(":cours_category", $_POST["module"]);
-    if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-        $req_select_cours->bindValue(':recherche', filter_var(trim($_POST['recherche']), FILTER_SANITIZE_SPECIAL_CHARS));
-    }
     if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
         $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
     }

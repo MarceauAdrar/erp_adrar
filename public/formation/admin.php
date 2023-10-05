@@ -35,7 +35,7 @@ $arr = array(
 );
 
 include_once("./header.php"); ?>
-<div class="container">
+<div class="container-fluid">
     <div class="row mt-2">
         <div class="col-8 offset-2">
             <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddCourse">Ajouter un cours</button>
@@ -44,7 +44,7 @@ include_once("./header.php"); ?>
             <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManageQuiz" onclick="showModalManageQuiz();">Gérer les quiz</button>
         </div>
     </div>
-    <!-- <div class="row">
+    <div class="row">
         <div class="col-8 offset-2">
 
             <div class="modules mt-3">
@@ -147,7 +147,7 @@ include_once("./header.php"); ?>
             </div>
 
         </div>
-    </div> -->
+    </div>
 </div>
 
 

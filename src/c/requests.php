@@ -166,7 +166,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                     foreach ($mots_cles as $mot) {
                         $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
                     }
-                    $sql_select_cours .= " AND ". implode(' AND ', $conditions);
+                    $sql_select_cours .= " AND " . implode(' AND ', $conditions);
                 }
                 $sql_select_cours .= " ORDER BY cours_category, cours_title;";
                 $req_select_cours = $db->prepare($sql_select_cours);
@@ -180,7 +180,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                     <?php foreach ($cours as $cour) { ?>
                         <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="updateStatusCourse(<?= $cour['cours_id'] ?>, <?= $session['id_session'] ?>);">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
-                                <span class="<?= (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive") ?>"><?php include("../../public/formation/imgs/" . strtolower($cour['cours_category']) . ".svg") ?></span>
+                                <span class="<?= (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive") ?>"><?php @include("../../public/formation/imgs/" . $cour['cours_illustration']) ?></span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_category']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
                         </div>
@@ -592,7 +592,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
             foreach ($mots_cles as $mot) {
                 $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
             }
-            $sql .= " AND ". implode(' AND ', $conditions);
+            $sql .= " AND " . implode(' AND ', $conditions);
         }
         $sql .= " GROUP BY cours_category 
                 ORDER BY cours_category;";
@@ -612,7 +612,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
             foreach ($mots_cles as $mot) {
                 $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
             }
-            $sql .= " AND ". implode(' AND ', $conditions);
+            $sql .= " AND " . implode(' AND ', $conditions);
         }
         $sql .= " GROUP BY cours_category 
                 ORDER BY cours_category;";
@@ -630,7 +630,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
                 <a title="Cours fait par ' . ucwords($module['prenom_formateur']) . " " . strtoupper($module['nom_formateur']) . '" href="http://' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_category'] . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top" alt="Illustration ' . $module['cours_category'] . '">
-                            ' . file_get_contents("../../public/formation/imgs/" . $module['cours_category'] . ".svg") . '
+                            ' . file_get_contents("../../public/formation/imgs/" . $module['cours_illustration']) . '
                         </span>
                         <div class="card-body">
                             <h5 class="card-title text-decoration-underline">' . strtoupper($module['cours_category']) . '</h5>
@@ -649,36 +649,44 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     )));
 }
 
-if (isset($_POST['get_courses']) && !empty($_POST['get_courses'])) {
+if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $success = true;
 
-    $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration 
-                        FROM cours c ";
-    if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
-        $sql_select_cours .= " INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session) ";
+    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
+        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration 
+                            FROM cours c 
+                            WHERE cours_category=:cours_category 
+                            ORDER BY cours_position;";
+        $req_select_cours = $db->prepare($sql_select_cours);
     } else {
-        $sql_select_cours .= " INNER JOIN cours_sessions cs ON c.cours_id = cs.id_cours ";
-    }
-    $sql_select_cours .= "
-                            WHERE cours_session_active = 1
-                            AND cours_category=:cours_category ";
-    if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
-        $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
-        $conditions = array();
-        foreach ($mots_cles as $mot) {
-            $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration 
+                            FROM cours c ";
+        if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
+            $sql_select_cours .= " INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session) ";
+        } else {
+            $sql_select_cours .= " INNER JOIN cours_sessions cs ON c.cours_id = cs.id_cours ";
         }
-        $sql_select_cours .= " AND ". implode(' AND ', $conditions);
+        $sql_select_cours .= "  WHERE cours_session_active = 1
+                                AND cours_category=:cours_category ";
+        if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
+            $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
+            $conditions = array();
+            foreach ($mots_cles as $mot) {
+                $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+            }
+            $sql_select_cours .= " AND " . implode(' AND ', $conditions);
+        }
+        if (!isset($_SESSION["utilisateur"]["id_session"]) || empty($_SESSION["utilisateur"]["id_session"])) {
+            $sql_select_cours .= " GROUP BY cours_id ";
+        }
+        $sql_select_cours .= " ORDER BY cours_position;";
+        $req_select_cours = $db->prepare($sql_select_cours);
+        if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
+            $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
+        }
     }
-    if (!isset($_SESSION["utilisateur"]["id_session"]) || empty($_SESSION["utilisateur"]["id_session"])) {
-        $sql_select_cours .= " GROUP BY cours_id ";
-    }
-    $sql_select_cours .= " ORDER BY cours_title;";
-    $req_select_cours = $db->prepare($sql_select_cours);
+
     $req_select_cours->bindParam(":cours_category", $_POST["module"]);
-    if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
-        $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
-    }
     $req_select_cours->execute();
     $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
 
@@ -689,7 +697,7 @@ if (isset($_POST['get_courses']) && !empty($_POST['get_courses'])) {
                     <a href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top" alt="Illustration HTML/CSS/JS">
-                                ' . file_get_contents("../../public/formation/imgs/" . $cours["cours_illustration"]) . '
+                                ' . @file_get_contents("../../public/formation/imgs/" . $cours["cours_illustration"]) . '
                             </span>
                             <div class="card-body">
                                 <h5 class="card-title text-decoration-underline">' . $cours["cours_title"] . '</h5>
@@ -701,7 +709,7 @@ if (isset($_POST['get_courses']) && !empty($_POST['get_courses'])) {
         }
     } else {
         $liste_cours = '<div class="col-3 offset-4 mt-5 text-center">
-                    ' . file_get_contents("../../public/formation/imgs/no_data.svg") . '
+                    ' . @file_get_contents("../../public/formation/imgs/no_data.svg") . '
                             <h3 class="mt-3">Aucun cours trouvé...</h3>
                         </div>';
     }

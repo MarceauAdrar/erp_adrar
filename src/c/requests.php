@@ -626,7 +626,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     $liste_modules = "";
     if (!empty($modules)) {
         foreach ($modules as $module) {
-            $liste_modules .= '<div class="col-3 mb-3">
+            $liste_modules .= '<div class="col-xs-1 col-md-2 col-lg-3 mb-3">
                 <a title="Cours fait par ' . ucwords($module['prenom_formateur']) . " " . strtoupper($module['nom_formateur']) . '" href="http://' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_category'] . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top" alt="Illustration ' . $module['cours_category'] . '">
@@ -693,7 +693,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $liste_cours = "";
     if (!empty($cours)) {
         foreach ($cours as $cours) {
-            $liste_cours .= '<div class="col-3 mb-3">
+            $liste_cours .= '<div class="col-xs-1 col-md-2 col-lg-3 mb-3">
                     <a href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top" alt="Illustration HTML/CSS/JS">

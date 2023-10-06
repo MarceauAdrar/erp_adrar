@@ -39,7 +39,6 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td><textarea name="form_formateur_editer_liens">' .  $formateur['carte_formateur_liens'] . '</textarea></td>
                 <td><input type="text" name="form_formateur_editer_tel" value="' .  $formateur['carte_formateur_tel'] . '"></td>
                 <td><input type="text" name="form_formateur_editer_portable" value="' .  $formateur['carte_formateur_portable'] . '"></td>
-                <td></td>
                 <td><a href="#" onclick="majFormateur(' . $formateur['id_formateur'] . ');">Mise à jour</a></td>
             </tr>';
         } else {
@@ -54,7 +53,6 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td>' . $formateur['carte_formateur_liens'] . '</td>
                 <td>' . $formateur['carte_formateur_tel'] . '</td>
                 <td>' . $formateur['carte_formateur_portable'] . '</td>
-                <td></td>
                 <td><a href="#" onclick="recupererListeFormateurs(' . $formateur['id_formateur'] . ');">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
             </tr>';
         }
@@ -68,7 +66,6 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             <td>' . strtoupper($stagiaire['nom_stagiaire']) . '</td>
             <td>' . ucwords($stagiaire['prenom_stagiaire']) . '</td>
             <td>' . date_format(new DateTime($stagiaire['date_naissance_stagiaire']), "d/m/Y") . '</td>
-            <td>' . $stagiaire['lien_serveur'] . '</td>
             <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
@@ -155,8 +152,6 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 
     // var_dump($_SESSION['filtres']['nom_session']);
     foreach (recupererStages($_SESSION['filtres']['id_formateur'], $_SESSION['filtres']['nom_session']) as $data) {
-        $lienTransiPro = 'file:///' . ($data['lien_serveur'] . '\\' . '_' . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . ' Transition Pro\Ma Dynamique Emploi\Stage 1');
-        $lienClassique = 'file:///' . ($data['lien_serveur'] . '\\' . strtoupper($data['nom_stagiaire']) . ' ' . ucwords($data['prenom_stagiaire']) . '\Ma Dynamique Emploi\Stage 1');
         $tbody .= '
         <tr>
             <td>' . strtoupper($data['nom_session']) . '</td>
@@ -166,8 +161,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             <td class="' . (!empty($data['horaires_recues_1']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_1']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_2']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_2']) ? 'Oui' : 'Non') . '</td>
             <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? '<button class="btn" data-clipboard-text="' . $lienTransiPro . '" onclick="/*window.open(\'' . $lienTransiPro . '\', \'_blank\');*/">Transition pro</button><button class="btn" data-clipboard-text="' . $lienClassique . '" onclick="/*window.open(\'' . $lienClassique . '\', \'_blank\');*/">Classique</button>' : '') . '&nbsp;' . (!empty($data['attestation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['attestation_recue']) ? "Oui" : "Non") . '</td>
-            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? '<button class="btn" data-clipboard-text="' . $lienTransiPro . '" onclick="/*window.open(\'' . $lienTransiPro . '\', \'_blank\');*/">Transition pro</button><button class="btn" data-clipboard-text="' . $lienClassique . '" onclick="/*window.open(\'' . $lienClassique . '\', \'_blank\');*/">Classique</button>' : '') . '&nbsp;' . (!empty($data['evaluation_mail_envoye']) ? "Oui" : "Non") . '/' . (!empty($data['evaluation_recue']) ? "Oui" : "Non") . '</td>
+            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? 'Oui' : 'Non') . '</td>
+            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? 'Oui' : 'Non') . '</td>
             <td ' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "demandes_terminees" : ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes')) . '>' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "Terminé !" : ($data['compteur_demandes'] === 0 ? '<a role="button" class="btn-mail" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" class="btn-mail" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">Relance</a>')) . '</td>
         </tr>';
     }

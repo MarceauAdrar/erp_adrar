@@ -386,8 +386,8 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $prenom_stagiaire = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $mdp_stagiaire = readable_random_string(10);
 
-        $req = $db->prepare("INSERT INTO stagiaires(nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, mdp_stagiaire, mdp_decode_stagiaire, tel_stagiaire, date_naissance_stagiaire, lien_serveur, id_session".(isset($id_stage) ? ", id_stage" : "").") 
-                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :lien_serveur, :id_session".(isset($id_stage) ? ", :id_stage" : "").");");
+        $req = $db->prepare("INSERT INTO stagiaires(nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, mdp_stagiaire, mdp_decode_stagiaire, tel_stagiaire, date_naissance_stagiaire, id_session".(isset($id_stage) ? ", id_stage" : "").") 
+                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :id_session".(isset($id_stage) ? ", :id_stage" : "").");");
         $req->bindValue(":nom_stagiaire", $nom_stagiaire);
         $req->bindValue(":prenom_stagiaire", $prenom_stagiaire);
         $req->bindValue(":mail_stagiaire", $mail_stagiaire);
@@ -396,7 +396,6 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $req->bindValue(":mdp_decode_stagiaire", filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":tel_stagiaire", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":date_naissance_stagiaire", filter_var($date_anniversaire, FILTER_SANITIZE_SPECIAL_CHARS));
-        $req->bindValue(":lien_serveur", filter_var("lien/vers/serveur/T", FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":id_session", filter_var($id_session, FILTER_VALIDATE_INT));
         if(isset($id_stage)) {
             $req->bindValue(":id_stage", filter_var($id_stage, FILTER_VALIDATE_INT));

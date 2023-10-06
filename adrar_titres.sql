@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1deb1
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3306
--- Généré le : lun. 31 juil. 2023 à 22:48
--- Version du serveur : 8.0.31
--- Version de PHP : 8.2.0
+-- Hôte : localhost:3306
+-- Généré le : ven. 06 oct. 2023 à 17:06
+-- Version du serveur : 10.11.3-MariaDB-1
+-- Version de PHP : 8.2.7
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,59 +27,145 @@ SET time_zone = "+00:00";
 -- Structure de la table `cours`
 --
 
-DROP TABLE IF EXISTS `cours`;
-CREATE TABLE IF NOT EXISTS `cours` (
-  `cours_id` int NOT NULL AUTO_INCREMENT,
-  `cours_title` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `cours_synopsis` text COLLATE utf8mb4_general_ci NOT NULL,
-  `cours_keywords` longtext COLLATE utf8mb4_general_ci NOT NULL,
-  `cours_link` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `cours_position` INT NOT NULL DEFAULT '0', 
-  `cours_category` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `cours_illustration` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_formateur` int NOT NULL,
-  PRIMARY KEY (`cours_id`),
-  UNIQUE KEY `cours_link` (`cours_link`),
-  KEY `id_formateur` (`id_formateur`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `cours` (
+  `cours_id` int(11) NOT NULL,
+  `cours_title` varchar(50) NOT NULL,
+  `cours_synopsis` text NOT NULL,
+  `cours_keywords` longtext NOT NULL,
+  `cours_link` varchar(255) NOT NULL,
+  `cours_position` int(11) NOT NULL DEFAULT 0,
+  `cours_category` varchar(50) NOT NULL,
+  `cours_illustration` varchar(255) NOT NULL,
+  `id_module` int(11) NOT NULL DEFAULT 0,
+  `id_formateur` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours`
 --
 
-INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_keywords`, `cours_link`, `cours_category`, `cours_illustration`, `id_formateur`) VALUES
-(1, 'Introduction au HTML', 'Plongez-vous dans l\'informatique et découvrez les fondements de la programmation.', 'Ici, vous allez apprendre les bases pour construire une page web.', 'balises par paires;balises orphelines;éditeur;web;internet;url;parents;enfants;chevrons;slash;attribut;valeur;indentation;camelcase;commentaires', '2PACX-1vSk4_yItzv4-2qxw0Lt7UqTsuNcli83Muf-E4ek0-qQwPfmJbcN2HJ6L44hCbga4Q', 'html', 'html_css.svg', 1),
-(2, 'Les balises', 'Attaquez la programmation en découvrant les balises HTML', 'chrevrons;balises par paires;balises orphelines;block;inline;parent;enfant;paragraphe;div;span;ancre;chemin relatif;chemin absolu;identifiant;camelcase;snakecase;href;src;alt;listes ordonnées;listes non-ordonnées;header;footer;nav;section;article;aside;balises sémantiques', '2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', 'html', 'html_css.svg', 1),
-(17, 'Introduction', 'Attaquez les bases des feuilles de style.', 'styliser;style;link;sélecteurs;propriétés;valeurs;séparateurs;commentaires;cascade;ordre d\'éxécution;héritage;règles;déclarations', '2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', 'css', 'html_css.svg', 1),
-(18, 'Sélecteurs simples', 'Apprenez à manipuler les sélecteurs basiques pour pouvoir styliser votre page web.', 'sélecteur;unicité;multiplicité;sélections multiples;sélections imbriquées;sélections par attribut;sélections avancées', '2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', 'css', 'html_css.svg', 1),
-(19, 'Propriétés courantes', 'Dans ce cours, vous allez découvrir les propriétés les plus communément utilisées en CSS.', 'textes;background;super-propriétés;dimensions;couleurs;héxadécimal;rgb;rgba', '2PACX-1vQpDxcYZCa3sdCEDgYLcNnnsI797nvaFDqQWz675saTigKm3YTDsGHrveWnQn0AEg', 'css', 'html_css.svg', 1),
-(20, 'Les pseudo-classes', 'Vous allez découvrir ici l\'utilité des pseudo-classes qui peuvent permettre de dynamiser votre page web et de faire des règles plus complexes.', 'hover;visited;link;active;focus;first-child;last-child;nth-child;odd;even;notation fonctionnelle', '2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', 'css', 'html_css.svg', 1),
-(21, 'Flexbox', 'Découvrez comment fonctionne les flexbox et leurs placements.', 'margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;order', '2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', 'css', 'html_css.svg', 1),
-(22, 'Grid', 'Découvrez comment fonctionne les placements avec le système de grilles.', 'margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;lignes;colonnes;rows;columns;patterns', '2PACX-1vQYBldbOnfpm0_9Lj6UpSJtHBCi3hTS7DmawKVuH_3pwHcPJRmONLTO_6ScqTEClQ', 'css', 'html_css.svg', 1),
-(23, 'Ombrages', 'Ajoutez de la dimension et de la profondeur à votre page avec les ombres.', 'box-shadow;text-shadow;décalages;flou;couleur', '2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', 'css', 'html_css.svg', 1),
-(24, 'Les dégradés', 'Démarquez vous avec l\'ajout de dégradés.', 'dégradés linéaires;dégradés radiaux;dégradés coniques;valeurs numéraires;valeur par mot-clé;to;from;rgb;rgba;héxadécimal;circle;ellipse;at', '2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', 'css', 'html_css.svg', 1),
-(25, 'Les tableaux', 'Découvrez comment mettre en forme des données avec les tableaux.', 'table;tr;th;td;caption;border;super-propriétés;thead;tbody;tfoot;rowspan;colspan', '2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', 'html', 'html_css.svg', 1),
-(26, 'Les formulaires', 'Apprenez à construire des formulaires pour récolter des informations auprès de vos utilisateurs.', 'form;méthode;attribut;addresse;method;action;get;post;input;type;placeholder;required;autofocus;label;for;textarea;cols;rows;file;accept;multiple;checkbox;checked;fieldset;legend;radio;select;option;optgroup;selected;submit;button;image;reset', '2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', 'html', 'html_css.svg', 1),
-(27, 'Les placements simples', 'Nous allons maintenant voir comment placer nos éléments dans la page web.', 'balises par paire;balises orphelines;balises block;balises inline;balises universelles;balises sémantiques;margin;border;padding;content;height;width;overflow;scroll;auto;hidden;word-wrap', '2PACX-1vTGhszZR_wAelj59VjADSB721b2WT2_IUxxQ4O0ecn2j6ckXUKKMquxWSkxn_s0-w', 'css', 'html_css.svg', 1),
-(28, 'Les requêtes de média', 'Dans ce cours, vous allez voir une grosse partie. Les requêtes de média permettent d\'effectuer des changements personnalisés en fonction des appareils, de leur orientation et de leur dimension.', 'responsive design;media;annotations', '2PACX-1vQTKb4U1ngluhR71yzSlUXviR30IAYkgx0MAThY2wqQql6_RvfAfWgUhiN3ogyf4A', 'css', 'html_css.svg', 1),
-(29, 'Les animations', 'Découvrez l\'univers des animations et commencez à dynamiser simplement vos pages web.', 'transform;rotate;deg;turn;abscisses;ordonnées;scale;translate;transformation oblique;skew;super-propriété', '2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', 'css', 'html_css.svg', 1),
-(30, 'Les animations avancées', 'Etoffez vos connaissances dans l\'art de l\'animation et dynamiser de façon plus complexes vos éléments.', 'transition;delay;function;super-propriété;keyframes;rotate;animation;duration;count;fill;direction', '2PACX-1vS5iH-uH0o1FGroGtXvQoi8fgHcaMAKBRZyOtM__gmBic3mdTEBP5KJQ8gMPrpBTQ', 'css', 'html_css.svg', 1),
-(31, 'Les audios et vidéos', 'Apprenez à intégrer du contenu multimédia dans vos pages: les sons et vidéos. ', 'mp3;aac;ogg;wav;aiff;audio;src;source;controls;autoplay;loop;width;preload;avi;mp4;mkv;codec;webm;h.256;ogg theora;video;poster;muted;disablepictureinpicture;iframe;intégration', '2PACX-1vQVNYM22_m2bPi2fLAcebBofTowiksyhZ4_9gMQQ78Bzkt-Pnx0z_s4pjk6l8vg2A', 'html', 'html_css.svg', 1),
-(32, 'Introduction', '', '', '2PACX-1vTqPp9VoPh8td2vAIq1XxnQChmlqzzgUWGFsdDvncHD6mXKO0zx8t_Vu6nmZPSv4ILWVZmuTG5JoiRm', 'frameworks', 'frameworks.svg', 1),
-(33, 'Présentation approfondie de bootstrap', 'Dans ce cours, nous allons voir le détail de Bootstrap, son histoire, son évolution, son fonctionnement.', 'famework;classes;bootstrap', '2PACX-1vQznp_kW-ITUaTVXg8kO8ygsN43UKPIQ7y9pzfE9lpnV3__FELZ6_hjAcT_BMAbsoy--4__ud1ZhjHy', 'frameworks', 'frameworks.svg', 1),
-(34, 'SASS', 'Découvrez le langage SASS. Syntactically Awesome Style Sheets. Sa puissance vous permettra de progresser drastiquement dans vos réalisations et vos intégrations. Cliquez !', 'sass;scss;css;avance', '2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', 'sass', 'sass.svg', 1),
-(35, 'Cours sur Git', 'Dans ce cours, vous allez apprendre à quoi sert git, comment vous en servir avec les commandes les plus utilisées.', 'git;git flow;github;gitlab', '2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', 'git', 'git.svg', 1),
-(36, 'MCD', 'Nous allons ici aborder la notion de MCD. &#10;Modèle Conceptuel des Données.&#10;Il s&#39;agit d&#39;une haute représentation graphique qui permet de comprendre facilement comment les éléments sont liés entre eux.', 'merise;mcd;modèle conceptuel des données;pattes;entités;propriétés;associations', '2PACX-1vRVMjFeSLZaPjrfE1g3xV6Vp9UguObvaKC93763kBaIr2G5T5uVNq6HaZeJPUvp101iLzczAR-W3GZn', 'merise', 'merise.svg', 1),
-(37, 'MLD', 'Nous allons ici aborder la notion de MLD. &#10;Modèle Logique des Données.&#10;Il s’agit de la représentation en ligne du schéma représentant la structure de la base de données.', 'merise;mld;modèle logique des données;clé primaire; clé étrangère;tables;tables d&#39;associations;champs', '2PACX-1vRAjZXsOP18FsgQKZohzExDboUw3E_Tugedrw7u-UQ9873SjXR2MsBosfGMgmB6R7Qtf_MOPDcpSZHJ', 'merise', 'merise.svg', 1),
-(38, 'Cahier des Charges', 'C&#39;est dans ce cours que vous pouvez retrouver la façon d&#39;élaborer un CDC. C&#39;est une partie essentielle du métier, afin de mettre à plat les choses dès le début avec le client sur les tâches à effectuer et pour quel prix par exemple.', 'cdc;cahier des charges;contraintes;clients', '2PACX-1vRvnxXMY7e1x6zFkzcN515FXoEPta2HiHJSsS4JVNEgYERRcqVSsSHRxS7SslRPrrl9bx3LSQs-Bt_H', 'cdc', 'cdc.svg', 1),
-(40, 'Présentation', 'Apprenez à réaliser des maquettes de vos applications et sites web afin de gagner du temps sur la totalité du projet et pouvoir faire des choix, sans coder.', 'maquette;maquettage;zoning;wireframe;prototype', '2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', 'maquettage', 'maquettage.svg', 1),
-(41, 'Présentation', 'Présentation du langage PHP.', 'php;présentation', '2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', 'php', 'php.svg', 1),
-(42, 'Installation de l\'interpréteur de commandes', 'Installer la CLI (Command Line Interface) pour démarrer le développement back-end.', 'php;interpréteur de commandes;path', '2PACX-1vRuG0jRbRuDtq90jBjuDNxFKFFqISMT7tp35TXvifrgd5am1tx7BbGfnykDT6kQzTPQk6F1v6en2-sl', 'php', 'php.svg', 1),
-(43, 'Structure de la page', 'Présentation de la structure de base d\'une page PHP, des commentaires.', 'php;commentaire;echo;structure', '2PACX-1vQeK4weEvOLRPOJWJEPRnrjeUUxBxuGuElOg2qerlzTOuBYS7ujoZlAtre7nUZIsdkPKZSYXaVWjGbe', 'php', 'php.svg', 1),
-(44, 'Les variables', 'Découvrez ou re-découvrez les variables en PHP.', 'php;variable;déclaration;affectation;type', '2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', 'php', 'php.svg', 1),
-(45, 'Les opérateurs', 'Vérifiez les possibilités sur les valeurs mathématiques.', 'php;opérateur;var_dump;print_r;débogage', '2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', 'php', 'php.svg', 1),
-(46, 'La concaténation', 'Ce cours vous donne les codes pour effectuer la concaténation de vos variables.', 'php;concaténer;concaténation;caractère d\'échappement', '2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', 'php', 'php.svg', 1),
-(47, 'Les fonctions', 'Principe de base des fonctions avec des exemples et exercices avec et sans paramètres.', 'php;fonction;paramètre;return', '2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', 'php', 'php.svg', 1);
+INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_keywords`, `cours_link`, `cours_position`, `cours_category`, `cours_illustration`, `id_module`, `id_formateur`) VALUES
+(1, 'Introduction au HTML', 'Plongez-vous dans l\'informatique et découvrez les fondements de la programmation.\nIci, vous allez apprendre les bases pour construire une page web.', 'balises par paires;balises orphelines;éditeur;web;internet;url;parents;enfants;chevrons;slash;attribut;valeur;indentation;camelcase;commentaires', '2PACX-1vSk4_yItzv4-2qxw0Lt7UqTsuNcli83Muf-E4ek0-qQwPfmJbcN2HJ6L44hCbga4Q', 0, 'html', 'html_css.svg', 0, 1),
+(2, 'Les balises', 'Attaquez la programmation en découvrant les balises HTML', 'chrevrons;balises par paires;balises orphelines;block;inline;parent;enfant;paragraphe;div;span;ancre;chemin relatif;chemin absolu;identifiant;camelcase;snakecase;href;src;alt;listes ordonnées;listes non-ordonnées;header;footer;nav;section;article;aside;balises sémantiques', '2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', 1, 'html', 'html_css.svg', 0, 1),
+(17, 'Introduction', 'Attaquez les bases des feuilles de style.', 'css;styliser;style;link;sélecteurs;propriétés;valeurs;séparateurs;commentaires;cascade;ordre d\'éxécution;héritage;règles;déclarations', '2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', 0, 'css', 'html_css.svg', 0, 1),
+(18, 'Sélecteurs simples', 'Apprenez à manipuler les sélecteurs basiques pour pouvoir styliser votre page web.', 'css;sélecteur;unicité;multiplicité;sélections multiples;sélections imbriquées;sélections par attribut;sélections avancées', '2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', 1, 'css', 'html_css.svg', 0, 1),
+(19, 'Propriétés courantes', 'Dans ce cours, vous allez découvrir les propriétés les plus communément utilisées en CSS.', 'css;textes;background;super-propriétés;dimensions;couleurs;héxadécimal;rgb;rgba', '2PACX-1vQpDxcYZCa3sdCEDgYLcNnnsI797nvaFDqQWz675saTigKm3YTDsGHrveWnQn0AEg', 2, 'css', 'html_css.svg', 0, 1),
+(20, 'Les pseudo-classes', 'Vous allez découvrir ici l\'utilité des pseudo-classes qui peuvent permettre de dynamiser votre page web et de faire des règles plus complexes.', 'css;hover;visited;link;active;focus;first-child;last-child;nth-child;odd;even;notation fonctionnelle', '2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', 3, 'css', 'html_css.svg', 0, 1),
+(21, 'Flexbox', 'Découvrez comment fonctionne les flexbox et leurs placements.', 'css;margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;order', '2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', 4, 'css', 'html_css.svg', 0, 1),
+(22, 'Grid', 'Découvrez comment fonctionne les placements avec le système de grilles.', 'css;margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;lignes;colonnes;rows;columns;patterns', '2PACX-1vQYBldbOnfpm0_9Lj6UpSJtHBCi3hTS7DmawKVuH_3pwHcPJRmONLTO_6ScqTEClQ', 5, 'css', 'html_css.svg', 0, 1),
+(23, 'Ombrages', 'Ajoutez de la dimension et de la profondeur à votre page avec les ombres.', 'css;box-shadow;text-shadow;décalages;flou;couleur', '2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', 6, 'css', 'html_css.svg', 0, 1),
+(24, 'Les dégradés', 'Démarquez vous avec l\'ajout de dégradés.', 'css;dégradés linéaires;dégradés radiaux;dégradés coniques;valeurs numéraires;valeur par mot-clé;to;from;rgb;rgba;héxadécimal;circle;ellipse;at', '2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', 7, 'css', 'html_css.svg', 0, 1),
+(25, 'Les tableaux', 'Découvrez comment mettre en forme des données avec les tableaux.', 'table;tr;th;td;caption;border;super-propriétés;thead;tbody;tfoot;rowspan;colspan', '2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', 2, 'html', 'html_css.svg', 0, 1),
+(26, 'Les formulaires', 'Apprenez à construire des formulaires pour récolter des informations auprès de vos utilisateurs.', 'form;méthode;attribut;addresse;method;action;get;post;input;type;placeholder;required;autofocus;label;for;textarea;cols;rows;file;accept;multiple;checkbox;checked;fieldset;legend;radio;select;option;optgroup;selected;submit;button;image;reset', '2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', 3, 'html', 'html_css.svg', 0, 1),
+(27, 'Les placements simples', 'Nous allons maintenant voir comment placer nos éléments dans la page web.', 'css;balises par paire;balises orphelines;balises block;balises inline;balises universelles;balises sémantiques;margin;border;padding;content;height;width;overflow;scroll;auto;hidden;word-wrap', '2PACX-1vTGhszZR_wAelj59VjADSB721b2WT2_IUxxQ4O0ecn2j6ckXUKKMquxWSkxn_s0-w', 8, 'css', 'html_css.svg', 0, 1),
+(28, 'Les requêtes de média', 'Dans ce cours, vous allez voir une grosse partie. Les requêtes de média permettent d\'effectuer des changements personnalisés en fonction des appareils, de leur orientation et de leur dimension.', 'css;responsive design;media;annotations', '2PACX-1vQTKb4U1ngluhR71yzSlUXviR30IAYkgx0MAThY2wqQql6_RvfAfWgUhiN3ogyf4A', 10, 'css', 'html_css.svg', 0, 1),
+(29, 'Les animations', 'Découvrez l\'univers des animations et commencez à dynamiser simplement vos pages web.', 'css;transform;rotate;deg;turn;abscisses;ordonnées;scale;translate;transformation oblique;skew;super-propriété', '2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', 11, 'css', 'html_css.svg', 0, 1),
+(30, 'Les animations avancées', 'Etoffez vos connaissances dans l\'art de l\'animation et dynamiser de façon plus complexes vos éléments.', 'css;transition;delay;function;super-propriété;keyframes;rotate;animation;duration;count;fill;direction', '2PACX-1vS5iH-uH0o1FGroGtXvQoi8fgHcaMAKBRZyOtM__gmBic3mdTEBP5KJQ8gMPrpBTQ', 12, 'css', 'html_css.svg', 0, 1),
+(31, 'Les audios et vidéos', 'Apprenez à intégrer du contenu multimédia dans vos pages: les sons et vidéos. ', 'mp3;aac;ogg;wav;aiff;audio;src;source;controls;autoplay;loop;width;preload;avi;mp4;mkv;codec;webm;h.256;ogg theora;video;poster;muted;disablepictureinpicture;iframe;intégration', '2PACX-1vQVNYM22_m2bPi2fLAcebBofTowiksyhZ4_9gMQQ78Bzkt-Pnx0z_s4pjk6l8vg2A', 4, 'html', 'html_css.svg', 0, 1),
+(32, 'Introduction', '', 'frameworks;', '2PACX-1vTqPp9VoPh8td2vAIq1XxnQChmlqzzgUWGFsdDvncHD6mXKO0zx8t_Vu6nmZPSv4ILWVZmuTG5JoiRm', 0, 'frameworks', 'frameworks_css.svg', 0, 1),
+(33, 'Présentation approfondie de bootstrap', 'Dans ce cours, nous allons voir le détail de Bootstrap, son histoire, son évolution, son fonctionnement.', 'frameworks;classes;bootstrap', '2PACX-1vQznp_kW-ITUaTVXg8kO8ygsN43UKPIQ7y9pzfE9lpnV3__FELZ6_hjAcT_BMAbsoy--4__ud1ZhjHy', 1, 'frameworks', 'frameworks_css.svg', 0, 1),
+(34, 'SASS', 'Découvrez le langage SASS. Syntactically Awesome Style Sheets. Sa puissance vous permettra de progresser drastiquement dans vos réalisations et vos intégrations. Cliquez !', 'sass;scss;css;avance', '2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', 0, 'sass', 'sass.svg', 0, 1),
+(35, 'Cours sur Git', 'Dans ce cours, vous allez apprendre à quoi sert git, comment vous en servir avec les commandes les plus utilisées.', 'git;git flow;github;gitlab', '2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', 1, 'git', 'git.svg', 0, 1),
+(36, 'MCD', 'Nous allons ici aborder la notion de MCD. &#10;Modèle Conceptuel des Données.&#10;Il s&#39;agit d&#39;une haute représentation graphique qui permet de comprendre facilement comment les éléments sont liés entre eux.', 'merise;mcd;modèle conceptuel des données;pattes;entités;propriétés;associations', '2PACX-1vRVMjFeSLZaPjrfE1g3xV6Vp9UguObvaKC93763kBaIr2G5T5uVNq6HaZeJPUvp101iLzczAR-W3GZn', 0, 'merise', 'merise.svg', 0, 1),
+(37, 'MLD', 'Nous allons ici aborder la notion de MLD. &#10;Modèle Logique des Données.&#10;Il s’agit de la représentation en ligne du schéma représentant la structure de la base de données.', 'merise;mld;modèle logique des données;clé primaire; clé étrangère;tables;tables d&#39;associations;champs', '2PACX-1vRAjZXsOP18FsgQKZohzExDboUw3E_Tugedrw7u-UQ9873SjXR2MsBosfGMgmB6R7Qtf_MOPDcpSZHJ', 0, 'merise', 'merise.svg', 0, 1),
+(38, 'Cahier des Charges', 'C&#39;est dans ce cours que vous pouvez retrouver la façon d&#39;élaborer un CDC. C&#39;est une partie essentielle du métier, afin de mettre à plat les choses dès le début avec le client sur les tâches à effectuer et pour quel prix par exemple.', 'cdc;cahier des charges;contraintes;clients', '2PACX-1vRvnxXMY7e1x6zFkzcN515FXoEPta2HiHJSsS4JVNEgYERRcqVSsSHRxS7SslRPrrl9bx3LSQs-Bt_H', 0, 'cdc', 'cdc.svg', 0, 1),
+(40, 'Présentation', 'Apprenez à réaliser des maquettes de vos applications et sites web afin de gagner du temps sur la totalité du projet et pouvoir faire des choix, sans coder.', 'maquette;maquettage;zoning;wireframe;prototype', '2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', 0, 'maquettage', 'maquettage.svg', 0, 1),
+(41, 'Présentation', 'Présentation du langage PHP.', 'php;présentation;', '2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', 0, 'php', 'php.svg', 0, 1),
+(42, 'Installation de l\'interpréteur de commandes', 'Installer la CLI (Command Line Interface) pour démarrer le développement back-end.', 'php;interpréteur de commandes;path;', '2PACX-1vRuG0jRbRuDtq90jBjuDNxFKFFqISMT7tp35TXvifrgd5am1tx7BbGfnykDT6kQzTPQk6F1v6en2-sl', 1, 'php', 'php.svg', 0, 1),
+(43, 'Structure de la page', 'Présentation de la structure de base d\'une page PHP, des commentaires.', 'php;commentaire;echo;structure;', '2PACX-1vQeK4weEvOLRPOJWJEPRnrjeUUxBxuGuElOg2qerlzTOuBYS7ujoZlAtre7nUZIsdkPKZSYXaVWjGbe', 2, 'php', 'php.svg', 0, 1),
+(44, 'Les variables', 'Découvrez ou re-découvrez les variables en PHP.', 'php;variable;déclaration;affectation;type;', '2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', 3, 'php', 'php.svg', 0, 1),
+(45, 'Les opérateurs', 'Vérifiez les possibilités sur les valeurs mathématiques.', 'php;opérateur;var_dump;print_r;débogage;', '2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', 4, 'php', 'php.svg', 0, 1),
+(46, 'La concaténation', 'Ce cours vous donne les codes pour effectuer la concaténation de vos variables.', 'php;concaténer;concaténation;caractère d\'échappement;', '2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', 5, 'php', 'php.svg', 0, 1),
+(47, 'Les fonctions', 'Principe de base des fonctions avec des exemples et exercices avec et sans paramètres.', 'php;fonction;paramètre;return;', '2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', 6, 'php', 'php.svg', 0, 1),
+(48, 'Présentation', '', 'symfony;presentation;', '2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', 0, 'symfony', 'no_data.svg', 0, 1),
+(49, 'Installation', '', 'symfony;installation;tutoriel;configuration;', '2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', 1, 'symfony', 'no_data.svg', 0, 1),
+(50, 'Les bases', '', 'symfony;fondamentaux;contrôleurs;entités;routeur;vues;services;les bases;', '2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', 2, 'symfony', 'no_data.svg', 0, 1),
+(51, 'Les bundles', '', 'symfony;bundles;plug-ins;plugins;', '2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', 3, 'symfony', 'no_data.svg', 0, 1),
+(52, 'Création d\'un projet', '', 'symfony;initialisation;création;lancement serveur;', '2PACX-1vS2tw1cegUo1BDC8wHFc4l22fMBOakLx7yWdxk7hdv-1Id7PQwWi1fny-V-LSeTy04OIHXC2TWx5DiF', 4, 'symfony', 'no_data.svg', 0, 1),
+(53, 'Création d\'un contrôleur', '', 'symfony;', '2PACX-1vSc4_MbKdfhexRKzk5TKttJv0zdlNUOP87OviKAj38wJPWZAmIiDvouFuY8B16PbcdshkKGiw3kftE1', 5, 'symfony', 'no_data.svg', 0, 1),
+(54, 'Les routes', '', 'symfony;', '2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', 6, 'symfony', 'no_data.svg', 0, 1),
+(55, 'Les services', '', 'symfony;', '2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', 7, 'symfony', 'no_data.svg', 0, 1),
+(56, 'Twig', '', 'symfony;', '2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', 8, 'symfony', 'no_data.svg', 0, 1),
+(57, 'Connexion et création de la base de données', '', 'symfony;', '2PACX-1vTahJ9gmvEdET-J8-7e4YLy3Cjdbefnyj0XsQ0xh1HQhC3RM82-PXdEOLY-5c9V_af9AqXrRXVFRiJB', 9, 'symfony', 'no_data.svg', 0, 1),
+(59, 'Les entités', '', 'symfony;', '2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', 10, 'symfony', 'no_data.svg', 0, 1),
+(60, 'Les migrations', '', 'symfony;', '2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', 11, 'symfony', 'no_data.svg', 0, 1),
+(61, 'L\'authentification', '', 'symfony;', '2PACX-1vQ-l1X-ALWo7drQLBNIy40YUeuC7LR7G0K44MRDQCDxEfMEuQjMl6DXkGnc5kStlmU-bqlcnfsGegii', 12, 'symfony', 'no_data.svg', 0, 1),
+(62, 'Les traits', '', 'symfony;', '2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', 13, 'symfony', 'no_data.svg', 0, 1),
+(63, 'Les DataFixtures', '', 'symfony;', '2PACX-1vRNitnb5LvML76IEilkVeekjxJWI5JHvQ1hQC1nr6CzjZFjLo-sBFPrUqnMY-pcQ24T16EGIkmHepzy', 14, 'symfony', 'no_data.svg', 0, 1),
+(64, 'CRUD', '', 'symfony;', '2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', 15, 'symfony', 'no_data.svg', 0, 1),
+(65, 'Formulaires', '', 'symfony;', '2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', 16, 'symfony', 'no_data.svg', 0, 1),
+(66, 'Envoi d\'emails', '', 'symfony;', '2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', 17, 'symfony', 'no_data.svg', 0, 1),
+(67, 'UX initiative', '', 'symfony;', '2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', 18, 'symfony', 'no_data.svg', 0, 1),
+(68, 'Les repositories', '', 'symfony;', '2PACX-1vTxxGyMlv5FrrNaJRk0iKsT6Mf-kkT6aFrUaRMfc0X2rxy0YxAmLfFaqvctHqngPOP2LMQutPzgJu3t', 19, 'symfony', 'no_data.svg', 0, 1),
+(69, 'Affichage, mise à jour et suppression d\'une donnée', '', 'symfony;', '2PACX-1vQS_fto6YCGB8DzCEDE9nAG5Yf-ntJ_zinNoE9UsaDribOyRJtw0X96CnUNpGx81Halrq6_mufhSSqN', 20, 'symfony', 'no_data.svg', 0, 1),
+(70, 'L\'API', '', 'symfony;', '2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', 21, 'symfony', 'no_data.svg', 0, 1),
+(71, 'Les tests', '', 'symfony;', '2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', 22, 'symfony', 'no_data.svg', 0, 1),
+(72, 'Cours sur Shell', '', 'shell;commandes;terminal;linux;cd;mkdir;touch;rm;ls;cp;racine;pwd;echo;cat;grep;clear;history;apt;package;sh;chmod;', '2PACX-1vR42_17iY3gAR4x_ftrPpVBsH--xGLddf7f31iVTC8G7U-GYIUlc7dTnMXCzEL6nEt7ec2PO0h3kHOM', 0, 'git', 'no_data.svg', 0, 1),
+(73, 'Les conditions', 'Les conditions sont un incontournable dans le code.\r\nDécouvrez comment vous en servir avec ce cours.', 'php;conditions;if;elseif;endif;==;===;!=;!==;<>;<=>;and;or;&&;||;xor;', '2PACX-1vQui-FUPwU2KUFEhIBwJKcV_118RQTpZ6v5AEIrFKdZnLlgrFP9k9l1Xq4LxOoGpGLUMBbq3JQw_wZX', 7, 'php', 'php.svg', 0, 1),
+(74, 'Les boucles', 'Boucler sur son code, c\'est essentiel. Découvrez les différentes façons pour le faire ici.', 'php;boucles;for;foreach;while;', '2PACX-1vQA51Qd_QqfmMTsslSEh___AnNajd7A14YYH0Xu_bokEuudsyvSHJvOsNCXDfC9bOt27sou2YyRt3pQ', 8, 'php', 'php.svg', 0, 1),
+(75, 'Les tableaux', 'Encore un incontournable de la programmation, les tableaux. Manipulez les et découvrez tout à leur sujet ici !', 'php;tableaux;index;associatif;boucles;', '2PACX-1vSei8zfOxVIh3uMNWS_mbWkqLd_N9SYflfqWPIJdRKg2FHqydij9yAPA31Bi8Bab2kKlTnWEuuWj95l', 9, 'php', 'php.svg', 0, 1),
+(76, 'Les super globales', 'Des tableaux crées par PHP et qui nous permettent de nombreuses choses ? Oui, ce sont les super globales.', 'php;super globales;constantes;get;post;tableaux;formulaires;$_;', '2PACX-1vRcLg6BrDw2JnwDnKWFwvJMxL08fEkhbCcEqSwut6yU8kdh7vCbjDe8CxltTZLyDSSALEJXa1b500Dy', 10, 'php', 'php.svg', 0, 1),
+(77, 'Installer une distribution Apache', 'L\'un des serveurs web les plus répandus sur le WWW.\r\nDécouvrez comment l\'installer pour simuler un serveur, en local.', 'php;localhost;127.0.0.1;apache;wamp;mamp;xampp;', '2PACX-1vTTcfilJpVkrcipua3AKU45fBgU1ky1BVYp7WDzY_tZV-Xh79yRdUUS_-zN8w8Nnw5yGo3VCyn__t_w', 11, 'php', 'php.svg', 0, 1),
+(78, 'Importation de fichiers', 'Vous serez amenés à demander à vos utilisateurs d\'envoyer des données binaires (documents, photos, vidéos, ...). Pour savoir comment faire transiter ces informations et les sauvegarder, ça se passe ici !', 'php;files;super globales;$_;$_files;enctype;multipart/form-data;move_upload_file;types;accept;filesize;htmlentities;preg_replace;basename;multiple;', '2PACX-1vTtvUwVgHzbwl2efbJ1lv4kBepzaMwi9ZSvcI0dSeI5UdR-717yJ5oAxHpmxfk1HzZ2YhH2bkdnPgjj', 12, 'php', 'php.svg', 0, 1),
+(79, 'Interaction avec une base de données', 'Vous aurez besoin tôt ou tard de vous connecter à une BDD distante en PHP, pour rendre vos applications plus interactives, découvrez comment.', 'php;bdd;base de données;pdo;php data object;connexion;pdoexception;erreurs;tables;requêtes;préparées;classiques;injection SQL;query;prepare;bindParam;bindValue;attributs;structures;select;insert;update;delete;crud;', '2PACX-1vSrixypjTJE_Bgt45nrMdeYdlnanmVGyAOdsQwxk3bWNRKXghrUyEnCghixUF5wefZJEjQ-8Iyta_6j', 13, 'php', 'php.svg', 0, 1),
+(80, 'Système de connexion', 'Système simple de connexion pour des utilisateurs standards.', 'php;connexion;authentifier;sessions;session_start;pdo;bdd;base de données;include_once;require_once;unset;fetch;fetchAll;FETCH_ASSOC;FETCH_COLUMN;header;session_destroy;password_hash;hashage;bcrypt;bindparam;bindvalue;password_verify;', '2PACX-1vRSwY5O8-K0sIIrqisHqaNcquiVWw8JKCDswohjTMwEyLwhczOAzHowTnlwZXcDmQz2bftDfJI27T5S', 14, 'php', 'php.svg', 0, 1),
+(81, 'Les architectures', 'Découvrez les principales structures existantes pour concevoir vos sites.', 'php;php avancé;client serveur;mvc;modèle vue contrôleur;n-tiers;micro-services;routing;', '2PACX-1vSLD1aGi3qgWNdRdXFHqdhkymFvb9KMaxszOD320R_yWFyejXduiarcikvN6Qade3XNbrYL8QwKyMd2', 15, 'php', 'php.svg', 0, 1),
+(82, 'Les requêtes AJAX', 'Ici, un petit exemple pour montrer la puissance des requêtes dites asynchrones.\r\nPlus de rechargement intempestif pouvant gêner l\'utilisation !', 'php;php avancé;ajax;asynchrones;XMLHttpRequest;API fetch;jQuery;one page;rechargement;', '2PACX-1vRvbCuzNg3uRTtZFBqix0K7rWzF21Fzrlh7g3DSehnelxjj8ziYhyC9vdcAfY5pOgPYAotlHoEzNfhV', 16, 'php', 'php.svg', 0, 1),
+(83, 'Les classes et objets', 'La base de la programmation orientée objets ! Découvrez les bases sur les classes, ici.', 'php;php avancé;objets;classes;objects;poo;programmation orientée objets;attributs;propriétés;méthodes;fonctions;déclaration;instances;instanciations;new;$this;instances;', '2PACX-1vRbk0SKmtBI-mhgsUCgYf_1v3jPxmLUDVohC6pJc3H-gW6D6eKTLk4v5ThMi8heF1JfCqW759VXVR5q', 17, 'php', 'php.svg', 0, 1),
+(84, 'La portée des objets', 'Chaque attribut a une portée, découvrez comment les définir ici.', 'php;php avancé;poo;programmation orientée objets;objects;classes;class;public;protected;private;publique;protégée;privée;encapsulation;intégrité;', '2PACX-1vSncP0sxJi5OciQZVcraYrgg-QLCzZdd2edctFYJNmOeMlT5R2xcx2XJQcNuVr_JMOzsPqTRo1fbdch', 18, 'php', 'php.svg', 0, 1),
+(85, 'Les accesseurs et mutateurs', 'Apprenez ce que sont les accesseurs et mutateurs dans ce cours et apprenez à vous en servir.', 'php;php avancé;poo;programmation orientée objets;objects;classes;class;accesseurs;mutateurs;getters;setters;$this;pseudo-variables;', '2PACX-1vTAxw6NGzfjhQWjRkbvvkApfRvQx1DtyYTOkJXivo1AVaaw4tscLAYG69p_B7f9Mmm_Z_pJk6pJPcJK', 19, 'php', 'php.svg', 0, 1),
+(86, 'Le constructeur et le destructeur', 'Apprenez ici à manipuler le constructeur pour instancier vos classes avec des paramètres.', 'php;php avancé;poo;programmation orientée objets;objects;classes;class;constructeurs;destructeurs;__construct;__destruct;$this;pseudo-variables;', '2PACX-1vQ7y6R1LGXubwgwSLegwpVzZbg07-lUDG86dK2EopAwSRanA0F2qYujpxVpl7tq061XGIF3Rxyplfdq', 20, 'php', 'php.svg', 0, 1),
+(87, 'Les classes étendues', 'Apprenez ici à manipuler le constructeur pour instancier vos classes avec des paramètres.', 'php;php avancé;poo;programmation orientée objets;objects;classes;class;héritages;extends;modularité;scalabilité;classe mère;classe fille;classe enfant;surcharges;parent;self;static;::;résolution de portée;constantes;const;statiques;static;abstraites;abstract;polymorphisme;interfaces;implements;implémente;', '2PACX-1vQ_uQ-BQmpqDKLV4fjb7CeISWnO6Gm_Qf2Kn0K1dwNOTSirfM-qbMj12_ItKxX9oWyHoodDj4GbCFc1', 21, 'php', 'php.svg', 0, 1),
+(88, 'Suggestion d\'utilisation des classes avec les BDD', 'Vous retrouverez ici un exemple d\'utilisation des classes avec une liaison en BDD.', 'php;php avancé;poo;programmation orientée objets;objects;classes;class;héritages;sql;bdd;base de données;', '2PACX-1vTnHXHjKiY17TyIW1qXIo-TXGmKkt0x0iWW63TE6XaMjr8_ZWIaglosFHbuoDZebMyUY4-Cgz_RFNKT', 22, 'php', 'php.svg', 0, 1),
+(89, 'CRUD', 'Principe de base pour tout administrateur d\'un système informatique, le CRUD !', 'php;php avancé;poo;programmation orientée objets;objects;classes;class;acronyme;crud;create;read;update;delete;', '2PACX-1vTdrXos9q4OdrGa5aqBu23RHCMUiTYQJvjGSkFEk5kEM8ezG1uI7LqD7_X0_ZwIv_krzD1XPuaw5cYR', 23, 'php', 'php.svg', 0, 1),
+(90, 'Envoi d\'email via Google', 'Confirmation, envoi de codes temporaires, informations, newsletters. Beaucoup de cas peuvent nous contraindre d\'utiliser un envoi d\'emails.\r\nDécouvrez une solution simple pour vos projets personnels.', 'php;php avancé;dépendances;emails;mailing;phpmailer;google;composer;', '2PACX-1vTylTuRLkhVOLQDtbdmaj3gb5QxS34cdlWMMEEJAOckmTbSL9G1I1qd-lOxeqvIjHuXvRW3g0PWH4Iv', 24, 'php', 'php.svg', 0, 1),
+(91, 'Protection contre les failles', 'Nos utilisateurs sont tous malveillants. \r\nC\'est ce qu\'il faut penser et, en conséquence, adapter notre code pour contrôler le tout.', 'php;php avancé;failles;xss;cross-site scripting;injections sql;include;upload;reverse shell;backdoor;null;failles de session;', '2PACX-1vRYfwlcmWLD1mJAOIhaQkBuled8iaFLvaD4S22fFzd67aVxuCUPcbmiEcZieFoIJKZ-mdHrgH77_v9x', 25, 'php', 'php.svg', 0, 1),
+(92, 'Le débogage', 'Le débogage, c\'est la santé.\r\nPour savoir comment ça se passe, c\'est ici !', 'php;php avancé;débogage;var_dump;print_r;die;exit;echo;F12;réseau;inspecter;', '2PACX-1vSCmOoX3Cc9kGaEyvUhotCZtPuOJdb51c-bEs01SuIptzi9D-rX033W_SVJwXax4STERmpqvBl2gxdd', 26, 'php', 'php.svg', 0, 1),
+(93, '.htaccess et VirtualHost', 'La configuration d\'un serveur c\'est tout une tâche qui au début est complexe, pour en apprendre les bases, c\'est ici que ça se passe !', 'php;php avancé;configuration;.htaccess;virtualhost;redirection;indexation;crawl;robots;sous-domaines;', '2PACX-1vQPcQCpPcWwmtrNBvviEH4XsrzoSaESGoY3_IubrYcfn5hUl6v7hkkZe2hsjzd4A7URJUPgzCxQm0su', 27, 'php', 'php.svg', 0, 1),
+(94, 'Les tests', 'Créer un site, c\'est blop, mais le tester, c\'est mieux !\nLes tests sont essentiels pour s\'assurer que notre application reste intègre malgré des changements.\nPour savoir comment faire, c\'est ici !', 'php;php avancé;tests;tests unitaires;tests fonctionnels;', '2PACX-1vQROikABRXxsW5pSKM3xWM6fQ8b_BswBmbi7jidMAQgKVnpJArHb7wZ4jVNi4sl1IlxjUwlj7Zo0ln9', 28, 'php', 'php.svg', 0, 1),
+(95, 'Protection des données', 'Créer un site, c\'est bien.\r\nMais cela implique des responsabilités, vis-à-vis de nos utilisateurs.', 'php;php avancé;rgpd;protection des données;', '2PACX-1vRGJMgl3f5xyFWJDH7zzSplwSd-GBW0SStUqMl-2CNyxnByzX_AJaRUVdHMGd270dArCaz8StT6yTqi', 29, 'php', 'php.svg', 0, 1),
+(96, 'Les Websockets', 'Découvrez la puissance des Websockets et leurs cas d\'utilisation... ', 'php;php avancé;websockets;services;écouteurs;', '2PACX-1vSUXu8d3-64J_T0IlK0hMlVvMMW1GW5xrKF7h1sCkq4ioBcOub7kIaubnpEVdnC5aW43OycjgKQRqsf', 30, 'php', 'php.svg', 0, 1),
+(97, 'Mémo', 'Petite diapo reprenant les syntaxes essentielles...', 'sql;mémo;types;json;datetime;int;varchar;text;double;float;boolean;not null;default;primary key;auto_increment;create;table;database;if;not;exists;alter;delete;drop;grant;revoke;update;insert;select;where;limit;offset;having;min;max;group by;order by;like;cast;length;chr;||;substr;upper;lower;pow;sqrt;rand;round;count;sum;avg;jointures;join;inner;cross;left;outer;right;full;self;natural;union;', '2PACX-1vQ9bvixsS3jmP4808HpCPDnhW0W0NaHfBtPLvv5Oun9wAvMelSWanTZ8Y3ZD2Oqe76xJDQmuy0gKLO-', 0, 'sql', 'no_data.svg', 0, 1),
+(98, 'PhpMyAdmin', 'Apprenez à vous servir de l\'outil de gestion de BDD PhpMyAdmin.', 'sql;phpmyadmin;tutoriel;', '2PACX-1vRFfl3Z9J91u-o02FLDs1dV-MihMnREMp_BbyRmMV1fBesp3_TbxembzeNsnw_GHIpi7cjD5LyLncgI', 1, 'sql', 'no_data.svg', 0, 1),
+(99, 'Introduction', 'Découvrez ce qu\'est le SQL, le langage qui parlait aux bases de données...', 'sql;sgbr;sequel;tables;bdd;databases;enregistrements;tuples;vues;permissions;', '2PACX-1vSyhL60Bv9ZKb9VEqR_IYnGbnwsMeWjzuTmaTQ3_BGpfVXuS5rcB8ZOqgtYftV_qH-Jcd_hw6DdUt7X', 2, 'sql', 'no_data.svg', 0, 1),
+(100, 'Concepts de base', 'Qu\'est-ce que c\'est ? A quoi ça sert ? Les réponses se trouvent ici !', 'sql;tuples;enregistrements;tables;bddr;attributs;clé de relation;contraintes d\'intégrité relationnelles;normalisation;', '2PACX-1vSbi-x2vx4plN9IpsvEvgUkvayLy32JD9v1BJI1RHB7M1q_pEIYOvFZNKqBXfMp2R0tlMmRa57wo72b', 3, 'sql', 'no_data.svg', 0, 1),
+(101, 'Syntaxes des instructions SQL', 'Toutes les structures dont vous aurez besoin pour commencer se trouvent ici...', 'sql;structures;instructions;select;create;table;drop;desc;asc;rollback;index;database;truncate;use;alter;insert;update;delete;commit;clauses;agrégations;count;distinct;where;and;or;in;not;between;like;order;group;having;by;', '2PACX-1vRwXkkyEgoV8GPlajkDYjnVdJto6BiSowcEOAzlZmf1gEhx8PksZbOIUhsYaAF8gscrG1phaGmZZKQJ', 4, 'sql', 'no_data.svg', 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cours_modules`
+--
+
+CREATE TABLE `cours_modules` (
+  `cours_module_id` int(11) NOT NULL,
+  `cours_module_libelle` varchar(50) NOT NULL,
+  `cours_module_position` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `cours_modules`
+--
+
+INSERT INTO `cours_modules` (`cours_module_id`, `cours_module_libelle`, `cours_module_position`) VALUES
+(1, 'Autres', -1),
+(2, 'git', 0),
+(3, 'CDC', 1),
+(4, 'Maquettage', 2),
+(5, 'UML', 3),
+(6, 'HTML', 4),
+(7, 'CSS', 5),
+(8, 'Algorithmie', 6),
+(9, 'JS', 7),
+(10, 'Frameworks CSS', 8),
+(11, 'Graphisme', 9),
+(12, 'UX', 10),
+(13, 'ReactJS', 11),
+(14, 'Merise', 12),
+(15, 'SQL', 13),
+(16, 'PHP', 14),
+(17, 'Symfony', 15),
+(18, 'SEO', 16);
 
 -- --------------------------------------------------------
 
@@ -87,19 +173,16 @@ INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_keyword
 -- Structure de la table `cours_ressources`
 --
 
-DROP TABLE IF EXISTS `cours_ressources`;
-CREATE TABLE IF NOT EXISTS `cours_ressources` (
-  `cours_ressource_id` int NOT NULL AUTO_INCREMENT,
-  `cours_ressource_titre` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `cours_ressource_resume` text COLLATE utf8mb4_general_ci,
-  `cours_ressource_lien` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cours_ressource_type` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tp;exercice;autre',
-  `cours_ressource_archive` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `cours_ressource_archive_lien` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `id_cours` int NOT NULL,
-  PRIMARY KEY (`cours_ressource_id`),
-  KEY `id_cours` (`id_cours`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `cours_ressources` (
+  `cours_ressource_id` int(11) NOT NULL,
+  `cours_ressource_titre` varchar(50) NOT NULL,
+  `cours_ressource_resume` text DEFAULT NULL,
+  `cours_ressource_lien` varchar(255) DEFAULT NULL,
+  `cours_ressource_type` varchar(30) NOT NULL COMMENT 'tp;exercice;autre',
+  `cours_ressource_archive` varchar(100) DEFAULT NULL,
+  `cours_ressource_archive_lien` varchar(255) DEFAULT NULL,
+  `id_cours` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_ressources`
@@ -159,17 +242,12 @@ INSERT INTO `cours_ressources` (`cours_ressource_id`, `cours_ressource_titre`, `
 -- Structure de la table `cours_sessions`
 --
 
-DROP TABLE IF EXISTS `cours_sessions`;
-CREATE TABLE IF NOT EXISTS `cours_sessions` (
-  `cours_session_id` int NOT NULL AUTO_INCREMENT,
-  `id_session` int NOT NULL,
-  `id_cours` int NOT NULL,
-  `cours_session_active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`cours_session_id`),
-  UNIQUE KEY `id_session_2` (`id_session`,`id_cours`),
-  KEY `id_session` (`id_session`),
-  KEY `id_course` (`id_cours`)
-) ENGINE=InnoDB AUTO_INCREMENT=134 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `cours_sessions` (
+  `cours_session_id` int(11) NOT NULL,
+  `id_session` int(11) NOT NULL,
+  `id_cours` int(11) NOT NULL,
+  `cours_session_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `cours_sessions`
@@ -192,7 +270,6 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 (45, 1, 29, 1),
 (46, 1, 23, 1),
 (62, 2, 22, 1),
-(64, 2, 24, 0),
 (78, 2, 30, 1),
 (81, 1, 30, 1),
 (82, 1, 24, 1),
@@ -205,9 +282,7 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 (92, 1, 37, 1),
 (93, 2, 37, 1),
 (94, 1, 38, 1),
-(98, 2, 35, 0),
 (105, 2, 38, 1),
-(117, 2, 29, 0),
 (118, 2, 21, 1),
 (125, 1, 34, 1),
 (126, 1, 40, 1),
@@ -217,7 +292,56 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 (130, 1, 46, 1),
 (131, 1, 47, 1),
 (132, 1, 45, 1),
-(133, 1, 44, 1);
+(133, 1, 44, 1),
+(135, 2, 29, 1),
+(136, 2, 17, 1),
+(137, 2, 24, 1),
+(138, 2, 20, 1),
+(140, 2, 23, 1),
+(141, 2, 19, 1),
+(142, 2, 28, 1),
+(143, 2, 18, 1),
+(144, 2, 32, 1),
+(145, 2, 33, 1),
+(146, 2, 35, 1),
+(147, 2, 1, 1),
+(148, 2, 31, 1),
+(149, 2, 2, 1),
+(150, 2, 26, 1),
+(151, 2, 25, 1),
+(152, 2, 40, 1),
+(153, 2, 42, 1),
+(154, 2, 46, 1),
+(155, 2, 47, 1),
+(156, 2, 45, 1),
+(158, 2, 44, 1),
+(159, 2, 41, 1),
+(160, 2, 43, 1),
+(161, 2, 34, 1),
+(162, 2, 69, 1),
+(163, 2, 57, 1),
+(164, 2, 53, 1),
+(165, 2, 52, 1),
+(166, 2, 64, 1),
+(167, 2, 66, 1),
+(168, 2, 65, 1),
+(169, 2, 49, 1),
+(170, 2, 70, 1),
+(171, 2, 61, 1),
+(172, 2, 50, 1),
+(173, 2, 51, 1),
+(174, 2, 63, 1),
+(175, 2, 59, 1),
+(176, 2, 60, 1),
+(177, 2, 68, 1),
+(178, 2, 54, 1),
+(179, 2, 55, 1),
+(180, 2, 71, 1),
+(181, 2, 62, 1),
+(182, 2, 48, 1),
+(183, 2, 56, 1),
+(184, 2, 67, 1),
+(185, 1, 52, 1);
 
 -- --------------------------------------------------------
 
@@ -225,13 +349,11 @@ INSERT INTO `cours_sessions` (`cours_session_id`, `id_session`, `id_cours`, `cou
 -- Structure de la table `documents`
 --
 
-DROP TABLE IF EXISTS `documents`;
-CREATE TABLE IF NOT EXISTS `documents` (
-  `id_document` int NOT NULL AUTO_INCREMENT,
-  `index_document` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `nom_document` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id_document`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `documents` (
+  `id_document` int(11) NOT NULL,
+  `index_document` varchar(20) NOT NULL,
+  `nom_document` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `documents`
@@ -250,16 +372,13 @@ INSERT INTO `documents` (`id_document`, `index_document`, `nom_document`) VALUES
 -- Structure de la table `documents_pages`
 --
 
-DROP TABLE IF EXISTS `documents_pages`;
-CREATE TABLE IF NOT EXISTS `documents_pages` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `num_page` int NOT NULL,
-  `lien` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `textes_ajoutes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
-  `id_document` int NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `id_document` (`id_document`)
-) ;
+CREATE TABLE `documents_pages` (
+  `id` int(11) NOT NULL,
+  `num_page` int(11) NOT NULL,
+  `lien` varchar(100) NOT NULL,
+  `textes_ajoutes` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `id_document` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `documents_pages`
@@ -294,18 +413,15 @@ INSERT INTO `documents_pages` (`id`, `num_page`, `lien`, `textes_ajoutes`, `id_d
 -- Structure de la table `evaluations`
 --
 
-DROP TABLE IF EXISTS `evaluations`;
-CREATE TABLE IF NOT EXISTS `evaluations` (
-  `evaluation_id` int NOT NULL AUTO_INCREMENT,
-  `evaluation_title` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `evaluation_goals` longtext COLLATE utf8mb4_general_ci NOT NULL,
-  `evaluation_synopsis` text COLLATE utf8mb4_general_ci NOT NULL,
-  `evaluation_token` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `evaluation_errors_max` int NOT NULL,
-  `id_evaluation_dd` int NOT NULL,
-  PRIMARY KEY (`evaluation_id`),
-  KEY `id_evaluation_dd` (`id_evaluation_dd`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `evaluations` (
+  `evaluation_id` int(11) NOT NULL,
+  `evaluation_title` varchar(100) NOT NULL,
+  `evaluation_goals` longtext NOT NULL,
+  `evaluation_synopsis` text NOT NULL,
+  `evaluation_token` varchar(255) NOT NULL,
+  `evaluation_errors_max` int(11) NOT NULL,
+  `id_evaluation_dd` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `evaluations`
@@ -324,14 +440,12 @@ INSERT INTO `evaluations` (`evaluation_id`, `evaluation_title`, `evaluation_goal
 -- Structure de la table `evaluations_dd`
 --
 
-DROP TABLE IF EXISTS `evaluations_dd`;
-CREATE TABLE IF NOT EXISTS `evaluations_dd` (
-  `evaluation_dd_id` int NOT NULL AUTO_INCREMENT,
-  `evaluation_dd_name` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `evaluation_dd_link` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `evaluation_dd_active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`evaluation_dd_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `evaluations_dd` (
+  `evaluation_dd_id` int(11) NOT NULL,
+  `evaluation_dd_name` varchar(50) NOT NULL,
+  `evaluation_dd_link` varchar(100) NOT NULL,
+  `evaluation_dd_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `evaluations_dd`
@@ -347,15 +461,11 @@ INSERT INTO `evaluations_dd` (`evaluation_dd_id`, `evaluation_dd_name`, `evaluat
 -- Structure de la table `evaluations_sessions`
 --
 
-DROP TABLE IF EXISTS `evaluations_sessions`;
-CREATE TABLE IF NOT EXISTS `evaluations_sessions` (
+CREATE TABLE `evaluations_sessions` (
   `evaluation_session_active` tinyint(1) NOT NULL,
-  `id_dd_evaluation` int NOT NULL,
-  `id_session` int NOT NULL,
-  PRIMARY KEY (`id_dd_evaluation`,`id_session`),
-  KEY `id_session` (`id_session`),
-  KEY `id_dd_evaluation` (`id_dd_evaluation`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id_dd_evaluation` int(11) NOT NULL,
+  `id_session` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `evaluations_sessions`
@@ -371,30 +481,24 @@ INSERT INTO `evaluations_sessions` (`evaluation_session_active`, `id_dd_evaluati
 -- Structure de la table `formateurs`
 --
 
-DROP TABLE IF EXISTS `formateurs`;
-CREATE TABLE IF NOT EXISTS `formateurs` (
-  `id_formateur` int NOT NULL AUTO_INCREMENT,
-  `nom_formateur` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `prenom_formateur` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `mail_formateur` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `mdp_formateur` varchar(60) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `signature_formateur` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `carte_formateur_role` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `carte_formateur_liens` varchar(25) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `carte_formateur_tel` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `carte_formateur_portable` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `tmp_code_formateur` varchar(6) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Contient un code qui permet à un formateur de en cas d''oubli de mot de passe ou si la période de validité du code est échue\r\n',
+CREATE TABLE `formateurs` (
+  `id_formateur` int(11) NOT NULL,
+  `nom_formateur` varchar(25) NOT NULL,
+  `prenom_formateur` varchar(25) NOT NULL,
+  `mail_formateur` varchar(100) NOT NULL,
+  `mdp_formateur` varchar(60) DEFAULT NULL,
+  `signature_formateur` varchar(50) DEFAULT NULL,
+  `carte_formateur_role` varchar(25) NOT NULL,
+  `carte_formateur_liens` varchar(25) DEFAULT NULL,
+  `carte_formateur_tel` varchar(10) NOT NULL,
+  `carte_formateur_portable` varchar(10) DEFAULT NULL,
+  `tmp_code_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code qui permet à un formateur de en cas d''oubli de mot de passe ou si la période de validité du code est échue\r\n',
   `date_tmp_code_formateur` datetime DEFAULT NULL COMMENT 'Validité de 5 minutes',
-  `code_entree_formateur` varchar(6) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Contient un code UNIQUE qui permet à un formateur de s''identifier la première fois pour changer son mot de passe',
+  `code_entree_formateur` varchar(6) DEFAULT NULL COMMENT 'Contient un code UNIQUE qui permet à un formateur de s''identifier la première fois pour changer son mot de passe',
   `date_code_entree_formateur` datetime DEFAULT NULL COMMENT 'Validité d''une semaine',
-  `id_site` int NOT NULL,
-  `id_secteur` int NOT NULL,
-  PRIMARY KEY (`id_formateur`),
-  UNIQUE KEY `mail_formateur` (`mail_formateur`),
-  UNIQUE KEY `code_entree_formateur` (`code_entree_formateur`),
-  KEY `id_secteur` (`id_secteur`),
-  KEY `id_site` (`id_site`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_site` int(11) NOT NULL,
+  `id_secteur` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `formateurs`
@@ -412,18 +516,14 @@ INSERT INTO `formateurs` (`id_formateur`, `nom_formateur`, `prenom_formateur`, `
 -- Structure de la table `historiques`
 --
 
-DROP TABLE IF EXISTS `historiques`;
-CREATE TABLE IF NOT EXISTS `historiques` (
-  `id_historique` int NOT NULL AUTO_INCREMENT,
-  `id_formateur` int NOT NULL,
-  `page_visitee` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `page_nom` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `ip_visiteur` varchar(15) COLLATE utf8mb4_general_ci NOT NULL,
-  `date_visite` datetime NOT NULL,
-  PRIMARY KEY (`id_historique`),
-  UNIQUE KEY `id_formateur_2` (`id_formateur`,`page_visitee`),
-  KEY `id_formateur` (`id_formateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `historiques` (
+  `id_historique` int(11) NOT NULL,
+  `id_formateur` int(11) NOT NULL,
+  `page_visitee` varchar(255) NOT NULL,
+  `page_nom` varchar(50) NOT NULL,
+  `ip_visiteur` varchar(15) NOT NULL,
+  `date_visite` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `historiques`
@@ -438,9 +538,9 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 (290, 1, '?page=ajouter-referent', 'Ajouter-referent', '::1', '2023-07-26 22:02:32'),
 (304, 1, '?page=titre', 'Titre', '::1', '2023-07-27 22:55:58'),
 (317, 1, '?page=stage', 'Stage', '::1', '2023-07-30 01:52:20'),
-(323, 1, '?page=admin', 'Admin', '::1', '2023-07-30 20:07:23'),
 (324, 1, '?page=boite-aux-lettres', 'Boite-aux-lettres', '::1', '2023-07-30 22:56:48'),
-(350, 1, '?page=formation', 'Formation', '::1', '2023-08-01 00:47:55');
+(395, 1, '?page=admin', 'Admin', '78.242.29.124', '2023-10-05 12:37:54'),
+(479, 1, '?page=formation', 'Formation', '88.169.229.35', '2023-10-06 17:04:32');
 
 -- --------------------------------------------------------
 
@@ -448,21 +548,128 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 -- Structure de la table `notifications`
 --
 
-DROP TABLE IF EXISTS `notifications`;
-CREATE TABLE IF NOT EXISTS `notifications` (
+CREATE TABLE `notifications` (
   `notification_titre` varchar(50) NOT NULL,
   `notification_lien` varchar(255) NOT NULL,
   `notification_date` datetime NOT NULL,
-  `id_stagiaire` int NOT NULL,
-  PRIMARY KEY (`notification_titre`,`notification_lien`,`id_stagiaire`) USING BTREE,
-  KEY `id_stagiaire` (`id_stagiaire`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `id_stagiaire` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `notifications`
 --
 
 INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notification_date`, `id_stagiaire`) VALUES
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 34),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 35),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 36),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 37),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 38),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 39),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 40),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 41),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 42),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 43),
+('[CSS] Nouveau cours disponible: Introduction', '/erp/public/formation/embed.php?slide=2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', '2023-10-05 13:11:49', 51),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 34),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 35),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 36),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 37),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 38),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 39),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 40),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 41),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 42),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 43),
+('[CSS] Nouveau cours disponible: Les animations', '/erp/public/formation/embed.php?slide=2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', '2023-10-05 13:11:48', 51),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 34),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 35),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 36),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 37),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 38),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 39),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 40),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 41),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 42),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 43),
+('[CSS] Nouveau cours disponible: Les dégradés', '/erp/public/formation/embed.php?slide=2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', '2023-10-05 13:11:49', 51),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 34),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 35),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 36),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 37),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 38),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 39),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 40),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 41),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 42),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 43),
+('[CSS] Nouveau cours disponible: Les pseudo-classes', '/erp/public/formation/embed.php?slide=2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', '2023-10-05 13:11:49', 51),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 34),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 35),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 36),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 37),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 38),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 39),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 40),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 41),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 42),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 43),
+('[CSS] Nouveau cours disponible: Ombrages', '/erp/public/formation/embed.php?slide=2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', '2023-10-05 13:11:50', 51),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 34),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 35),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 36),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 37),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 38),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 39),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 40),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 41),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 42),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 43),
+('[CSS] Nouveau cours disponible: Sélecteurs simples', '/erp/public/formation/embed.php?slide=2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', '2023-10-05 13:11:52', 51),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 34),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 35),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 36),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 37),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 38),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 39),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 40),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 41),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 42),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 43),
+('[GIT] Nouveau cours disponible: Cours sur Git', '/erp/public/formation/embed.php?slide=2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', '2023-10-05 13:11:53', 51),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 34),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 35),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 36),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 37),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 38),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 39),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 40),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 41),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 42),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 43),
+('[HTML] Nouveau cours disponible: Les balises', '/erp/public/formation/embed.php?slide=2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', '2023-10-05 13:11:54', 51),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 34),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 35),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 36),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 37),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 38),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 39),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 40),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 41),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 42),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 43),
+('[HTML] Nouveau cours disponible: Les formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', '2023-10-05 13:11:55', 51),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 34),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 35),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 36),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 37),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 38),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 39),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 40),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 41),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 42),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 43),
+('[HTML] Nouveau cours disponible: Les tableaux', '/erp/public/formation/embed.php?slide=2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', '2023-10-05 13:11:55', 51),
 ('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 23),
 ('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 24),
 ('[MAQUETTAGE] Nouveau cours disponible: Présentatio', '/erp/public/formation/embed.php?slide=2PACX-1vQ6ivShYWJW93j1_BLlcfQM7i92_8kXw9BC9GHGWj26gIWqW5awlyB9V-NV0fIh_g5tydGlLRCBxShX', '2023-07-31 00:48:58', 25),
@@ -498,7 +705,18 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 ('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-08-01 00:47:31', 31),
 ('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-08-01 00:47:31', 32),
 ('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-08-01 00:47:31', 33),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 34),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 35),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 36),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 37),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 38),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 39),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 40),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 41),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 42),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 43),
 ('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-08-01 00:47:31', 44),
+('[PHP] Nouveau cours disponible: La concaténation', '/erp/public/formation/embed.php?slide=2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', '2023-10-05 13:11:56', 51),
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 23),
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 24),
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 25),
@@ -510,7 +728,18 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 31),
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 32),
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 33),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 34),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 35),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 36),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 37),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 38),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 39),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 40),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 41),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 42),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 43),
 ('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-08-01 00:47:32', 44),
+('[PHP] Nouveau cours disponible: Les fonctions', '/erp/public/formation/embed.php?slide=2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', '2023-10-05 13:11:57', 51),
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 23),
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 24),
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 25),
@@ -522,7 +751,18 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 31),
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 32),
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 33),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 34),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 35),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 36),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 37),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 38),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 39),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 40),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 41),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 42),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 43),
 ('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-08-01 00:47:32', 44),
+('[PHP] Nouveau cours disponible: Les opérateurs', '/erp/public/formation/embed.php?slide=2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', '2023-10-05 13:11:57', 51),
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 23),
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 24),
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 25),
@@ -534,7 +774,18 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 31),
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 32),
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 33),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 34),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 35),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 36),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 37),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 38),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 39),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 40),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 41),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 42),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 43),
 ('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-08-01 00:47:34', 44),
+('[PHP] Nouveau cours disponible: Les variables', '/erp/public/formation/embed.php?slide=2PACX-1vSuLAYVq-oENR7uPs3aT-zSU_tsKTvIy8v9KGvS2PfxGyCZduX4nm1E7oCEEUSZtst0iNCx_Zf2wiNd', '2023-10-05 13:11:59', 51),
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 23),
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 24),
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 25),
@@ -546,7 +797,19 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 31),
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 32),
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 33),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 34),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 35),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 36),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 37),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 38),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 39),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 40),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 41),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 42),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 43),
 ('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-08-01 00:09:56', 44),
+('[PHP] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vTgogYzDcD-TvZianF-SOllaFNXYMA-civ7CPz_TeGdDaY89oJZJH0Dnpm4-Zhl4c1w3h-jpGzDmdwN', '2023-10-05 13:11:59', 51);
+INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notification_date`, `id_stagiaire`) VALUES
 ('[PHP] Nouveau cours disponible: Structure de la pa', '/erp/public/formation/embed.php?slide=2PACX-1vQeK4weEvOLRPOJWJEPRnrjeUUxBxuGuElOg2qerlzTOuBYS7ujoZlAtre7nUZIsdkPKZSYXaVWjGbe', '2023-08-01 00:24:18', 23),
 ('[PHP] Nouveau cours disponible: Structure de la pa', '/erp/public/formation/embed.php?slide=2PACX-1vQeK4weEvOLRPOJWJEPRnrjeUUxBxuGuElOg2qerlzTOuBYS7ujoZlAtre7nUZIsdkPKZSYXaVWjGbe', '2023-08-01 00:24:18', 24),
 ('[PHP] Nouveau cours disponible: Structure de la pa', '/erp/public/formation/embed.php?slide=2PACX-1vQeK4weEvOLRPOJWJEPRnrjeUUxBxuGuElOg2qerlzTOuBYS7ujoZlAtre7nUZIsdkPKZSYXaVWjGbe', '2023-08-01 00:24:18', 25),
@@ -568,7 +831,194 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 ('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 31),
 ('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 32),
 ('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 33),
-('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 44);
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 34),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 35),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 36),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 37),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 38),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 39),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 40),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 41),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 42),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 43),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-07-30 03:17:32', 44),
+('[SASS] Nouveau cours disponible: SASS', '/erp/public/formation/embed.php?slide=2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', '2023-10-05 13:12:00', 51),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 34),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 35),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 36),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 37),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 38),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 39),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 40),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 41),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 42),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 43),
+('[SYMFONY] Nouveau cours disponible: CRUD', '/erp/public/formation/embed.php?slide=2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', '2023-10-05 13:12:03', 51),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 34),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 35),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 36),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 37),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 38),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 39),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 40),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 41),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 42),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 43),
+('[SYMFONY] Nouveau cours disponible: Envoi d\'emails', '/erp/public/formation/embed.php?slide=2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', '2023-10-05 13:12:03', 51),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 34),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 35),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 36),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 37),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 38),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 39),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 40),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 41),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 42),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 43),
+('[SYMFONY] Nouveau cours disponible: Formulaires', '/erp/public/formation/embed.php?slide=2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', '2023-10-05 13:12:04', 51),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 34),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 35),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 36),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 37),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 38),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 39),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 40),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 41),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 42),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 43),
+('[SYMFONY] Nouveau cours disponible: Installation', '/erp/public/formation/embed.php?slide=2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', '2023-10-05 13:12:04', 51),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 34),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 35),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 36),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 37),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 38),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 39),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 40),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 41),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 42),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 43),
+('[SYMFONY] Nouveau cours disponible: L\'API', '/erp/public/formation/embed.php?slide=2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', '2023-10-05 13:12:04', 51),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 34),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 35),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 36),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 37),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 38),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 39),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 40),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 41),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 42),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 43),
+('[SYMFONY] Nouveau cours disponible: Les bases', '/erp/public/formation/embed.php?slide=2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', '2023-10-05 13:12:05', 51),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 34),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 35),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 36),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 37),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 38),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 39),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 40),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 41),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 42),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 43),
+('[SYMFONY] Nouveau cours disponible: Les bundles', '/erp/public/formation/embed.php?slide=2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', '2023-10-05 13:12:05', 51),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 34),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 35),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 36),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 37),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 38),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 39),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 40),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 41),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 42),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 43),
+('[SYMFONY] Nouveau cours disponible: Les entités', '/erp/public/formation/embed.php?slide=2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', '2023-10-05 13:12:07', 51),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 34),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 35),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 36),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 37),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 38),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 39),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 40),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 41),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 42),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 43),
+('[SYMFONY] Nouveau cours disponible: Les migrations', '/erp/public/formation/embed.php?slide=2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', '2023-10-05 13:12:07', 51),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 34),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 35),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 36),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 37),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 38),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 39),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 40),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 41),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 42),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 43),
+('[SYMFONY] Nouveau cours disponible: Les routes', '/erp/public/formation/embed.php?slide=2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', '2023-10-05 13:12:08', 51),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 34),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 35),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 36),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 37),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 38),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 39),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 40),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 41),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 42),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 43),
+('[SYMFONY] Nouveau cours disponible: Les services', '/erp/public/formation/embed.php?slide=2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', '2023-10-05 13:12:08', 51),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 34),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 35),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 36),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 37),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 38),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 39),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 40),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 41),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 42),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 43),
+('[SYMFONY] Nouveau cours disponible: Les tests', '/erp/public/formation/embed.php?slide=2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', '2023-10-05 13:12:09', 51),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 34),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 35),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 36),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 37),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 38),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 39),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 40),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 41),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 42),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 43),
+('[SYMFONY] Nouveau cours disponible: Les traits', '/erp/public/formation/embed.php?slide=2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', '2023-10-05 13:12:09', 51),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 34),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 35),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 36),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 37),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 38),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 39),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 40),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 41),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 42),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 43),
+('[SYMFONY] Nouveau cours disponible: Présentation', '/erp/public/formation/embed.php?slide=2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', '2023-10-05 13:12:10', 51),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 34),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 35),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 36),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 37),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 38),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 39),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 40),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 41),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 42),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 43),
+('[SYMFONY] Nouveau cours disponible: Twig', '/erp/public/formation/embed.php?slide=2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', '2023-10-05 13:12:10', 51),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 34),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 35),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 36),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 37),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 38),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 39),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 40),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 41),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 42),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 43),
+('[SYMFONY] Nouveau cours disponible: UX initiative', '/erp/public/formation/embed.php?slide=2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', '2023-10-05 13:12:10', 51);
 
 -- --------------------------------------------------------
 
@@ -576,17 +1026,13 @@ INSERT INTO `notifications` (`notification_titre`, `notification_lien`, `notific
 -- Structure de la table `quiz`
 --
 
-DROP TABLE IF EXISTS `quiz`;
-CREATE TABLE IF NOT EXISTS `quiz` (
-  `quiz_id` int NOT NULL AUTO_INCREMENT,
-  `quiz_module` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `quiz_lien` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `quiz_difficulte` int NOT NULL COMMENT '0: Facile ; 1: Modéré ; 2: Difficile ; 3: Extrême',
-  `id_formateur` int NOT NULL,
-  PRIMARY KEY (`quiz_id`),
-  UNIQUE KEY `quiz_lien` (`quiz_lien`),
-  KEY `id_formateur` (`id_formateur`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `quiz` (
+  `quiz_id` int(11) NOT NULL,
+  `quiz_module` varchar(50) NOT NULL,
+  `quiz_lien` varchar(255) NOT NULL,
+  `quiz_difficulte` int(11) NOT NULL COMMENT '0: Facile ; 1: Modéré ; 2: Difficile ; 3: Extrême',
+  `id_formateur` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `quiz`
@@ -601,17 +1047,12 @@ INSERT INTO `quiz` (`quiz_id`, `quiz_module`, `quiz_lien`, `quiz_difficulte`, `i
 -- Structure de la table `quiz_sessions`
 --
 
-DROP TABLE IF EXISTS `quiz_sessions`;
-CREATE TABLE IF NOT EXISTS `quiz_sessions` (
-  `quiz_sessions_id` int NOT NULL AUTO_INCREMENT,
-  `id_session` int NOT NULL,
-  `id_quiz` int NOT NULL,
-  `quiz_session_active` tinyint(1) NOT NULL,
-  PRIMARY KEY (`quiz_sessions_id`),
-  UNIQUE KEY `id_session_2` (`id_session`,`id_quiz`),
-  KEY `id_session` (`id_session`),
-  KEY `id_quiz` (`id_quiz`)
-) ENGINE=InnoDB AUTO_INCREMENT=62 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `quiz_sessions` (
+  `quiz_sessions_id` int(11) NOT NULL,
+  `id_session` int(11) NOT NULL,
+  `id_quiz` int(11) NOT NULL,
+  `quiz_session_active` tinyint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `quiz_sessions`
@@ -627,13 +1068,11 @@ INSERT INTO `quiz_sessions` (`quiz_sessions_id`, `id_session`, `id_quiz`, `quiz_
 -- Structure de la table `secteurs`
 --
 
-DROP TABLE IF EXISTS `secteurs`;
-CREATE TABLE IF NOT EXISTS `secteurs` (
-  `id_secteur` int NOT NULL AUTO_INCREMENT,
-  `nom_secteur` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `logo_secteur` varchar(150) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id_secteur`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `secteurs` (
+  `id_secteur` int(11) NOT NULL,
+  `nom_secteur` varchar(50) NOT NULL,
+  `logo_secteur` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `secteurs`
@@ -652,20 +1091,17 @@ INSERT INTO `secteurs` (`id_secteur`, `nom_secteur`, `logo_secteur`) VALUES
 -- Structure de la table `sessions`
 --
 
-DROP TABLE IF EXISTS `sessions`;
-CREATE TABLE IF NOT EXISTS `sessions` (
-  `id_session` int NOT NULL AUTO_INCREMENT,
-  `nom_session` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `duree_stage` int NOT NULL,
-  `sigle_session` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `sessions` (
+  `id_session` int(11) NOT NULL,
+  `nom_session` varchar(25) NOT NULL,
+  `duree_stage` int(11) NOT NULL,
+  `sigle_session` varchar(50) NOT NULL,
   `date_debut_session` date NOT NULL,
   `date_fin_session` date NOT NULL,
   `date_debut_stage` date NOT NULL,
   `date_fin_stage` date NOT NULL,
-  `id_formateur` int NOT NULL,
-  PRIMARY KEY (`id_session`),
-  KEY `id_formateur` (`id_formateur`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `id_formateur` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `sessions`
@@ -681,20 +1117,18 @@ INSERT INTO `sessions` (`id_session`, `nom_session`, `duree_stage`, `sigle_sessi
 -- Structure de la table `sites`
 --
 
-DROP TABLE IF EXISTS `sites`;
-CREATE TABLE IF NOT EXISTS `sites` (
-  `id_site` int NOT NULL AUTO_INCREMENT,
-  `libelle_site` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `contact_mail_site` varchar(75) COLLATE utf8mb4_general_ci NOT NULL,
-  `contact_tel_site` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
-  `adresse_num_site` int DEFAULT NULL,
-  `adresse_bis_site` tinyint(1) NOT NULL DEFAULT '0',
-  `adresse_rue_site` varchar(500) COLLATE utf8mb4_general_ci NOT NULL,
-  `adresse_cp_site` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
-  `adresse_ville_site` varchar(75) COLLATE utf8mb4_general_ci NOT NULL,
-  `adresse_supp_site` varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  PRIMARY KEY (`id_site`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `sites` (
+  `id_site` int(11) NOT NULL,
+  `libelle_site` varchar(50) NOT NULL,
+  `contact_mail_site` varchar(75) NOT NULL,
+  `contact_tel_site` varchar(10) NOT NULL,
+  `adresse_num_site` int(11) DEFAULT NULL,
+  `adresse_bis_site` tinyint(1) NOT NULL DEFAULT 0,
+  `adresse_rue_site` varchar(500) NOT NULL,
+  `adresse_cp_site` varchar(5) NOT NULL,
+  `adresse_ville_site` varchar(75) NOT NULL,
+  `adresse_supp_site` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `sites`
@@ -713,18 +1147,16 @@ INSERT INTO `sites` (`id_site`, `libelle_site`, `contact_mail_site`, `contact_te
 -- Structure de la table `stages`
 --
 
-DROP TABLE IF EXISTS `stages`;
-CREATE TABLE IF NOT EXISTS `stages` (
-  `id_stage` int NOT NULL AUTO_INCREMENT,
-  `rue_lieu_stage` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `cp_lieu_stage` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
-  `ville_lieu_stage` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `pays_lieu_stage` varchar(25) COLLATE utf8mb4_general_ci NOT NULL,
-  `nom_tuteur` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `prenom_tuteur` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `mail_tuteur` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  PRIMARY KEY (`id_stage`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+CREATE TABLE `stages` (
+  `id_stage` int(11) NOT NULL,
+  `rue_lieu_stage` varchar(100) NOT NULL,
+  `cp_lieu_stage` varchar(5) NOT NULL,
+  `ville_lieu_stage` varchar(50) NOT NULL,
+  `pays_lieu_stage` varchar(25) NOT NULL,
+  `nom_tuteur` varchar(50) NOT NULL,
+  `prenom_tuteur` varchar(50) NOT NULL,
+  `mail_tuteur` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stages`
@@ -750,34 +1182,29 @@ INSERT INTO `stages` (`id_stage`, `rue_lieu_stage`, `cp_lieu_stage`, `ville_lieu
 -- Structure de la table `stagiaires`
 --
 
-DROP TABLE IF EXISTS `stagiaires`;
-CREATE TABLE IF NOT EXISTS `stagiaires` (
-  `id_stagiaire` int NOT NULL AUTO_INCREMENT,
-  `nom_stagiaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `prenom_stagiaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `mail_stagiaire` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
-  `pseudo_stagiaire` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `mdp_stagiaire` varchar(60) COLLATE utf8mb4_general_ci NOT NULL,
-  `mdp_decode_stagiaire` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
-  `tel_stagiaire` varchar(10) COLLATE utf8mb4_general_ci NOT NULL,
+CREATE TABLE `stagiaires` (
+  `id_stagiaire` int(11) NOT NULL,
+  `nom_stagiaire` varchar(50) NOT NULL,
+  `prenom_stagiaire` varchar(50) NOT NULL,
+  `mail_stagiaire` varchar(100) NOT NULL,
+  `pseudo_stagiaire` varchar(50) DEFAULT NULL,
+  `mdp_stagiaire` varchar(60) NOT NULL,
+  `mdp_decode_stagiaire` varchar(50) NOT NULL,
+  `tel_stagiaire` varchar(10) NOT NULL,
   `date_naissance_stagiaire` date NOT NULL,
-  `lien_serveur` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `id_session` int NOT NULL,
-  `id_stage` int DEFAULT NULL,
-  `convention_recue` tinyint(1) NOT NULL DEFAULT '0',
-  `horaires_recues_1` tinyint(1) NOT NULL DEFAULT '0',
-  `horaires_recues_2` tinyint(1) NOT NULL DEFAULT '0',
-  `horaires_recues_3` tinyint(1) NOT NULL DEFAULT '0',
-  `attestation_mail_envoye` tinyint(1) NOT NULL DEFAULT '0',
+  `lien_serveur` varchar(255) NOT NULL,
+  `id_session` int(11) NOT NULL,
+  `id_stage` int(11) DEFAULT NULL,
+  `convention_recue` tinyint(1) NOT NULL DEFAULT 0,
+  `horaires_recues_1` tinyint(1) NOT NULL DEFAULT 0,
+  `horaires_recues_2` tinyint(1) NOT NULL DEFAULT 0,
+  `horaires_recues_3` tinyint(1) NOT NULL DEFAULT 0,
+  `attestation_mail_envoye` tinyint(1) NOT NULL DEFAULT 0,
   `attestation_recue` tinyint(1) DEFAULT NULL,
-  `evaluation_mail_envoye` tinyint(1) NOT NULL DEFAULT '0',
+  `evaluation_mail_envoye` tinyint(1) NOT NULL DEFAULT 0,
   `evaluation_recue` tinyint(1) DEFAULT NULL,
-  `compteur_demandes` int NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id_stagiaire`),
-  UNIQUE KEY `pseudo_stagiaire` (`pseudo_stagiaire`),
-  KEY `id_session` (`id_session`),
-  KEY `id_stage` (`id_stage`)
-) ENGINE=InnoDB AUTO_INCREMENT=52 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `compteur_demandes` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stagiaires`
@@ -796,17 +1223,18 @@ INSERT INTO `stagiaires` (`id_stagiaire`, `nom_stagiaire`, `prenom_stagiaire`, `
 (32, 'SETIAO', 'Tiffaine', '', NULL, '', '', '', '0000-00-00', '', 1, 11, 1, 0, 0, 0, 1, 0, 1, 0, 1),
 (33, 'PIERROT', 'Gilles', '', NULL, '', '', '', '0000-00-00', '', 1, 12, 1, 1, 1, 0, 1, 0, 1, 0, 1),
 (34, 'AOUACHRIA', 'Hibat', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(35, 'CAMOSSI', 'Jérémy', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(36, 'DELLA RICA', 'Steven', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(37, 'DELMON', 'Eryan', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(38, 'DILMAMODE', 'Yasmine', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(39, 'EYMARD', 'Luc', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(40, 'FAKIR', 'Karim', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(41, 'GIRARD', 'Anthony', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(42, 'HERBETTE', 'Alban', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
-(43, 'VONGSY', 'Laura', '', NULL, '', '', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(35, 'CAMOSSI', 'Jérémy', '', 'jcamossi23', '$2y$10$OhWBG5CNdh9uz7ZCxv9Gg.3ev.lkXm.mQKBBKG2TE9k2N7OWKveyK', 'Endanger-Cartload-Splicing7', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(36, 'DELLA RICA', 'Steven', '', 'sdellarica23', '$2y$10$GGAmQVRywix8o2AuB1EjmuwdfvIqyTL7zCqAgVVHvx8kPvta5FA8W', 'Relative-Scrutiny4-Judgingly', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(37, 'DELMON', 'Eryan', '', 'edelmon23', '$2y$10$Ybk4S1lF.UwjYBy3L0ouquw3nXUA.gnotiC1xXf6BAaq9d0eP9Q3a', 'Jump-Geography-Tanned4', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(38, 'DILMAMODE', 'Yasmine', '', 'ydilmamode23', '$2y$10$fFs.q1CzxL5viZpY7GQQ3u75sAIR42ZjDx2O8c6LoG7ZfqaQ2/wwS', 'Verbalize-Moisten0-Abroad', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(39, 'EYMARD', 'Luc', '', 'leymard23', '$2y$10$ojbOgfDcVi3Fberfubxpp.NAjq9N2IieCcJX91MNbs4rLPL00Hjkm', 'Laboring1-Wobbly-Giveaway', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(40, 'FAKIR', 'Karim', '', 'kfakir23', '$2y$10$j2Xq3P/.3s9osGcWyiJus.RqHqfV1lwDARnDd55twSJFMl2XNsKY2', 'Satirical-Morally7-Stash', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(41, 'GIRARD', 'Anthony', '', 'agirard23', '$2y$10$pkPDeNvSYwMrDo4EDvuUX.yzunc0fZ30yyHjuyA/lhKn93LqrciYy', 'Vitality-Parted-Duffel9', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(42, 'HERBETTE', 'Alban', '', 'aherbette23', '$2y$10$uX8O1XfZi08be9D/WuI6S.x.0Yi4g3MSvLZSOMmvmHPMqVqeK0ozK', 'Unmarked9-Foyer-Cleaver', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+(43, 'VONGSY', 'Laura', '', 'lvongsy23', '$2y$10$07eeFFiI6gZauE9tvhn/GOKwJGs/9lw8QQUsjsAOX5wP9dLBH/y2S', 'Enlisted-Appendage7-Commence', '', '0000-00-00', '', 2, NULL, 0, 0, 0, 0, 0, 0, 0, 0, 0),
 (44, 'MOUSTAGHFIR', 'Waël Amir', '', NULL, '', '', '', '0000-00-00', '', 1, 10, 1, 1, 0, 0, 1, 0, 1, 0, 1),
-(51, 'RODRIGUES', 'Marceau', 'marceau.ro@adrar-numerique.com', 'marceau', '$2y$10$3durwaynYHwqc.QVhkAUEemvPnqxJmnQvrXxuHArc309BsjOIeETG', 'du-ga-wo-', '0638265641', '1999-07-07', 'lien/vers/serveur/T', 2, NULL, 0, 0, 0, 0, 0, NULL, 0, NULL, 0);
+(51, 'RODRIGUES', 'Marceau', 'marceau.ro@adrar-numerique.com', 'marceau', '$2y$10$3durwaynYHwqc.QVhkAUEemvPnqxJmnQvrXxuHArc309BsjOIeETG', 'du-ga-wo-', '0638265641', '1999-07-07', 'lien/vers/serveur/T', 2, NULL, 0, 0, 0, 0, 0, NULL, 0, NULL, 0),
+(52, 'RODRIGUES', 'Ambroise', '', 'ambroise', '$2y$10$4bVa6wUDoIDOX75sf1/9quHK4gyEhOu3vj19Hb8NLzpzwIbEs5BVu', 'Q45tx1020!', '123456789', '2002-02-09', '', 1, NULL, 0, 0, 0, 0, 0, NULL, 0, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -814,19 +1242,14 @@ INSERT INTO `stagiaires` (`id_stagiaire`, `nom_stagiaire`, `prenom_stagiaire`, `
 -- Structure de la table `stagiaires_evaluations`
 --
 
-DROP TABLE IF EXISTS `stagiaires_evaluations`;
-CREATE TABLE IF NOT EXISTS `stagiaires_evaluations` (
-  `stagiaire_evaluation_id` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `stagiaires_evaluations` (
+  `stagiaire_evaluation_id` int(11) NOT NULL,
   `stagiaire_evaluation_completed` tinyint(1) NOT NULL,
   `stagiaire_evaluation_correction` tinyint(1) DEFAULT NULL,
-  `stagiaire_evaluation_errors_found` int DEFAULT NULL,
-  `id_stagiaire` int NOT NULL,
-  `id_evaluation` int NOT NULL,
-  PRIMARY KEY (`stagiaire_evaluation_id`),
-  UNIQUE KEY `id_intern_2` (`id_stagiaire`,`id_evaluation`),
-  KEY `id_stagiaire` (`id_stagiaire`),
-  KEY `id_evaluation` (`id_evaluation`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `stagiaire_evaluation_errors_found` int(11) DEFAULT NULL,
+  `id_stagiaire` int(11) NOT NULL,
+  `id_evaluation` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stagiaires_evaluations`
@@ -845,15 +1268,11 @@ INSERT INTO `stagiaires_evaluations` (`stagiaire_evaluation_id`, `stagiaire_eval
 -- Structure de la table `stagiaires_ressources`
 --
 
-DROP TABLE IF EXISTS `stagiaires_ressources`;
-CREATE TABLE IF NOT EXISTS `stagiaires_ressources` (
-  `id_stagiaire` int NOT NULL,
-  `id_ressource` int NOT NULL,
-  `lien_ressource_rendue` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  PRIMARY KEY (`id_stagiaire`,`id_ressource`),
-  KEY `id_stagiaire` (`id_stagiaire`),
-  KEY `id_ressource` (`id_ressource`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `stagiaires_ressources` (
+  `id_stagiaire` int(11) NOT NULL,
+  `id_ressource` int(11) NOT NULL,
+  `lien_ressource_rendue` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Déchargement des données de la table `stagiaires_ressources`
@@ -861,6 +1280,281 @@ CREATE TABLE IF NOT EXISTS `stagiaires_ressources` (
 
 INSERT INTO `stagiaires_ressources` (`id_stagiaire`, `id_ressource`, `lien_ressource_rendue`) VALUES
 (23, 9, 'ressource_9_adrar_titres.sql');
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `cours`
+--
+ALTER TABLE `cours`
+  ADD PRIMARY KEY (`cours_id`),
+  ADD UNIQUE KEY `cours_link` (`cours_link`),
+  ADD KEY `id_formateur` (`id_formateur`) USING BTREE,
+  ADD KEY `id_module` (`id_module`);
+ALTER TABLE `cours` ADD FULLTEXT KEY `cours_keywords` (`cours_keywords`);
+
+--
+-- Index pour la table `cours_modules`
+--
+ALTER TABLE `cours_modules`
+  ADD PRIMARY KEY (`cours_module_id`);
+
+--
+-- Index pour la table `cours_ressources`
+--
+ALTER TABLE `cours_ressources`
+  ADD PRIMARY KEY (`cours_ressource_id`),
+  ADD KEY `id_cours` (`id_cours`);
+
+--
+-- Index pour la table `cours_sessions`
+--
+ALTER TABLE `cours_sessions`
+  ADD PRIMARY KEY (`cours_session_id`),
+  ADD UNIQUE KEY `id_session_2` (`id_session`,`id_cours`),
+  ADD KEY `id_session` (`id_session`),
+  ADD KEY `id_course` (`id_cours`);
+
+--
+-- Index pour la table `documents`
+--
+ALTER TABLE `documents`
+  ADD PRIMARY KEY (`id_document`) USING BTREE;
+
+--
+-- Index pour la table `documents_pages`
+--
+ALTER TABLE `documents_pages`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_document` (`id_document`);
+
+--
+-- Index pour la table `evaluations`
+--
+ALTER TABLE `evaluations`
+  ADD PRIMARY KEY (`evaluation_id`),
+  ADD KEY `id_evaluation_dd` (`id_evaluation_dd`);
+
+--
+-- Index pour la table `evaluations_dd`
+--
+ALTER TABLE `evaluations_dd`
+  ADD PRIMARY KEY (`evaluation_dd_id`);
+
+--
+-- Index pour la table `evaluations_sessions`
+--
+ALTER TABLE `evaluations_sessions`
+  ADD PRIMARY KEY (`id_dd_evaluation`,`id_session`),
+  ADD KEY `id_session` (`id_session`),
+  ADD KEY `id_dd_evaluation` (`id_dd_evaluation`) USING BTREE;
+
+--
+-- Index pour la table `formateurs`
+--
+ALTER TABLE `formateurs`
+  ADD PRIMARY KEY (`id_formateur`),
+  ADD UNIQUE KEY `mail_formateur` (`mail_formateur`),
+  ADD UNIQUE KEY `code_entree_formateur` (`code_entree_formateur`),
+  ADD KEY `id_secteur` (`id_secteur`),
+  ADD KEY `id_site` (`id_site`);
+
+--
+-- Index pour la table `historiques`
+--
+ALTER TABLE `historiques`
+  ADD PRIMARY KEY (`id_historique`),
+  ADD UNIQUE KEY `id_formateur_2` (`id_formateur`,`page_visitee`),
+  ADD KEY `id_formateur` (`id_formateur`);
+
+--
+-- Index pour la table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`notification_titre`,`notification_lien`,`id_stagiaire`) USING BTREE,
+  ADD KEY `id_stagiaire` (`id_stagiaire`);
+
+--
+-- Index pour la table `quiz`
+--
+ALTER TABLE `quiz`
+  ADD PRIMARY KEY (`quiz_id`),
+  ADD UNIQUE KEY `quiz_lien` (`quiz_lien`),
+  ADD KEY `id_formateur` (`id_formateur`) USING BTREE;
+
+--
+-- Index pour la table `quiz_sessions`
+--
+ALTER TABLE `quiz_sessions`
+  ADD PRIMARY KEY (`quiz_sessions_id`),
+  ADD UNIQUE KEY `id_session_2` (`id_session`,`id_quiz`),
+  ADD KEY `id_session` (`id_session`),
+  ADD KEY `id_quiz` (`id_quiz`);
+
+--
+-- Index pour la table `secteurs`
+--
+ALTER TABLE `secteurs`
+  ADD PRIMARY KEY (`id_secteur`);
+
+--
+-- Index pour la table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id_session`),
+  ADD KEY `id_formateur` (`id_formateur`);
+
+--
+-- Index pour la table `sites`
+--
+ALTER TABLE `sites`
+  ADD PRIMARY KEY (`id_site`);
+
+--
+-- Index pour la table `stages`
+--
+ALTER TABLE `stages`
+  ADD PRIMARY KEY (`id_stage`);
+
+--
+-- Index pour la table `stagiaires`
+--
+ALTER TABLE `stagiaires`
+  ADD PRIMARY KEY (`id_stagiaire`),
+  ADD UNIQUE KEY `pseudo_stagiaire` (`pseudo_stagiaire`),
+  ADD KEY `id_session` (`id_session`),
+  ADD KEY `id_stage` (`id_stage`);
+
+--
+-- Index pour la table `stagiaires_evaluations`
+--
+ALTER TABLE `stagiaires_evaluations`
+  ADD PRIMARY KEY (`stagiaire_evaluation_id`),
+  ADD UNIQUE KEY `id_intern_2` (`id_stagiaire`,`id_evaluation`),
+  ADD KEY `id_stagiaire` (`id_stagiaire`),
+  ADD KEY `id_evaluation` (`id_evaluation`);
+
+--
+-- Index pour la table `stagiaires_ressources`
+--
+ALTER TABLE `stagiaires_ressources`
+  ADD PRIMARY KEY (`id_stagiaire`,`id_ressource`),
+  ADD KEY `id_stagiaire` (`id_stagiaire`),
+  ADD KEY `id_ressource` (`id_ressource`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `cours`
+--
+ALTER TABLE `cours`
+  MODIFY `cours_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
+
+--
+-- AUTO_INCREMENT pour la table `cours_modules`
+--
+ALTER TABLE `cours_modules`
+  MODIFY `cours_module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT pour la table `cours_ressources`
+--
+ALTER TABLE `cours_ressources`
+  MODIFY `cours_ressource_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+
+--
+-- AUTO_INCREMENT pour la table `cours_sessions`
+--
+ALTER TABLE `cours_sessions`
+  MODIFY `cours_session_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=186;
+
+--
+-- AUTO_INCREMENT pour la table `documents`
+--
+ALTER TABLE `documents`
+  MODIFY `id_document` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `documents_pages`
+--
+ALTER TABLE `documents_pages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT pour la table `evaluations`
+--
+ALTER TABLE `evaluations`
+  MODIFY `evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `evaluations_dd`
+--
+ALTER TABLE `evaluations_dd`
+  MODIFY `evaluation_dd_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `formateurs`
+--
+ALTER TABLE `formateurs`
+  MODIFY `id_formateur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT pour la table `historiques`
+--
+ALTER TABLE `historiques`
+  MODIFY `id_historique` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=480;
+
+--
+-- AUTO_INCREMENT pour la table `quiz`
+--
+ALTER TABLE `quiz`
+  MODIFY `quiz_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT pour la table `quiz_sessions`
+--
+ALTER TABLE `quiz_sessions`
+  MODIFY `quiz_sessions_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+
+--
+-- AUTO_INCREMENT pour la table `secteurs`
+--
+ALTER TABLE `secteurs`
+  MODIFY `id_secteur` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `sessions`
+--
+ALTER TABLE `sessions`
+  MODIFY `id_session` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `sites`
+--
+ALTER TABLE `sites`
+  MODIFY `id_site` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT pour la table `stages`
+--
+ALTER TABLE `stages`
+  MODIFY `id_stage` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT pour la table `stagiaires`
+--
+ALTER TABLE `stagiaires`
+  MODIFY `id_stagiaire` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
+
+--
+-- AUTO_INCREMENT pour la table `stagiaires_evaluations`
+--
+ALTER TABLE `stagiaires_evaluations`
+  MODIFY `stagiaire_evaluation_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- Contraintes pour les tables déchargées
@@ -871,7 +1565,6 @@ INSERT INTO `stagiaires_ressources` (`id_stagiaire`, `id_ressource`, `lien_resso
 --
 ALTER TABLE `cours`
   ADD CONSTRAINT `cours_ibfk_1` FOREIGN KEY (`id_formateur`) REFERENCES `formateurs` (`id_formateur`) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE cours ADD FULLTEXT INDEX idx_cours_keywords (cours_keywords);
 
 --
 -- Contraintes pour la table `cours_ressources`

@@ -339,7 +339,7 @@ i[class] {
 }
 
 #notifications {
-    position: fixed;
+    position: absolute;
     right: 5vw;
     border: 1px solid #000000;
     border-radius: 10px;
@@ -347,6 +347,7 @@ i[class] {
     background-color: #d9D9D9;
     max-height: 40vh;
     overflow-y: auto;
+    z-index: 1;
 }
 
 #notifications div {

@@ -37,7 +37,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/admin.php">Administration</a>
                                 </li>
-                            <?php } else { ?>
+                            <?php } elseif(false) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=boite-aux-lettres">Déposer un fichier</a>
                                 </li>

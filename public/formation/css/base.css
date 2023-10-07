@@ -394,3 +394,8 @@ i[class] {
 .d-none {
     display: none !important;
 }
+
+.badges {
+    width: 5vw;
+    height: 5vw;
+}

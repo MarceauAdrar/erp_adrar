@@ -75,7 +75,6 @@ $req = $db->prepare("SELECT *
                     FROM sessions
                     LEFT JOIN stagiaires ON (sessions.id_session = stagiaires.id_session)
                     WHERE id_formateur=:id_formateur
-                    AND id_stage IS NOT NULL
                     GROUP BY nom_session;");
 $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
 $req->execute();

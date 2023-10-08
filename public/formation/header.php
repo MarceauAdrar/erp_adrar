@@ -37,7 +37,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/admin.php">Administration</a>
                                 </li>
-                            <?php } elseif(false) { ?>
+                            <?php } elseif (false) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=boite-aux-lettres">Déposer un fichier</a>
                                 </li>
@@ -95,6 +95,15 @@
                                 $nom_prenom = ucwords($_SESSION["utilisateur"]["prenom_formateur"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_formateur"]);
                             }
                             ?>
+                            <?php
+                            if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
+                                <li class="nav-item">
+                                    <div class="nav-link form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="form_edition_mode" onclick="toggleEditionMode();" <?=(isset($_SESSION['mode_edition']) && !empty($_SESSION['mode_edition']) ? 'checked' : '')?>>
+                                        <label class="form-check-label" for="form_edition_mode">Mode édition</label>
+                                    </div>
+                                </li>
+                            <?php } ?>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbar_dropdown_user" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <?= $nom_prenom ?>

@@ -551,6 +551,7 @@ function connexionUtilisateur(string|int $identifiant, string|int $dns)
             $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
             $_SESSION['utilisateur']['id_stagiaire'] = -1;
             $_SESSION['utilisateur']['id_session'] = NULL;
+            $_SESSION['mode_edition'] = false;
             $req->closeCursor();
             return true;
         }

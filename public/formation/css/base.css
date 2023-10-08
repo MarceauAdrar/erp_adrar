@@ -317,6 +317,7 @@ i[class] {
     cursor: pointer;
     height: 150px;
     width: 200px;
+    display: contents;
 }
 
 .admin-manage-text {
@@ -329,7 +330,8 @@ i[class] {
 }
 
 .cours-inactive,
-.quiz-inactive {
+.quiz-inactive, 
+.edition-off {
     opacity: 0.4;
 }
 

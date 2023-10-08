@@ -71,7 +71,6 @@
                             <th>NOM</th>
                             <th>Prénom</th>
                             <th>DOB</th>
-                            <th>Lien serveur</th>
                             <th>Action</th>
                         </tr>
                     </thead>

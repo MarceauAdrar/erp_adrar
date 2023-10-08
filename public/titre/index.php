@@ -2,9 +2,12 @@
 require_once __DIR__ . '/../../src/m/connect.php';
 
 $documents = $db->query("SELECT * FROM documents ORDER BY nom_document;")->fetchAll(PDO::FETCH_ASSOC);
-$stagiaires = $db->query("SELECT * FROM stagiaires WHERE id_stage IS NOT NULL ORDER BY nom_stagiaire;")->fetchAll(PDO::FETCH_ASSOC);
+$stagiaires = $db->query("SELECT * FROM stagiaires WHERE 1 ORDER BY nom_stagiaire;")->fetchAll(PDO::FETCH_ASSOC);
 $sessions = $db->query("SELECT * FROM sessions ORDER BY nom_session;")->fetchAll(PDO::FETCH_ASSOC);
-$formateurs = $db->query("SELECT * FROM formateurs ORDER BY nom_formateur;")->fetchAll(PDO::FETCH_ASSOC);
+$formateurs = $db->prepare("SELECT * FROM formateurs WHERE id_secteur=:id_secteur AND est_actif IS TRUE ORDER BY nom_formateur;");
+$formateurs->bindValue(':id_secteur', $_SESSION['utilisateur']['id_secteur']);
+$formateurs->execute();
+$formateurs = $formateurs->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="fr">

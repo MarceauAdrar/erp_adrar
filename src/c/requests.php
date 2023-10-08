@@ -179,9 +179,9 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 <div class="row">
                     <h2><?= $session['nom_session'] ?></h2>
                     <?php foreach ($cours as $cour) { ?>
-                        <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="updateStatusCourse(<?= $cour['cours_id'] ?>, <?= $session['id_session'] ?>);">
+                        <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');')?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
-                                <span class="<?= (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive") ?>"><?php @include("../../public/formation/imgs/" . $cour['cours_illustration']) ?></span>
+                                <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>"><?php @include("../../public/formation/imgs/" . $cour['cours_illustration']) ?></span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_module_libelle']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
                         </div>
@@ -746,6 +746,14 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
 if(isset($_POST['put_user_informations']) && !empty($_POST['put_user_informations'])) {
     // TODO
 
+    die(json_encode(array(
+        'success' => true
+    )));
+}
+
+if(isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode'])) {
+    $_SESSION['mode_edition'] = !$_SESSION['mode_edition'];
+    
     die(json_encode(array(
         'success' => true
     )));

@@ -130,3 +130,17 @@ function sendTp(tp_id, input) {
         }
     });
 }
+
+function toggleEditionMode() {
+    $.ajax({
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "post",
+        dataType: "json",
+        data: {
+            toggle_edition_mode: 1
+        },
+        success: function () {
+            document.location.reload();
+        }
+    });
+}

@@ -3,13 +3,8 @@
 require __DIR__ . '/../src/m/connect.php';
 require __DIR__ . '/../src/vendor/autoload.php';
 
-$docs = array('convention', 'attestation', 'evaluation', 'presence');
-// $docs = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
-$liste_documents = implode("', '", $docs);
 $req = $db->prepare("SELECT id_document, index_document, nom_document
-                    FROM documents
-                    WHERE index_document IN ('" . $liste_documents . "');");
+                    FROM documents;");
 $req->execute();
 $documents = $req->fetchAll(PDO::FETCH_ASSOC);
 

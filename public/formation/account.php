@@ -61,19 +61,19 @@ if ($_SERVER['REMOTE_ADDR'] === "88.169.229.35") { ?>
                     <div class="col">
                         <div class="form-group">
                             <label for="form_nom_user">NOM</label>
-                            <input type="text" class="form-control" name="form_nom_user" id="form_nom_user" placeholder="Nom utilisateur" value="<?=$utilisateur['nom_utilisateur']?>">
+                            <input type="text" class="form-control" name="form_nom_user" id="form_nom_user" placeholder="Nom utilisateur" value="<?= $utilisateur['nom_utilisateur'] ?>">
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-group">
                             <label for="form_prenom_user">Prénom</label>
-                            <input type="text" class="form-control" name="form_prenom_user" id="form_prenom_user" placeholder="Prénom d'utilisateur" value="<?=$utilisateur['prenom_utilisateur']?>">
+                            <input type="text" class="form-control" name="form_prenom_user" id="form_prenom_user" placeholder="Prénom d'utilisateur" value="<?= $utilisateur['prenom_utilisateur'] ?>">
                         </div>
                     </div>
                     <div class="col">
                         <div class="form-group">
                             <label for="form_tel_user">Téléphone</label>
-                            <input type="tel" class="form-control" name="form_tel_user" id="form_tel_user" placeholder="0612345678" value="<?=strrev(trim(chunk_split(strrev($utilisateur['tel_utilisateur']),2,' ')))?>">
+                            <input type="tel" class="form-control" name="form_tel_user" id="form_tel_user" placeholder="0612345678" value="<?= strrev(trim(chunk_split(strrev($utilisateur['tel_utilisateur']), 2, ' '))) ?>">
                         </div>
                     </div>
                 </div>
@@ -81,11 +81,11 @@ if ($_SERVER['REMOTE_ADDR'] === "88.169.229.35") { ?>
                     <div class="col">
                         <div class="form-group">
                             <label for="form_pseudo_user">Pseudo</label>
-                            <input type="text" class="form-control" name="form_pseudo_user" id="form_pseudo_user" placeholder="Pseudo unique d'utilisateur" value="<?=preg_replace(array('/@adrar-formation.com/', '/@adrar-numerique.com/'), '', $utilisateur['pseudo_utilisateur'])?>" disabled>
+                            <input type="text" class="form-control" name="form_pseudo_user" id="form_pseudo_user" placeholder="Pseudo unique d'utilisateur" value="<?= preg_replace(array('/@adrar-formation.com/', '/@adrar-numerique.com/'), '', $utilisateur['pseudo_utilisateur']) ?>" disabled>
                         </div>
                         <div class="form-group">
                             <label for="form_email_user">Email</label>
-                            <input type="email" class="form-control" name="form_email_user" id="form_email_user" placeholder="mail@domain.ext" value="<?=$utilisateur['mail_utilisateur']?>">
+                            <input type="email" class="form-control" name="form_email_user" id="form_email_user" placeholder="mail@domain.ext" value="<?= $utilisateur['mail_utilisateur'] ?>">
                         </div>
                         <div class="form-group">
                             <label for="form_pseudo_user">Pseudo</label>
@@ -97,6 +97,7 @@ if ($_SERVER['REMOTE_ADDR'] === "88.169.229.35") { ?>
         </div>
     </div>
 <?php } else {
+    header('HTTP/1.1 404 Not Found');
     include_once("./error404.php");
 }
 

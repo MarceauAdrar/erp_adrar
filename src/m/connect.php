@@ -1,13 +1,13 @@
-<?php 
+<?php
 
-error_reporting(E_ALL); 
+error_reporting(E_ALL);
 ini_set("display_errors", 1);
 ini_set("session.gc_maxlifetime", 14400);
 
 session_start();
 
-if(empty($_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php") {
-    header("Location: http://".$_SERVER['SERVER_NAME']."/erp/public/deconnexion.php?type=info&message=".urlencode("Session expirée"));
+if (!array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php") {
+    header("Location: http://" . $_SERVER['SERVER_NAME'] . "/erp/public/deconnexion.php?type=info&message=" . urlencode("Session expirée"));
 }
 
 define("DEV", true);
@@ -22,8 +22,8 @@ require __DIR__ . '/../vendor/autoload.php';
 
 try {
     $db = new PDO("mysql:host=localhost;dbname=adrar_titres", "debian", "Adr4r!");
-} catch(PDOException $e) {
-    if(DEV) throw $e;
+} catch (PDOException $e) {
+    if (DEV) throw $e;
 }
 
 //Create an instance; passing `true` enables exceptions
@@ -36,7 +36,7 @@ $mailer->CharSet    = "UTF-8";                                //Enable encoding 
 $mailer->Encoding   = 'base64';                               //Change the default encoding
 $mailer->Host       = 'smtp.gmail.com';                       //Set the SMTP server to send through
 $mailer->SMTPAuth   = true;                                   //Enable SMTP authentication
-if(DEV) {
+if (DEV) {
     $mailer->Username   = 'marceau0707@gmail.com';            //SMTP username
     $mailer->Password   = 'goemqkkzceuawntw';                 //SMTP password
 } else {

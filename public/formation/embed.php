@@ -3,6 +3,11 @@ include_once("../../src/m/connect.php");
 
 $title = " | Cours";
 
+$req = $db->prepare("SELECT cours_module_libelle FROM cours JOIN cours_modules ON(cours_module_id = id_module) WHERE cours_link=:cours_link;");
+$req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
+$req->execute();
+$cours_nom = $req->fetch(PDO::FETCH_COLUMN);
+
 $req = $db->prepare("SELECT * FROM cours_ressources WHERE id_cours= (SELECT cours_id FROM cours WHERE cours_link=:cours_link) AND cours_ressource_type = 'autre';");
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
 $req->execute();
@@ -32,31 +37,34 @@ $tps = $req->fetchAll(PDO::FETCH_ASSOC);
 $req->closeCursor();
 
 ob_start();
-include_once("./header.php");
+include_once("./header.php"); ?>
 
-if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="offset-12 mt-2 mb-2">
+<div class="container-fluid">
+    <div class="row justify-content-between">
+        <div class="col-2 mt-2 mb-2 float-left">
+            <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $cours_nom ?>">Retour sur les cours</a>
+        </div>
+        <?php if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
+            <div class="col-2 mt-2 mb-2 float-right">
                 <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterRessource">Ajouter une ressource</button>
             </div>
-        </div>
     </div>
 <?php } ?>
+</div>
 <iframe src="https://docs.google.com/presentation/d/e/<?= @$_GET['slide'] ?>/embed?start=true&loop=true&delayms=60000" frameborder="0" width="1280" height="749" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 <div class="container">
     <div class="row">
         <?php if (!empty($ressources)) { ?>
             <div class="col-12">
                 <h2>Les ressources</h2>
-                <?php foreach ($ressources as $ressource) { 
+                <?php foreach ($ressources as $ressource) {
                     $lien = "";
-                    if(empty($ressource['cours_ressource_lien'])) {
-                        $lien = "download.php?q=".$ressource['cours_ressource_archive_lien'];
+                    if (empty($ressource['cours_ressource_lien'])) {
+                        $lien = "download.php?q=" . $ressource['cours_ressource_archive_lien'];
                     } else {
                         $lien = $ressource['cours_ressource_lien'];
                     } ?>
-                    <a target="_blank" href="<?=$lien?>" class="w-25 d-block text-black text-decoration-none">
+                    <a target="_blank" href="<?= $lien ?>" class="w-25 d-block text-black text-decoration-none">
                         <div class="card">
                             <div class="card-body">
                                 <p class="card-title text-decoration-underline"><?= $ressource['cours_ressource_titre'] ?></p>
@@ -97,9 +105,10 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
                                 if (empty($tp['lien_ressource_rendue'])) { ?>
                                     <i class="fa-solid fa-arrow-up-from-bracket text-grey upload-file" title="Rendre le TP" onclick="document.querySelector('#file_input_tp_<?= $tp['cours_ressource_id'] ?>').click();"></i>
                                     <input type="file" name="file_input_tp_<?= $tp['cours_ressource_id'] ?>" id="file_input_tp_<?= $tp['cours_ressource_id'] ?>" class="hidden" onchange="sendTp(<?= $tp['cours_ressource_id'] ?>, this.name);">
-                            <?php } else { ?>
-                                <i class="fa-solid fa-check-to-slot text-green upload-file"></i>
-                            <?php }} ?>
+                                <?php } else { ?>
+                                    <i class="fa-solid fa-check-to-slot text-green upload-file"></i>
+                            <?php }
+                            } ?>
                             <?php include("./imgs/homeworks.svg"); ?>
                         </span>
                         <div class="card-body">
@@ -124,7 +133,7 @@ if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
             </div>
             <div class="modal-body">
                 <form action="../../src/c/requests.php" method="post" id="form_ressource_add" enctype="multipart/form-data">
-                    <input type="hidden" name="form_ressource_cours_id" value="<?= $_GET['slide'] ?>">
+                    <input type="hidden" name="form_ressource_cours_id" value="<?= @$_GET['slide'] ?>">
                     <div class="mb-3">
                         <label for="form_ressource_titre" class="form-label">Titre de la ressource:</label>
                         <input type="text" class="form-control" name="form_ressource_titre" id="form_ressource_titre" placeholder="TP sur... / Exercice sur...">

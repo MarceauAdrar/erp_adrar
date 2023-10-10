@@ -335,16 +335,34 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     die($success);
 } elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
-        if (connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {
-            if (array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
-                $redirect = "../../public/index.php";
-            } elseif (array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
-                $redirect = "../../public/?page=formation";
+        // On sauvegarde une tentative de connexion
+        $req = $db->prepare("INSERT INTO connexion_essais(ip_connexion_essai, date_connexion_essai, username_connexion_essai) 
+                            VALUES(:ip_connexion_essai, NOW(), :username_connexion_essai);");
+        $req->bindValue(':ip_connexion_essai', $_SERVER['REMOTE_ADDR']);
+        $req->bindValue(':username_connexion_essai', $_POST['form_login_username']);
+        $req->execute();
+        // S'il y a 5 tentatives infructueuses en 5 minutes ou moins, on bloque l'accès au compte
+        $req = $db->prepare("SELECT COUNT(*) 
+                            FROM connexion_essais 
+                            WHERE username_connexion_essai=:username_connexion_essai 
+                            AND date_connexion_essai >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) 
+                            GROUP BY username_connexion_essai;");
+        $req->bindValue(':username_connexion_essai', $_POST['form_login_username']);
+        $req->execute();
+        if($req->fetch(PDO::FETCH_COLUMN) <= 5) {
+            if (connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {
+                if (array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
+                    $redirect = "../../public/index.php";
+                } elseif (array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
+                    $redirect = "../../public/?page=formation";
+                } else {
+                    $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
+                }
             } else {
                 $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
-            }
+            }   
         } else {
-            $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
+            $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Votre compte est bloqué...<br>Trop de tentatives infructueuses (5).<br>Réessayer dans quelques minutes.");
         }
     } else {
         $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Jeton incorrect");

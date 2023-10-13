@@ -214,6 +214,7 @@ include_once("./header.php"); ?>
                     <div class="row">
                         <div class="col-6">
                             <select name="form_session_cours" class="form-select" onchange="showModalManagecours();">
+                                <option value="-1">Toutes mes sessions actives</option>
                                 <option value="0">Toutes mes sessions</option>
                                 <?php
                                 $sql = "SELECT * 

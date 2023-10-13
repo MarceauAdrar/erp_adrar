@@ -139,13 +139,16 @@ if (!empty($_POST["show_modal_manage_cours"])) {
     $sql = "SELECT * 
             FROM sessions 
             WHERE id_formateur=:id_formateur ";
-    if (!empty($_POST['id_session'])) {
+    if (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
         $sql .= " AND id_session=:id_session ";
+    } elseif(isset($_POST['id_session']) && $_POST['id_session'] == "-1") { // Actives uniquement
+        $sql .= " AND (date_fin_session>=NOW()) ";
+    } else { // Toutes sessions confondues 
     }
     $sql .= " ORDER BY nom_session;";
     $req = $db->prepare($sql);
     $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
-    if (!empty($_POST['id_session'])) {
+    if (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
         $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
     }
     $req->execute();
@@ -159,7 +162,8 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 $sql_select_cours = "SELECT *
                                     FROM cours 
                                     JOIN cours_modules ON (cours_module_id = id_module) 
-                                    LEFT JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session) 
+                                    JOIN sessions as s ON (s.id_session=:id_session) 
+                                    LEFT JOIN cours_sessions ON (cours_id = id_cours AND cours_sessions.id_session=:id_session) 
                                     WHERE 1 ";
                 if (!empty($_POST['search'])) {
                     $mots_cles = explode(" ", filter_var(trim($_POST['search'], FILTER_SANITIZE_SPECIAL_CHARS)));
@@ -174,14 +178,15 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 $req_select_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
                 $req_select_cours->execute();
                 $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
-                $req_select_cours->closeCursor();
-        ?>
+                $req_select_cours->closeCursor(); ?>
                 <div class="row">
                     <h2><?= $session['nom_session'] ?></h2>
                     <?php foreach ($cours as $cour) { ?>
-                        <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');')?>">
+                        <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
-                                <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>"><?php @include("../../public/formation/imgs/" . $cour['cours_illustration']) ?></span>
+                                <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>">
+                                    <img src="/erp/public/formation/imgs/<?= $cour['cours_illustration'] ?>" />
+                                </span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_module_libelle']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
                         </div>
@@ -190,7 +195,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
             <?php }
         } else { ?>
             <div class="row">
-                <p>Aucune session assignée</p>
+                <p>Aucune session visible</p>
                 <?php include_once("../../public/formation/imgs/under_construction.svg") ?>
             </div>
         <?php } ?>
@@ -743,7 +748,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     )));
 }
 
-if(isset($_POST['put_user_informations']) && !empty($_POST['put_user_informations'])) {
+if (isset($_POST['put_user_informations']) && !empty($_POST['put_user_informations'])) {
     // TODO
 
     die(json_encode(array(
@@ -751,9 +756,9 @@ if(isset($_POST['put_user_informations']) && !empty($_POST['put_user_information
     )));
 }
 
-if(isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode'])) {
+if (isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode'])) {
     $_SESSION['mode_edition'] = !$_SESSION['mode_edition'];
-    
+
     die(json_encode(array(
         'success' => true
     )));

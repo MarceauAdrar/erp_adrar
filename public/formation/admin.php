@@ -212,7 +212,7 @@ include_once("./header.php"); ?>
                         &nbsp;
                     </div>
                     <div class="row">
-                        <div class="col-6">
+                        <div class="col-3">
                             <select name="form_session_cours" class="form-select" onchange="showModalManagecours();">
                                 <option value="-1">Toutes mes sessions actives</option>
                                 <option value="0">Toutes mes sessions</option>
@@ -229,6 +229,12 @@ include_once("./header.php"); ?>
                                     <option value="<?= $session['id_session'] ?>"><?= $session['nom_session'] ?></option>
                                 <?php } ?>
                             </select>
+                        </div>
+                        <div class="col-3">
+                            <label for="form_active_cours">
+                                <input type="checkbox" name="form_active_cours" id="form_active_cours" onchange="showModalManagecours();">
+                                Cours non actifs / actifs
+                            </label>
                         </div>
                         <div class="col">
                             <input type="text" name="form_search_cours" placeholder="Cours, mot-clé, ..." class="form-control" onkeyup="showModalManagecours();">
@@ -354,6 +360,7 @@ include_once("./js.php"); ?>
             method: "post",
             data: {
                 show_modal_manage_cours: 1,
+                cours_actifs: document.querySelector('input[name="form_active_cours"]').checked,
                 id_session: document.querySelector('select[name="form_session_cours"]').value,
                 search: document.querySelector('input[name="form_search_cours"]').value
             },

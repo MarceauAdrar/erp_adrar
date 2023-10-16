@@ -143,7 +143,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
         $sql .= " AND id_session=:id_session ";
     } elseif(isset($_POST['id_session']) && $_POST['id_session'] == "-1") { // Actives uniquement
         $sql .= " AND (date_fin_session>=NOW()) ";
-    } else { // Toutes sessions confondues 
+    } else { // Toute sessions confondues 
     }
     $sql .= " ORDER BY nom_session;";
     $req = $db->prepare($sql);
@@ -173,9 +173,11 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                     }
                     $sql_select_cours .= " AND " . implode(' AND ', $conditions);
                 }
-                $sql_select_cours .= " ORDER BY cours_module_position, cours_position;";
+                $sql_select_cours .= " AND cours_session_active=:cours_session_active 
+                                       ORDER BY cours_module_position, cours_position;";
                 $req_select_cours = $db->prepare($sql_select_cours);
                 $req_select_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
+                $req_select_cours->bindValue(':cours_session_active', filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
                 $req_select_cours->execute();
                 $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
                 $req_select_cours->closeCursor(); ?>
@@ -761,6 +763,20 @@ if (isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode']
 
     die(json_encode(array(
         'success' => true
+    )));
+}
+
+if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
+    $req = $db->prepare('SELECT pseudo_stagiaire 
+                        FROM stagiaires s 
+                        JOIN sessions ss ON (s.id_session = ss.id_session) 
+                        WHERE est_actif IS TRUE 
+                        AND id_formateur=:id_formateur;');
+    $req->bindValue(':id_formateur', $_SESSION['utilisateur']['id_formateur']);
+    $req->execute();
+
+    die(json_encode(array(
+        'trainees' => $req->fetchAll(PDO::FETCH_COLUMN)
     )));
 }
 ?>

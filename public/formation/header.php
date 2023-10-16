@@ -112,6 +112,7 @@
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/account.php">Modifier mes informations</a></li>
                                     <?php
                                     if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
+                                        <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalConnectAs" class="dropdown-item">Se connecter en tant que...</a></li>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/">Retour sur l'ERP</a></li>
                                     <?php } ?>
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/deconnexion.php">Se déconnecter</a></li>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : mar. 10 oct. 2023 à 22:30
+-- Généré le : lun. 16 oct. 2023 à 19:11
 -- Version du serveur : 10.11.4-MariaDB-1~deb12u1
 -- Version de PHP : 8.2.7
 
@@ -83,7 +83,47 @@ INSERT INTO `connexion_essais` (`id_connexion_essai`, `ip_connexion_essai`, `dat
 (46, '95.143.71.29', '2023-10-10 14:44:43', 'agirard23'),
 (47, '95.143.71.29', '2023-10-10 14:44:45', 'agirard23'),
 (48, '77.141.37.179', '2023-10-10 20:21:41', 'kfakir23'),
-(49, '82.65.172.45', '2023-10-10 22:07:46', 'marceaurodrigues');
+(49, '82.65.172.45', '2023-10-10 22:07:46', 'marceaurodrigues'),
+(50, '37.174.130.159', '2023-10-11 10:13:21', 'marceaurodrigues'),
+(51, '77.141.37.179', '2023-10-11 10:33:38', 'kfakir23'),
+(52, '95.143.71.29', '2023-10-11 15:03:06', 'marceaurodrigues'),
+(53, '88.167.116.8', '2023-10-11 18:50:35', 'aherbette23'),
+(54, '77.141.37.179', '2023-10-11 18:54:47', 'kfakir23'),
+(55, '95.143.71.29', '2023-10-12 09:22:43', 'ydilmamode23'),
+(56, '95.143.71.29', '2023-10-12 09:42:30', 'edelmon23'),
+(57, '95.143.71.29', '2023-10-12 11:35:50', 'kfakir23'),
+(58, '37.174.7.191', '2023-10-12 11:43:10', 'marceaurodrigues'),
+(59, '95.143.71.29', '2023-10-12 14:53:06', 'agirard23'),
+(60, '37.174.7.191', '2023-10-12 14:55:19', 'marceaurodrigues'),
+(61, '82.65.172.45', '2023-10-12 18:44:08', 'marceaurodrigues'),
+(62, '82.65.172.45', '2023-10-12 19:59:16', 'marceaurodrigues'),
+(63, '95.143.71.29', '2023-10-13 07:08:20', 'marceaurodrigues'),
+(64, '95.143.71.29', '2023-10-13 11:41:53', 'marceaurodrigues'),
+(65, '37.167.117.18', '2023-10-13 13:23:28', 'marceaurodrigues'),
+(66, '82.65.172.45', '2023-10-13 17:31:52', 'marceaurodrigues'),
+(67, '82.65.172.45', '2023-10-13 18:52:29', 'ambroise'),
+(68, '82.65.172.45', '2023-10-13 18:52:36', '123456789'),
+(69, '82.65.172.45', '2023-10-13 20:16:41', 'marceaurodrigues'),
+(70, '82.65.172.45', '2023-10-13 21:11:48', 'marceaurodrigues'),
+(71, '92.88.171.213', '2023-10-13 23:15:50', 'aherbette23'),
+(72, '77.141.37.179', '2023-10-14 08:39:23', 'kfakir23'),
+(73, '92.88.170.125', '2023-10-14 12:03:44', 'aherbette23'),
+(74, '77.141.37.179', '2023-10-14 16:09:48', 'kfakir23'),
+(75, '77.141.37.179', '2023-10-14 20:51:20', 'kfakir23'),
+(76, '77.141.37.179', '2023-10-15 12:20:35', 'kfakir23'),
+(77, '2.9.135.188', '2023-10-15 13:27:01', 'agirard23'),
+(78, '95.143.71.29', '2023-10-16 07:28:40', 'lvongsy23'),
+(79, '95.143.71.29', '2023-10-16 07:30:01', 'sdellarica23'),
+(80, '95.143.71.29', '2023-10-16 07:30:08', 'kfakir23'),
+(81, '95.143.71.29', '2023-10-16 07:41:42', 'aherbette23'),
+(82, '95.143.71.29', '2023-10-16 07:48:48', 'edelmon23'),
+(83, '37.165.193.6', '2023-10-16 07:51:33', 'marceaurodrigues'),
+(84, '95.143.71.29', '2023-10-16 09:46:58', 'agirard23'),
+(85, '95.143.71.29', '2023-10-16 12:26:55', 'lvongsy23'),
+(86, '95.143.71.29', '2023-10-16 14:12:58', 'sdellarica23'),
+(87, '95.143.71.29', '2023-10-16 14:41:09', 'marceaurodrigues'),
+(88, '95.143.71.29', '2023-10-16 14:57:12', 'kfakir23'),
+(89, '82.65.172.45', '2023-10-16 17:13:56', 'marceaurodrigues');
 
 -- --------------------------------------------------------
 
@@ -108,26 +148,26 @@ CREATE TABLE `cours` (
 --
 
 INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_keywords`, `cours_link`, `cours_position`, `cours_illustration`, `id_module`, `id_formateur`) VALUES
-(1, 'Introduction au HTML', 'Plongez-vous dans l\'informatique et découvrez les fondements de la programmation.\nIci, vous allez apprendre les bases pour construire une page web.', 'balises par paires;balises orphelines;éditeur;web;internet;url;parents;enfants;chevrons;slash;attribut;valeur;indentation;camelcase;commentaires', '2PACX-1vSk4_yItzv4-2qxw0Lt7UqTsuNcli83Muf-E4ek0-qQwPfmJbcN2HJ6L44hCbga4Q', 0, 'html_css.svg', 6, 1),
-(2, 'Les balises', 'Attaquez la programmation en découvrant les balises HTML', 'chrevrons;balises par paires;balises orphelines;block;inline;parent;enfant;paragraphe;div;span;ancre;chemin relatif;chemin absolu;identifiant;camelcase;snakecase;href;src;alt;listes ordonnées;listes non-ordonnées;header;footer;nav;section;article;aside;balises sémantiques', '2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', 1, 'html_css.svg', 6, 1),
-(17, 'Introduction', 'Attaquez les bases des feuilles de style.', 'css;styliser;style;link;sélecteurs;propriétés;valeurs;séparateurs;commentaires;cascade;ordre d\'éxécution;héritage;règles;déclarations', '2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', 0, 'html_css.svg', 7, 1),
-(18, 'Sélecteurs simples', 'Apprenez à manipuler les sélecteurs basiques pour pouvoir styliser votre page web.', 'css;sélecteur;unicité;multiplicité;sélections multiples;sélections imbriquées;sélections par attribut;sélections avancées', '2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', 1, 'html_css.svg', 7, 1),
-(19, 'Propriétés courantes', 'Dans ce cours, vous allez découvrir les propriétés les plus communément utilisées en CSS.', 'css;textes;background;super-propriétés;dimensions;couleurs;héxadécimal;rgb;rgba', '2PACX-1vQpDxcYZCa3sdCEDgYLcNnnsI797nvaFDqQWz675saTigKm3YTDsGHrveWnQn0AEg', 2, 'html_css.svg', 7, 1),
-(20, 'Les pseudo-classes', 'Vous allez découvrir ici l\'utilité des pseudo-classes qui peuvent permettre de dynamiser votre page web et de faire des règles plus complexes.', 'css;hover;visited;link;active;focus;first-child;last-child;nth-child;odd;even;notation fonctionnelle', '2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', 3, 'html_css.svg', 7, 1),
-(21, 'Flexbox', 'Découvrez comment fonctionne les flexbox et leurs placements.', 'css;margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;order', '2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', 4, 'html_css.svg', 7, 1),
-(22, 'Grid', 'Découvrez comment fonctionne les placements avec le système de grilles.', 'css;margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;lignes;colonnes;rows;columns;patterns', '2PACX-1vQYBldbOnfpm0_9Lj6UpSJtHBCi3hTS7DmawKVuH_3pwHcPJRmONLTO_6ScqTEClQ', 5, 'html_css.svg', 7, 1),
-(23, 'Ombrages', 'Ajoutez de la dimension et de la profondeur à votre page avec les ombres.', 'css;box-shadow;text-shadow;décalages;flou;couleur', '2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', 6, 'html_css.svg', 7, 1),
-(24, 'Les dégradés', 'Démarquez vous avec l\'ajout de dégradés.', 'css;dégradés linéaires;dégradés radiaux;dégradés coniques;valeurs numéraires;valeur par mot-clé;to;from;rgb;rgba;héxadécimal;circle;ellipse;at', '2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', 7, 'html_css.svg', 7, 1),
-(25, 'Les tableaux', 'Découvrez comment mettre en forme des données avec les tableaux.', 'table;tr;th;td;caption;border;super-propriétés;thead;tbody;tfoot;rowspan;colspan', '2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', 2, 'html_css.svg', 6, 1),
-(26, 'Les formulaires', 'Apprenez à construire des formulaires pour récolter des informations auprès de vos utilisateurs.', 'form;méthode;attribut;addresse;method;action;get;post;input;type;placeholder;required;autofocus;label;for;textarea;cols;rows;file;accept;multiple;checkbox;checked;fieldset;legend;radio;select;option;optgroup;selected;submit;button;image;reset', '2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', 3, 'html_css.svg', 6, 1),
-(27, 'Les placements simples', 'Nous allons maintenant voir comment placer nos éléments dans la page web.', 'css;balises par paire;balises orphelines;balises block;balises inline;balises universelles;balises sémantiques;margin;border;padding;content;height;width;overflow;scroll;auto;hidden;word-wrap', '2PACX-1vTGhszZR_wAelj59VjADSB721b2WT2_IUxxQ4O0ecn2j6ckXUKKMquxWSkxn_s0-w', 8, 'html_css.svg', 7, 1),
-(28, 'Les requêtes de média', 'Dans ce cours, vous allez voir une grosse partie. Les requêtes de média permettent d\'effectuer des changements personnalisés en fonction des appareils, de leur orientation et de leur dimension.', 'css;responsive design;media;annotations', '2PACX-1vQTKb4U1ngluhR71yzSlUXviR30IAYkgx0MAThY2wqQql6_RvfAfWgUhiN3ogyf4A', 10, 'html_css.svg', 7, 1),
-(29, 'Les animations', 'Découvrez l\'univers des animations et commencez à dynamiser simplement vos pages web.', 'css;transform;rotate;deg;turn;abscisses;ordonnées;scale;translate;transformation oblique;skew;super-propriété', '2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', 11, 'html_css.svg', 7, 1),
-(30, 'Les animations avancées', 'Etoffez vos connaissances dans l\'art de l\'animation et dynamiser de façon plus complexes vos éléments.', 'css;transition;delay;function;super-propriété;keyframes;rotate;animation;duration;count;fill;direction', '2PACX-1vS5iH-uH0o1FGroGtXvQoi8fgHcaMAKBRZyOtM__gmBic3mdTEBP5KJQ8gMPrpBTQ', 12, 'html_css.svg', 7, 1),
-(31, 'Les audios et vidéos', 'Apprenez à intégrer du contenu multimédia dans vos pages: les sons et vidéos. ', 'mp3;aac;ogg;wav;aiff;audio;src;source;controls;autoplay;loop;width;preload;avi;mp4;mkv;codec;webm;h.256;ogg theora;video;poster;muted;disablepictureinpicture;iframe;intégration', '2PACX-1vQVNYM22_m2bPi2fLAcebBofTowiksyhZ4_9gMQQ78Bzkt-Pnx0z_s4pjk6l8vg2A', 4, 'html_css.svg', 6, 1),
+(1, 'Introduction au HTML', 'Plongez-vous dans l\'informatique et découvrez les fondements de la programmation.\nIci, vous allez apprendre les bases pour construire une page web.', 'balises par paires;balises orphelines;éditeur;web;internet;url;parents;enfants;chevrons;slash;attribut;valeur;indentation;camelcase;commentaires', '2PACX-1vSk4_yItzv4-2qxw0Lt7UqTsuNcli83Muf-E4ek0-qQwPfmJbcN2HJ6L44hCbga4Q', 0, 'html.svg', 6, 1),
+(2, 'Les balises', 'Attaquez la programmation en découvrant les balises HTML', 'chrevrons;balises par paires;balises orphelines;block;inline;parent;enfant;paragraphe;div;span;ancre;chemin relatif;chemin absolu;identifiant;camelcase;snakecase;href;src;alt;listes ordonnées;listes non-ordonnées;header;footer;nav;section;article;aside;balises sémantiques', '2PACX-1vRNi4-iELv39SurO_-usTTkP-T6pz3opQuZ88YmKgcSZCO4n3PEcU169pygC92xdA', 1, 'html.svg', 6, 1),
+(17, 'Introduction', 'Attaquez les bases des feuilles de style.', 'css;styliser;style;link;sélecteurs;propriétés;valeurs;séparateurs;commentaires;cascade;ordre d\'éxécution;héritage;règles;déclarations', '2PACX-1vR_U7vzVknsPdbZMY2hrmpTbN5GVDzV7ZnP5RYCwynEUL3IJxoTQq8WEOr1vFpMnA', 0, 'css.svg', 7, 1),
+(18, 'Sélecteurs simples', 'Apprenez à manipuler les sélecteurs basiques pour pouvoir styliser votre page web.', 'css;sélecteur;unicité;multiplicité;sélections multiples;sélections imbriquées;sélections par attribut;sélections avancées', '2PACX-1vSMj5RA0sySiCbnJb7Vn6-9qbzLo8cGVH6f9voWwHxq0s2RM_ZxdicwH-DBvJyKIg', 1, 'css.svg', 7, 1),
+(19, 'Propriétés courantes', 'Dans ce cours, vous allez découvrir les propriétés les plus communément utilisées en CSS.', 'css;textes;background;super-propriétés;dimensions;couleurs;héxadécimal;rgb;rgba', '2PACX-1vQpDxcYZCa3sdCEDgYLcNnnsI797nvaFDqQWz675saTigKm3YTDsGHrveWnQn0AEg', 2, 'css.svg', 7, 1),
+(20, 'Les pseudo-classes', 'Vous allez découvrir ici l\'utilité des pseudo-classes qui peuvent permettre de dynamiser votre page web et de faire des règles plus complexes.', 'css;hover;visited;link;active;focus;first-child;last-child;nth-child;odd;even;notation fonctionnelle', '2PACX-1vQhHmuhv1W32gs4ywhBf0l_jCcFFhsxymiM5DX3IB3dLGk_MfSbgg_m6t9ZpYzZHw', 3, 'css.svg', 7, 1),
+(21, 'Flexbox', 'Découvrez comment fonctionne les flexbox et leurs placements.', 'css;margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;order', '2PACX-1vT-eNMtxS-0JiQkBBW5OLBRhmZzTs3UmoLTGrHus9L5nQdxHDC_NfC72JZBjDu54Q', 4, 'css.svg', 7, 1),
+(22, 'Grid', 'Découvrez comment fonctionne les placements avec le système de grilles.', 'css;margin;border;padding;content;height;width;tableaux;float;flex;grid;parent;enfant;lignes;colonnes;rows;columns;patterns', '2PACX-1vQYBldbOnfpm0_9Lj6UpSJtHBCi3hTS7DmawKVuH_3pwHcPJRmONLTO_6ScqTEClQ', 5, 'css.svg', 7, 1),
+(23, 'Ombrages', 'Ajoutez de la dimension et de la profondeur à votre page avec les ombres.', 'css;box-shadow;text-shadow;décalages;flou;couleur', '2PACX-1vSNfHZUKkjoydHHp-uh21-hjhING6Rjx0MKPAwmh0uv1CR6nWHofr7kJ3A5GL62wQ', 6, 'css.svg', 7, 1),
+(24, 'Les dégradés', 'Démarquez vous avec l\'ajout de dégradés.', 'css;dégradés linéaires;dégradés radiaux;dégradés coniques;valeurs numéraires;valeur par mot-clé;to;from;rgb;rgba;héxadécimal;circle;ellipse;at', '2PACX-1vSFVF-pr_6VrNRB2JSWgXsjvniCNrTiSkmq-dHvCRFWK7Qd4bx1gFMvN1uyUbmlow', 7, 'css.svg', 7, 1),
+(25, 'Les tableaux', 'Découvrez comment mettre en forme des données avec les tableaux.', 'table;tr;th;td;caption;border;super-propriétés;thead;tbody;tfoot;rowspan;colspan', '2PACX-1vRUt5G2RQC5NRvY4-bE_1tqpqqCsngqZ2Qtj9U7DYHe-dbmxJCrRDb5SbP4eWSX2w', 2, 'html.svg', 6, 1),
+(26, 'Les formulaires', 'Apprenez à construire des formulaires pour récolter des informations auprès de vos utilisateurs.', 'form;méthode;attribut;addresse;method;action;get;post;input;type;placeholder;required;autofocus;label;for;textarea;cols;rows;file;accept;multiple;checkbox;checked;fieldset;legend;radio;select;option;optgroup;selected;submit;button;image;reset', '2PACX-1vQpf58G65Jr9z9mu7oprvpGpxYhN_GzWPfIV9dTeRHmUWxcB15vuN8pRWe-oyIozw', 3, 'html.svg', 6, 1),
+(27, 'Les placements simples', 'Nous allons maintenant voir comment placer nos éléments dans la page web.', 'css;balises par paire;balises orphelines;balises block;balises inline;balises universelles;balises sémantiques;margin;border;padding;content;height;width;overflow;scroll;auto;hidden;word-wrap', '2PACX-1vTGhszZR_wAelj59VjADSB721b2WT2_IUxxQ4O0ecn2j6ckXUKKMquxWSkxn_s0-w', 8, 'css.svg', 7, 1),
+(28, 'Les requêtes de média', 'Dans ce cours, vous allez voir une grosse partie. Les requêtes de média permettent d\'effectuer des changements personnalisés en fonction des appareils, de leur orientation et de leur dimension.', 'css;responsive design;media;annotations', '2PACX-1vQTKb4U1ngluhR71yzSlUXviR30IAYkgx0MAThY2wqQql6_RvfAfWgUhiN3ogyf4A', 10, 'css.svg', 7, 1),
+(29, 'Les animations', 'Découvrez l\'univers des animations et commencez à dynamiser simplement vos pages web.', 'css;transform;rotate;deg;turn;abscisses;ordonnées;scale;translate;transformation oblique;skew;super-propriété', '2PACX-1vRm_gYQ0NC8mkVsT5PxJCoLiYXAhZM7rzHsPHUVnxR90MnBfN_lD5j4xaT2TGcUBg', 11, 'css.svg', 7, 1),
+(30, 'Les animations avancées', 'Etoffez vos connaissances dans l\'art de l\'animation et dynamiser de façon plus complexes vos éléments.', 'css;transition;delay;function;super-propriété;keyframes;rotate;animation;duration;count;fill;direction', '2PACX-1vS5iH-uH0o1FGroGtXvQoi8fgHcaMAKBRZyOtM__gmBic3mdTEBP5KJQ8gMPrpBTQ', 12, 'css.svg', 7, 1),
+(31, 'Les audios et vidéos', 'Apprenez à intégrer du contenu multimédia dans vos pages: les sons et vidéos. ', 'mp3;aac;ogg;wav;aiff;audio;src;source;controls;autoplay;loop;width;preload;avi;mp4;mkv;codec;webm;h.256;ogg theora;video;poster;muted;disablepictureinpicture;iframe;intégration', '2PACX-1vQVNYM22_m2bPi2fLAcebBofTowiksyhZ4_9gMQQ78Bzkt-Pnx0z_s4pjk6l8vg2A', 4, 'html.svg', 6, 1),
 (32, 'Introduction', 'Plongez dans vos premiers frameworks !', 'frameworks CSS;bootstrap;tailwind;nesCSS;', '2PACX-1vTqPp9VoPh8td2vAIq1XxnQChmlqzzgUWGFsdDvncHD6mXKO0zx8t_Vu6nmZPSv4ILWVZmuTG5JoiRm', 0, 'frameworks_css.svg', 10, 1),
 (33, 'Présentation approfondie de bootstrap', 'Dans ce cours, nous allons voir le détail de Bootstrap, son histoire, son évolution, son fonctionnement.', 'frameworks;classes;bootstrap', '2PACX-1vQznp_kW-ITUaTVXg8kO8ygsN43UKPIQ7y9pzfE9lpnV3__FELZ6_hjAcT_BMAbsoy--4__ud1ZhjHy', 1, 'frameworks_css.svg', 10, 1),
-(34, 'SASS', 'Découvrez le langage SASS. Syntactically Awesome Style Sheets. Sa puissance vous permettra de progresser drastiquement dans vos réalisations et vos intégrations. Cliquez !', 'sass;scss;css;avance', '2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', 2, 'sass.svg', 10, 1),
+(34, 'SASS', 'Découvrez le langage SASS. Syntactically Awesome Style Sheets. Sa puissance vous permettra de progresser drastiquement dans vos réalisations et vos intégrations. Cliquez !', 'sass;scss;css;avance', '2PACX-1vQfX_sCvSIi2KZ8O50iy_eNxZ0vvZANohBEdDv0LK1FOhE1i_uh12ADgCvCUILq6lpxtDHS2LGgrWL4', 2, 'frameworks_css.svg', 10, 1),
 (35, 'Cours sur Git', 'Dans ce cours, vous allez apprendre à quoi sert git, comment vous en servir avec les commandes les plus utilisées.', 'git;git flow;github;gitlab', '2PACX-1vSKeR0dFKWdpRfcbrD-zlwwRXaxgJnZxQSvw8UNWYpTh2DQ19vfhDLWrLz_4esmuEySbhLhF-0kYoR6', 1, 'git.svg', 2, 1),
 (36, 'MCD', 'Nous allons ici aborder la notion de MCD. &#10;Modèle Conceptuel des Données.&#10;Il s&#39;agit d&#39;une haute représentation graphique qui permet de comprendre facilement comment les éléments sont liés entre eux.', 'merise;mcd;modèle conceptuel des données;pattes;entités;propriétés;associations', '2PACX-1vRVMjFeSLZaPjrfE1g3xV6Vp9UguObvaKC93763kBaIr2G5T5uVNq6HaZeJPUvp101iLzczAR-W3GZn', 0, 'merise.svg', 14, 1),
 (37, 'MLD', 'Nous allons ici aborder la notion de MLD. &#10;Modèle Logique des Données.&#10;Il s’agit de la représentation en ligne du schéma représentant la structure de la base de données.', 'merise;mld;modèle logique des données;clé primaire; clé étrangère;tables;tables d&#39;associations;champs', '2PACX-1vRAjZXsOP18FsgQKZohzExDboUw3E_Tugedrw7u-UQ9873SjXR2MsBosfGMgmB6R7Qtf_MOPDcpSZHJ', 0, 'merise.svg', 14, 1),
@@ -140,29 +180,29 @@ INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_keyword
 (45, 'Les opérateurs', 'Vérifiez les possibilités sur les valeurs mathématiques.', 'php;opérateur;var_dump;print_r;débogage;', '2PACX-1vSFYZ_TNtVAaVudDdmROSey8BNr6CJn0jSTr4bqiDMhf9W3TT_DSWkNmJWgwUVINtYmYCFrfTxvtXvA', 4, 'php.svg', 16, 1),
 (46, 'La concaténation', 'Ce cours vous donne les codes pour effectuer la concaténation de vos variables.', 'php;concaténer;concaténation;caractère d\'échappement;', '2PACX-1vTKV3gTpf_DcZjgXHdrKkexxG_5yrf23UKTj0bFH5NesBd9ruhtOVw4-w29wqWnbQeX0BXcuYhSXRsS', 5, 'php.svg', 16, 1),
 (47, 'Les fonctions', 'Principe de base des fonctions avec des exemples et exercices avec et sans paramètres.', 'php;fonction;paramètre;return;', '2PACX-1vSMvIlP92QMtmnAOos1bGq7GcQuHqzd3q54i_URECZMe-xcLNxZLSPn--G3cOpr_6-kbHYqkCTlLyHK', 6, 'php.svg', 16, 1),
-(48, 'Présentation', 'Découverte du framework back-end, Symfony !', 'symfony;presentation;', '2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', 0, 'no_data.svg', 17, 1),
-(49, 'Installation', 'Préparez vous pour utiliser Symfony avec sa CLI avec ce cours.', 'symfony;installation;tutoriel;configuration;', '2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', 1, 'no_data.svg', 17, 1),
-(50, 'Les bases', 'Explication de la structure d\'un projet Symfony.', 'symfony;fondamentaux;contrôleurs;entités;routeur;vues;services;les bases;', '2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', 2, 'no_data.svg', 17, 1),
-(51, 'Les bundles', 'Présentation des bundles, les plug-ins de Symfony !', 'symfony;bundles;plug-ins;plugins;', '2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', 3, 'no_data.svg', 17, 1),
-(52, 'Création d\'un projet', 'Démarrez votre premier projet !', 'symfony;initialisation;création;lancement serveur;server;start;', '2PACX-1vS2tw1cegUo1BDC8wHFc4l22fMBOakLx7yWdxk7hdv-1Id7PQwWi1fny-V-LSeTy04OIHXC2TWx5DiF', 4, 'no_data.svg', 17, 1),
-(53, 'Création d\'un contrôleur', 'Contrôleurs vous permettant de découper votre application en fonction de la route recherchée...', 'symfony;routes;controllers;contrôleurs;réponses;response;', '2PACX-1vSc4_MbKdfhexRKzk5TKttJv0zdlNUOP87OviKAj38wJPWZAmIiDvouFuY8B16PbcdshkKGiw3kftE1', 5, 'no_data.svg', 17, 1),
-(54, 'Les routes', 'Gestion des routes en Symfony, découvrez comment les trouver et les débugger !', 'symfony;routes;routing;routeur;router;URI;', '2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', 6, 'no_data.svg', 17, 1),
-(55, 'Les services', 'Présentation sommaire des Services Twig.\r\nLe langage réside sur ce principe également !', 'symfony;services;fonctions spécifiques;', '2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', 7, 'no_data.svg', 17, 1),
-(56, 'Twig', 'Découvrez le moteur de template Twig et ses syntaxes qui vont nous permettre de générer divers éléments dans nos vues !', 'symfony;twig;moteur de template;vues;views;', '2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', 8, 'no_data.svg', 17, 1),
-(57, 'Connexion et création de la base de données', 'Création de la BDD en Symfony avec le terminal de commandes !', 'symfony;bdd;base de données;connexion;création;.env;configuration;environnement;tutoriels;tutorials;phpmyadmin;doctrine;', '2PACX-1vTahJ9gmvEdET-J8-7e4YLy3Cjdbefnyj0XsQ0xh1HQhC3RM82-PXdEOLY-5c9V_af9AqXrRXVFRiJB', 9, 'no_data.svg', 17, 1),
-(59, 'Les entités', 'Génération de vos entités, pensez objet !', 'symfony;poo;programmation orientée objets;objects;classes;entités;persistance des données;relations;types de données;', '2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', 10, 'no_data.svg', 17, 1),
-(60, 'Les migrations', 'Mettre à jour les informations de structure en BDD grâce aux migrations.', 'symfony;migrations;bdd;base de données;générer;génération;', '2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', 11, 'no_data.svg', 17, 1),
-(61, 'L\'authentification', 'Générez les formulaires d\'inscription et de connexion pour votre application !', 'symfony;authentification;connexion;inscription;', '2PACX-1vQ-l1X-ALWo7drQLBNIy40YUeuC7LR7G0K44MRDQCDxEfMEuQjMl6DXkGnc5kStlmU-bqlcnfsGegii', 12, 'no_data.svg', 17, 1),
-(62, 'Les traits', 'Regrouper vos attributs communs pour éviter la redondance !', 'symfony;redondances;traits;classes;poo;programmation orientée objets;objects;', '2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', 13, 'no_data.svg', 17, 1),
-(63, 'Les DataFixtures', 'Générez un jeu de données facilement pour vos environnements grâce aux DataFixtures.', 'symfony;datas;datafixtures;faux;faker;jeu de données;', '2PACX-1vRNitnb5LvML76IEilkVeekjxJWI5JHvQ1hQC1nr6CzjZFjLo-sBFPrUqnMY-pcQ24T16EGIkmHepzy', 14, 'no_data.svg', 17, 1),
-(64, 'CRUD', 'Le CRUD automatisé en une commande !', 'symfony;crud;create;delete;read;update;mise à jour;suppression;création;insertion;lecture;gérer;automatisme;', '2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', 15, 'no_data.svg', 17, 1),
-(65, 'Formulaires', 'Créer des formulaires pour vos utilisateurs et vos CRUD... ', 'symfony;formulaires;forms;champs;types de données;', '2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', 16, 'no_data.svg', 17, 1),
-(66, 'Envoi d\'emails', 'Prévenir des clients, envoyer la newsletter, envoyer des factures... Les mails sont très utiles sur des applications. \r\nDécouvrez comment mettre cela en place dans Symfony.', 'symfony;emails;e-mails;gmail;smtp;dns;', '2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', 17, 'no_data.svg', 17, 1),
-(67, 'UX initiative', 'Découvrez des extensions à la Symfony vous permettant de nombreuses choses...\r\nGraphiques, autocomplétion, chargement différé d\'images...', 'symfony;ux initiative;bundles;autocomplétion;lazy loader;chartJS;graphiques;', '2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', 18, 'no_data.svg', 17, 1),
-(68, 'Les repositories', 'Accédez et manipulez vos données en utilisant les Repositories.', 'symfony;repository;repositories;données;bdd;base de données;manipulation;', '2PACX-1vTxxGyMlv5FrrNaJRk0iKsT6Mf-kkT6aFrUaRMfc0X2rxy0YxAmLfFaqvctHqngPOP2LMQutPzgJu3t', 19, 'no_data.svg', 17, 1),
-(69, 'Affichage, mise à jour et suppression d\'une donnée', 'Le CRUD manuel, mais version Symfony.\nDécouvrez comment gérer vos données.', 'symfony;crud;create;delete;read;update;mise à jour;suppression;création;insertion;lecture;gérer;', '2PACX-1vQS_fto6YCGB8DzCEDE9nAG5Yf-ntJ_zinNoE9UsaDribOyRJtw0X96CnUNpGx81Halrq6_mufhSSqN', 20, 'no_data.svg', 17, 1),
-(70, 'L\'API', 'L\'API se répand de plus en plus et est très utile pour vous comme les potentiels développeurs qui pourraient utiliser vos services. Découvrez comment en créer une ici.', 'symfony;api;application developper interface;développeurs;données;', '2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', 21, 'no_data.svg', 17, 1),
-(71, 'Les tests', 'Créer une application c\'est bien, la tester, c\'est mieux. Découvrez les tests dans ce cours.', 'symfony;tests,fonctionnels;unitaires;a/b;e2e;', '2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', 22, 'no_data.svg', 17, 1),
+(48, 'Présentation', 'Découverte du framework back-end, Symfony !', 'symfony;presentation;', '2PACX-1vQh7vcMKDdz_NYrGsd0pbzXAxJxuVhNgMxnbwg9KfP9m8-biLNP87KNzKDFv-mioCRCxKWYXl4S-R3t', 0, 'symfony.svg', 17, 1),
+(49, 'Installation', 'Préparez vous pour utiliser Symfony avec sa CLI avec ce cours.', 'symfony;installation;tutoriel;configuration;', '2PACX-1vQNx1OEXScefP1A8kmOJlSGcN4o9cxqLJUj8e5lvJAPibNKl5tQ6S2dTy-IBdYCotikKLKgme14jMBI', 1, 'symfony.svg', 17, 1),
+(50, 'Les bases', 'Explication de la structure d\'un projet Symfony.', 'symfony;fondamentaux;contrôleurs;entités;routeur;vues;services;les bases;', '2PACX-1vTOXZAp0ffIJXUQsgsw8ffea7E3QcK1coDXInIs4G45KxVkThK_ZFuoUjR6fMsx_HUYgNNoPuhFeTh5', 2, 'symfony.svg', 17, 1),
+(51, 'Les bundles', 'Présentation des bundles, les plug-ins de Symfony !', 'symfony;bundles;plug-ins;plugins;', '2PACX-1vTVpBo-ExYNSvqi44N-kmxI0pYTDrFfxoa72rIOYugv2xxHJm2t9TPMR1JoxAYlvUKumkGplLe5GWlg', 3, 'symfony.svg', 17, 1),
+(52, 'Création d\'un projet', 'Démarrez votre premier projet !', 'symfony;initialisation;création;lancement serveur;server;start;', '2PACX-1vS2tw1cegUo1BDC8wHFc4l22fMBOakLx7yWdxk7hdv-1Id7PQwWi1fny-V-LSeTy04OIHXC2TWx5DiF', 4, 'symfony.svg', 17, 1),
+(53, 'Création d\'un contrôleur', 'Contrôleurs vous permettant de découper votre application en fonction de la route recherchée...', 'symfony;routes;controllers;contrôleurs;réponses;response;', '2PACX-1vSc4_MbKdfhexRKzk5TKttJv0zdlNUOP87OviKAj38wJPWZAmIiDvouFuY8B16PbcdshkKGiw3kftE1', 5, 'symfony.svg', 17, 1),
+(54, 'Les routes', 'Gestion des routes en Symfony, découvrez comment les trouver et les débugger !', 'symfony;routes;routing;routeur;router;URI;', '2PACX-1vRJq7G2eQqSuDNqgB2as5glAhXqrWGSD3z9dIqTrpvzByDWvomktUUkx-0PvgdWDYe2WP9rcUIdcwZH', 6, 'symfony.svg', 17, 1),
+(55, 'Les services', 'Présentation sommaire des Services Twig.\r\nLe langage réside sur ce principe également !', 'symfony;services;fonctions spécifiques;', '2PACX-1vRoYbZGRI7kABu-a8qNJnkk0X9-qp-8cDIUyVv6S3jel3ILB3-hXgxGjW2TnC9WFmv2Vk3KFSIMRe0S', 7, 'symfony.svg', 17, 1),
+(56, 'Twig', 'Découvrez le moteur de template Twig et ses syntaxes qui vont nous permettre de générer divers éléments dans nos vues !', 'symfony;twig;moteur de template;vues;views;', '2PACX-1vQgVMNyjSH_mvOvSNwhi18PhSJNBzgxAV6JQLSq9ahxVStSbQ-_-1qdA29uZbVErC_kvXTIm6epvM6T', 8, 'symfony.svg', 17, 1),
+(57, 'Connexion et création de la base de données', 'Création de la BDD en Symfony avec le terminal de commandes !', 'symfony;bdd;base de données;connexion;création;.env;configuration;environnement;tutoriels;tutorials;phpmyadmin;doctrine;', '2PACX-1vTahJ9gmvEdET-J8-7e4YLy3Cjdbefnyj0XsQ0xh1HQhC3RM82-PXdEOLY-5c9V_af9AqXrRXVFRiJB', 9, 'symfony.svg', 17, 1),
+(59, 'Les entités', 'Génération de vos entités, pensez objet !', 'symfony;poo;programmation orientée objets;objects;classes;entités;persistance des données;relations;types de données;', '2PACX-1vRvu5CsADOV0maevNRtaJTC_AyAj1lyuNv9ajz5ni9mtVP7KVlDTBppYz1GCaDb4mOsZ2thdTJgObEN', 10, 'symfony.svg', 17, 1),
+(60, 'Les migrations', 'Mettre à jour les informations de structure en BDD grâce aux migrations.', 'symfony;migrations;bdd;base de données;générer;génération;', '2PACX-1vSgOHrvN7caCCuTYsJbkfLyueqfz8rEnSTj1KS9lsORLWsEpxa7LoIBeqxkruE5Vq7LEGZ3pYZLV9k7', 11, 'symfony.svg', 17, 1),
+(61, 'L\'authentification', 'Générez les formulaires d\'inscription et de connexion pour votre application !', 'symfony;authentification;connexion;inscription;', '2PACX-1vQ-l1X-ALWo7drQLBNIy40YUeuC7LR7G0K44MRDQCDxEfMEuQjMl6DXkGnc5kStlmU-bqlcnfsGegii', 12, 'symfony.svg', 17, 1),
+(62, 'Les traits', 'Regrouper vos attributs communs pour éviter la redondance !', 'symfony;redondances;traits;classes;poo;programmation orientée objets;objects;', '2PACX-1vRf3xFveKC-4OabyF5WXobw8cfPtMOyyTRIl539HIUfOdMSXgyDVBLTCwqRMoxtVK6VUafjo5UOE7su', 13, 'symfony.svg', 17, 1),
+(63, 'Les DataFixtures', 'Générez un jeu de données facilement pour vos environnements grâce aux DataFixtures.', 'symfony;datas;datafixtures;faux;faker;jeu de données;', '2PACX-1vRNitnb5LvML76IEilkVeekjxJWI5JHvQ1hQC1nr6CzjZFjLo-sBFPrUqnMY-pcQ24T16EGIkmHepzy', 14, 'symfony.svg', 17, 1),
+(64, 'CRUD', 'Le CRUD automatisé en une commande !', 'symfony;crud;create;delete;read;update;mise à jour;suppression;création;insertion;lecture;gérer;automatisme;', '2PACX-1vR5KDaE1H0PuCbO5j-IGV4wZ9XWStkH1S7sQz-yC3mrsV596cIiffE3wYNl2KXcbXeL4PIPsBSYrqTD', 15, 'symfony.svg', 17, 1),
+(65, 'Formulaires', 'Créer des formulaires pour vos utilisateurs et vos CRUD... ', 'symfony;formulaires;forms;champs;types de données;', '2PACX-1vQEroWD7fa1Wb22CS8d-gHtb61blIX-szNOU51HIcb4yYi8O-7NGYZBqUl-4f8X6EjnNjQFA-EcOfPE', 16, 'symfony.svg', 17, 1),
+(66, 'Envoi d\'emails', 'Prévenir des clients, envoyer la newsletter, envoyer des factures... Les mails sont très utiles sur des applications. \r\nDécouvrez comment mettre cela en place dans Symfony.', 'symfony;emails;e-mails;gmail;smtp;dns;', '2PACX-1vSOqnNGSQqPqH-Yzgx-ejDlrUEkpEpC9sKq9oajs3ZsBOoIKuUB9cnv_zrLfJ2mPOWYXEmtRnF5JKWH', 17, 'symfony.svg', 17, 1),
+(67, 'UX initiative', 'Découvrez des extensions à la Symfony vous permettant de nombreuses choses...\r\nGraphiques, autocomplétion, chargement différé d\'images...', 'symfony;ux initiative;bundles;autocomplétion;lazy loader;chartJS;graphiques;', '2PACX-1vTpMGG956uluDZeXneoPmIitskKetZNezYAk9hbggfDymiamqsN9Ruc_ACB0lyatEWVB2ORJ-YGkF1G', 18, 'symfony.svg', 17, 1),
+(68, 'Les repositories', 'Accédez et manipulez vos données en utilisant les Repositories.', 'symfony;repository;repositories;données;bdd;base de données;manipulation;', '2PACX-1vTxxGyMlv5FrrNaJRk0iKsT6Mf-kkT6aFrUaRMfc0X2rxy0YxAmLfFaqvctHqngPOP2LMQutPzgJu3t', 19, 'symfony.svg', 17, 1),
+(69, 'Affichage, mise à jour et suppression d\'une donnée', 'Le CRUD manuel, mais version Symfony.\nDécouvrez comment gérer vos données.', 'symfony;crud;create;delete;read;update;mise à jour;suppression;création;insertion;lecture;gérer;', '2PACX-1vQS_fto6YCGB8DzCEDE9nAG5Yf-ntJ_zinNoE9UsaDribOyRJtw0X96CnUNpGx81Halrq6_mufhSSqN', 20, 'symfony.svg', 17, 1),
+(70, 'L\'API', 'L\'API se répand de plus en plus et est très utile pour vous comme les potentiels développeurs qui pourraient utiliser vos services. Découvrez comment en créer une ici.', 'symfony;api;application developper interface;développeurs;données;', '2PACX-1vRMF7D7q6D0zwXZ32YxUCaCEeqZdHCIJHPX1FJhYJIhisA2Lm0n8YdNOOxZnGSckPoIdsy3I85-znqC', 21, 'symfony.svg', 17, 1),
+(71, 'Les tests', 'Créer une application c\'est bien, la tester, c\'est mieux. Découvrez les tests dans ce cours.', 'symfony;tests,fonctionnels;unitaires;a/b;e2e;', '2PACX-1vS26pxmA3ymvTfGoaOTmMPKb0D41Q_FDNVfvW2caRnvQfA33bY_MlVei-v6cqkHt282MIPM5na0lYX0', 22, 'symfony.svg', 17, 1),
 (72, 'Cours sur Shell', 'Découvrez l\'environnement Shell, le terminal et ses syntaxes !', 'shell;commandes;terminal;linux;cd;mkdir;touch;rm;ls;cp;racine;pwd;echo;cat;grep;clear;history;apt;package;sh;chmod;', '2PACX-1vR42_17iY3gAR4x_ftrPpVBsH--xGLddf7f31iVTC8G7U-GYIUlc7dTnMXCzEL6nEt7ec2PO0h3kHOM', 0, 'git.svg', 2, 1),
 (73, 'Les conditions', 'Les conditions sont un incontournable dans le code.\r\nDécouvrez comment vous en servir avec ce cours.', 'php;conditions;if;elseif;endif;==;===;!=;!==;<>;<=>;and;or;&&;||;xor;', '2PACX-1vQui-FUPwU2KUFEhIBwJKcV_118RQTpZ6v5AEIrFKdZnLlgrFP9k9l1Xq4LxOoGpGLUMBbq3JQw_wZX', 7, 'php.svg', 16, 1),
 (74, 'Les boucles', 'Boucler sur son code, c\'est essentiel. Découvrez les différentes façons pour le faire ici.', 'php;boucles;for;foreach;while;', '2PACX-1vQA51Qd_QqfmMTsslSEh___AnNajd7A14YYH0Xu_bokEuudsyvSHJvOsNCXDfC9bOt27sou2YyRt3pQ', 8, 'php.svg', 16, 1),
@@ -193,12 +233,12 @@ INSERT INTO `cours` (`cours_id`, `cours_title`, `cours_synopsis`, `cours_keyword
 (99, 'Introduction', 'Découvrez ce qu\'est le SQL, le langage qui parlait aux bases de données...', 'sql;sgbr;sequel;tables;bdd;databases;enregistrements;tuples;vues;permissions;', '2PACX-1vSyhL60Bv9ZKb9VEqR_IYnGbnwsMeWjzuTmaTQ3_BGpfVXuS5rcB8ZOqgtYftV_qH-Jcd_hw6DdUt7X', 2, 'no_data.svg', 15, 1),
 (100, 'Concepts de base', 'Qu\'est-ce que c\'est ? A quoi ça sert ? Les réponses se trouvent ici !', 'sql;tuples;enregistrements;tables;bddr;attributs;clé de relation;contraintes d\'intégrité relationnelles;normalisation;', '2PACX-1vSbi-x2vx4plN9IpsvEvgUkvayLy32JD9v1BJI1RHB7M1q_pEIYOvFZNKqBXfMp2R0tlMmRa57wo72b', 3, 'no_data.svg', 15, 1),
 (101, 'Syntaxes des instructions SQL', 'Toutes les structures dont vous aurez besoin pour commencer se trouvent ici...', 'sql;structures;instructions;select;create;table;drop;desc;asc;rollback;index;database;truncate;use;alter;insert;update;delete;commit;clauses;agrégations;count;distinct;where;and;or;in;not;between;like;order;group;having;by;', '2PACX-1vRwXkkyEgoV8GPlajkDYjnVdJto6BiSowcEOAzlZmf1gEhx8PksZbOIUhsYaAF8gscrG1phaGmZZKQJ', 4, 'no_data.svg', 15, 1),
-(102, 'Introduction', 'Découvrez ces représentations graphiques qui nous permettent de décrire le principe de fonctionnement de notre application...', 'uml;introduction;poo;programmation orientée objets;unified modelling language;', '2PACX-1vRAhiKhhd10HcITnFzjvAHTyt1-dYw_mkvMNFkCY-5ld_zg9SEvOAuGL47iRDFsQSM3oK19YK8IJPWQ', 0, 'no_data.svg', 5, 1),
-(103, 'Diagramme de cas d\'utilisation (Use Case)', 'Montrez simplement QUI aura accès à quoi...', 'uml;use case;diagramme de cas d\'utilisation;acteurs;associations;généralisations;dépendances;stéréotypes;inclusions;extensions;include;extend;scénario nominal;alternatifs;erreurs;scénarios;', '2PACX-1vT7m1e84q_SKoS3bWE001BH61rHE3WebigyE8XI4MjyuRqRjTyetZlcf1z7wij7ARwYKwEIyNQfUuSi', 1, 'no_data.svg', 5, 1),
-(104, 'Diagramme d\'activité', 'Illustrez les actions exécutées par un SI.', 'uml;activité;diagrammes;activity;activities;initial point;points initiaux;final point;actions;control flow;join;fork;decision nodes;notes;send signal;accept signal;swimlane;', '2PACX-1vRrnE6puZmu_Ce2xBpyZsRD4WXV4KisvHpA6EwP7daHWZIDGatOzbkKr38x_00d5hXEWvDTjV_m6Rdy', 2, 'no_data.svg', 5, 1),
-(105, 'Diagramme de séquence', 'Découvrez comment découper une fonctionnalité sur une temporalité !', 'uml;diagramme de séquence;temporalité;lifeline;scénarios alternatifs;scénarios d\'erreurs;message;async;reply;self;scénario nominal;atomicité;', '2PACX-1vS32a_cMZTnA07cunLvN-Xe9z9U0VVfsQqlDp0F_v6yFmKgMdW9a_N8xdZSvTEOJ4KbXohHXPWeR9tW', 3, 'no_data.svg', 5, 1),
-(106, 'Diagramme de classe', 'Présentez vos classes, interfaces ainsi que leurs méthodes associées avec ce diagramme.', 'uml;diagramme de classe;classes;instances;instanciations;attributs;méthodes;opérations;clés primaires;primary key;associations;agrégations;compositions;cardinalités;visibilité;protected;public;private;protégées;publiques;privées;', '2PACX-1vT3V-2VEnkVuO3TiFI2nw-p9kEQ-_tFHYAiOXMik9BCg8yLzUkUO_n2597uoL9BZvcQT21XPvGzl1wf', 4, 'no_data.svg', 5, 1),
-(108, 'Présentation', 'Les bases de l\'UX/UI se trouvent dans ce cours !', 'ux;ui;user;interface;experience;', '2PACX-1vRF8nG194zf1zRihqb_HB_Q3HPQPqIrJGTP1ETaf01MiN052MCDDhzCVdHHdXmX6ZcoYanXlUL1w0yb', 0, 'no_data.svg', 12, 1),
+(102, 'Introduction', 'Découvrez ces représentations graphiques qui nous permettent de décrire le principe de fonctionnement de notre application...', 'uml;introduction;poo;programmation orientée objets;unified modelling language;', '2PACX-1vRAhiKhhd10HcITnFzjvAHTyt1-dYw_mkvMNFkCY-5ld_zg9SEvOAuGL47iRDFsQSM3oK19YK8IJPWQ', 0, 'uml.svg', 5, 1),
+(103, 'Diagramme de cas d\'utilisation (Use Case)', 'Montrez simplement QUI aura accès à quoi...', 'uml;use case;diagramme de cas d\'utilisation;acteurs;associations;généralisations;dépendances;stéréotypes;inclusions;extensions;include;extend;scénario nominal;alternatifs;erreurs;scénarios;', '2PACX-1vT7m1e84q_SKoS3bWE001BH61rHE3WebigyE8XI4MjyuRqRjTyetZlcf1z7wij7ARwYKwEIyNQfUuSi', 1, 'uml.svg', 5, 1),
+(104, 'Diagramme d\'activité', 'Illustrez les actions exécutées par un SI.', 'uml;activité;diagrammes;activity;activities;initial point;points initiaux;final point;actions;control flow;join;fork;decision nodes;notes;send signal;accept signal;swimlane;', '2PACX-1vRrnE6puZmu_Ce2xBpyZsRD4WXV4KisvHpA6EwP7daHWZIDGatOzbkKr38x_00d5hXEWvDTjV_m6Rdy', 2, 'uml.svg', 5, 1),
+(105, 'Diagramme de séquence', 'Découvrez comment découper une fonctionnalité sur une temporalité !', 'uml;diagramme de séquence;temporalité;lifeline;scénarios alternatifs;scénarios d\'erreurs;message;async;reply;self;scénario nominal;atomicité;', '2PACX-1vS32a_cMZTnA07cunLvN-Xe9z9U0VVfsQqlDp0F_v6yFmKgMdW9a_N8xdZSvTEOJ4KbXohHXPWeR9tW', 3, 'uml.svg', 5, 1),
+(106, 'Diagramme de classe', 'Présentez vos classes, interfaces ainsi que leurs méthodes associées avec ce diagramme.', 'uml;diagramme de classe;classes;instances;instanciations;attributs;méthodes;opérations;clés primaires;primary key;associations;agrégations;compositions;cardinalités;visibilité;protected;public;private;protégées;publiques;privées;', '2PACX-1vT3V-2VEnkVuO3TiFI2nw-p9kEQ-_tFHYAiOXMik9BCg8yLzUkUO_n2597uoL9BZvcQT21XPvGzl1wf', 4, 'uml.svg', 5, 1),
+(108, 'Présentation', 'Les bases de l\'UX/UI se trouvent dans ce cours !', 'ux;ui;user;interface;experience;', '2PACX-1vRF8nG194zf1zRihqb_HB_Q3HPQPqIrJGTP1ETaf01MiN052MCDDhzCVdHHdXmX6ZcoYanXlUL1w0yb', 0, 'ux_ui.svg', 12, 1),
 (109, 'Les opérateurs SQL', 'Redécouvrez les différents mots-clés disponibles pour les opérateurs en SQL.', 'sql;opérateurs;+;addition;-;soustraction;*;multiplication;/;division;\\%;modulo;=;!=;<>;>=;<=;!>;!<;all;any;between;exists;in;like;not;and;or;is null;unique;', '2PACX-1vT19l_JQmgeGpXVR0awhYuOMHeocENiv5MHM1jbcspNvYICoaDn7HgkXKRtwL6sAVa_5ucKzDt-meU9', 5, 'no_data.svg', 15, 1),
 (110, 'Création et suppression d\'une BDD', 'Instructions pour créer, utiliser et détruire une BDD.', 'sql;create;databases;drop;show;bdd;base de données;use;', '2PACX-1vRmiCaX5-7xBHcg31lWpsZZx1COHyYtDtCgC5aBkAC9GOcTcehFbaT72orftgFowQ8tpJp6UtexcOhM', 6, 'no_data.svg', 15, 1),
 (111, 'Types de données', 'Listing exhaustifs de nombreux types de données qui vous seront très utiles pour vos projets.', 'sql;types;bddr;base de données relationnelles;sql;numériques;date et heures;chaînes;unicode;binaires;autres;bit;tinyint;smallint;bigint;decimal;numeric;float;real;time;datetime;timestamp;year;char;varchar;text;longtext;mediumtext;enum;set;binary;image;clob;blob;xml;json;decimal;boolean;', '2PACX-1vS1xHXqnjxwk95Xzu81P1UEoU54Wm8dpEleqlOVPhSU-msLtYYo_x0rHLlISJgdr51_KfRC7_9YJyA8', 7, 'no_data.svg', 15, 1),
@@ -657,7 +697,7 @@ CREATE TABLE `formateurs` (
 INSERT INTO `formateurs` (`id_formateur`, `nom_formateur`, `prenom_formateur`, `mail_formateur`, `mdp_formateur`, `signature_formateur`, `carte_formateur_role`, `carte_formateur_liens`, `carte_formateur_tel`, `carte_formateur_portable`, `tmp_code_formateur`, `date_tmp_code_formateur`, `code_entree_formateur`, `date_code_entree_formateur`, `est_actif`, `id_site`, `id_secteur`) VALUES
 (1, 'RODRIGUES', 'Marceau', 'marceaurodrigues@adrar-formation.com', '$2y$10$go.SxmZ3XDA/uGP4gAI.V.38Y.lr4/2Nu0fQjfgdxQ8u56gAiYWJq', 'v/formateurs/signature_6489096bf19b0.png', 'Formateur référent', '', '0552458547', '', NULL, NULL, NULL, NULL, 1, 2, 1),
 (2, 'HABBAS', 'Emna', 'emnahabbas@adrar-formation.com', '$2y$10$go.SxmZ3XDA/uGP4gAI.V.38Y.lr4/2Nu0fQjfgdxQ8u56gAiYWJq', 'v/formateurs/signature_649f7afc3477d.png', 'Coordinatrice', NULL, '0552458547', NULL, NULL, NULL, NULL, NULL, 1, 2, 3),
-(3, 'RAYNARD', 'Jade', 'jaderaynard@drar-formation.com', '$2y$10$2WXxH8FAYeFNl0DkiOiCsul4TrMUdwFHvGhFnCGfm5Ai7H5ES1gQa', 'v/formateurs/signature_648f7cb40c9ba.png', 'Formatrice rrente', 'test.co', '0404040406', '0469532699', NULL, NULL, NULL, NULL, 1, 1, 2),
+(3, 'RAYNARD', 'Jade', 'jaderaynard@drar-formation.com', '$2y$10$2WXxH8FAYeFNl0DkiOiCsul4TrMUdwFHvGhFnCGfm5Ai7H5ES1gQa', 'v/formateurs/signature_648f7cb40c9ba.png', 'Formatrice rrente', NULL, '', '0469532699', NULL, NULL, NULL, NULL, 1, 1, 2),
 (21, 'NAVONE', 'Ruben', 'rubennavone@adrar-formation.com', '$2y$10$83GJeVgku2jgnVzRITh3tuUn2C.sHus6a1JFNrVmxcG/oT4zLNtYK', NULL, 'Formateur Référent', NULL, '0525425877', NULL, NULL, NULL, NULL, '2023-07-09 21:58:13', 0, 2, 1);
 
 -- --------------------------------------------------------
@@ -691,7 +731,7 @@ INSERT INTO `historiques` (`id_historique`, `id_formateur`, `page_visitee`, `pag
 (539, 1, '?page=ajouter-document', 'Ajouter-document', '88.169.229.35', '2023-10-08 20:53:11'),
 (540, 1, '?page=admin', 'Admin', '88.169.229.35', '2023-10-08 20:53:32'),
 (549, 1, '?page=titre', 'Titre', '88.169.229.35', '2023-10-08 21:17:03'),
-(567, 1, '?page=formation', 'Formation', '82.65.172.45', '2023-10-10 22:07:47');
+(676, 1, '?page=formation', 'Formation', '82.65.172.45', '2023-10-16 18:15:15');
 
 -- --------------------------------------------------------
 
@@ -1750,7 +1790,7 @@ CREATE TABLE `sessions` (
 
 INSERT INTO `sessions` (`id_session`, `nom_session`, `duree_stage`, `sigle_session`, `date_debut_session`, `date_fin_session`, `date_debut_stage`, `date_fin_stage`, `id_formateur`) VALUES
 (1, 'DEV34-22-02', 280, 'DWWM', '0000-00-00', '0000-00-00', '2023-04-11', '2023-06-09', 1),
-(2, 'CDA34-23-01', 350, 'CDA', '2023-05-09', '0000-00-00', '0000-00-00', '0000-00-00', 1);
+(2, 'CDA34-23-01', 350, 'CDA', '2023-05-09', '2024-02-20', '0000-00-00', '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
@@ -2099,7 +2139,7 @@ ALTER TABLE `stagiaires_ressources`
 -- AUTO_INCREMENT pour la table `connexion_essais`
 --
 ALTER TABLE `connexion_essais`
-  MODIFY `id_connexion_essai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+  MODIFY `id_connexion_essai` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=90;
 
 --
 -- AUTO_INCREMENT pour la table `cours`
@@ -2159,7 +2199,7 @@ ALTER TABLE `formateurs`
 -- AUTO_INCREMENT pour la table `historiques`
 --
 ALTER TABLE `historiques`
-  MODIFY `id_historique` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=568;
+  MODIFY `id_historique` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=677;
 
 --
 -- AUTO_INCREMENT pour la table `quiz`

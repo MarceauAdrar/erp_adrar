@@ -22,7 +22,7 @@ Rendez-vous dans l'onglet ``` index.php?page=titre ```.
 Rendez-vous dans l'onglet ``` index.php?page=admin ```.
 
 ## Partagez vos cours et faites passer des tests et quiz à vos stagiaires
-Rendez-vous dans l'onglet ``` index.php?page=formation ```.
+Rendez-vous dans l'onglet ``` public/formation ```.
 
 
 

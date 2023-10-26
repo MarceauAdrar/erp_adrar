@@ -7,7 +7,7 @@ if (!isset($_SESSION['utilisateur']) || !isset($_SESSION['utilisateur']['id_form
 }
 
 if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
-    header("Location: ?page=formation");
+    header("Location: formation");
     die;
 }
 
@@ -94,7 +94,7 @@ if (isset($_POST['form_filter_session'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#ffffff"/>
+    <meta name="theme-color" content="#ffffff" />
     <meta name="description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus.">
     <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/_reset.css?v=<?= uniqid() ?>">

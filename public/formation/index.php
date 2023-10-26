@@ -1,10 +1,10 @@
 <?php
-include_once("../src/m/connect.php");
+include_once("../../src/m/connect.php");
 
 $title = " | Accueil";
 
 ob_start();
-include_once("./formation/header.php");
+include_once("./header.php");
 ?>
 <div class="container">
     <div class="row">
@@ -31,7 +31,7 @@ include_once("./formation/header.php");
     sessionStorage.setItem("SERVER_NAME", "<?= $_SERVER["SERVER_NAME"] ?>");
 </script>
 <?php
-include_once("./formation/js.php");
-include_once("./formation/footer.php");
+include_once("./js.php");
+include_once("./footer.php");
 die(ob_get_clean());
 ?>

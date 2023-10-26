@@ -1,5 +1,5 @@
 document.querySelector('#module-administration').addEventListener('click', () => { window.location.href = '?page=admin'; });
-document.querySelector('#module-formation').addEventListener('click', () => { window.location.href = '?page=formation'; });
+document.querySelector('#module-formation').addEventListener('click', () => { window.location.href = 'formation'; });
 document.querySelector('#module-stages').addEventListener('click', () => { window.location.href = '?page=stage'; });
 document.querySelector('#module-titres').addEventListener('click', () => { window.location.href = '?page=titre'; });
 

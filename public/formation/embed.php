@@ -6,6 +6,11 @@ $title = " | Cours";
 $req = $db->prepare("SELECT cours_module_libelle FROM cours JOIN cours_modules ON(cours_module_id = id_module) WHERE cours_link=:cours_link;");
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
 $req->execute();
+$module_nom = $req->fetch(PDO::FETCH_COLUMN);
+
+$req = $db->prepare("SELECT cours_title FROM cours WHERE cours_link=:cours_link;");
+$req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
+$req->execute();
 $cours_nom = $req->fetch(PDO::FETCH_COLUMN);
 
 $req = $db->prepare("SELECT * FROM cours_ressources WHERE id_cours= (SELECT cours_id FROM cours WHERE cours_link=:cours_link) AND cours_ressource_type = 'autre';");
@@ -40,12 +45,15 @@ ob_start();
 include_once("./header.php"); ?>
 
 <div class="container-fluid">
-    <div class="row justify-content-between">
-        <div class="col-2 mt-2 mb-2 float-left">
-            <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $cours_nom ?>">Retour sur les cours</a>
+    <div class="row<?=($_SESSION['utilisateur']['id_formateur'] > 0 ? ' justify-content-between' : '')?>">
+        <div class="<?=($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-3 ')?>mt-2 mb-2 float-start">
+            <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $module_nom ?>">Retour sur les cours</a>
+        </div>
+        <div class="<?=($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-6 text-center ')?> mt-2 mb-2 float-start">
+            <h2>[<?=$module_nom?>] - <?=$cours_nom?></h2>
         </div>
         <?php if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
-            <div class="col-2 mt-2 mb-2 float-right">
+            <div class="col-auto mt-2 mb-2 float-end">
                 <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterRessource">Ajouter une ressource</button>
             </div>
     </div>
@@ -57,7 +65,7 @@ include_once("./header.php"); ?>
         <?php if (!empty($ressources)) { ?>
             <div class="col-12">
                 <h2>Les ressources</h2>
-                <div class="d-flex flex-wrap">
+                <div class="row">
                     <?php foreach ($ressources as $ressource) {
                         $lien = "";
                         if (empty($ressource['cours_ressource_lien'])) {
@@ -65,7 +73,7 @@ include_once("./header.php"); ?>
                         } else {
                             $lien = $ressource['cours_ressource_lien'];
                         } ?>
-                        <a target="_blank" href="<?= $lien ?>" class="w-25 p-2 d-block text-black text-decoration-none">
+                        <a target="_blank" href="<?= $lien ?>" class="col-xs-1 col-lg-2 col-xl-3 text-black text-decoration-none">
                             <div class="card">
                                 <div class="card-body">
                                     <p class="card-title text-decoration-underline"><?= $ressource['cours_ressource_titre'] ?></p>
@@ -81,19 +89,19 @@ include_once("./header.php"); ?>
         <?php if (!empty($exercices)) { ?>
             <div class="col-12">
                 <h2>Les exercices</h2>
-                <div class="d-flex flex-wrap">
+                <div class="row">
                     <?php foreach ($exercices as $exercice) { ?>
-                        <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>" class="w-25 p-2 d-block text-black text-decoration-none">
-                            <div class="card">
-                                <span class="card-img-top" alt="Illustration devoirs à la maison">
-                                    <?php include("./imgs/homeworks.svg"); ?>
-                                </span>
-                                <div class="card-body">
-                                    <p class="card-title text-decoration-underline"><?= $exercice['cours_ressource_titre'] ?></p>
+                        <div class="card col-xs-1 col-lg-2 col-xl-3">
+                            <span class="card-img-top" alt="Illustration devoirs à la maison">
+                                <?php include("./imgs/homeworks.svg"); ?>
+                            </span>
+                            <div class="card-body">
+                                <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
+                                    <h6 class="card-title text-decoration-underline"><?= $exercice['cours_ressource_titre'] ?></h6>
                                     <small><?= $exercice['cours_ressource_resume'] ?></small>
-                                </div>
+                                </a>
                             </div>
-                        </a>
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -102,9 +110,9 @@ include_once("./header.php"); ?>
         <?php if (!empty($tps)) { ?>
             <div class="col-12">
                 <h2>Les TPs</h2>
-                <div class="d-flex flex-wrap">
+                <div class="row">
                     <?php foreach ($tps as $tp) { ?>
-                        <div class="card w-25 m-2">
+                        <div class="card col-xs-1 col-lg-3 col-xl-4">
                             <span class="card-img-top" alt="Illustration devoirs à la maison">
                                 <?php if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
                                     if (empty($tp['lien_ressource_rendue'])) { ?>
@@ -118,7 +126,7 @@ include_once("./header.php"); ?>
                             </span>
                             <div class="card-body">
                                 <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
-                                    <p class="card-title text-decoration-underline"><?= $tp['cours_ressource_titre'] ?></p>
+                                    <h6 class="card-title text-decoration-underline"><?= $tp['cours_ressource_titre'] ?></h6>
                                     <small><?= $tp['cours_ressource_resume'] ?></small>
                                 </a>
                             </div>

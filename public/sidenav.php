@@ -9,7 +9,7 @@
             <ul>
                 <li><a href="/erp/public"><i class="fa-solid fa-house fa-sm">&nbsp;</i><span>Accueil</span></a></li>
                 <li><a href="/erp/public?page=admin" id="nav-administration"><i class="fa-solid fa-hammer fa-sm">&nbsp;</i><span>Administration</span></a></li>
-                <li><a href="/erp/public?page=formation" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
+                <li><a href="/erp/public/formation" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
                 <li><a href="/erp/public?page=stage" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
                 <li><a href="/erp/public?page=titre" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
                 <li><a href="/erp/public?page=boite-aux-lettres" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>

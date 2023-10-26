@@ -303,7 +303,7 @@ i[class] {
     line-height: 1.2;
 }
 
-#modalManagecours .modal-body {
+#modalManagecours .modal-body > .container-fluid {
     max-height: 89vh;
     overflow-y: auto;
 }
@@ -333,6 +333,10 @@ i[class] {
 .quiz-inactive, 
 .edition-off {
     opacity: 0.4;
+}
+
+.edition-off {
+    filter: grayscale(0.7);
 }
 
 #error {

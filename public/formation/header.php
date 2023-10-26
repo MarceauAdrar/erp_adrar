@@ -21,7 +21,7 @@
         <?php if (isset($_SESSION["utilisateur"]["id_stagiaire"])) { ?>
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=formation">
+                    <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
                         <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar" />
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,7 @@
                     <div class="collapse navbar-collapse" id="navbarText">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=formation">Accueil</a>
+                                <a class="nav-link active" aria-current="page" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">Accueil</a>
                             </li>
                             <?php
                             if ($_SESSION["utilisateur"]["id_formateur"] !== -1) { ?>
@@ -99,7 +99,7 @@
                             if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
                                 <li class="nav-item">
                                     <div class="nav-link form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" role="switch" id="form_edition_mode" onclick="toggleEditionMode();" <?=(isset($_SESSION['mode_edition']) && !empty($_SESSION['mode_edition']) ? 'checked' : '')?>>
+                                        <input class="form-check-input" type="checkbox" role="switch" id="form_edition_mode" onclick="toggleEditionMode();" <?= (isset($_SESSION['mode_edition']) && !empty($_SESSION['mode_edition']) ? 'checked' : '') ?>>
                                         <label class="form-check-label" for="form_edition_mode">Mode édition</label>
                                     </div>
                                 </li>

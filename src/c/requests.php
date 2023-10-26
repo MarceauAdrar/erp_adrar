@@ -163,26 +163,56 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                                     FROM cours 
                                     JOIN cours_modules ON (cours_module_id = id_module) 
                                     JOIN sessions as s ON (s.id_session=:id_session) 
-                                    LEFT JOIN cours_sessions ON (cours_id = id_cours AND cours_sessions.id_session=:id_session) 
+                                    LEFT JOIN cours_sessions ON (cours_id = id_cours AND cours_sessions.id_session=s.id_session) 
                                     WHERE 1 ";
+                $sql_select_cours .= "  AND (cours_session_active=:cours_session_active ";
+                if(isset($_POST['cours_actifs']) && $_POST['cours_actifs'] == "false") {
+                    $sql_select_cours .= "      OR cours_session_active IS NULL ";
+                }
+                $sql_select_cours .= " ) ";
+                $sql_count_cours = $sql_select_cours;
                 if (!empty($_POST['search'])) {
-                    $mots_cles = explode(" ", filter_var(trim($_POST['search'], FILTER_SANITIZE_SPECIAL_CHARS)));
+                    $mots_cles = explode(" ", filter_var(trim(rtrim($_POST['search']), FILTER_SANITIZE_SPECIAL_CHARS)));
                     $conditions = array();
+                    $conditions2 = array();
                     foreach ($mots_cles as $mot) {
                         $conditions[] = "cours_keywords LIKE '%" . $mot . "%'";
+                        $conditions2[] = "cours_title LIKE '%" . $mot . "%'";
                     }
                     $sql_select_cours .= " AND " . implode(' AND ', $conditions);
+                    $sql_select_cours .= " OR " . implode(' AND ', $conditions2);
                 }
-                $sql_select_cours .= " AND cours_session_active=:cours_session_active 
-                                       ORDER BY cours_module_position, cours_position;";
+                $sql_select_cours .= "  ORDER BY cours_module_position, cours_position 
+                                        -- LIMIT 10 -- OFFSET :offset
+                                        ;";
+                // var_dump($sql_select_cours);
+                // var_dump(filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
                 $req_select_cours = $db->prepare($sql_select_cours);
+                $req_count_cours = $db->prepare($sql_count_cours);
                 $req_select_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
+                $req_count_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
                 $req_select_cours->bindValue(':cours_session_active', filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
+                $req_count_cours->bindValue(':cours_session_active', filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
+                // $req_select_cours->bindValue(':offset', (isset($_POST['page']) ? filter_var($_POST['page'], FILTER_VALIDATE_INT) : 1) * 25);
+                $req_count_cours->execute();
                 $req_select_cours->execute();
                 $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
+                $nbCours = sizeof($req_count_cours->fetchAll(PDO::FETCH_ASSOC));
                 $req_select_cours->closeCursor(); ?>
                 <div class="row">
-                    <h2><?= $session['nom_session'] ?></h2>
+                    <h2><?= $session['nom_session'] ?></h2><small>&nbsp;(<?=sizeof($cours)?> cours trouvés sur <?=$nbCours?>)</small>
+                    <!-- <div class="col-12 d-flex">
+                        <nav aria-label="Navigation session <?= $session['nom_session'] ?>">
+                            <ul class="pagination">
+                                <li class="page-item"><a class="page-link" href="#">Précédent</a></li>
+                                <?php if(sizeof($cours) >= 1) for($i = 1 ; $i <= $nbCours/25 ; $i++) { ?>
+                                    <li class="page-item"><a class="page-link" href="#"><?=$i?></a></li>
+                                <?php } ?>
+                                <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+                            </ul>
+                        </nav>
+                    </div> -->
+                    
                     <?php foreach ($cours as $cour) { ?>
                         <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
@@ -638,7 +668,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     if (!empty($modules)) {
         foreach ($modules as $module) {
             $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
-                <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_libelle'] . '" class="text-black">
+                <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top" alt="Illustration ' . $module['cours_module_libelle'] . '">
                             ' . file_get_contents("../../public/formation/imgs/" . $module['cours_illustration']) . '
@@ -666,6 +696,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     if ($_SESSION['utilisateur']['id_formateur'] > 0) {
         $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration, nom_formateur, prenom_formateur 
                             FROM cours c 
+                            INNER JOIN cours_modules cm ON cm.cours_module_id = c.id_module
                             INNER JOIN formateurs f ON (f.id_formateur = c.id_formateur) 
                             WHERE 1 ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
@@ -676,16 +707,13 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
             }
             $sql_select_cours .= " AND " . implode(' AND ', $conditions);
         }
-        $sql_select_cours .= " AND id_module = (
-                                    SELECT cours_module_id 
-                                    FROM cours_modules 
-                                    WHERE cours_module_libelle=:cours_category 
-                                ) 
+        $sql_select_cours .= " AND cours_module_uuid=:cours_uuid
                                 ORDER BY cours_position;";
         $req_select_cours = $db->prepare($sql_select_cours);
     } else {
         $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration, nom_formateur, prenom_formateur 
                             FROM cours c 
+                            INNER JOIN cours_modules cm ON cm.cours_module_id = c.id_module
                             INNER JOIN formateurs f ON (f.id_formateur = c.id_formateur) ";
         if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
             $sql_select_cours .= " INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session) ";
@@ -693,11 +721,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
             $sql_select_cours .= " INNER JOIN cours_sessions cs ON c.cours_id = cs.id_cours ";
         }
         $sql_select_cours .= "  WHERE cours_session_active = 1
-                                AND id_module = (
-                                    SELECT cours_module_id 
-                                    FROM cours_modules 
-                                    WHERE cours_module_libelle=:cours_category 
-                                ) ";
+                                AND cours_module_uuid=:cours_uuid ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
             $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
             $conditions = array();
@@ -715,15 +739,14 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
             $req_select_cours->bindParam(":id_session", $_SESSION["utilisateur"]["id_session"]);
         }
     }
-
-    $req_select_cours->bindParam(":cours_category", $_POST["module"]);
+    $req_select_cours->bindParam(":cours_uuid", $_POST["module"]);
     $req_select_cours->execute();
     $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
 
     $liste_cours = "";
     if (!empty($cours)) {
         foreach ($cours as $cours) {
-            $liste_cours .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
+            $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
                     <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top" alt="Illustration HTML/CSS/JS">

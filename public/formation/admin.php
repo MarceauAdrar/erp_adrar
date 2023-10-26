@@ -5,7 +5,7 @@ include_once("../../src/m/connect.php");
 $title = " | Contrôle administration";
 
 if (array_key_exists("pseudo_stagiaire", $_SESSION["utilisateur"])) {
-    header("Location: ../index.php?page=formation");
+    header("Location: ../formation");
 }
 
 $sql_select_stagiaires = "SELECT i.id_stagiaire, nom_stagiaire, prenom_stagiaire, pseudo_stagiaire, evaluation_errors_max, stagiaire_evaluation_completed, stagiaire_evaluation_correction, stagiaire_evaluation_errors_found, evaluation_id, evaluation_dd_link
@@ -40,8 +40,8 @@ include_once("./header.php"); ?>
         <div class="col-8 offset-2">
             <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddCourse">Ajouter un cours</button>
             <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManagecours" onclick="showModalManagecours();">Gérer les cours</button>
-            <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddQuiz">Ajouter un quiz</button>
-            <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManageQuiz" onclick="showModalManageQuiz();">Gérer les quiz</button>
+            <!-- <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddQuiz">Ajouter un quiz</button>
+            <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManageQuiz" onclick="showModalManageQuiz();">Gérer les quiz</button> -->
         </div>
     </div>
     <div class="row">
@@ -151,7 +151,7 @@ include_once("./header.php"); ?>
 </div>
 
 
-<div class="modal fade" id="modalAddCourse" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddCourseTitle" aria-hidden="true">
+<div class="modal modal-xl fade" id="modalAddCourse" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddCourseTitle" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -201,7 +201,7 @@ include_once("./header.php"); ?>
 </div>
 
 
-<div class="modal modal-lg fade" id="modalManagecours" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalManagecoursTitle" aria-hidden="true">
+<div class="modal modal-xl fade" id="modalManagecours" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalManagecoursTitle" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -244,11 +244,17 @@ include_once("./header.php"); ?>
             </div>
             <div class="modal-body">
             </div>
+            <!-- <div class="modal-footer">
+                <div class="d-flex">
+                    <button type="button" class="btn btn-light">Précédent</button>
+                    <button type="button" class="btn btn-light">Suivant</button>
+                </div>
+            </div> -->
         </div>
     </div>
 </div>
 
-<div class="modal fade" id="modalAddQuiz" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddQuizTitle" aria-hidden="true">
+<!-- <div class="modal modal-xl fade" id="modalAddQuiz" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddQuizTitle" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -326,7 +332,7 @@ include_once("./header.php"); ?>
             </div>
         </div>
     </div>
-</div>
+</div> -->
 
 <?php
 include_once("./js.php"); ?>

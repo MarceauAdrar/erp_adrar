@@ -141,7 +141,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
             WHERE id_formateur=:id_formateur ";
     if (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
         $sql .= " AND id_session=:id_session ";
-    } elseif(isset($_POST['id_session']) && $_POST['id_session'] == "-1") { // Actives uniquement
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == "-1") { // Actives uniquement
         $sql .= " AND (date_fin_session>=NOW()) ";
     } else { // Toute sessions confondues 
     }
@@ -166,7 +166,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                                     LEFT JOIN cours_sessions ON (cours_id = id_cours AND cours_sessions.id_session=s.id_session) 
                                     WHERE 1 ";
                 $sql_select_cours .= "  AND (cours_session_active=:cours_session_active ";
-                if(isset($_POST['cours_actifs']) && $_POST['cours_actifs'] == "false") {
+                if (isset($_POST['cours_actifs']) && $_POST['cours_actifs'] == "false") {
                     $sql_select_cours .= "      OR cours_session_active IS NULL ";
                 }
                 $sql_select_cours .= " ) ";
@@ -200,19 +200,19 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 $nbCours = sizeof($req_count_cours->fetchAll(PDO::FETCH_ASSOC));
                 $req_select_cours->closeCursor(); ?>
                 <div class="row">
-                    <h2><?= $session['nom_session'] ?></h2><small>&nbsp;(<?=sizeof($cours)?> cours trouvés sur <?=$nbCours?>)</small>
+                    <h2><?= $session['nom_session'] ?></h2><small>&nbsp;(<?= sizeof($cours) ?> cours trouvés sur <?= $nbCours ?>)</small>
                     <!-- <div class="col-12 d-flex">
                         <nav aria-label="Navigation session <?= $session['nom_session'] ?>">
                             <ul class="pagination">
                                 <li class="page-item"><a class="page-link" href="#">Précédent</a></li>
-                                <?php if(sizeof($cours) >= 1) for($i = 1 ; $i <= $nbCours/25 ; $i++) { ?>
-                                    <li class="page-item"><a class="page-link" href="#"><?=$i?></a></li>
+                                <?php if (sizeof($cours) >= 1) for ($i = 1; $i <= $nbCours / 25; $i++) { ?>
+                                    <li class="page-item"><a class="page-link" href="#"><?= $i ?></a></li>
                                 <?php } ?>
                                 <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
                             </ul>
                         </nav>
                     </div> -->
-                    
+
                     <?php foreach ($cours as $cour) { ?>
                         <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
@@ -665,10 +665,22 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     }
 
     $liste_modules = "";
+    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
+        $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
+            <div class="card">
+                <span class="card-img-top" alt="Illustration d\'un nouveau module">
+                    <input type="file">
+                </span>
+                <div class="card-body" style="padding-bottom: 0.6rem;">
+                    <h5 class="card-title text-decoration-underline"><input type="text" placeholder="Ajoutez le nom du module"></h5>
+                </div>
+            </div>
+        </div>';
+    }
     if (!empty($modules)) {
         foreach ($modules as $module) {
             $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
-                <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . '" class="text-black">
+                <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . (isset($_POST['recherche']) && !empty($_POST['recherche']) ? '&q='.$_POST['recherche']:'') . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top" alt="Illustration ' . $module['cours_module_libelle'] . '">
                             ' . file_get_contents("../../public/formation/imgs/" . $module['cours_illustration']) . '
@@ -744,12 +756,26 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
 
     $liste_cours = "";
+    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
+        $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
+            <div class="card">
+                <span class="card-img-top" alt="Illustration a ajouter">
+                    <input type="file" class="hidden" name="add_course_img" id="add_course_img">
+                    ' . @file_get_contents("../../public/formation/imgs/add.svg") . '
+                </span>
+                <div class="card-body">
+                    <h5 class="card-title text-decoration-underline"><input type="text" placeholder="Nom du cours..."></h5>
+                    <p class="card-text"><textarea placeholder="Synopsis du cours..."></textarea></p>
+                </div>
+            </div>
+        </div>';
+    }
     if (!empty($cours)) {
         foreach ($cours as $cours) {
             $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
                     <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
-                            <span class="card-img-top" alt="Illustration HTML/CSS/JS">
+                            <span class="card-img-top" alt="Illustration ' . $cours["cours_illustration"] . '">
                                 ' . @file_get_contents("../../public/formation/imgs/" . $cours["cours_illustration"]) . '
                             </span>
                             <div class="card-body">
@@ -800,6 +826,111 @@ if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
 
     die(json_encode(array(
         'trainees' => $req->fetchAll(PDO::FETCH_COLUMN)
+    )));
+}
+
+if (
+    isset($_POST['form_update_trainee']) && !empty($_POST['form_update_trainee'])
+    && isset($_POST['form_nom_stagiaire']) && !empty($_POST['form_nom_stagiaire'])
+    && isset($_POST['form_prenom_stagiaire']) && !empty($_POST['form_prenom_stagiaire'])
+) {
+    $sql = "UPDATE stagiaires 
+            SET 
+                nom_stagiaire=:nom_stagiaire, 
+                prenom_stagiaire=:prenom_stagiaire ";
+    if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
+        $sql .= " , mdp_stagiaire=:mdp_stagiaire ";
+    }
+    $sql .= " WHERE id_stagiaire=:id_stagiaire;";
+    $req = $db->prepare($sql);
+    $req->bindValue(':nom_stagiaire', strtoupper($_POST['form_nom_stagiaire']));
+    $req->bindValue(':prenom_stagiaire', ucwords($_POST['form_prenom_stagiaire']));
+    if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
+        $req->bindValue(':mdp_stagiaire', password_hash($_POST['form_mdp_stagiaire'], PASSWORD_BCRYPT));
+        $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+        $req->execute();
+        header("Location: /erp/public/deconnexion.php");
+        exit;
+    }
+    $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+    $req->execute();
+
+    header("Location: ../../public/formation/account.php");
+    exit;
+}
+
+if (
+    isset($_POST['form_update_trainer']) && !empty($_POST['form_update_trainer'])
+    && isset($_POST['form_nom_formateur']) && !empty($_POST['form_nom_formateur'])
+    && isset($_POST['form_prenom_formateur']) && !empty($_POST['form_prenom_formateur'])
+) {
+    $sql = "UPDATE formateurs 
+            SET 
+                nom_formateur=:nom_formateur, 
+                prenom_formateur=:prenom_formateur ";
+    if (isset($_POST['form_mdp_formateur']) && !empty($_POST['form_mdp_formateur'])) {
+        $sql .= " , mdp_formateur=:mdp_formateur ";
+    }
+    $sql .= " WHERE id_formateur=:id_formateur;";
+    $req = $db->prepare($sql);
+    $req->bindValue(':nom_formateur', strtoupper($_POST['form_nom_formateur']));
+    $req->bindValue(':prenom_formateur', ucwords($_POST['form_prenom_formateur']));
+    if (isset($_POST['form_mdp_formateur']) && !empty($_POST['form_mdp_formateur'])) {
+        $req->bindValue(':mdp_formateur', password_hash($_POST['form_mdp_formateur'], PASSWORD_BCRYPT));
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->execute();
+        header("Location: /erp/public/deconnexion.php");
+        exit;
+    }
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    $req->execute();
+
+    header("Location: ../../public/formation/account.php");
+    exit;
+}
+
+if(isset($_POST['set_module_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+    $sql = "UPDATE cours_modules, cours_modules AS cm2
+            SET cours_modules.cours_module_position = cm2.cours_module_position, cm2.cours_module_position = cours_modules.cours_module_position
+            WHERE cours_modules.cours_module_position=:new AND cm2.cours_module_position=:old;";
+    $req = $db->prepare($sql);
+    $req->bindParam(':new', $_POST['new']);
+    $req->bindParam(':old', $_POST['old']);
+    if($req->execute()) {
+        die(json_encode(array(
+            'success' => true, 
+            'message' => "Module déplacé !"
+        )));
+    }
+    die(json_encode(array(
+        'success' => false, 
+        'message' => "Une erreur s'est produite..."
+    )));
+}
+
+if(isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+    $sql = "UPDATE cours, cours AS c2
+            SET cours.cours_position = c2.cours_position, c2.cours_position = cours.cours_position
+            WHERE cours.cours_position=:new AND c2.cours_position=:old 
+            AND cours.id_module = (SELECT cours_module_id 
+                                    FROM cours_modules 
+                                    WHERE cours_module_uuid=:module_uuid)
+            AND c2.id_module = (SELECT cours_module_id 
+                                    FROM cours_modules 
+                                    WHERE cours_module_uuid=:module_uuid);";
+    $req = $db->prepare($sql);
+    $req->bindParam(':new', $_POST['new']);
+    $req->bindParam(':old', $_POST['old']);
+    $req->bindParam(':module_uuid', $_POST['module']);
+    if($req->execute()) {
+        die(json_encode(array(
+            'success' => true, 
+            'message' => "Cours déplacé !"
+        )));
+    }
+    die(json_encode(array(
+        'success' => false, 
+        'message' => "Une erreur s'est produite..."
     )));
 }
 ?>

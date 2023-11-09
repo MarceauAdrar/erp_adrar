@@ -10,7 +10,7 @@ if (!array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "
     header("Location: http://" . $_SERVER['SERVER_NAME'] . "/erp/public/deconnexion.php?type=info&message=" . urlencode("Session expirée"));
 }
 
-define("DEV", true);
+define("DEV", false);
 define("LIEN_FORMATION", "/erp/public/formation/");
 
 use PHPMailer\PHPMailer\PHPMailer;

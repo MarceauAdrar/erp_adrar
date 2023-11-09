@@ -10,42 +10,55 @@ $_SESSION['csrf_token'] = $csrfToken;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="title" content="ADRAR ERP - Connexion" />
+    <meta name="description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus." />
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php" />
+    <meta property="og:title" content="ADRAR ERP - Connexion" />
+    <meta property="og:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus." />
+    <meta property="og:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php" />
+    <meta property="twitter:title" content="ADRAR ERP - Connexion" />
+    <meta property="twitter:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus." />
+    <meta property="twitter:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png" />
+
+    <meta name="robots" content="index, follow">
     <title>ADRAR ERP - Connexion</title>
     <link rel="stylesheet" href="css/_reset.css">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/_style.css">
     <link rel="stylesheet" href="css/connexion.css">
 </head>
 
 <body>
-    <section>
-        <div class="gauche">
-            <img src="img/femme.png" alt="">
-        </div>
-        <div class="droit">
-            <div>
+    <div class="container justify-content-center">
+        <div class="row">
+            <div class="col-12 text-center">
+                <img src="img/logo_adrar.png" alt="Logo de l'ADRAR">
                 <h1 class="text-white">Re bienvenue sur l'ERP</h1>
+            </div>
+            <div class="col-12">
                 <form action="../src/c/c_requetes.php" method="post">
                     <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
                     <input type="hidden" name="form_login_csrf" value="<?= $csrfToken ?>">
                     <div>
                         <label for="form_login_username" class="text-white">Nom d'utilisateur</label>
-                        <input type="text" name="form_login_username" placeholder="johndoe" autocomplete="off">
-                        <select name="form_login_dns">
-                            <option value="-1">Aucun DNS</option>
-                            <option value="@adrar-formation.com">@adrar-formation.com</option>
-                            <option value="@adrar-numerique.com">@adrar-numerique.com</option>
-                        </select>
+                        <input type="text" class="form-control border-0 float-end" name="form_login_username" placeholder="johndoe" autocomplete="off">
                     </div>
                     <div>
                         <label for="form_login_pass" class="text-white">Mot de passe</label>
-                        <input type="password" name="form_login_pass" placeholder="motdepasse" autocomplete="off">
+                        <input type="password" class="form-control border-0 float-end" name="form_login_pass" placeholder="motdepasse" autocomplete="off">
                     </div>
                     <p class="text-white">Mot de passe oublié ? <a href="oublie.php">Génèrez-en un nouveau</a></a></p>
                     <input type="submit" value="Se connecter" class="btn btn-primary full-width text-white">
                 </form>
             </div>
         </div>
-    </section>
+    </div>
 </body>
 
 </html>

@@ -303,7 +303,7 @@ i[class] {
     line-height: 1.2;
 }
 
-#modalManagecours .modal-body > .container-fluid {
+#modalManagecours .modal-body>.container-fluid {
     max-height: 89vh;
     overflow-y: auto;
 }
@@ -330,7 +330,7 @@ i[class] {
 }
 
 .cours-inactive,
-.quiz-inactive, 
+.quiz-inactive,
 .edition-off {
     opacity: 0.4;
 }
@@ -404,4 +404,17 @@ i[class] {
 .badges {
     width: 5vw;
     height: 5vw;
+}
+
+span.required {
+    color: red;
+}
+
+.sortable-chosen {
+    box-shadow: 8px 8px 32px #E1E1E1;
+}
+
+/* Class name for the dragging item */
+.sortable-drag {
+    opacity: 0;
 }

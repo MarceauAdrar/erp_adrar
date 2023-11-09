@@ -3,15 +3,10 @@ include_once("../../src/m/connect.php");
 
 $title = " | Cours";
 
-$req = $db->prepare("SELECT cours_module_libelle FROM cours JOIN cours_modules ON(cours_module_id = id_module) WHERE cours_link=:cours_link;");
+$req = $db->prepare("SELECT cours_title, cours_module_libelle, cours_module_uuid FROM cours JOIN cours_modules ON(cours_module_id = id_module) WHERE cours_link=:cours_link;");
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
 $req->execute();
-$module_nom = $req->fetch(PDO::FETCH_COLUMN);
-
-$req = $db->prepare("SELECT cours_title FROM cours WHERE cours_link=:cours_link;");
-$req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
-$req->execute();
-$cours_nom = $req->fetch(PDO::FETCH_COLUMN);
+$module = $req->fetch(PDO::FETCH_ASSOC);
 
 $req = $db->prepare("SELECT * FROM cours_ressources WHERE id_cours= (SELECT cours_id FROM cours WHERE cours_link=:cours_link) AND cours_ressource_type = 'autre';");
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -45,12 +40,12 @@ ob_start();
 include_once("./header.php"); ?>
 
 <div class="container-fluid">
-    <div class="row<?=($_SESSION['utilisateur']['id_formateur'] > 0 ? ' justify-content-between' : '')?>">
-        <div class="<?=($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-3 ')?>mt-2 mb-2 float-start">
-            <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $module_nom ?>">Retour sur les cours</a>
+    <div class="row<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? ' justify-content-between' : '') ?>">
+        <div class="<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-3 ') ?>mt-2 mb-2 float-start">
+            <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $module['cours_module_uuid'] ?>">Retour sur les cours</a>
         </div>
-        <div class="<?=($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-6 text-center ')?> mt-2 mb-2 float-start">
-            <h2>[<?=$module_nom?>] - <?=$cours_nom?></h2>
+        <div class="<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-6 text-center ') ?> mt-2 mb-2 float-start">
+            <h2>[<?= $module['cours_module_libelle'] ?>] - <?= $module['cours_title'] ?></h2>
         </div>
         <?php if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
             <div class="col-auto mt-2 mb-2 float-end">

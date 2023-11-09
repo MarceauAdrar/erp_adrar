@@ -290,7 +290,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             SET 
                 nom_formateur=:nom_formateur, 
                 prenom_formateur=:prenom_formateur, 
-                mail_formateur=:mail_formateur, ';
+                mail_formateur=:mail_formateur, 
+                ';
+    if (!empty($_POST['mdp_formateur'])) {
+        $sql .= ' mdp_formateur=:mdp_formateur, ';
+    }
     if (!empty($_POST['signature'])) {
         $sql .= ' signature_formateur=:signature_formateur, ';
     }
@@ -303,7 +307,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $req = $db->prepare($sql);
     $req->bindValue(":nom_formateur", filter_var($_POST['nom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":prenom_formateur", filter_var($_POST['prenom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(":mail_formateur", filter_var($_POST['mail_formateur'], FILTER_VALIDATE_EMAIL));
+    $req->bindValue(":mail_formateur", filter_var($_POST['mail_formateur']."@adrar-formation.com", FILTER_VALIDATE_EMAIL));
+    if (!empty($_POST['mdp_formateur'])) {
+        $req->bindValue(":mdp_formateur", filter_var($_POST['mdp_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
+    }
     if (!empty($_POST['signature'])) {
         $req->bindValue(":signature_formateur", 'v/formateurs/signature_' . $uniqid . '.png');
     }
@@ -334,7 +341,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     die($success);
 } elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
-    if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_dns']) && !empty($_POST['form_login_dns']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
+    if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
         // On sauvegarde une tentative de connexion
         $req = $db->prepare("INSERT INTO connexion_essais(ip_connexion_essai, date_connexion_essai, username_connexion_essai) 
                             VALUES(:ip_connexion_essai, NOW(), :username_connexion_essai);");
@@ -350,7 +357,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $req->bindValue(':username_connexion_essai', $_POST['form_login_username']);
         $req->execute();
         if ($req->fetch(PDO::FETCH_COLUMN) <= 5) {
-            if (connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_dns'])) {
+            if (connexionUtilisateur($_POST['form_login_username'])) {
                 if (array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
                     $redirect = "../../public/index.php";
                 } elseif (array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
@@ -414,6 +421,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif (isset($_POST['form_forgotten_csrf']) && !empty($_POST['form_forgotten_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
         $resultat = reinitialiserMotDePasseFormateur($mailer, $_POST['form_forgotten_mail']);
+    // } elseif($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
+        // $resultat = reinitialiserMotDePasseStagiaire($mailer, $_POST['form_forgotten_mail']);
     } else {
         $resultat = array(
             'type' => 'error',
@@ -683,11 +692,12 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             FROM stagiaires sta ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
-        JOIN sessions s ON(s.id_session = sta.id_session) 
+        JOIN sessions s ON(s.id_session = sta.id_session AND s.date_debut_stage >= NOW()) 
         JOIN formateurs f ON(f.id_formateur = s.id_formateur) ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
-        $sql .= "
-        JOIN sessions s ON(s.id_session = sta.id_session) ";
+        $sql .= " 
+        JOIN sessions s ON(s.id_session = sta.id_session AND s.date_debut_stage >= NOW()) 
+         ";
     }
     $sql .= " WHERE 1 ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {

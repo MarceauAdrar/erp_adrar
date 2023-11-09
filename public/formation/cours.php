@@ -8,7 +8,7 @@ include_once("./header.php");
 <div class="container">
     <div class="row pt-5">
         <input type="hidden" id="hidden_input_module" value="<?= $_GET["cours"] ?>">
-        <input type="search" class="form-control" onkeyup="getCourses(document.querySelector('#hidden_input_module').value , this.value);" placeholder="Votre recherche...">
+        <input type="search" class="form-control" onkeyup="getCourses(document.querySelector('#hidden_input_module').value , this.value);" value="<?=@$_GET['q']?>" placeholder="Votre recherche...">
     </div>
     <div class="row pt-5 cours">
         <h3>Les cours</h3>

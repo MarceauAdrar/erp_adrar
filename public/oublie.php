@@ -10,6 +10,7 @@ $_SESSION['csrf_token'] = $csrfToken;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
     <title>Regénération d'un code d'accès temporaire - ERP</title>
     <link rel="stylesheet" href="css/_reset.css">
     <link rel="stylesheet" href="css/_style.css">

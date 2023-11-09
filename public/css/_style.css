@@ -234,6 +234,13 @@ fieldset {
 .btn-primary {
     background-color: #6BCEE8;
 }
+.btn-primary:hover {
+    background-color: #50a6bb;
+}
+.btn-primary:active {
+    background-color: #3f8496!important;
+    /* box-shadow: 5px 2.5px 2.5px #214750; */
+}
 
 .btn-success {
     background-color: #21b700;

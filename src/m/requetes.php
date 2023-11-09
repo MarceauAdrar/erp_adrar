@@ -189,7 +189,7 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
                             }
                         }
                     }
-                    if(!is_dir(__DIR__ . '/../v/tmp/')) {
+                    if (!is_dir(__DIR__ . '/../v/tmp/')) {
                         mkdir(__DIR__ . '/../v/tmp/');
                     }
                     $html2pdf->Output(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', 'F');
@@ -386,8 +386,8 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $prenom_stagiaire = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $mdp_stagiaire = readable_random_string(10);
 
-        $req = $db->prepare("INSERT INTO stagiaires(nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, mdp_stagiaire, mdp_decode_stagiaire, tel_stagiaire, date_naissance_stagiaire, id_session".(isset($id_stage) ? ", id_stage" : "").") 
-                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :id_session".(isset($id_stage) ? ", :id_stage" : "").");");
+        $req = $db->prepare("INSERT INTO stagiaires(nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, mdp_stagiaire, mdp_decode_stagiaire, tel_stagiaire, date_naissance_stagiaire, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
+                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :id_session" . (isset($id_stage) ? ", :id_stage" : "") . ");");
         $req->bindValue(":nom_stagiaire", $nom_stagiaire);
         $req->bindValue(":prenom_stagiaire", $prenom_stagiaire);
         $req->bindValue(":mail_stagiaire", $mail_stagiaire);
@@ -397,7 +397,7 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $req->bindValue(":tel_stagiaire", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":date_naissance_stagiaire", filter_var($date_anniversaire, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":id_session", filter_var($id_session, FILTER_VALIDATE_INT));
-        if(isset($id_stage)) {
+        if (isset($id_stage)) {
             $req->bindValue(":id_stage", filter_var($id_stage, FILTER_VALIDATE_INT));
         }
         if ($req->execute()) {
@@ -520,32 +520,29 @@ function reinitialiserMotDePasseFormateur(PHPMailer $mailer, string $mail)
  *
  *
  * @param string|int    $identifiant L'identifiant *unique* du formateur, un email ou un code d'accès.
- * @param string|null   $dns L'extension de domaine pour le mail (@adrar-formation.com OU @adrar-numerique.com).
  * @return boolean      Un booléen.
  */
-function connexionUtilisateur(string|int $identifiant, string|int $dns)
+function connexionUtilisateur(string|int $identifiant)
 {
     global $db;
 
-    if ($dns == -1) {
-        $sql = "SELECT * 
+    $sql = "SELECT * 
                 FROM stagiaires WHERE pseudo_stagiaire=:identifiant;";
-        $req = $db->prepare($sql);
-        $req->bindValue(":identifiant", filter_var($identifiant, FILTER_SANITIZE_SPECIAL_CHARS));
-        $req->execute();
-        if ($req->rowCount() === 1) {
-            $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
-            $_SESSION['utilisateur']['id_formateur'] = -1;
-            $req->closeCursor();
-            return true;
-        }
-    } else {
+    $req = $db->prepare($sql);
+    $req->bindValue(":identifiant", filter_var($identifiant, FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->execute();
+    if ($req->rowCount() === 1) {
+        $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
+        $_SESSION['utilisateur']['id_formateur'] = -1;
+        $req->closeCursor();
+        return true;
+    } elseif($req->rowCount() === 0) {
         $sql = "SELECT *  
-            FROM formateurs WHERE (mail_formateur=:identifiant 
-                                OR code_entree_formateur=:identifiant 
-                                OR tmp_code_formateur=:identifiant);";
+                FROM formateurs WHERE (mail_formateur=:identifiant 
+                                    OR code_entree_formateur=:identifiant 
+                                    OR tmp_code_formateur=:identifiant);";
         $req = $db->prepare($sql);
-        $req->bindValue(":identifiant", filter_var($identifiant . $dns, FILTER_VALIDATE_EMAIL));
+        $req->bindValue(":identifiant", filter_var($identifiant . "@adrar-formation.com", FILTER_VALIDATE_EMAIL));
         $req->execute();
         if ($req->rowCount() === 1) {
             $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
@@ -566,21 +563,20 @@ function connexionUtilisateur(string|int $identifiant, string|int $dns)
  * @credits sepehr readable_random_string.php
  * 
  * @return string Random string.
- */ 
+ */
 function readable_random_string($length = 6)
-{  
+{
     $string = '';
-    $vowels = array("a","e","i","o","u");  
+    $vowels = array("a", "e", "i", "o", "u");
     $consonants = array(
-        'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 
+        'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm',
         'n', 'p', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'
-    );  
+    );
 
     $max = $length / 2;
-    for ($i = 1; $i <= $max; $i++)
-    {
-        $string .= $consonants[rand(0,19)];
-        $string .= $vowels[rand(0,4)];
+    for ($i = 1; $i <= $max; $i++) {
+        $string .= $consonants[rand(0, 19)];
+        $string .= $vowels[rand(0, 4)];
         $string .= '-';
     }
 
@@ -595,14 +591,14 @@ function readable_random_string($length = 6)
  * 
  * 
  * @return string Un tableau avec deux index `string type` et `string message`..
- */ 
+ */
 function ajouterDocument(string $nom_document, array $fichier)
 {
     $type = "info";
     $message = "Document ajouté";
 
-    if(!is_dir("../v/templates_documents/$nom_document")) {
-        if(!mkdir("../v/templates_documents/$nom_document", 0777, true)) {
+    if (!is_dir("../v/templates_documents/$nom_document")) {
+        if (!mkdir("../v/templates_documents/$nom_document", 0777, true)) {
             $type = "error";
             $message = "Le dossier n'a pas pu être créé.";
         }
@@ -610,7 +606,7 @@ function ajouterDocument(string $nom_document, array $fichier)
 
     $nom_dossier = $nom_document;
 
-    switch($fichier['type']) {
+    switch ($fichier['type']) {
         case "application/pdf":
             $extension = "pdf";
             break;
@@ -619,11 +615,11 @@ function ajouterDocument(string $nom_document, array $fichier)
             $type = "error";
             $message = "Extension non prise en charge. Seuls les PDF sont acceptés.";
     }
-    
-    if(!empty($extension)) {
+
+    if (!empty($extension)) {
         // Création de l'objet Imagick
         $imagick = new \Imagick();
-        
+
         // Réglage de la résolution pour améliorer la qualité de l'image PNG
         $imagick->setResolution(300, 300);
 
@@ -633,7 +629,7 @@ function ajouterDocument(string $nom_document, array $fichier)
         // Convertir chaque page du PDF en PNG
         foreach ($imagick as $pageNumber => $image) {
             // Enregistrer l'image au format PNG
-            $image->writeImage('../v/templates_documents/'. $nom_dossier . '/' . $nom_document . '_' . ($pageNumber + 1) . '.jpg');
+            $image->writeImage('../v/templates_documents/' . $nom_dossier . '/' . $nom_document . '_' . ($pageNumber + 1) . '.jpg');
         }
         // Libérer la mémoire
         $imagick->clear();

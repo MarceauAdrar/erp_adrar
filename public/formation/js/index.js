@@ -71,12 +71,33 @@ function getModules(recherche = '') {
             document.querySelector('#liste_modules').innerHTML = "";
             if (r.success) {
                 document.querySelector('#liste_modules').innerHTML += r.modules;
+                new Sortable(document.querySelector('#liste_modules'), {
+                    animation: 350,
+                    chosenClass: "sortable-chosen",
+                    dragClass: "sortable-drag",
+                    // Element dragging ended
+                    onEnd: function (/**Event*/evt) {
+                        $.ajax({
+                            url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
+                            method: "post",
+                            dataType: "json",
+                            data: {
+                                set_module_position: 1, 
+                                old: evt.oldIndex - 1, 
+                                new: evt.newIndex - 1
+                            }
+                        });
+                    },
+                });
             }
         }
     });
 }
 
 function getCourses(module, recherche = '') {
+    if(document.querySelector('#module-search-kw')) {
+        recherche = document.querySelector('#module-search-kw').value;
+    }
     $.ajax({
         url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
         method: "post",
@@ -90,6 +111,25 @@ function getCourses(module, recherche = '') {
             document.querySelector('#liste_cours').innerHTML = "";
             if (r.success) {
                 document.querySelector('#liste_cours').innerHTML += r.cours;
+                new Sortable(document.querySelector('#liste_cours'), {
+                    animation: 350,
+                    chosenClass: "sortable-chosen",
+                    dragClass: "sortable-drag",
+                    // Element dragging ended
+                    onEnd: function (/**Event*/evt) {
+                        $.ajax({
+                            url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
+                            method: "post",
+                            dataType: "json",
+                            data: {
+                                set_cours_position: 1, 
+                                module: module, 
+                                old: evt.oldIndex - 1, 
+                                new: evt.newIndex - 1
+                            }
+                        });
+                    },
+                });
             }
         }
     });
@@ -141,6 +181,23 @@ function toggleEditionMode() {
         },
         success: function () {
             document.location.reload();
+        }
+    });
+}
+
+function showAddModule() {
+    $.ajax({
+        url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
+        method: "post",
+        dataType: "json",
+        data: {
+            show_add_module: 1
+        },
+        success: function () {
+            if (r.success == "ok") {
+                $("#modalAddModule .modal-content").html(r.modal_content);
+                $("#modalAddModule").modal("show");
+            }
         }
     });
 }

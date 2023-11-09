@@ -14,7 +14,7 @@ include_once("./header.php");
     </div>
 
     <div class="row pt-5">
-        <input type="search" class="form-control" onkeyup="getModules(this.value);" placeholder="Votre recherche...">
+        <input type="search" class="form-control" id="module-search-kw" onkeyup="getModules(this.value);" placeholder="Votre recherche...">
     </div>
 
     <div class="row pt-5">

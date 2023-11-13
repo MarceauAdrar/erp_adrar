@@ -18,7 +18,7 @@ include_once("./header.php");
     </div>
 
     <div class="row pt-5">
-        <h3>Les modules</h3>
+        <h2>Les modules</h2>
         <div class="col-12">
             <div class="row" id="liste_modules"></div>
         </div>

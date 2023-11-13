@@ -11,7 +11,7 @@ $_SESSION['csrf_token'] = $csrfToken;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="title" content="ADRAR ERP - Connexion" />
-    <meta name="description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus." />
+    <meta name="description" content="ERP de l'ADRAR. Suivez vos stages et alimentez vos cours pour vos sessions en cours et à venir si vous êtes formateur ; et rendez les travaux attendus si vous êtes stagiaire." />
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php" />

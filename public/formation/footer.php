@@ -145,7 +145,7 @@
             </script>
         <?php } ?>
 
-        <footer class="bg-light">
+        <footer class="border-top border-light">
             <p class="text-center">&copy; <?= date("Y") ?> ADRAR - Site développé par Marceau RODRIGUES&nbsp;-&nbsp;<a href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/mentions-legales.php">Mentions légales</a></p>
         </footer>
         </body>

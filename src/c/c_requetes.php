@@ -340,7 +340,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $req->closeCursor();
     }
     die($success);
-} elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
+} elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf']) && $_COOKIE['DECONNECTE'] == 1) {
     if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
         // On sauvegarde une tentative de connexion
         $req = $db->prepare("INSERT INTO connexion_essais(ip_connexion_essai, date_connexion_essai, username_connexion_essai) 
@@ -365,6 +365,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 } else {
                     $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
                 }
+                setcookie("DECONNECTE", false, time() - 3600, "/");
             } else {
                 $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
             }

@@ -2,9 +2,34 @@
 <html lang="fr">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-35N34572F3"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'G-35N34572F3');
+    </script> -->
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <!-- Pour la HeatMap de Clarity by Microsoft -->
+    <!-- <script type="text/javascript">
+        (function(c, l, a, r, i, t, y) {
+            c[a] = c[a] || function() {
+                (c[a].q = c[a].q || []).push(arguments)
+            };
+            t = l.createElement(r);
+            t.async = 1;
+            t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0];
+            y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "jnrkfo3pkk");
+    </script> -->
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />

@@ -43,7 +43,7 @@ $_SESSION['csrf_token'] = $csrfToken;
             </div>
             <div class="col-12">
                 <form action="../src/c/c_requetes.php" method="post">
-                    <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
+                    <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) && isset($_COOKIE['DECONNECTE']) && !empty($_COOKIE['DECONNECTE']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
                     <input type="hidden" name="form_login_csrf" value="<?= $csrfToken ?>">
                     <div>
                         <label for="form_login_username" class="text-white">Nom d'utilisateur</label>

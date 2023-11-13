@@ -418,3 +418,8 @@ span.required {
 .sortable-drag {
     opacity: 0;
 }
+
+.img-course {
+    height: 100%;
+    width: 100%;
+}

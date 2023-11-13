@@ -217,7 +217,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                         <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
                                 <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>">
-                                    <img src="/erp/public/formation/imgs/<?= $cour['cours_illustration'] ?>" />
+                                    <img class="img-course" alt="Illustration <?=$cour["cours_module_libelle"]?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy" />
                                 </span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_module_libelle']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
@@ -298,8 +298,8 @@ if (!empty($_POST["show_modal_manage_quiz"])) {
 }
 
 if (!empty($_POST["add_cours"])) { // TODO supprimer la colonne et intégrer la donnée de la table `cours_modules`
-    $req = $db->prepare("INSERT INTO cours(cours_title, cours_synopsis, cours_text, cours_keywords, cours_link, cours_category, cours_illustration, id_formateur)
-                        VALUES(:cours_title, :cours_synopsis, :cours_text, :cours_keywords, :cours_link, :cours_category, :cours_illustration, :id_formateur) 
+    $req = $db->prepare("INSERT INTO cours(cours_title, cours_synopsis, cours_text, cours_keywords, cours_link, cours_category, id_formateur)
+                        VALUES(:cours_title, :cours_synopsis, :cours_text, :cours_keywords, :cours_link, :cours_category, :id_formateur) 
                         RETURNING cours_id;");
     $req->bindValue(':cours_title', filter_var($_POST['form_cours_title'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_synopsis', filter_var($_POST['form_cours_synopsis'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -307,7 +307,6 @@ if (!empty($_POST["add_cours"])) { // TODO supprimer la colonne et intégrer la 
     $req->bindValue(':cours_keywords', filter_var($_POST['form_cours_keywords'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_link', filter_var($_POST['form_cours_link'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_category', filter_var(strtolower($_POST['form_cours_module']), FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(':cours_illustration', filter_var(strtolower($_POST['form_cours_module']) . ".svg", FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
     if ($req->execute() && !empty($_POST['form_cours_active'])) {
         $id_cours = $req->fetch(PDO::FETCH_ASSOC)['cours_id'];
@@ -669,10 +668,12 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
         $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
             <div class="card">
                 <span class="card-img-top" alt="Illustration d\'un nouveau module">
-                    <input type="file">
+                    <label for="form_add_module">Choisir l\'image
+                        <input type="file" id="form_add_module">
+                    </label>
                 </span>
                 <div class="card-body" style="padding-bottom: 0.6rem;">
-                    <h5 class="card-title text-decoration-underline"><input type="text" placeholder="Ajoutez le nom du module"></h5>
+                    <p class="card-title h5 text-decoration-underline"><input type="text" placeholder="Ajoutez le nom du module"></p>
                 </div>
             </div>
         </div>';
@@ -682,11 +683,11 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
             $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
                 <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . (isset($_POST['recherche']) && !empty($_POST['recherche']) ? '&q='.$_POST['recherche']:'') . '" class="text-black">
                     <div class="card">
-                        <span class="card-img-top" alt="Illustration ' . $module['cours_module_libelle'] . '">
-                            ' . file_get_contents("../../public/formation/imgs/" . $module['cours_illustration']) . '
+                        <span class="card-img-top">
+                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/'. $module['cours_module_illustration'].'" loading="lazy" />
                         </span>
                         <div class="card-body">
-                            <h5 class="card-title text-decoration-underline">' . strtoupper($module['cours_module_libelle']) . '</h5>
+                            <p class="card-title h5 text-decoration-underline">' . strtoupper($module['cours_module_libelle']) . '</p>
                         </div>
                     </div>
                 </a>
@@ -706,7 +707,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $success = true;
 
     if ($_SESSION['utilisateur']['id_formateur'] > 0) {
-        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration, nom_formateur, prenom_formateur 
+        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_module_libelle, cours_module_illustration, nom_formateur, prenom_formateur 
                             FROM cours c 
                             INNER JOIN cours_modules cm ON cm.cours_module_id = c.id_module
                             INNER JOIN formateurs f ON (f.id_formateur = c.id_formateur) 
@@ -723,7 +724,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
                                 ORDER BY cours_position;";
         $req_select_cours = $db->prepare($sql_select_cours);
     } else {
-        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_illustration, nom_formateur, prenom_formateur 
+        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_module_libelle, cours_module_illustration, nom_formateur, prenom_formateur 
                             FROM cours c 
                             INNER JOIN cours_modules cm ON cm.cours_module_id = c.id_module
                             INNER JOIN formateurs f ON (f.id_formateur = c.id_formateur) ";
@@ -775,8 +776,8 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
             $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
                     <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
-                            <span class="card-img-top" alt="Illustration ' . $cours["cours_illustration"] . '">
-                                ' . @file_get_contents("../../public/formation/imgs/" . $cours["cours_illustration"]) . '
+                            <span class="card-img-top">
+                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/'. $cours['cours_module_illustration'].'" loading="lazy" />
                             </span>
                             <div class="card-body">
                                 <h5 class="card-title text-decoration-underline">' . $cours["cours_title"] . '</h5>

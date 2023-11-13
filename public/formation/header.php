@@ -17,6 +17,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="theme-color" content="#317EFB"/>
+    <meta name="description" content="Retrouvez l'ensemble des cours de votre Session sur cette page."/>
     <!-- Pour la HeatMap de Clarity by Microsoft -->
     <!-- <script type="text/javascript">
         (function(c, l, a, r, i, t, y) {
@@ -44,7 +46,7 @@
 <body>
     <div class="wrapper">
         <?php if (isset($_SESSION["utilisateur"]["id_stagiaire"])) { ?>
-            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
                         <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar" />

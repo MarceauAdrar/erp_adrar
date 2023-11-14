@@ -217,7 +217,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                         <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
                                 <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>">
-                                    <img class="img-course" alt="Illustration <?=$cour["cours_module_libelle"]?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy" />
+                                    <img class="img-course" alt="Illustration <?= $cour["cours_module_libelle"] ?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy" />
                                 </span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_module_libelle']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
@@ -681,10 +681,10 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     if (!empty($modules)) {
         foreach ($modules as $module) {
             $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
-                <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . (isset($_POST['recherche']) && !empty($_POST['recherche']) ? '&q='.$_POST['recherche']:'') . '" class="text-black">
+                <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . (isset($_POST['recherche']) && !empty($_POST['recherche']) ? '&q=' . $_POST['recherche'] : '') . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top">
-                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/'. $module['cours_module_illustration'].'" loading="lazy" />
+                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . $module['cours_module_illustration'] . '" loading="lazy" />
                         </span>
                         <div class="card-body">
                             <p class="card-title h5 text-decoration-underline">' . strtoupper($module['cours_module_libelle']) . '</p>
@@ -777,7 +777,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
                     <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top">
-                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/'. $cours['cours_module_illustration'].'" loading="lazy" />
+                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . $cours['cours_module_illustration'] . '" loading="lazy" />
                             </span>
                             <div class="card-body">
                                 <h5 class="card-title text-decoration-underline">' . $cours["cours_title"] . '</h5>
@@ -890,26 +890,26 @@ if (
     exit;
 }
 
-if(isset($_POST['set_module_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+if (isset($_POST['set_module_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
     $sql = "UPDATE cours_modules, cours_modules AS cm2
             SET cours_modules.cours_module_position = cm2.cours_module_position, cm2.cours_module_position = cours_modules.cours_module_position
             WHERE cours_modules.cours_module_position=:new AND cm2.cours_module_position=:old;";
     $req = $db->prepare($sql);
     $req->bindParam(':new', $_POST['new']);
     $req->bindParam(':old', $_POST['old']);
-    if($req->execute()) {
+    if ($req->execute()) {
         die(json_encode(array(
-            'success' => true, 
+            'success' => true,
             'message' => "Module déplacé !"
         )));
     }
     die(json_encode(array(
-        'success' => false, 
+        'success' => false,
         'message' => "Une erreur s'est produite..."
     )));
 }
 
-if(isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+if (isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
     $sql = "UPDATE cours, cours AS c2
             SET cours.cours_position = c2.cours_position, c2.cours_position = cours.cours_position
             WHERE cours.cours_position=:new AND c2.cours_position=:old 
@@ -923,14 +923,14 @@ if(isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_for
     $req->bindParam(':new', $_POST['new']);
     $req->bindParam(':old', $_POST['old']);
     $req->bindParam(':module_uuid', $_POST['module']);
-    if($req->execute()) {
+    if ($req->execute()) {
         die(json_encode(array(
-            'success' => true, 
+            'success' => true,
             'message' => "Cours déplacé !"
         )));
     }
     die(json_encode(array(
-        'success' => false, 
+        'success' => false,
         'message' => "Une erreur s'est produite..."
     )));
 }

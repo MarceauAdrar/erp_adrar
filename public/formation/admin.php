@@ -29,6 +29,10 @@ $req_select_tps = $db->prepare($sql_select_tps);
 $req_select_tps->execute();
 $tps = $req_select_tps->fetchAll(PDO::FETCH_ASSOC);
 
+$req_secteurs = $db->prepare("SELECT id_secteur, nom_secteur FROM secteurs ORDER BY nom_secteur;");
+$req_secteurs->execute();
+$secteurs = $req_secteurs->fetchAll(PDO::FETCH_ASSOC);
+
 $arr = array(
     ["html-css" => 0],
     ["bootstrap" => 0],
@@ -42,6 +46,36 @@ include_once("./header.php"); ?>
             <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManagecours" onclick="showModalManagecours();">Gérer les cours</button>
             <!-- <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddQuiz">Ajouter un quiz</button>
             <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManageQuiz" onclick="showModalManageQuiz();">Gérer les quiz</button> -->
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3 offset-2">
+            <form class="bg-light p-3 mt-3" action="//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php" method="post">
+                <div class="form-group">
+                    <label for="form_faq_theme">Thème de la FAQ (25 caractères max)</label>
+                    <input type="text" class="form-control" name="form_faq_theme" id="form_faq_theme" placeholder="Thème de la FAQ (laisser vide si `global`)">
+                </div>
+                <div class="form-group pt-2">
+                    <label for="form_faq_title">Titre de la FAQ</label>
+                    <input type="text" class="form-control" name="form_faq_title" id="form_faq_title" placeholder="Titre de la FAQ">
+                </div>
+                <div class="form-group pt-2 pb-2">
+                    <label for="form_faq_content">Contenu de la FAQ</label>
+                    <textarea class="form-control" name="form_faq_content" id="form_faq_content"></textarea>
+                </div>
+                <div class="form-group pb-2">
+                    <label for="form_faq_secteur">Secteur</label>
+                    <select class="form-select" name="form_faq_secteur" id="form_faq_secteur">
+                        <option value="-1">Tous les secteurs</option>
+                        <?php foreach ($secteurs as $secteur) { ?>
+                            <option value="<?= $secteur['id_secteur'] ?>"><?= $secteur['nom_secteur'] ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="text-end">
+                    <button role="button" type="submit" class="btn btn-primary">Envoyer</button>
+                </div>
+            </form>
         </div>
     </div>
     <div class="row">

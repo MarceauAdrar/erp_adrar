@@ -664,7 +664,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     }
 
     $liste_modules = "";
-    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
+    if ($_SESSION['utilisateur']['id_formateur'] > 0 && !empty($_SESSION['mode_edition'])) {
         $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
             <div class="card">
                 <span class="card-img-top" alt="Illustration d\'un nouveau module">
@@ -757,7 +757,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
 
     $liste_cours = "";
-    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
+    if ($_SESSION['utilisateur']['id_formateur'] > 0 && !empty($_SESSION['mode_edition'])) {
         $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
             <div class="card">
                 <span class="card-img-top" alt="Illustration a ajouter">
@@ -812,7 +812,7 @@ if (isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode']
     $_SESSION['mode_edition'] = !$_SESSION['mode_edition'];
 
     die(json_encode(array(
-        'success' => true
+        'success' => $_SESSION['mode_edition']
     )));
 }
 
@@ -826,8 +826,13 @@ if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
     $req->execute();
 
     die(json_encode(array(
-        'trainees' => $req->fetchAll(PDO::FETCH_COLUMN)
+        'trainees' => $req->fetchAll(PDO::FETCH_COLUMN),
+        'nb_trainees' => $req->rowCount()
     )));
+}
+
+if (isset($_POST['connect_as_trainee']) && !empty($_POST['connect_as_trainee'])) {
+    die(json_encode(connexionUtilisateur($_POST['username_trainee'])));
 }
 
 if (
@@ -839,6 +844,9 @@ if (
             SET 
                 nom_stagiaire=:nom_stagiaire, 
                 prenom_stagiaire=:prenom_stagiaire ";
+    if (isset($_POST['form_mail_stagiaire']) && !empty($_POST['form_mail_stagiaire'])) {
+        $sql .= " , mail_stagiaire=:mail_stagiaire ";
+    }
     if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
         $sql .= " , mdp_stagiaire=:mdp_stagiaire ";
     }
@@ -846,11 +854,14 @@ if (
     $req = $db->prepare($sql);
     $req->bindValue(':nom_stagiaire', strtoupper($_POST['form_nom_stagiaire']));
     $req->bindValue(':prenom_stagiaire', ucwords($_POST['form_prenom_stagiaire']));
+    if (isset($_POST['form_mail_stagiaire']) && !empty($_POST['form_mail_stagiaire'])) {
+        $req->bindValue(':mail_stagiaire', filter_var($_POST['form_mail_stagiaire'], FILTER_VALIDATE_EMAIL));
+    }
     if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
         $req->bindValue(':mdp_stagiaire', password_hash($_POST['form_mdp_stagiaire'], PASSWORD_BCRYPT));
         $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
         $req->execute();
-        header("Location: /erp/public/deconnexion.php");
+        header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
     }
     $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
@@ -880,7 +891,7 @@ if (
         $req->bindValue(':mdp_formateur', password_hash($_POST['form_mdp_formateur'], PASSWORD_BCRYPT));
         $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
         $req->execute();
-        header("Location: /erp/public/deconnexion.php");
+        header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
     }
     $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
@@ -933,5 +944,22 @@ if (isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_fo
         'success' => false,
         'message' => "Une erreur s'est produite..."
     )));
+}
+
+if (isset($_POST['form_faq_theme']) && !empty($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty($_POST['form_faq_title']) && isset($_POST['form_faq_content']) && !empty($_POST['form_faq_content']) && isset($_POST['form_faq_secteur']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+    $sql = "INSERT INTO faqs(faq_theme, faq_title, faq_content, faq_priority, id_secteur) 
+            VALUES(:theme, :title, :content, :priority, :secteur)";
+    $req = $db->prepare($sql);
+    $req->bindValue(":theme", (!empty($_POST['form_faq_secteur']) && $_POST['form_faq_secteur'] < 0 ? "global" : strtolower($_POST['form_faq_theme'])));
+    $req->bindValue(":title", ucfirst($_POST['form_faq_title']));
+    $req->bindValue(":content", htmlentities($_POST['form_faq_content']));
+    $req->bindValue(":secteur", (!empty($_POST['form_faq_secteur']) && $_POST['form_faq_secteur'] < 0 ? NULL : $_POST['form_faq_secteur']));
+    $req->bindValue(":priority", (!empty($_POST['form_faq_secteur']) && $_POST['form_faq_secteur'] < 0 ? 1 : 0));
+    if ($req->execute()) {
+        header("Location: /erp/public/formation/admin.php");
+        exit;
+    }
+    header("Location: /erp/public/formation/admin.php");
+    exit;
 }
 ?>

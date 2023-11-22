@@ -1,7 +1,7 @@
 <?php
 include_once __DIR__ . '/../src/m/connect.php';
 
-if (!isset($_SESSION['code_formateur'])) {
+if (!isset($_SESSION['code_tmp'])) {
     header("Location: ../public/connexion.php");
 }
 

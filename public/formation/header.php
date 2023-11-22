@@ -19,6 +19,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <meta name="theme-color" content="#317EFB"/>
     <meta name="description" content="Retrouvez l'ensemble des cours de votre Session sur cette page."/>
+    <link rel="apple-touch-icon" sizes="180x180" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
+    <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
     <!-- Pour la HeatMap de Clarity by Microsoft -->
     <!-- <script type="text/javascript">
         (function(c, l, a, r, i, t, y) {
@@ -34,6 +38,14 @@
     </script> -->
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css" />
+    <?php if (isset($_SESSION["utilisateur"]["id_formateur"])) { ?>
+    <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container {
+            z-index: 999999;
+        }
+    </style>
+    <?php } ?>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/base.css?v=<?= uniqid() ?>" />
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/connexion.css?v=<?= uniqid() ?>" />
@@ -46,7 +58,7 @@
 <body>
     <div class="wrapper">
         <?php if (isset($_SESSION["utilisateur"]["id_stagiaire"])) { ?>
-            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light">
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-light">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
                         <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar" />
@@ -69,6 +81,9 @@
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=boite-aux-lettres">Déposer un fichier</a>
                                 </li>
                             <?php } ?>
+                            <li class="nav-item">
+                                <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/faq.php">FAQ</a>
+                            </li>
                             <?php
                             $sql_evaluations = "SELECT evaluation_dd_name, evaluation_dd_link 
                                             FROM evaluations_dd 
@@ -139,7 +154,7 @@
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/account.php">Modifier mes informations</a></li>
                                     <?php
                                     if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
-                                        <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalConnectAs" class="dropdown-item">Se connecter en tant que...</a></li>
+                                        <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalConnectAs" class="dropdown-item" onclick="loadTrainees();">Se connecter en tant que...</a></li>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/">Retour sur l'ERP</a></li>
                                     <?php } ?>
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/deconnexion.php">Se déconnecter</a></li>

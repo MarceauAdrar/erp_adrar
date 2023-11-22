@@ -20,7 +20,7 @@ include_once("./header.php");
     <div class="row pt-5">
         <h2>Les modules</h2>
         <div class="col-12">
-            <div class="row" id="liste_modules"></div>
+            <div class="row pb-5" id="liste_modules"></div>
         </div>
 
     </div>

@@ -87,6 +87,12 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                         </div>
                         <div class="col">
                             <div class="form-group">
+                                <label for="form_mail_stagiaire">Mail<span class="required">*</span></label>
+                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['mail_stagiaire'] . '">
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
                                 <label for="form_mdp_stagiaire">Mot de passe</label>
                                 <input type="password" autocomplete="new-password" class="form-control" name="form_mdp_stagiaire" id="form_mdp_stagiaire" placeholder="Mot de passe de l\'utilisateur" value="">
                             </div>

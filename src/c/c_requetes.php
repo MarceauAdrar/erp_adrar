@@ -340,7 +340,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $req->closeCursor();
     }
     die($success);
-} elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf']) && $_COOKIE['DECONNECTE'] == 1) {
+} elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
         // On sauvegarde une tentative de connexion
         $req = $db->prepare("INSERT INTO connexion_essais(ip_connexion_essai, date_connexion_essai, username_connexion_essai) 
@@ -377,18 +377,27 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_signup_csrf']) && !empty($_POST['form_signup_csrf'])) {
-    unset($_SESSION['code_formateur']);
+    unset($_SESSION['code_tmp']);
     if ($_SESSION['csrf_token'] === $_POST['form_signup_csrf'] && isset($_POST['form_signup_code']) && !empty($_POST['form_signup_code'])) {
-        $code_formateur = filter_var($_POST['form_signup_code'], FILTER_VALIDATE_INT);
-        $req = $db->prepare("SELECT * FROM formateurs WHERE (code_entree_formateur=:code_formateur OR tmp_code_formateur=:code_formateur) AND NOW() <= date_code_entree_formateur;");
-        $req->bindValue(":code_formateur", $code_formateur);
-        $req->execute();
-        if ($req->rowCount()) {
-            $req->closeCursor();
-            $_SESSION['code_formateur'] = $code_formateur;
+        $code_tmp = filter_var($_POST['form_signup_code'], FILTER_VALIDATE_INT);
+        $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE (code_entree_formateur=:code_formateur OR tmp_code_formateur=:code_formateur) AND (NOW() <= date_code_entree_formateur OR NOW() <= date_tmp_code_formateur);");
+        $req_formateur->bindValue(":code_formateur", $code_tmp);
+        $req_formateur->execute();
+
+        $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE tmp_code_stagiaire=:code_stagiaire;");
+        $req_stagiaire->bindValue(":code_stagiaire", $code_tmp);
+        $req_stagiaire->execute();
+        
+        if ($req_formateur->rowCount() === 1) {
+            $req_formateur->closeCursor();
+            $_SESSION['code_tmp'] = "formateur_" . $code_tmp;
+            $redirect = "../../public/changer-mdp.php";
+        } elseif($req_stagiaire->rowCount() === 1) {
+            $req_stagiaire->closeCursor();
+            $_SESSION['code_tmp'] = "stagiaire_" . $code_tmp;
             $redirect = "../../public/changer-mdp.php";
         } else {
-            $redirect = "../../public/code.php?type=error&message=" . urlencode("Code de formateur invalide ou expiré");
+            $redirect = "../../public/code.php?type=error&message=" . urlencode("Code invalide ou expiré");
         }
     } else {
         $redirect = "../../public/code.php?type=error&message=" . urlencode("Jeton incorrect");
@@ -397,17 +406,27 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif (isset($_POST['form_change_pass_csrf']) && !empty($_POST['form_change_pass_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_change_pass_csrf']) {
         if (isset($_POST['form_change_pass']) && !empty($_POST['form_change_pass']) && isset($_POST['form_change_pass_bis']) && !empty($_POST['form_change_pass_bis']) && $_POST['form_change_pass'] === $_POST['form_change_pass_bis']) {
-            $req = $db->prepare("UPDATE formateurs 
-                                SET 
-                                    code_entree_formateur=NULL, 
-                                    tmp_code_formateur=NULL, 
-                                    mdp_formateur=:mdp_formateur
-                                WHERE (code_entree_formateur=:code_formateur OR tmp_code_formateur=:code_formateur);");
-            $req->bindValue(":mdp_formateur", password_hash(htmlspecialchars($_POST['form_change_pass']), PASSWORD_BCRYPT));
-            $req->bindValue(":code_formateur", filter_var($_SESSION['code_formateur'], FILTER_VALIDATE_INT));
-            if ($req->execute()) {
+            if(str_contains($_SESSION['code_tmp'], "formateur_")) {
+                $req = $db->prepare("UPDATE formateurs 
+                                    SET 
+                                        code_entree_formateur=NULL, 
+                                        tmp_code_formateur=NULL, 
+                                        mdp_formateur=:mdp_formateur
+                                    WHERE (code_entree_formateur=:code_tmp OR tmp_code_formateur=:code_tmp);");
+                $req->bindValue(":mdp_formateur", password_hash(htmlspecialchars($_POST['form_change_pass']), PASSWORD_BCRYPT));
+                $req->bindValue(":code_tmp", filter_var(str_replace("formateur_", "", $_SESSION['code_tmp']), FILTER_VALIDATE_INT));
+            } elseif(str_contains($_SESSION['code_tmp'], "stagiaire_")) {
+                $req = $db->prepare("UPDATE stagiaires 
+                                    SET 
+                                        tmp_code_stagiaire=NULL, 
+                                        mdp_stagiaire=:mdp_stagiaire
+                                    WHERE tmp_code_stagiaire=:code_tmp;");
+                $req->bindValue(":mdp_stagiaire", password_hash(htmlspecialchars($_POST['form_change_pass']), PASSWORD_BCRYPT));
+                $req->bindValue(":code_tmp", filter_var(str_replace("stagiaire_", "", $_SESSION['code_tmp']), FILTER_VALIDATE_INT));
+            }
+            if (isset($req) && $req->execute()) {
                 $req->closeCursor();
-                $redirect = "../../public/connexion.php";
+                $redirect = "../../public/connexion.php?type=info&message=" . urlencode("Mot de passe changé avec succès");
                 unset($_SESSION);
             } else {
                 $redirect = "../../public/changer-mdp.php?type=error&message=" . urlencode("Une erreur s'est produite, veuillez réessayer");
@@ -421,9 +440,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_forgotten_csrf']) && !empty($_POST['form_forgotten_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
-        $resultat = reinitialiserMotDePasseFormateur($mailer, $_POST['form_forgotten_mail']);
-    // } elseif($_SESSION['csrf_token'] === $_POST['form_forgotten_csrf'] && isset($_POST['form_forgotten_mail']) && !empty($_POST['form_forgotten_mail'])) {
-        // $resultat = reinitialiserMotDePasseStagiaire($mailer, $_POST['form_forgotten_mail']);
+        $resultat = reinitialiserMotDePasse($mailer, $_POST['form_forgotten_mail']);
     } else {
         $resultat = array(
             'type' => 'error',
@@ -537,6 +554,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
+    $sql .= " AND sta.est_actif=1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
@@ -595,6 +613,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
+    $sql .= " AND sta.est_actif=1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
@@ -651,6 +670,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
+    $sql .= " AND sta.est_actif=1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
@@ -708,6 +728,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
+    $sql .= " AND sta.est_actif=1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));

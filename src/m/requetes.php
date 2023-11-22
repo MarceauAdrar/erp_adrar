@@ -444,52 +444,100 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
 }
 
 /**
- * Permet de réinitialiser le mot de passe d'un formateur dans la table **formateurs**.
+ * Permet de réinitialiser le mot de passe d'un utilisateur dans la table **formateurs** ou **stagiaires**.
  *
  *
  * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
- * @param string    $mail L'identifiant du formateur.
+ * @param string    $mail L'identifiant du compte.
  * @return array    Un tableau avec deux index `string type` et `string message`.
  */
-function reinitialiserMotDePasseFormateur(PHPMailer $mailer, string $mail)
+function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
 {
     global $db;
 
-    $mail_formateur = filter_var($mail, FILTER_VALIDATE_EMAIL);
-    $tmp_code_formateur = random_int(100000, 999999);
-    unset($_SESSION['code_formateur']);
+    $mail_utilisateur = filter_var($mail, FILTER_VALIDATE_EMAIL);
+    $tmp_code = random_int(100000, 999999);
+    unset($_SESSION['code_tmp']);
 
-    $req = $db->prepare("SELECT * FROM formateurs WHERE mail_formateur=:mail_formateur AND code_entree_formateur IS NULL;");
-    $req->bindValue(":mail_formateur", $mail_formateur);
-    $req->execute();
-    if ($req->rowCount() === 1) { // Si le mail du formateur existe
-        $user = $req->fetch(PDO::FETCH_ASSOC);
-        $req->closeCursor();
+    $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE mail_formateur=:mail_formateur AND code_entree_formateur IS NULL;");
+    $req_formateur->bindValue(":mail_formateur", $mail_utilisateur);
+    $req_formateur->execute();
+    
+    $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE mail_stagiaire=:mail_stagiaire;");
+    $req_stagiaire->bindValue(":mail_stagiaire", $mail_utilisateur);
+    $req_stagiaire->execute();
+
+    if ($req_formateur->rowCount() === 1) { // Si le mail du formateur existe
+        $user = $req_formateur->fetch(PDO::FETCH_ASSOC);
+        $req_formateur->closeCursor();
 
         $req = $db->prepare("UPDATE formateurs 
                             SET 
                                 tmp_code_formateur=:tmp_code_formateur, 
                                 date_tmp_code_formateur=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
                             WHERE mail_formateur=:mail_formateur;");
-        $req->bindValue(":mail_formateur", $mail_formateur);
-        $req->bindValue(":tmp_code_formateur", $tmp_code_formateur);
+        $req->bindValue(":mail_formateur", $mail_utilisateur);
+        $req->bindValue(":tmp_code_formateur", $tmp_code);
         if ($req->execute()) {
             $req->closeCursor();
 
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_TMP.html');
             $message = strtr($message, array(
-                '{{PRENOM_FORMATEUR}}' => ucwords($user['prenom_formateur']),
-                '{{CODE_TMP_FORMATEUR}}' => $tmp_code_formateur,
-                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $tmp_code_formateur
+                '{{PRENOM}}' => ucwords($user['prenom_formateur']),
+                '{{CODE_TMP}}' => $tmp_code,
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $tmp_code
             ));
             $mailer->Subject = '[ERP] Code TEMPORAIRE formateur';
             $mailer->Body    = $message;
             $mailer->AltBody = strip_tags($message);
             $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
             if (DEV) {
-                $mailer->addAddress('marceau0707@gmail.com', $mail_formateur . " - " . $user['prenom_formateur'] . " " . $user['nom_formateur']);
+                $mailer->addAddress('marceau0707@gmail.com', $mail_utilisateur . " - " . $user['prenom_formateur'] . " " . $user['nom_formateur']);
             } else {
-                $mailer->addAddress($mail_formateur, $user['prenom_formateur'] . " " . $user['nom_formateur']);
+                $mailer->addAddress($mail_utilisateur, $user['prenom_formateur'] . " " . $user['nom_formateur']);
+                $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            }
+            $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            try {
+                $mailer->send();
+                $type = "success";
+                $message = "Un mail a été envoyé si l'adresse mail existe.";
+            } catch (Exception $e) {
+                $type = "error";
+                $message = "Erreur: " . $e->getMessage();
+            }
+        } else {
+            $type = "error";
+            $message = "Une erreur s'est produite, veuillez réessayer.";
+        }
+    } elseif($req_stagiaire->rowCount() === 1) {
+        $user = $req_stagiaire->fetch(PDO::FETCH_ASSOC);
+        $req_stagiaire->closeCursor();
+
+        $req = $db->prepare("UPDATE stagiaires 
+                            SET 
+                                tmp_code_stagiaire=:tmp_code_stagiaire, 
+                                date_tmp_code_stagiaire=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
+                            WHERE mail_stagiaire=:mail_stagiaire;");
+        $req->bindValue(":mail_stagiaire", $mail_utilisateur);
+        $req->bindValue(":tmp_code_stagiaire", $tmp_code);
+        if ($req->execute()) {
+            $req->closeCursor();
+
+            $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_TMP.html');
+            $message = strtr($message, array(
+                '{{PRENOM}}' => ucwords($user['prenom_stagiaire']),
+                '{{CODE_TMP}}' => $tmp_code,
+                '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $tmp_code
+            ));
+            $mailer->Subject = '[ERP] Code TEMPORAIRE stagiaire';
+            $mailer->Body    = $message;
+            $mailer->AltBody = strip_tags($message);
+            $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            if (DEV) {
+                $mailer->addAddress('marceau0707@gmail.com', $mail_utilisateur . " - " . $user['prenom_stagiaire'] . " " . $user['nom_stagiaire']);
+            } else {
+                $mailer->addAddress($mail_utilisateur, $user['prenom_stagiaire'] . " " . $user['nom_stagiaire']);
                 $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
             }
             $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');

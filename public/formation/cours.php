@@ -13,7 +13,7 @@ include_once("./header.php");
     <div class="row pt-5 cours">
         <h3>Les cours</h3>
         <div class="col-12">
-            <div class="row" id="liste_cours"></div>
+            <div class="row pb-5" id="liste_cours"></div>
         </div>
     </div>
 </div>

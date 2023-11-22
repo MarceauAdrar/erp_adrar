@@ -39,7 +39,7 @@ $req->closeCursor();
 ob_start();
 include_once("./header.php"); ?>
 
-<div class="container-fluid">
+<div class="container-fluid position-fixed bg-white">
     <div class="row<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? ' justify-content-between' : '') ?>">
         <div class="<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-3 ') ?>mt-2 mb-2 float-start">
             <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $module['cours_module_uuid'] ?>">Retour sur les cours</a>
@@ -54,13 +54,13 @@ include_once("./header.php"); ?>
     </div>
 <?php } ?>
 </div>
-<iframe src="https://docs.google.com/presentation/d/e/<?= @$_GET['slide'] ?>/embed?start=true&loop=true&delayms=60000" frameborder="0" width="1280" height="749" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+<iframe class="pt-5" src="https://docs.google.com/presentation/d/e/<?= @$_GET['slide'] ?>/embed?start=true&loop=true&delayms=60000" frameborder="0" width="1280" height="749" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 <div class="container">
     <div class="row">
         <?php if (!empty($ressources)) { ?>
             <div class="col-12">
                 <h2>Les ressources</h2>
-                <div class="row">
+                <div class="row pb-3">
                     <?php foreach ($ressources as $ressource) {
                         $lien = "";
                         if (empty($ressource['cours_ressource_lien'])) {
@@ -84,7 +84,7 @@ include_once("./header.php"); ?>
         <?php if (!empty($exercices)) { ?>
             <div class="col-12">
                 <h2>Les exercices</h2>
-                <div class="row">
+                <div class="row pb-3">
                     <?php foreach ($exercices as $exercice) { ?>
                         <div class="card col-xs-1 col-lg-2 col-xl-3">
                             <span class="card-img-top" alt="Illustration devoirs à la maison">
@@ -105,7 +105,7 @@ include_once("./header.php"); ?>
         <?php if (!empty($tps)) { ?>
             <div class="col-12">
                 <h2>Les TPs</h2>
-                <div class="row">
+                <div class="row pb-5">
                     <?php foreach ($tps as $tp) { ?>
                         <div class="card col-xs-1 col-lg-3 col-xl-4">
                             <span class="card-img-top" alt="Illustration devoirs à la maison">

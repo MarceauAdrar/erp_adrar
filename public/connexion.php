@@ -12,6 +12,11 @@ $_SESSION['csrf_token'] = $csrfToken;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="title" content="ADRAR ERP - Connexion" />
     <meta name="description" content="ERP de l'ADRAR. Suivez vos stages et alimentez vos cours pour vos sessions en cours et à venir si vous êtes formateur ; et rendez les travaux attendus si vous êtes stagiaire." />
+    <link rel="apple-touch-icon" sizes="180x180" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
+    <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
+    
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php" />
@@ -43,7 +48,7 @@ $_SESSION['csrf_token'] = $csrfToken;
             </div>
             <div class="col-12">
                 <form action="../src/c/c_requetes.php" method="post">
-                    <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) && isset($_COOKIE['DECONNECTE']) && !empty($_COOKIE['DECONNECTE']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
+                    <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) && isset($_COOKIE['DECONNECTE']) && !empty($_COOKIE['DECONNECTE']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : ((isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "success") ? "bg-success" : "alert-info")) ?>"><?= @urldecode($_GET['message']) ?></div>
                     <input type="hidden" name="form_login_csrf" value="<?= $csrfToken ?>">
                     <div>
                         <label for="form_login_username" class="text-white">Nom d'utilisateur</label>

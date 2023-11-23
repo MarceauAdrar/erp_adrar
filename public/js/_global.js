@@ -4,7 +4,11 @@ function updateForm() {
         document.querySelector('#' + doc).classList.add('hidden');
     });
     switch(document.querySelector('#document').value) {
-        case "convention":
+        case "convention_no_logo":
+        case "convention_region":
+        case "convention_pe":
+        case "convention_region_fse":
+        case "convention_region_investir":
             document.querySelector('#document_convention').classList.toggle('hidden');
             document.querySelector('#document_informations').setAttribute('name', "document_convention");
             break;

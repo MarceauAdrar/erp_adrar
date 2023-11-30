@@ -4,18 +4,39 @@ include_once("../../src/m/connect.php");
 $title = " | Mon profil";
 $form = "";
 
+
+
 if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
-    $sql = "SELECT nom_formateur, prenom_formateur, mail_formateur, carte_formateur_tel
+    $sql = "SELECT nom_formateur, prenom_formateur, mail_formateur, carte_formateur_tel, avatar_id, avatar_nom, avatar_lien
             FROM formateurs 
+            JOIN avatars ON (avatar_id = id_avatar)
             WHERE id_formateur=:id_formateur;";
     $req = $db->prepare($sql);
     $req->bindValue(':id_formateur', $_SESSION['utilisateur']['id_formateur']);
     $req->execute();
     $formateur = $req->fetch(PDO::FETCH_ASSOC);
+    $sql = "SELECT avatar_id, avatar_nom, avatar_lien
+            FROM avatars 
+            ORDER BY avatar_nom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $avatars = "";
+    foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $avatar) {
+        $avatars .= '<img onclick="changerAvatar(this);"  data-id="' . $avatar['avatar_id'] . '" class="img-fluid rounded me-2 mb-5 img-preview' . ($avatar['avatar_id'] == $formateur['avatar_id'] ? ' img-selected' : '') . '" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $avatar['avatar_lien'] . '" alt="Avatar de type ' . $avatar['avatar_nom'] . '" />';
+    }
     $form = '
         <div class="container">
             <div class="row">
                 <form action="//' . $_SERVER["SERVER_NAME"] . '/erp/src/c/requests.php" enctype="multipart/form-data" method="post">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <input type="hidden" name="form_avatar_formateur" value="' . $formateur['avatar_id'] . '">
+                            <img class="img-fluid rounded m-5 img-profile" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $formateur['avatar_lien'] . '" alt="Avatar de type ' . $formateur['avatar_nom'] . '" />
+                        </div>
+                        <div class="col-12 text-center">
+                        ' . $avatars . '
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
@@ -55,17 +76,36 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
         </div>
     ';
 } elseif (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0) {
-    $sql = "SELECT nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, tel_stagiaire, date_naissance_stagiaire  
+    $sql = "SELECT nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, tel_stagiaire, date_naissance_stagiaire, avatar_id, avatar_nom, avatar_lien 
             FROM stagiaires 
+            JOIN avatars ON (avatar_id = id_avatar)
             WHERE id_stagiaire=:id_stagiaire;";
     $req = $db->prepare($sql);
     $req->bindValue(':id_stagiaire', $_SESSION['utilisateur']['id_stagiaire']);
     $req->execute();
     $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
+    $sql = "SELECT avatar_id, avatar_nom, avatar_lien
+            FROM avatars 
+            ORDER BY avatar_nom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $avatars = "";
+    foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $avatar) {
+        $avatars .= '<img onclick="changerAvatar(this);"  data-id="' . $avatar['avatar_id'] . '" class="img-fluid rounded me-2 mb-5 img-preview' . ($avatar['avatar_id'] == $stagiaire['avatar_id'] ? ' img-selected' : '') . '" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $avatar['avatar_lien'] . '" alt="Avatar de type ' . $avatar['avatar_nom'] . '" />';
+    }
     $form = '
         <div class="container">
             <div class="row">
                 <form action="//' . $_SERVER["SERVER_NAME"] . '/erp/src/c/requests.php" enctype="multipart/form-data" method="post">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <input type="hidden" name="form_avatar_stagiaire" value="' . $stagiaire['avatar_id'] . '">
+                            <img class="img-fluid rounded m-5 img-profile" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $stagiaire['avatar_lien'] . '" alt="Avatar de type ' . $stagiaire['avatar_nom'] . '" />
+                        </div>
+                        <div class="col-12 text-center">
+                        ' . $avatars . '
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col">
                             <div class="form-group">
@@ -111,8 +151,22 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
 
 ob_start();
 include_once("./header.php");
-echo $form;
-
-include_once("./js.php");
+echo $form; ?>
+<script>
+    function changerAvatar(img) {
+        var avatars = document.querySelectorAll('.img-preview');
+        avatars.forEach(avatar => {
+            avatar.classList.remove('img-selected');
+        });
+        document.querySelector('.img-profile').src = img.src;
+        if (document.querySelector('input[name="form_avatar_formateur"]')) {
+            document.querySelector('input[name="form_avatar_formateur"]').value = img.dataset.id;
+        } else {
+            document.querySelector('input[name="form_avatar_stagiaire"]').value = img.dataset.id;
+        }
+        img.classList.add('img-selected');
+    }
+</script>
+<?php include_once("./js.php");
 include_once("./footer.php");
 die(ob_get_clean());

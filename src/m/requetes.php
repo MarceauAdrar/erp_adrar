@@ -462,7 +462,7 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
     $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE mail_formateur=:mail_formateur AND code_entree_formateur IS NULL;");
     $req_formateur->bindValue(":mail_formateur", $mail_utilisateur);
     $req_formateur->execute();
-    
+
     $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE mail_stagiaire=:mail_stagiaire;");
     $req_stagiaire->bindValue(":mail_stagiaire", $mail_utilisateur);
     $req_stagiaire->execute();
@@ -510,7 +510,7 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
             $type = "error";
             $message = "Une erreur s'est produite, veuillez réessayer.";
         }
-    } elseif($req_stagiaire->rowCount() === 1) {
+    } elseif ($req_stagiaire->rowCount() === 1) {
         $user = $req_stagiaire->fetch(PDO::FETCH_ASSOC);
         $req_stagiaire->closeCursor();
 
@@ -584,7 +584,7 @@ function connexionUtilisateur(string|int $identifiant)
         $_SESSION['utilisateur']['id_formateur'] = -1;
         $req->closeCursor();
         return true;
-    } elseif($req->rowCount() === 0) {
+    } elseif ($req->rowCount() === 0) {
         $sql = "SELECT *  
                 FROM formateurs WHERE (mail_formateur=:identifiant 
                                     OR code_entree_formateur=:identifiant 
@@ -684,8 +684,10 @@ function ajouterDocument(string $nom_document, array $fichier)
         $imagick->destroy();
     }
 
-    return array(
-        'type' => $type,
-        'message' => $message
+    return json_encode(
+        array(
+            'type' => $type,
+            'message' => $message
+        )
     );
 }

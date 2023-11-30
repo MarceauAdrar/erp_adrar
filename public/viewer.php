@@ -39,7 +39,7 @@ $html2pdf->SetSubject($document['nom_document']);
 if (!empty($pages)) {
     foreach ($pages as $page) {
         $html2pdf->AddPage();
-        $html2pdf->Image(__DIR__ . '/../src/v/templates_documents/' . $document['index_document'] . $page['lien']);
+        $html2pdf->Image(__DIR__ . '/../src/v/templates_documents/' . $document['index_document'] . "/" . $page['lien']);
         if (!empty($page['textes_ajoutes'])) {
             foreach (json_decode($page['textes_ajoutes'], true) as $key => $i) {
                 $html2pdf->setXY($i['X'], $i['Y']);

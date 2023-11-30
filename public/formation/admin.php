@@ -370,6 +370,31 @@ include_once("./header.php"); ?>
 
 <?php
 include_once("./js.php"); ?>
+<!-- TinyMCE CDN -->
+<script src="https://cdn.tiny.cloud/1/a8r1baghsc0tvoi3mea8smbftcwaas0dv5duyputb14spmju/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+    tinymce.init({
+        selector: 'textarea#form_faq_content',
+        skin: 'bootstrap',
+        plugins: 'lists, link, image, media',
+        toolbar: 'h3 h4 h5 h6 bold italic strikethrough blockquote bullist numlist backcolor | link image media | removeformat help',
+        // menubar: false,
+        setup: (editor) => {
+            // Apply the focus effect
+            editor.on("init", () => {
+                editor.getContainer().style.transition = "border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out";
+            });
+            editor.on("focus", () => {
+                (editor.getContainer().style.boxShadow = "0 0 0 .2rem rgba(0, 123, 255, .25)"),
+                (editor.getContainer().style.borderColor = "#80bdff");
+            });
+            editor.on("blur", () => {
+                (editor.getContainer().style.boxShadow = ""),
+                (editor.getContainer().style.borderColor = "");
+            });
+        },
+    });
+</script>
 <script>
     sessionStorage.setItem("previous_uri", "<?= $_SERVER["REQUEST_URI"] ?>");
 

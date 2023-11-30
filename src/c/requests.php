@@ -857,6 +857,9 @@ if (
     if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
         $sql .= " , mdp_stagiaire=:mdp_stagiaire ";
     }
+    if (isset($_POST['form_avatar_stagiaire']) && !empty($_POST['form_avatar_stagiaire'])) {
+        $sql .= " , id_avatar=:id_avatar ";
+    }
     $sql .= " WHERE id_stagiaire=:id_stagiaire;";
     $req = $db->prepare($sql);
     $req->bindValue(':nom_stagiaire', strtoupper($_POST['form_nom_stagiaire']));
@@ -870,6 +873,9 @@ if (
         $req->execute();
         header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
+    }
+    if (isset($_POST['form_avatar_stagiaire']) && !empty($_POST['form_avatar_stagiaire'])) {
+        $req->bindValue(':id_avatar', filter_var($_POST['form_avatar_stagiaire'], FILTER_VALIDATE_INT));
     }
     $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
     $req->execute();
@@ -890,6 +896,9 @@ if (
     if (isset($_POST['form_mdp_formateur']) && !empty($_POST['form_mdp_formateur'])) {
         $sql .= " , mdp_formateur=:mdp_formateur ";
     }
+    if (isset($_POST['form_avatar_formateur']) && !empty($_POST['form_avatar_formateur'])) {
+        $sql .= " , id_avatar=:id_avatar ";
+    }
     $sql .= " WHERE id_formateur=:id_formateur;";
     $req = $db->prepare($sql);
     $req->bindValue(':nom_formateur', strtoupper($_POST['form_nom_formateur']));
@@ -900,6 +909,9 @@ if (
         $req->execute();
         header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
+    }
+    if (isset($_POST['form_avatar_formateur']) && !empty($_POST['form_avatar_formateur'])) {
+        $req->bindValue(':id_avatar', filter_var($_POST['form_avatar_formateur'], FILTER_VALIDATE_INT));
     }
     $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
     $req->execute();

@@ -17,8 +17,8 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="theme-color" content="#317EFB"/>
-    <meta name="description" content="Retrouvez l'ensemble des cours de votre Session sur cette page."/>
+    <meta name="theme-color" content="#317EFB" />
+    <meta name="description" content="Retrouvez l'ensemble des cours de votre Session sur cette page." />
     <link rel="apple-touch-icon" sizes="180x180" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
@@ -39,12 +39,27 @@
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css" />
     <?php if (isset($_SESSION["utilisateur"]["id_formateur"])) { ?>
-    <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        .select2-container {
-            z-index: 999999;
-        }
-    </style>
+        <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <style>
+            .select2-container {
+                z-index: 999999;
+            }
+
+            .img-profile {
+                width: 150px;
+                height: 150px;
+            }
+
+            .img-preview {
+                width: 75px;
+                height: 75px;
+                cursor: pointer;
+            }
+
+            .img-selected {
+                border: 2px solid green;
+            }
+        </style>
     <?php } ?>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/base.css?v=<?= uniqid() ?>" />

@@ -24,13 +24,13 @@ function updateForm() {
             document.querySelector('#document_presence').classList.toggle('hidden');
             document.querySelector('#document_informations').setAttribute('name', "document_presence");
             break;
-        case "livret_evaluation/dwwm/":
+        case "livret_evaluation/dwwm":
             document.querySelector('#document_livret_evaluation').classList.toggle('hidden');
-            document.querySelector('#document_informations').setAttribute('name', "document_livret_evaluation/dwwm/");
+            document.querySelector('#document_informations').setAttribute('name', "document_livret_evaluation/dwwm");
             break;
-        case "livret_evaluation/cda/":
+        case "livret_evaluation/cda":
             document.querySelector('#document_livret_evaluation').classList.toggle('hidden');
-            document.querySelector('#document_informations').setAttribute('name', "document_livret_evaluation/cda/");
+            document.querySelector('#document_informations').setAttribute('name', "document_livret_evaluation/cda");
             break;
     }
 }

@@ -615,8 +615,15 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     $success = true;
 
     if ($_SESSION['utilisateur']['id_formateur'] > 0) {
-        $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE id_secteur=:id_secteur;");
-        $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+        $sql = "SELECT id_formateur FROM formateurs ";
+        if (!empty($_SESSION['utilisateur']['id_secteur'])) {
+            $sql .= " WHERE id_secteur=:id_secteur";
+        }
+        $sql .= ";";
+        $req = $db->prepare($sql);
+        if (!empty($_SESSION['utilisateur']['id_secteur'])) {
+            $req->bindValue(':id_secteur', filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+        }
         $req->execute();
         $ids_formateurs = $req->fetchAll(PDO::FETCH_COLUMN);
         $req->closeCursor();
@@ -946,7 +953,7 @@ if (isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_fo
     )));
 }
 
-if (isset($_POST['form_faq_theme']) && !empty($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty($_POST['form_faq_title']) && isset($_POST['form_faq_content']) && !empty($_POST['form_faq_content']) && isset($_POST['form_faq_secteur']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+if (isset($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty($_POST['form_faq_title']) && isset($_POST['form_faq_content']) && !empty($_POST['form_faq_content']) && isset($_POST['form_faq_secteur']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
     $sql = "INSERT INTO faqs(faq_theme, faq_title, faq_content, faq_priority, id_secteur) 
             VALUES(:theme, :title, :content, :priority, :secteur)";
     $req = $db->prepare($sql);

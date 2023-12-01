@@ -691,7 +691,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
                 <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . (isset($_POST['recherche']) && !empty($_POST['recherche']) ? '&q=' . $_POST['recherche'] : '') . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top">
-                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . $module['cours_module_illustration'] . '" loading="lazy" />
+                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $module['cours_module_illustration']) ? $module['cours_module_illustration'] : 'no_data.svg') . '" loading="lazy" />
                         </span>
                         <div class="card-body">
                             <p class="card-title h5 text-decoration-underline">' . strtoupper($module['cours_module_libelle']) . '</p>
@@ -784,7 +784,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
                     <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top">
-                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . $cours['cours_module_illustration'] . '" loading="lazy" />
+                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $cours['cours_module_illustration']) ? $cours['cours_module_illustration'] : "no_data.svg") . '" loading="lazy" />
                             </span>
                             <div class="card-body">
                                 <h5 class="card-title text-decoration-underline">' . $cours["cours_title"] . '</h5>

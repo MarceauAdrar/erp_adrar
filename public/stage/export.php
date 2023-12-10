@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set("display_errors", 1);
 
 require __DIR__ . '/../../src/m/connect.php';
-require RACINE . '/src/vendor/autoload.php';
+require __DIR__ . '/../../src/vendor/autoload.php';
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;

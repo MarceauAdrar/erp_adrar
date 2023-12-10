@@ -981,4 +981,59 @@ if (isset($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty
     header("Location: /erp/public/formation/admin.php");
     exit;
 }
+if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_POST['id_user']) && !empty($_POST['id_user'])) {
+    $sql = "SELECT nom_stagiaire, prenom_stagiaire 
+            FROM stagiaires 
+            WHERE id_stagiaire=:id_stagiaire;";
+    $req = $db->prepare($sql);
+    $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+    $req->execute();
+    $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
+    
+    $sql = "SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+            FROM messages 
+            WHERE id_send_formateur=:id_formateur 
+            AND id_stagiaire=:id_user 
+            
+            UNION 
+            
+            SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+            FROM messages 
+            WHERE id_formateur=:id_formateur 
+            AND id_send_stagiaire=:id_user 
+            
+            ORDER BY message_date;";
+    $req = $db->prepare($sql);
+    $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["id_formateur"], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_user", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+    $req->execute();
+    $messages = '';
+    $liste = $req->fetchAll(PDO::FETCH_ASSOC);
+    if(!empty($liste)) {
+        foreach($liste as $message) {
+            $messages .= '<div>';
+            $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["id_formateur"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["id_stagiaire"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
+            $messages .= '</div>';
+        }
+    } else {
+        $messages = 'Aucun message pour le moment...';
+    }
+
+    die(json_encode(array(
+        "success" => true, 
+        "user" => $stagiaire['prenom_stagiaire'] . "&nbsp;" . $stagiaire['nom_stagiaire'], 
+        "messages" => $messages
+    )));
+}
+
+if (isset($_POST['send_message']) && isset($_POST['send_message']) && isset($_POST['id_user']) && !empty($_POST['id_user'])) {
+    $sql = "INSERT INTO messages(message_content, message_date, id_send_formateur, id_stagiaire) 
+            VALUES(:message_content, NOW(), :id_send_formateur, :id_stagiaire);";
+    $req = $db->prepare($sql);
+    $req->bindValue(":message_content", filter_var($_POST["message_content"], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+    $req->bindValue(":id_send_formateur", filter_var($_SESSION["utilisateur"]["id_formateur"], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+    $req->execute();
+    exit;
+}
 ?>

@@ -17,7 +17,7 @@ include_once("./header.php");
             <h1>Politique de confidentialité du site www.marceau-rodrigues.fr</h1>
         </div>
     </div>
-    <div class="row pt-5">
+    <div class="row pt-5 pb-5">
         <div class="col-12">
             <h2>Politique de confidentialité</h2>
             <p>Le site web Marceau Rodrigues est détenu par ADRAR, qui est un contrôleur de données de vos données personnelles.</p><br>

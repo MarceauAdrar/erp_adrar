@@ -17,7 +17,7 @@ include_once("./header.php");
             <h1>Mentions légales du site www.marceau-rodrigues.fr</h1>
         </div>
     </div>
-    <div class="row pt-5">
+    <div class="row pt-5 pb-5">
         <div class="col-12">
             <h2>1 - Édition du site</h2>
             <p>
@@ -80,8 +80,7 @@ include_once("./header.php");
                 marceaurodrigues@adrar-formation.com.
 
                 Pour plus d'informations sur la façon dont nous traitons vos données (type de données, finalité, destinataire...), lisez
-                notre https://marceau-rodrigues.fr/politique-confidentialite. [Consignes : ajoutez ici le lien hypertexte vers votre
-                politique de confidentialité]
+                notre <a href="https://marceau-rodrigues.fr/erp/public/formation/politique-confidentialite.php">Politique de confidentialité</a>.
             </p>
 
             <h2>5 - Liens hypertextes et cookies</h2>
@@ -101,9 +100,7 @@ include_once("./header.php");
 
                 Les cookies sont enregistrés pour une durée maximale de mois.
 
-                Pour plus d'informations sur la façon dont nous faisons usage des cookies, lisez notre
-                https://marceau-rodrigues.fr/politique-confidentialite. [Consignes : ajoutez ici le lien hypertexte vers votre politique
-                de confidentialité ou vers votre politique de cookies si vous en avez une (c'est le cas si vous utilisez Complianz)]
+                Pour plus d'informations sur la façon dont nous faisons usage des cookies, lisez notre <a href="https://marceau-rodrigues.fr/erp/public/formation/politique-confidentialite.php">Politique de confidentialité</a>.
             </p>
 
             <h2>6 - Droit applicable et attribution de juridiction.</h2>

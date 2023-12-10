@@ -24,7 +24,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
     <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
     <!-- Pour la HeatMap de Clarity by Microsoft -->
-    <!-- <script type="text/javascript">
+    <script type="text/javascript">
         (function(c, l, a, r, i, t, y) {
             c[a] = c[a] || function() {
                 (c[a].q = c[a].q || []).push(arguments)
@@ -34,8 +34,8 @@
             t.src = "https://www.clarity.ms/tag/" + i;
             y = l.getElementsByTagName(r)[0];
             y.parentNode.insertBefore(t, y);
-        })(window, document, "clarity", "script", "jnrkfo3pkk");
-    </script> -->
+        })(window, document, "clarity", "script", "jzc1fz18xt");
+    </script>
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css" />
     <?php if (isset($_SESSION["utilisateur"]["id_formateur"])) { ?>
@@ -67,11 +67,12 @@
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/tables.css?v=<?= uniqid() ?>" />
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/evals.css?v=<?= uniqid() ?>" />
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/animations.css?v=<?= uniqid() ?>" />
-    <title>Evaluation finale<?= $title ?></title>
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bal.css?v=<?= uniqid() ?>" />
+    <title>Plateforme pédagogique<?= $title ?></title>
 </head>
 
 <body>
-    <div class="wrapper">
+    <div class="wrapper pb-5">
         <?php if (isset($_SESSION["utilisateur"]["id_stagiaire"])) { ?>
             <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-light">
                 <div class="container-fluid">
@@ -91,10 +92,10 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/admin.php">Administration</a>
                                 </li>
-                            <?php } elseif (false) { ?>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=boite-aux-lettres">Déposer un fichier</a>
+                                    <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=boite-aux-lettres">BAL</a>
                                 </li>
+                            <?php } elseif (false) { ?>
                             <?php } ?>
                             <li class="nav-item">
                                 <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/faq.php">FAQ</a>

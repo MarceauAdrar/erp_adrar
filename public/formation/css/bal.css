@@ -1,0 +1,41 @@
+.height-message-scroll {
+    max-height: 71vh; 
+    overflow-y: auto;
+}
+.height-message-scroll2 {
+    max-height: 59vh; 
+    overflow-y: auto;
+}
+.fake-link {
+    cursor: pointer;
+}
+.fake-link > img {
+    width:25px;
+    height:25px;
+}
+.fake-link:hover {
+    background-color: #D9D9D9;
+}
+.msg {
+    padding: 1.25rem 0.75rem;
+    border: 2px solid #FFF;
+    border-radius: 5px;
+    display: block;
+    width: fit-content;
+    margin: 0.5rem;
+}
+.msg-sender {
+    background-color: #448AFF;
+    color: #FFF;
+}
+.msg-receiver {
+    background-color: #FFF;
+    color: #000;
+}
+.user-visibility > input, .user-visibility > a {
+    position: absolute;
+    bottom: 7vh;
+}
+.user-visibility > a {
+    right: 1.5vw;
+}

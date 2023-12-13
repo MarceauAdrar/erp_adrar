@@ -13,7 +13,7 @@ $req->bindParam(":id_document", $document['id_document']);
 $req->execute();
 $pages = $req->fetchAll(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, DATE_FORMAT(date_naissance_stagiaire, '%d/%m/%Y') AS date_naissance_stagiaire, mail_stagiaire, tel_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
+$req = $db->prepare("SELECT stages.id_stage, nom_stagiaire, prenom_stagiaire, DATE_FORMAT(date_naissance_stagiaire, '%d/%m/%Y') AS date_naissance_stagiaire, mail_stagiaire, tel_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
                     FROM stagiaires 
                     JOIN sessions ON sessions.id_session = stagiaires.id_session
                     LEFT JOIN stages ON stages.id_stage = stagiaires.id_stage
@@ -45,16 +45,16 @@ if (!empty($pages)) {
                 $html2pdf->setXY($i['X'], $i['Y']);
                 if (str_contains($i['texte'], "|")) {
                     $texte = explode('|', $i['texte']);
-                    if (array_key_exists($texte[0], $stage) && array_key_exists($texte[1], $stage)) {
+                    if (isset($stage['id_stage']) && array_key_exists($texte[0], $stage) && array_key_exists($texte[1], $stage)) {
                         $html2pdf->Cell(0, 10, strtoupper($stage[$texte[0]]) . " " . ucwords($stage[$texte[1]]), 0, 1);
                     } elseif (array_key_exists($texte[0], $formateur) && array_key_exists($texte[1], $formateur)) {
                         $html2pdf->Cell(0, 10, strtoupper($formateur[$texte[0]]) . " " . ucwords($formateur[$texte[1]]), 0, 1);
                     }
-                } elseif (array_key_exists($i['texte'], $stage)) {
+                } elseif (isset($stage['id_stage']) && array_key_exists($i['texte'], $stage)) {
                     $html2pdf->Cell(0, 10, $stage[$i['texte']], 0, 1);
                 } elseif (array_key_exists($i['texte'], $formateur)) {
                     $html2pdf->Cell(0, 10, $formateur[$i['texte']], 0, 1);
-                } else {
+                } elseif (isset($stage['id_stage'])) {
                     $html2pdf->Cell(0, 10, $i['texte'], 0, 1);
                 }
                 if (isset($i['tampon']) && !empty($i['tampon'])) { // Gère le tampon s'il est nécessaire sur le document

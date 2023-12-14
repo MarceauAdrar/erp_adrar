@@ -1,4 +1,4 @@
-<?php 
+<?php
 include_once("../../src/m/connect.php");
 // TODO: remove this redirection
 // header("Location: ./index.php");
@@ -22,33 +22,34 @@ $html = "";
 $tp = 0;
 $bHtml = 0;
 $bCss = 0;
-if($req_check_token->rowCount() > 0) {
+if ($req_check_token->rowCount() > 0) {
     $data = array('stagiaire_username' => $_SESSION["utilisateur"]["pseudo_stagiaire"]);
     $postdata = http_build_query(
         array(
             'stagiaire_username' => $_SESSION["utilisateur"]["pseudo_stagiaire"]
         )
     );
-    
-    $opts = array('http' =>
+
+    $opts = array(
+        'http' =>
         array(
             'method'  => 'POST',
             'header'  => 'Content-Type: application/x-www-form-urlencoded',
             'content' => $postdata
         )
     );
-    
+
     $context  = stream_context_create($opts);
     $link_template_html = "./modules/html-css/templates";
-    $link_stagiaire_html = "./stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"]."/html-css";
-    if(!is_dir($link_stagiaire_html)) {
-        if(!mkdir($link_stagiaire_html, 0664, true)) {
+    $link_stagiaire_html = "./stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"] . "/html-css";
+    if (!is_dir($link_stagiaire_html)) {
+        if (!mkdir($link_stagiaire_html, 0664, true)) {
             die("Erreur lors de la création de l'arborescence");
-    	}
+        }
     }
 
     $file = "";
-    switch($eval["evaluation_id"]) {
+    switch ($eval["evaluation_id"]) {
         case 1:
             $tp = 1;
             $title = " | HTML/CSS (TP1)";
@@ -62,24 +63,24 @@ if($req_check_token->rowCount() > 0) {
         case 2:
             $tp = 2;
             $title = " | HTML/CSS (TP2)";
-            
+
             $bHtml = 1;
             $bCss = 0;
             $file = "tp2.html";
-            
+
             $html = file_get_contents("./modules/html-css/tp2.php", false, $context);
             break;
         case 3:
             $tp = 3;
             $title = " | HTML/CSS (TP3)";
-            
+
             $bHtml = 0;
             $bCss = 1;
             $file = "tp3.html";
 
             /* Création du fichier CSS */
-            if(!file_exists($link_stagiaire_html."/tp3.css")) {
-                touch($link_stagiaire_html."/tp3.css");
+            if (!file_exists($link_stagiaire_html . "/tp3.css")) {
+                touch($link_stagiaire_html . "/tp3.css");
             }
 
             $html = file_get_contents("./modules/html-css/tp3.php", false, $context);
@@ -87,14 +88,14 @@ if($req_check_token->rowCount() > 0) {
         case 4:
             $tp = 4;
             $title = " | HTML/CSS (TP4)";
-            
+
             $bHtml = 0;
             $bCss = 1;
             $file = "tp4.html";
 
             /* Création du fichier CSS */
-            if(!file_exists($link_stagiaire_html."/tp4.css")) {
-                touch($link_stagiaire_html."/tp4.css");
+            if (!file_exists($link_stagiaire_html . "/tp4.css")) {
+                touch($link_stagiaire_html . "/tp4.css");
             }
 
             $html = file_get_contents("./modules/html-css/tp4.php", false, $context);
@@ -102,22 +103,22 @@ if($req_check_token->rowCount() > 0) {
         case 5:
             $tp = 5;
             $title = " | HTML/CSS (Intégration 2)";
-            
+
             $bHtml = 1;
             $bCss = 1;
             $file = "index.html";
             $link_template_html = $link_template_html . "/rando_nuit";
             $link_stagiaire_html = $link_stagiaire_html . "/rando_nuit";
 
-            if(!is_dir($link_stagiaire_html)) {
+            if (!is_dir($link_stagiaire_html)) {
                 mkdir($link_stagiaire_html);
             }
 
             /* Création du fichier CSS */
-            if(!file_exists($link_stagiaire_html."/style.css")) {
-                touch($link_stagiaire_html."/style.css");
+            if (!file_exists($link_stagiaire_html . "/style.css")) {
+                touch($link_stagiaire_html . "/style.css");
             }
-            
+
             $html = '
                 <div class="container-fluid">
                     <div class="row">
@@ -140,8 +141,8 @@ if($req_check_token->rowCount() > 0) {
             $title = " | Erreur - Page introuvable";
             $html = file_get_contents("./error404.php");
     }
-    if(!empty($file) && !file_exists($link_stagiaire_html."/".$file) && isset($link_template_html)) {
-        copy($link_template_html."/".$file, $link_stagiaire_html."/".$file);
+    if (!empty($file) && !file_exists($link_stagiaire_html . "/" . $file) && isset($link_template_html)) {
+        copy($link_template_html . "/" . $file, $link_stagiaire_html . "/" . $file);
     }
 } else {
     $title = " | Erreur - Page introuvable";
@@ -159,28 +160,28 @@ include_once("./header.php"); ?>
 </button>
 <div class="help-resource">
     <h3 id="information_tp_title"></h3>
-    <hr/>
+    <hr>
     <p id="information_tp_body"></p>
-    <hr/>
-    <p><i>Points maximums obtenables:</i> <?=$evaluation_errors_max?></p>
+    <hr>
+    <p><i>Points maximums obtenables:</i> <?= $evaluation_errors_max ?></p>
 </div>
-<?php 
-echo $html; 
+<?php
+echo $html;
 include_once("./js.php"); ?>
-<?php if($bHtml == 1 || $bCss == 1) { ?>
-    <script src="./js/evals.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        sessionStorage.setItem("tp", "<?=$tp?>");
-        sessionStorage.setItem("bHtml", <?=$bHtml?>);
-        sessionStorage.setItem("bCss", <?=$bCss?>);
+<?php if ($bHtml == 1 || $bCss == 1) { ?>
+    <script src="./js/evals.js"></script>
+    <script>
+        sessionStorage.setItem("tp", "<?= $tp ?>");
+        sessionStorage.setItem("bHtml", <?= $bHtml ?>);
+        sessionStorage.setItem("bCss", <?= $bCss ?>);
         /* Charge les boutons en haut de la page */
         loadButtons();
         /* Charge l'aide dans la modale */
-        loadInformationsTP(<?=$tp;?>);
+        loadInformationsTP(<?= $tp; ?>);
         /* Charge l'éditeur et la fenêtre simulant la page écrite */
         reloadBoxs();
     </script>
 <?php } ?>
-<?php include_once("./footer.php"); 
+<?php include_once("./footer.php");
 die(ob_get_clean());
 ?>

@@ -16,36 +16,36 @@ if ($req_lignes->rowCount() > 0) {
         $goals = "";
         $evaluation_goals = explode(";", $eval["evaluation_goals"]);
         foreach ($evaluation_goals as $goal) {
-            $goals .= "- &nbsp;" . $goal . "<br/>";
+            $goals .= "- &nbsp;" . $goal . "<br>";
         }
         $lignes .= '<tr>';
         $lignes .= '    <td>' . $eval["evaluation_id"] . '</td>';
         $lignes .= '    <td>' . $eval["evaluation_title"] . '</td>';
         $lignes .= '    <td class="text-start">' . $goals . '</td>';
-        if(empty($eval["id_stagiaire"])) {
+        if (empty($eval["id_stagiaire"])) {
             $lignes .= '    <td><button type="button" class="btn btn-warning" data-bs-target="#modalJoinEvaluation" onclick="displayPromptJoinModal(' . $eval["evaluation_id"] . ');">Rejoindre l\'évaluation</button></td>';
-        } elseif(empty($eval["stagiaire_evaluation_completed"])) {
+        } elseif (empty($eval["stagiaire_evaluation_completed"])) {
             $lignes .= '    <td><a class="btn btn-info" id="eval_' . $eval["evaluation_id"] . '" href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/resolve.php?token=' . $eval["evaluation_token"] . '">Reprendre l\'évaluation</a></td>';
-        } elseif(empty($eval["stagiaire_evaluation_correction"])) {
+        } elseif (empty($eval["stagiaire_evaluation_correction"])) {
             $lignes .= '    <td><div class="alert alert-warning mb-0">En attente de correction</div></td>';
-        } elseif($eval["evaluation_errors_max"] > $eval["stagiaire_evaluation_errors_found"]) {
-            $lignes .= '    <td><a class="btn btn-dark" href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/achieved.php?module=html-css&tp=' . $eval["evaluation_id"] . '&stagiaire_username='.$_SESSION['utilisateur']['pseudo_stagiaire'].'">Voir mes erreurs</a></td>';
+        } elseif ($eval["evaluation_errors_max"] > $eval["stagiaire_evaluation_errors_found"]) {
+            $lignes .= '    <td><a class="btn btn-dark" href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/achieved.php?module=html-css&tp=' . $eval["evaluation_id"] . '&stagiaire_username=' . $_SESSION['utilisateur']['pseudo_stagiaire'] . '">Voir mes erreurs</a></td>';
         } else {
             $lignes .= '    <td><div class="alert alert-success mb-0">Félicitations, vous avez terminé ce TP !</div></td>';
         }
-        if(!empty($eval["evaluation_errors_max"])) {
+        if (!empty($eval["evaluation_errors_max"])) {
             $lignes .= '    <td>(<span>' . (!isset($eval["stagiaire_evaluation_errors_found"]) ? "XX" : $eval["stagiaire_evaluation_errors_found"]) . '</span>/<span>' . $eval["evaluation_errors_max"] . '</span>)</td>';
         } else {
             $lignes .= '    <td></td>';
         }
-        $lignes .= '    <td>' . 
-                            (empty($eval["id_stagiaire"]) ? 
-                                '<span class="circle missing" data-bs-toggle="tooltip" data-bs-placement="right" title="Pas encore inscrit à l\'évaluation !"'
-                                : (!empty($eval["stagiaire_evaluation_completed"]) ? 
-                                    '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"' 
-                                    : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"'
-                                )
-                            ) . '></span></td>';
+        $lignes .= '    <td>' .
+            (empty($eval["id_stagiaire"]) ?
+                '<span class="circle missing" data-bs-toggle="tooltip" data-bs-placement="right" title="Pas encore inscrit à l\'évaluation !"'
+                : (!empty($eval["stagiaire_evaluation_completed"]) ?
+                    '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"'
+                    : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"'
+                )
+            ) . '></span></td>';
         $lignes .= '</tr>';
     }
 } else {
@@ -84,8 +84,8 @@ include_once("../../header.php"); ?>
 <?php
 include_once("../../js.php"); ?>
 <script>
-    sessionStorage.setItem("previous_uri", "<?=$_SERVER["REQUEST_URI"]?>");
+    sessionStorage.setItem("previous_uri", "<?= $_SERVER["REQUEST_URI"] ?>");
 </script>
-<?php 
+<?php
 include_once("../../footer.php");
 die(ob_get_clean());

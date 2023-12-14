@@ -31,7 +31,7 @@ if (!empty($_POST["display_prompt_join_modal"])) {
     $goals = "";
     $evaluation_goals = explode(";", $modal["evaluation_goals"]);
     foreach ($evaluation_goals as $goal) {
-        $goals .= "- &nbsp;" . $goal . "<br/>";
+        $goals .= "- &nbsp;" . $goal . "<br>";
     }
     ob_start(); ?>
     <div class="modal-header">
@@ -46,7 +46,7 @@ if (!empty($_POST["display_prompt_join_modal"])) {
                     <?= $goals ?>
                 </div>
                 <div class="col-6">
-                    <img class="svgs-sm" src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/join.svg" alt="Illustration pour l'intégration à l'évaluation" />
+                    <img class="svgs-sm" src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/join.svg" alt="Illustration pour l'intégration à l'évaluation">
                 </div>
             </div>
         </div>
@@ -217,7 +217,7 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                         <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
                                 <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>">
-                                    <img class="img-course" alt="Illustration <?= $cour["cours_module_libelle"] ?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy" />
+                                    <img class="img-course" alt="Illustration <?= $cour["cours_module_libelle"] ?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy">
                                 </span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_module_libelle']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
@@ -691,7 +691,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
                 <a href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/cours.php?cours=' . $module['cours_module_uuid'] . (isset($_POST['recherche']) && !empty($_POST['recherche']) ? '&q=' . $_POST['recherche'] : '') . '" class="text-black">
                     <div class="card">
                         <span class="card-img-top">
-                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $module['cours_module_illustration']) ? $module['cours_module_illustration'] : 'no_data.svg') . '" loading="lazy" />
+                            <img class="img-course" alt="Illustration ' . $module["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $module['cours_module_illustration']) ? $module['cours_module_illustration'] : 'no_data.svg') . '" loading="lazy" >
                         </span>
                         <div class="card-body">
                             <p class="card-title h5 text-decoration-underline">' . strtoupper($module['cours_module_libelle']) . '</p>
@@ -784,7 +784,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
                     <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top">
-                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $cours['cours_module_illustration']) ? $cours['cours_module_illustration'] : "no_data.svg") . '" loading="lazy" />
+                                <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $cours['cours_module_illustration']) ? $cours['cours_module_illustration'] : "no_data.svg") . '" loading="lazy" >
                             </span>
                             <div class="card-body">
                                 <h5 class="card-title text-decoration-underline">' . $cours["cours_title"] . '</h5>
@@ -989,7 +989,7 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_
     $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
     $req->execute();
     $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
-    
+
     $sql = "SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
             FROM messages 
             WHERE id_send_formateur=:id_formateur 
@@ -1009,8 +1009,8 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_
     $req->execute();
     $messages = '';
     $liste = $req->fetchAll(PDO::FETCH_ASSOC);
-    if(!empty($liste)) {
-        foreach($liste as $message) {
+    if (!empty($liste)) {
+        foreach ($liste as $message) {
             $messages .= '<div>';
             $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["id_formateur"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["id_stagiaire"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
             $messages .= '</div>';
@@ -1020,8 +1020,8 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_
     }
 
     die(json_encode(array(
-        "success" => true, 
-        "user" => $stagiaire['prenom_stagiaire'] . "&nbsp;" . $stagiaire['nom_stagiaire'], 
+        "success" => true,
+        "user" => $stagiaire['prenom_stagiaire'] . "&nbsp;" . $stagiaire['nom_stagiaire'],
         "messages" => $messages
     )));
 }

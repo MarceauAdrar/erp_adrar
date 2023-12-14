@@ -20,7 +20,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td>
                     <div>
                         <label>Téléverser ma signature: (png transparents uniquement)</label>
-                        <input type="file" name="form_formateur_editer_signature"/>
+                        <input type="file" name="form_formateur_editer_signature">
                     </div>
                     <button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $formateur['id_formateur'] . '">Signer manuellement</button>
                     <div class="hidden">
@@ -47,7 +47,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td>' . strtoupper($formateur['nom_formateur']) . '</td>
                 <td>' . ucwords($formateur['prenom_formateur']) . '</td>
                 <td>' . $formateur['mail_formateur'] . '</td>
-                <td>' . (empty($formateur['signature_formateur']) ? 'Signature manquante' : '<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur"/>') . '</td>
+                <td>' . (empty($formateur['signature_formateur']) ? 'Signature manquante' : '<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur">') . '</td>
                 <td>' . $formateur['nom_secteur'] . '</td>
                 <td>' . $formateur['carte_formateur_role'] . '</td>
                 <td>' . $formateur['carte_formateur_liens'] . '</td>
@@ -106,7 +106,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $tbody_secteurs .= '
         <tr>
             <td>' . ucfirst($secteur['nom_secteur']) . '</td>
-            <td><img style="height:100px;" src="./img/' . $secteur['logo_secteur'] . '" alt="Logo du secteur ' . $secteur['nom_secteur'] . '"/></td>
+            <td><img style="height:100px;" src="./img/' . $secteur['logo_secteur'] . '" alt="Logo du secteur ' . $secteur['nom_secteur'] . '"></td>
             <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }

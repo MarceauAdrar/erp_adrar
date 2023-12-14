@@ -55,7 +55,7 @@ include_once("./header.php"); ?>
 <?php
 include_once("./js.php");
 ?>
-<script src="./js/evals.js?v=<?= uniqid() ?>" type="text/javascript"></script>
+<script src="./js/evals.js?v=<?= uniqid() ?>"></script>
 <script>
     loadButtons();
     chargerCorrection();

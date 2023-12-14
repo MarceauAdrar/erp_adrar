@@ -10,26 +10,26 @@ $_SESSION['csrf_token'] = $csrfToken;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="title" content="ADRAR ERP - Connexion" />
-    <meta name="description" content="ERP de l'ADRAR. Suivez vos stages et alimentez vos cours pour vos sessions en cours et à venir si vous êtes formateur ; et rendez les travaux attendus si vous êtes stagiaire." />
+    <meta name="title" content="ADRAR ERP - Connexion">
+    <meta name="description" content="ERP de l'ADRAR. Suivez vos stages et alimentez vos cours pour vos sessions en cours et à venir si vous êtes formateur ; et rendez les travaux attendus si vous êtes stagiaire.">
     <link rel="apple-touch-icon" sizes="180x180" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
     <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
-    
+
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php" />
-    <meta property="og:title" content="ADRAR ERP - Connexion" />
-    <meta property="og:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus." />
-    <meta property="og:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png" />
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php">
+    <meta property="og:title" content="ADRAR ERP - Connexion">
+    <meta property="og:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus.">
+    <meta property="og:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png">
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php" />
-    <meta property="twitter:title" content="ADRAR ERP - Connexion" />
-    <meta property="twitter:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus." />
-    <meta property="twitter:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png" />
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php">
+    <meta property="twitter:title" content="ADRAR ERP - Connexion">
+    <meta property="twitter:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus.">
+    <meta property="twitter:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png">
 
     <meta name="robots" content="index, follow">
     <title>ADRAR ERP - Connexion</title>

@@ -19,21 +19,21 @@ include_once("./header.php");
             <div id="form_connexion_container">
                 <!-- Illustration de la connexion -->
                 <img src="./imgs/login.svg" alt="Illustration de la connexion" id="form_logo_login">
-                
+
                 <form action="../src/requests.php" method="POST">
                     <!-- Champs caché permettant en back de pouvoir traiter uniquement ce formulaire -->
                     <input type="hidden" name="stagiaire_connexion" id="stagiaire_connexion" value="1">
 
                     <!-- Nom d'utilisateur -->
                     <label class="form-label" for="stagiaire_username">Nom d'utilisateur du stagiaire:</label>
-                    <input class="form-control" type="text" name="stagiaire_username" id="stagiaire_username" placeholder="aformation22" required/>
+                    <input class="form-control" type="text" name="stagiaire_username" id="stagiaire_username" placeholder="aformation22" required>
 
                     <!-- MDP -->
                     <label class="form-label" for="stagiaire_password">Mot de passe pour la session:</label>
-                    <input class="form-control" type="password" name="stagiaire_password" id="stagiaire_password" placeholder="azerty1234" required/>
+                    <input class="form-control" type="password" name="stagiaire_password" id="stagiaire_password" placeholder="azerty1234" required>
 
                     <!-- Gestion des erreurs -->
-                    <div class="alert alert-warning alert-dismissible d-flex align-items-center mt-2<?=(!empty($_SESSION["form_connexion"]["errors"]) ? " fade show" : " d-none")?>" role="alert">
+                    <div class="alert alert-warning alert-dismissible d-flex align-items-center mt-2<?= (!empty($_SESSION["form_connexion"]["errors"]) ? " fade show" : " d-none") ?>" role="alert">
                         <i class="fa-solid fa-triangle-exclamation"></i>
                         &nbsp;Une erreur s'est produite, veuillez réessayer !
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -96,4 +96,4 @@ include_once("./header.php");
 
 <?php
 include_once("./footer.php");
-die(ob_get_clean()); 
+die(ob_get_clean());

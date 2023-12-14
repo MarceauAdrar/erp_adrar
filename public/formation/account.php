@@ -22,7 +22,7 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
     $req->execute();
     $avatars = "";
     foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $avatar) {
-        $avatars .= '<img onclick="changerAvatar(this);"  data-id="' . $avatar['avatar_id'] . '" class="img-fluid rounded me-2 mb-5 img-preview' . ($avatar['avatar_id'] == $formateur['avatar_id'] ? ' img-selected' : '') . '" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $avatar['avatar_lien'] . '" alt="Avatar de type ' . $avatar['avatar_nom'] . '" />';
+        $avatars .= '<img onclick="changerAvatar(this);"  data-id="' . $avatar['avatar_id'] . '" class="img-fluid rounded me-2 mb-5 img-preview' . ($avatar['avatar_id'] == $formateur['avatar_id'] ? ' img-selected' : '') . '" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $avatar['avatar_lien'] . '" alt="Avatar de type ' . $avatar['avatar_nom'] . '" >';
     }
     $form = '
         <div class="container">
@@ -31,7 +31,7 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                     <div class="row">
                         <div class="col-12 text-center">
                             <input type="hidden" name="form_avatar_formateur" value="' . $formateur['avatar_id'] . '">
-                            <img class="img-fluid rounded m-5 img-profile" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $formateur['avatar_lien'] . '" alt="Avatar de type ' . $formateur['avatar_nom'] . '" />
+                            <img class="img-fluid rounded m-5 img-profile" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $formateur['avatar_lien'] . '" alt="Avatar de type ' . $formateur['avatar_nom'] . '" >
                         </div>
                         <div class="col-12 text-center">
                         ' . $avatars . '
@@ -68,7 +68,7 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                     </div>
                     <div class="row pt-2">
                         <div class="col-12 text-end">
-                            <input type="submit" class="btn btn-dark" name="form_update_trainer" />
+                            <input type="submit" class="btn btn-dark" name="form_update_trainer" >
                         </div>
                     </div>
                 </form>
@@ -91,7 +91,7 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
     $req->execute();
     $avatars = "";
     foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $avatar) {
-        $avatars .= '<img onclick="changerAvatar(this);"  data-id="' . $avatar['avatar_id'] . '" class="img-fluid rounded me-2 mb-5 img-preview' . ($avatar['avatar_id'] == $stagiaire['avatar_id'] ? ' img-selected' : '') . '" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $avatar['avatar_lien'] . '" alt="Avatar de type ' . $avatar['avatar_nom'] . '" />';
+        $avatars .= '<img onclick="changerAvatar(this);"  data-id="' . $avatar['avatar_id'] . '" class="img-fluid rounded me-2 mb-5 img-preview' . ($avatar['avatar_id'] == $stagiaire['avatar_id'] ? ' img-selected' : '') . '" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $avatar['avatar_lien'] . '" alt="Avatar de type ' . $avatar['avatar_nom'] . '" >';
     }
     $form = '
         <div class="container">
@@ -100,7 +100,7 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                     <div class="row">
                         <div class="col-12 text-center">
                             <input type="hidden" name="form_avatar_stagiaire" value="' . $stagiaire['avatar_id'] . '">
-                            <img class="img-fluid rounded m-5 img-profile" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $stagiaire['avatar_lien'] . '" alt="Avatar de type ' . $stagiaire['avatar_nom'] . '" />
+                            <img class="img-fluid rounded m-5 img-profile" src="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/imgs/avatars/' . $stagiaire['avatar_lien'] . '" alt="Avatar de type ' . $stagiaire['avatar_nom'] . '" >
                         </div>
                         <div class="col-12 text-center">
                         ' . $avatars . '
@@ -140,7 +140,7 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                     </div>
                     <div class="row pt-2">
                         <div class="col-12 text-end">
-                            <input type="submit" class="btn btn-dark" name="form_update_trainee" />
+                            <input type="submit" class="btn btn-dark" name="form_update_trainee" >
                         </div>
                     </div>
                 </form>

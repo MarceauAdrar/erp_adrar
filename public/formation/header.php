@@ -17,14 +17,14 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <meta name="theme-color" content="#317EFB" />
-    <meta name="description" content="Retrouvez l'ensemble des cours de votre Session sur cette page." />
+    <meta name="theme-color" content="#317EFB">
+    <meta name="description" content="Retrouvez l'ensemble des cours de votre Session sur cette page.">
     <link rel="apple-touch-icon" sizes="180x180" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
     <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
     <!-- Pour la HeatMap de Clarity by Microsoft -->
-    <script type="text/javascript">
+    <script>
         (function(c, l, a, r, i, t, y) {
             c[a] = c[a] || function() {
                 (c[a].q = c[a].q || []).push(arguments)
@@ -37,9 +37,9 @@
         })(window, document, "clarity", "script", "jzc1fz18xt");
     </script>
     <!-- CSS only -->
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css">
     <?php if (isset($_SESSION["utilisateur"]["id_formateur"])) { ?>
-        <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
         <style>
             .select2-container {
                 z-index: 999999;
@@ -61,13 +61,13 @@
             }
         </style>
     <?php } ?>
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/base.css?v=<?= uniqid() ?>" />
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/connexion.css?v=<?= uniqid() ?>" />
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/tables.css?v=<?= uniqid() ?>" />
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/evals.css?v=<?= uniqid() ?>" />
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/animations.css?v=<?= uniqid() ?>" />
-    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bal.css?v=<?= uniqid() ?>" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/base.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/connexion.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/tables.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/evals.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/animations.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bal.css?v=<?= uniqid() ?>">
     <title>Plateforme pédagogique<?= $title ?></title>
 </head>
 
@@ -77,7 +77,7 @@
             <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-light">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
-                        <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar" />
+                        <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar">
                     </a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>

@@ -1,9 +1,6 @@
         </div>
 
         <?php if (!array_key_exists("pseudo_stagiaire", $_SESSION["utilisateur"])) { ?>
-            <style>
-
-            </style>
             <div class="modal modal-lg fade" id="modalConnectAs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalConnectAsTitle" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">

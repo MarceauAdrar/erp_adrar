@@ -39,7 +39,7 @@ $req->closeCursor();
 ob_start();
 include_once("./header.php"); ?>
 
-<div class="container-fluid position-fixed bg-white">
+<div class="container-fluid bg-white">
     <div class="row<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? ' justify-content-between' : '') ?>">
         <div class="<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-3 ') ?>mt-2 mb-2 float-start">
             <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $module['cours_module_uuid'] ?>">Retour sur les cours</a>

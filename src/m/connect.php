@@ -6,8 +6,10 @@ ini_set("session.gc_maxlifetime", 14400);
 
 session_start();
 
-if (!array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php"
- && $_SERVER['REQUEST_URI'] !== "/erp/public/changer-mdp.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/changer-mdp.php") {
+if (
+    !array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php"
+    && $_SERVER['REQUEST_URI'] !== "/erp/public/changer-mdp.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/changer-mdp.php"
+) {
     header("Location: https://" . $_SERVER['SERVER_NAME'] . "/erp/public/deconnexion.php?type=info&message=" . urlencode("Session expirée"));
 }
 
@@ -43,6 +45,9 @@ if (DEV) {
 } else {
     $mailer->Username   = 'marceau.ro@adrar-numerique.com';   //SMTP username
     $mailer->Password   = 'pleoxdpptfpkdmnd';                 //SMTP password
+    // Compte de secours
+    $mailer->Username   = 'adrar34070@gmail.com';             //SMTP username
+    $mailer->Password   = 'oirjjazufhovozgi';                 //SMTP password
 }
 $mailer->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;         //Enable implicit TLS encryption
 $mailer->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`

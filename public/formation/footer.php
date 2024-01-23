@@ -76,7 +76,7 @@
         <?php } ?>
 
         <footer class="border-top border-light bg-light fixed-bottom">
-            <p class="text-center">&copy; <?= date("Y") ?> ADRAR - Site développé par Marceau RODRIGUES&nbsp;-&nbsp;<a href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/mentions-legales.php">Mentions légales</a>&nbsp;<a href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/politique-confidentialite.php">Politique de confidentialité</a></p>
+            <p class="text-center">&copy; 2022 - <?= date("Y") ?> ADRAR - Site développé par Marceau RODRIGUES&nbsp;-&nbsp;<a href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/mentions-legales.php">Mentions légales</a>&nbsp;|&nbsp;<a href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/politique-confidentialite.php">Politique de confidentialité</a></p>
         </footer>
         </body>
 

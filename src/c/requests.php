@@ -1,25 +1,6 @@
 <?php
 include_once __DIR__ . '/../m/connect.php';
 
-if (!empty($_POST["stagiaire_connexion"]) && $_POST["stagiaire_connexion"] == 1) {
-    $sql = "SELECT *  
-            FROM stagiaires 
-            WHERE stagiaire_username=:stagiaire_username;";
-    $req = $db->prepare($sql);
-    $req->bindParam(":stagiaire_username", $_POST["stagiaire_username"]);
-    $req->execute();
-    $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
-
-    if (password_verify($_POST["stagiaire_password"], $stagiaire["stagiaire_password"])) {
-        $_SESSION["form_connexion"]["errors"] = 0;
-        $_SESSION["stagiaire"] = $stagiaire;
-        header("Location: /public/index.php");
-    } else {
-        $_SESSION["form_connexion"]["errors"] = 1;
-        header("Location: ../public/connexion.php");
-    }
-}
-
 if (!empty($_POST["display_prompt_join_modal"])) {
     $sql_select_evaluation = "SELECT evaluation_id, evaluation_title, evaluation_goals, evaluation_synopsis 
                             FROM evaluations 
@@ -559,7 +540,7 @@ if (!empty($_POST["load_new_notifications"])) {
         $req = $db->prepare("SELECT notification_titre, notification_date, notification_lien 
                             FROM notifications 
                             WHERE id_stagiaire=:id_stagiaire 
-                            ORDER BY notification_date ASC;");
+                            ORDER BY notification_date DESC;");
         $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
         $req->execute();
         $result = $req->fetchAll(PDO::FETCH_ASSOC);
@@ -824,17 +805,36 @@ if (isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode']
 }
 
 if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
-    $req = $db->prepare('SELECT pseudo_stagiaire 
+    $req = $db->prepare('SELECT id_stagiaire, pseudo_stagiaire, nom_stagiaire, prenom_stagiaire 
                         FROM stagiaires s 
                         JOIN sessions ss ON (s.id_session = ss.id_session) 
                         WHERE est_actif IS TRUE 
+                        AND date_fin_session > NOW() 
                         AND id_formateur=:id_formateur;');
     $req->bindValue(':id_formateur', $_SESSION['utilisateur']['id_formateur']);
     $req->execute();
 
     die(json_encode(array(
-        'trainees' => $req->fetchAll(PDO::FETCH_COLUMN),
+        'trainees' => $req->fetchAll(PDO::FETCH_ASSOC),
         'nb_trainees' => $req->rowCount()
+    )));
+}
+
+if (isset($_POST['reset_pass_trainee']) && !empty($_POST['reset_pass_trainee'])) {
+    $req = $db->prepare('SELECT mdp_decode_stagiaire 
+                        FROM stagiaires 
+                        WHERE pseudo_stagiaire=:pseudo_stagiaire;');
+    $req->bindValue(':pseudo_stagiaire', $_POST['username_trainee']);
+    $req->execute();
+    $old_mdp = $req->fetch(PDO::FETCH_COLUMN);
+
+    $req = $db->prepare('UPDATE stagiaires 
+                        SET mdp_stagiaire = "' . password_hash($old_mdp, PASSWORD_BCRYPT) . '"
+                        WHERE pseudo_stagiaire=:pseudo_stagiaire;');
+    $req->bindValue(':pseudo_stagiaire', $_POST['username_trainee']);
+
+    die(json_encode(array(
+        'success' => $req->execute()
     )));
 }
 
@@ -1034,6 +1034,20 @@ if (isset($_POST['send_message']) && isset($_POST['send_message']) && isset($_PO
     $req->bindValue(":id_send_formateur", filter_var($_SESSION["utilisateur"]["id_formateur"], FILTER_VALIDATE_INT));
     $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
     $req->execute();
+    exit;
+}
+
+if (isset($_POST['maj_eval']) && !empty($_POST['maj_eval'])) {
+    $sql = "REPLACE INTO stagiaires_acquisitions 
+            VALUES(:id_acquis, :id_stagiaire, :ids_formateurs, :niveau);";
+    $req = $db->prepare($sql);
+    $req->bindValue(":id_acquis", filter_var($_POST['id_acquis'], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_stagiaire", filter_var($_POST['id_stagiaire'], FILTER_VALIDATE_INT));
+    $req->bindValue(":ids_formateurs", 1);
+    $req->bindValue(":niveau", strtoupper(filter_var($_POST['niveau'], FILTER_VALIDATE_INT)));
+    // $req->execute();
+
+    var_dump($_POST);
     exit;
 }
 ?>

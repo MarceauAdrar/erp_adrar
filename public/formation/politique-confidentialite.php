@@ -14,7 +14,7 @@ include_once("./header.php");
 <div class="container">
     <div class="row">
         <div class="col-12">
-            <h1>Politique de confidentialité du site www.marceau-rodrigues.fr</h1>
+            <h1>Politique de confidentialité du site www.<?= $_SERVER["SERVER_NAME"] ?></h1>
         </div>
     </div>
     <div class="row pt-5 pb-5">

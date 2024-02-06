@@ -7,27 +7,93 @@ include_once __DIR__ . '/../../src/m/connect.php';
 include_once __DIR__ . '/../../src/vendor/autoload.php';
 
 $req = $db->prepare("SELECT *
-                    FROM stagiaires_acquisitions_acquis;");
+                    FROM stagiaires_acquisitions_acquis 
+                    INNER JOIN cours_modules ON (cours_module_id = id_module) 
+                    GROUP BY acquisition_categorie, id_module 
+                    ORDER BY acquisition_id;");
 $req->execute();
-$acquis = $req->fetchAll(PDO::FETCH_ASSOC);
+$acquisition_categories = $req->fetchAll(PDO::FETCH_ASSOC);
 
-// $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(adresse_num_site, ' ', adresse_rue_site, ' ', adresse_cp_site, ' ', adresse_ville_site) AS carte_formateur_adresse_site
-//                     FROM formateurs 
-//                     INNER JOIN sites ON sites.id_site = formateurs.id_site  
-//                     INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur 
-//                     WHERE id_formateur=:id_formateur;");
-// $req->bindParam(":id_formateur", $_POST['formateur']);
-// $req->execute();
-// $formateur = $req->fetch(PDO::FETCH_ASSOC);
+$sql = "SELECT nom_stagiaire, prenom_stagiaire   
+        FROM stagiaires 
+        WHERE id_stagiaire=:id_stagiaire;";
+$req = $db->prepare($sql);
+$id_stagiaire = (isset($_SESSION["utilisateur"]["id_stagiaire"]) && $_SESSION["utilisateur"]["id_stagiaire"] !== -1 ? $_SESSION["utilisateur"]["id_stagiaire"] : $_GET['id_stagiaire']);
+$req->bindParam(":id_stagiaire", $id_stagiaire);
+$req->execute();
+$stagiaire = $req->fetch(PDO::FETCH_ASSOC);
 
-// $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(adresse_num_site, ' ', adresse_rue_site, ' ', adresse_cp_site, ' ', adresse_ville_site) AS carte_formateur_adresse_site
-//                     FROM formateurs 
-//                     INNER JOIN sites ON sites.id_site = formateurs.id_site  
-//                     INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur 
-//                     WHERE id_formateur=:id_formateur;");
-// $req->bindParam(":id_formateur", $_POST['formateur']);
-// $req->execute();
-// $formateur = $req->fetch(PDO::FETCH_ASSOC);
+if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0) {
+    $th_supp = '<th class="bg-info text-white" align="center"><b>Mettre à jour</b></th>';
+} else {
+    $th_supp = '';
+}
+$tbody = '';
+$acquisition_categorie = null;
+$acquisition_module = null;
+$acquis = null;
+$cours_module_libelle = null;
+foreach ($acquisition_categories as $categorie) {
+    if ($categorie['acquisition_categorie'] !== $acquisition_categorie) {
+        $acquisition_categorie = $categorie['acquisition_categorie'];
+        $tbody .= '<tr>';
+        $tbody .= ' <td colspan="' . (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0 ? 5 : 4) . '" rowspan="1" style="background-color:#d9d9d9;color:#000;font-weight:bold;">' . $acquisition_categorie . '</td>';
+        $tbody .= '</tr>';
+    }
+    if ($categorie['id_module'] !== $acquisition_module) {
+        $acquisition_module = $categorie['id_module'];
+    }
+    $sql = "SELECT acquisition_id, acquisition_libelle, acquisition_niveau, ids_formateurs 
+            FROM stagiaires_acquisitions_acquis 
+            LEFT JOIN stagiaires_acquisitions ON (acquisition_id = id_acquis AND id_stagiaire=:id_stagiaire) 
+            WHERE acquisition_categorie=:acquisition_categorie 
+            AND id_module=:id_module 
+            ORDER BY acquisition_id;";
+    $req = $db->prepare($sql);
+    $req->bindParam(":acquisition_categorie", $acquisition_categorie);
+    $req->bindParam(":id_module", $acquisition_module);
+    $req->bindParam(":id_stagiaire", $id_stagiaire);
+    $req->execute();
+    $acquis = $req->fetchAll(PDO::FETCH_ASSOC);
+    $cours_module_libelle .= ' <td rowspan="' . sizeof($acquis) . '">' . $categorie['cours_module_libelle'] . '</td>';
+
+    foreach ($acquis as $key => $unAcquis) {
+        $noms_prenoms_formateurs = null;
+        if (isset($unAcquis['ids_formateurs']) && !empty($unAcquis['ids_formateurs']) && $unAcquis['ids_formateurs'] != "-1") {
+            $sql = "SELECT GROUP_CONCAT(prenom_formateur, ' ', nom_formateur) AS prenom_nom_formateur 
+                    FROM formateurs  
+                    WHERE id_formateur IN(" . $unAcquis['ids_formateurs'] . ");";
+            $req = $db->prepare($sql);
+            $req->execute();
+            $noms_prenoms_formateurs = $req->fetch(PDO::FETCH_COLUMN);
+        } else if ($unAcquis['ids_formateurs'] == "-1") {
+            $noms_prenoms_formateurs = -1;
+        }
+
+        if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0) {
+            $tbody .= '<tr>';
+            $tbody .=   $cours_module_libelle;
+            $tbody .= ' <td>' . $unAcquis['acquisition_libelle'] . '</td>';
+            $tbody .= ' <td align="center"><input class="form-control" id="form_maj_eval_ids_formateurs_' . $unAcquis['acquisition_id'] . '" value="' . $unAcquis['ids_formateurs'] . '" type="text" />' . (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs > 0 ? str_replace(array(',', ' '), array('<br>&<br>', '<br>'), $noms_prenoms_formateurs) : (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs < 0 ? "Prestataire externe" : "A définir")) . '</td>';
+            $niveau = " <select id='form_maj_eval_niveau_" . $unAcquis['acquisition_id'] . "' class='form-select'>";
+            foreach (["A", "PR A", "PE A", "NA", "NE", "A définir"] as $value) {
+                $niveau .= '<option value="' . $value . '" ' . ($value === $unAcquis['acquisition_niveau'] ? "selected" : "") . '>' . $value . '</option>';
+            }
+            $niveau .= "</select>";
+            $tbody .= ' <td align="center" style="background-color:' . ($unAcquis['acquisition_niveau'] === 'A' ? '#A8D08D' : ($unAcquis['acquisition_niveau'] === 'PR A' ? '#FFEB9C' : ($unAcquis['acquisition_niveau'] === 'PE A' ? '#ED7D31' : ($unAcquis['acquisition_niveau'] === 'NA' ? '#FFC7CE' : 'white')))) . '">' . $niveau . '</td>';
+            $tbody .= ' <td align="center"><a href="#" onclick="majEval(' . $unAcquis['acquisition_id'] . ', ' . $id_stagiaire . ');" class="btn btn-outline-primary">Enregistrer</a></td>';
+            $tbody .= '</tr>';
+        } else {
+            $tbody .= '<tr>';
+            $tbody .= $cours_module_libelle;
+            $tbody .= ' <td>' . $unAcquis['acquisition_libelle'] . '</td>';
+            $tbody .= ' <td align="center">' . (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs > 0 ? str_replace(array(',', ' '), array('<br>&<br>', '<br>'), $noms_prenoms_formateurs) : (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs < 0 ? "Prestataire externe" : "A définir")) . '</td>';
+            $tbody .= ' <td align="center" style="background-color:' . ($unAcquis['acquisition_niveau'] === 'A' ? '#A8D08D' : ($unAcquis['acquisition_niveau'] === 'PR A' ? '#FFEB9C' : ($unAcquis['acquisition_niveau'] === 'PE A' ? '#ED7D31' : ($unAcquis['acquisition_niveau'] === 'NA' ? '#FFC7CE' : '')))) . '">' . (!empty($unAcquis['acquisition_niveau']) ? $unAcquis['acquisition_niveau'] : "Non évalué·e") . '</td>';
+            $tbody .= '</tr>';
+        }
+        $cours_module_libelle = null;
+    }
+}
 
 class MYPDF extends TCPDF
 {
@@ -36,9 +102,12 @@ class MYPDF extends TCPDF
     public function Header()
     {
         // Logo
-        $this->Image('/var/www/html/erp/public/img/logo_adrar.png', 10, 10, 20, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        $this->writeHTMLCell(0, 50, 50, 5, '<h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Suivi <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;des<br>&nbsp;&nbsp;&nbsp;Acquisitions</h1>', 0, 1, false, true, '', true);
-        $this->Image('/var/www/html/erp/public/img/logo_numerique.png', 120, 5, 75, '', 'PNG', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        $this->Image('/var/www/html/erp/public/img/logo_adrar.png', 16, 10, 10, 15, 'PNG', '', 'T', false, 300, '', false, false, 0, false, "Logo de l'ADRAR Formation", false);
+        $this->writeHTMLCell(0, 25, 50, 5, '<h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Suivi <br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;des<br>&nbsp;&nbsp;&nbsp;Acquisitions</h2>', 0, 1, false, true, '', true);
+        $this->Image('/var/www/html/erp/public/img/logo_numerique.png', 120, 5, 75, 22, 'PNG', '', 'T', false, 300, '', false, false, 0, false, "Logo du Pôle Numérique", false);
+        $this->SetAutoPageBreak($this->AutoPageBreak, $this->getBreakMargin());
+
+        $this->setPageMark();
     }
 
     // Page footer
@@ -52,88 +121,74 @@ class MYPDF extends TCPDF
         $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
     }
 }
-
-
-$html2pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8');
-$html2pdf->SetCreator("Marceau RODRIGUES");
-$html2pdf->SetAuthor("Marceau RODRIGUES");
-$html2pdf->SetTitle("Acquis en cours de formation");
-$html2pdf->SetSubject("Acquis en cours de formation");
-
-$html2pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 006', PDF_HEADER_STRING);
-
-$html2pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-$html2pdf->SetHeaderMargin(10);
-$html2pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
-
-// set auto page breaks
-$html2pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
-
-// set image scale factor
-// $html2pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-
-$html2pdf->AddPage();
 $tbl = <<<EOD
-<table border="1" cellpadding="2" cellspacing="2">
-<thead>
- <tr style="background-color:#FFFF00;color:#0000FF;">
-  <td width="30" align="center"><b>A</b></td>
-  <td width="140" align="center"><b>XXXX</b></td>
-  <td width="140" align="center"><b>XXXX</b></td>
-  <td width="80" align="center"> <b>XXXX</b></td>
-  <td width="80" align="center"><b>XXXX</b></td>
-  <td width="45" align="center"><b>XXXX</b></td>
- </tr>
- <tr style="background-color:#FF0000;color:#FFFF00;">
-  <td width="30" align="center"><b>B</b></td>
-  <td width="140" align="center"><b>XXXX</b></td>
-  <td width="140" align="center"><b>XXXX</b></td>
-  <td width="80" align="center"> <b>XXXX</b></td>
-  <td width="80" align="center"><b>XXXX</b></td>
-  <td width="45" align="center"><b>XXXX</b></td>
- </tr>
-</thead>
- <tr>
-  <td width="30" align="center">1.</td>
-  <td width="140" rowspan="6">XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX</td>
-  <td width="140">XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td width="80">XXXX</td>
-  <td align="center" width="45">XXXX<br />XXXX</td>
- </tr>
- <tr>
-  <td width="30" align="center" rowspan="3">2.</td>
-  <td width="140" rowspan="3">XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td align="center" width="45">XXXX<br />XXXX</td>
- </tr>
- <tr>
-  <td width="80">XXXX<br />XXXX<br />XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td align="center" width="45">XXXX<br />XXXX</td>
- </tr>
- <tr>
-  <td width="80" rowspan="2" >RRRRRR<br />XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td align="center" width="45">XXXX<br />XXXX</td>
- </tr>
- <tr>
-  <td width="30" align="center">3.</td>
-  <td width="140">XXXX1<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td align="center" width="45">XXXX<br />XXXX</td>
- </tr>
- <tr>
-  <td width="30" align="center">4.</td>
-  <td width="140">XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td width="80">XXXX<br />XXXX</td>
-  <td align="center" width="45">XXXX<br />XXXX</td>
- </tr>
-</table>
+    <div style="text-align:center;">
+        <span><b>A</b>&nbsp;pour Acquis<span>
+        <span><b>PR A</b>&nbsp;pour PReque Acquis<span>
+        <span><b>PE A</b>&nbsp;pour PEu Acquis<span>
+        <span><b>NA</b>&nbsp;pour Non Acquis<span>
+        <span><b>NE</b>&nbsp;pour Non Évalué·e<span>
+    </div>
+    
+    <table border="1" class="table table-bordered table-responsive table-striped">
+        <thead>
+            <tr style="background-color:#72A0C1;color:#FFFFFF;">
+                <th class="bg-info text-white" align="center"><b>Modules</b></th>
+                <th class="bg-info text-white" align="center"><b>Compétences</b></th>
+                <th class="bg-info text-white" align="center"><b>Formateur en charge</b></th>
+                <th class="bg-info text-white" align="center"><b>Acquisition</b></th>
+                $th_supp
+            </tr>
+        </thead>
+        <tbody>
+            $tbody
+        </tbody>
+    </table>
+    <br>
 EOD;
-$html2pdf->writeHTMLCell(0, 0, '', 50, $tbl, 0, 1, 0, true, '', true);
+// echo "<pre>";
+// var_dump($tbl);
+// echo "</pre>";
+// die;
+if (!$stagiaire) {
+    $title = " | Évaluation de stagiaire introuvable";
+    include_once('./header.php');
+    include_once('./error404.php');
+    include_once('./footer.php');
+} else {
+    if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0) {
+        // var_dump($stagiaire, $id_stagiaire, $tbody);
+        $title = " | Évaluation par stagiaire";
+        include_once('./header.php');
+        echo '<h1 class="text-center">Évaluation du stagiaire: ' . $stagiaire['prenom_stagiaire'] . "&nbsp;" . $stagiaire['nom_stagiaire'] . ' </h1>
+            ' . $tbl;
+        include_once('./js.php');
+        include_once('./footer.php');
+    } else {
+        $html2pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8');
+        $html2pdf->SetCreator("Marceau RODRIGUES");
+        $html2pdf->SetAuthor("Marceau RODRIGUES");
+        $html2pdf->SetTitle("Acquis en cours de formation");
+        $html2pdf->SetSubject("Acquis en cours de formation");
 
-$html2pdf->Output(__DIR__ . '/Mon suivi des acquis.pdf', 'I');
+        $html2pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 006', PDF_HEADER_STRING);
+
+        $html2pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
+        $html2pdf->SetHeaderMargin(10);
+        $html2pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
+
+        // set auto page breaks
+        $html2pdf->SetAutoPageBreak(TRUE, PDF_MARGIN_BOTTOM);
+
+        // set image scale factor
+        // $html2pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        $html2pdf->SetFont('times', '', 9);
+        $html2pdf->AddPage();
+
+        $html2pdf->writeHTMLCell(0, 0, '', '', $tbl, 0, 1, 0, true, '', true);
+
+        $html2pdf->Output(__DIR__ . '/Mon suivi des acquis.pdf', 'I');
+    }
+}
 // $html2pdf->Output('viewer.pdf');

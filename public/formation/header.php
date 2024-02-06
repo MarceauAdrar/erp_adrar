@@ -170,12 +170,12 @@
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/account.php">Modifier mes informations</a></li>
                                     <?php
                                     if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
-                                        <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalConnectAs" class="dropdown-item" onclick="loadTrainees();">Se connecter en tant que...</a></li>
+                                        <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalTrainees" class="dropdown-item" onclick="loadTrainees();">Actions sur les stagiaires</a></li>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/">Retour sur l'ERP</a></li>
-                                    <?php } elseif ($_SESSION["utilisateur"]["id_stagiaire"] > 0 && $_SERVER['REMOTE_ADDR'] === "90.1.43.11") { ?>
+                                    <?php } elseif ($_SESSION["utilisateur"]["id_stagiaire"] > 0) { ?>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/viewer.php">Consulter mes acquis</a></li>
                                     <?php } ?>
-                                    <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/deconnexion.php">Se déconnecter</a></li>
+                                    <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/deconnexion.php?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Se déconnecter</a></li>
                                 </ul>
                             </li>
                         </ul>

@@ -68,14 +68,16 @@ include_once("./header.php"); ?>
                         } else {
                             $lien = $ressource['cours_ressource_lien'];
                         } ?>
-                        <a target="_blank" href="<?= $lien ?>" class="col-xs-1 col-lg-2 col-xl-3 text-black text-decoration-none">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="card-title text-decoration-underline"><?= $ressource['cours_ressource_titre'] ?></p>
-                                    <i class="fa-solid fa-circle-down text-black" style="position: absolute;right: 1vw;bottom: 0.5vh;font-size: 3rem;opacity: 0.5;"></i>
+                        <div class="col-xs-1 col-lg-2 col-xl-3">
+                            <a target="_blank" href="<?= $lien ?>" class="text-black text-decoration-none">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <p class="card-title text-decoration-underline"><?= $ressource['cours_ressource_titre'] ?></p>
+                                        <i class="fa-solid fa-circle-down text-black" style="position: absolute;right: 1vw;bottom: 0.5vh;font-size: 3rem;opacity: 0.5;"></i>
+                                    </div>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
                     <?php } ?>
                 </div>
             </div>
@@ -86,16 +88,18 @@ include_once("./header.php"); ?>
                 <h2>Les exercices</h2>
                 <div class="row pb-3">
                     <?php foreach ($exercices as $exercice) { ?>
-                        <div class="card col-xs-1 col-lg-2 col-xl-3">
-                            <span class="card-img-top" alt="Illustration devoirs à la maison">
-                                <?php include("./imgs/homeworks.svg"); ?>
-                            </span>
-                            <div class="card-body">
-                                <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
-                                    <h6 class="card-title text-decoration-underline"><?= $exercice['cours_ressource_titre'] ?></h6>
-                                    <small><?= $exercice['cours_ressource_resume'] ?></small>
-                                </a>
-                            </div>
+                        <div class="col-xs-1 col-lg-2 col-xl-3">
+                            <a target="_blank" href="<?= $exercice['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
+                                <div class="card">
+                                    <span class="card-img-top" alt="Illustration devoirs à la maison">
+                                        <?php include("./imgs/homeworks.svg"); ?>
+                                    </span>
+                                    <div class="card-body">
+                                        <h6 class="card-title text-decoration-underline"><?= $exercice['cours_ressource_titre'] ?></h6>
+                                        <small><?= $exercice['cours_ressource_resume'] ?></small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     <?php } ?>
                 </div>
@@ -107,24 +111,26 @@ include_once("./header.php"); ?>
                 <h2>Les TPs</h2>
                 <div class="row pb-5">
                     <?php foreach ($tps as $tp) { ?>
-                        <div class="card col-xs-1 col-lg-3 col-xl-4">
-                            <span class="card-img-top" alt="Illustration devoirs à la maison">
-                                <?php if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
-                                    if (empty($tp['lien_ressource_rendue'])) { ?>
-                                        <i class="fa-solid fa-arrow-up-from-bracket text-grey upload-file" title="Rendre le TP" onclick="document.querySelector('#file_input_tp_<?= $tp['cours_ressource_id'] ?>').click();"></i>
-                                        <input type="file" name="file_input_tp_<?= $tp['cours_ressource_id'] ?>" id="file_input_tp_<?= $tp['cours_ressource_id'] ?>" class="hidden" onchange="sendTp(<?= $tp['cours_ressource_id'] ?>, this.name);">
-                                    <?php } else { ?>
-                                        <i class="fa-solid fa-check-to-slot text-green upload-file"></i>
-                                <?php }
-                                } ?>
-                                <?php include("./imgs/homeworks.svg"); ?>
-                            </span>
-                            <div class="card-body">
-                                <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
-                                    <h6 class="card-title text-decoration-underline"><?= $tp['cours_ressource_titre'] ?></h6>
-                                    <small><?= $tp['cours_ressource_resume'] ?></small>
-                                </a>
-                            </div>
+                        <div class="col-xs-1 col-lg-3 col-xl-4">
+                            <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
+                                <div class="card">
+                                    <span class="card-img-top" alt="Illustration devoirs à la maison">
+                                        <?php if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+                                            if (empty($tp['lien_ressource_rendue'])) { ?>
+                                                <i class="fa-solid fa-arrow-up-from-bracket text-grey upload-file" title="Rendre le TP" onclick="document.querySelector('#file_input_tp_<?= $tp['cours_ressource_id'] ?>').click();"></i>
+                                                <input type="file" name="file_input_tp_<?= $tp['cours_ressource_id'] ?>" id="file_input_tp_<?= $tp['cours_ressource_id'] ?>" class="hidden" onchange="sendTp(<?= $tp['cours_ressource_id'] ?>, this.name);">
+                                            <?php } else { ?>
+                                                <i class="fa-solid fa-check-to-slot text-green upload-file"></i>
+                                        <?php }
+                                        } ?>
+                                        <?php include("./imgs/homeworks.svg"); ?>
+                                    </span>
+                                    <div class="card-body">
+                                        <h6 class="card-title text-decoration-underline"><?= $tp['cours_ressource_titre'] ?></h6>
+                                        <small><?= $tp['cours_ressource_resume'] ?></small>
+                                    </div>
+                                </div>
+                            </a>
                         </div>
                     <?php } ?>
                 </div>

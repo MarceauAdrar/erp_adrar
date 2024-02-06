@@ -8,6 +8,8 @@ $sql = "SELECT faq_theme
         WHERE faq_visible IS TRUE ";
 if ($_SESSION["utilisateur"]["id_secteur"] > 0) {
     $sql .= " AND id_secteur=:id_secteur OR id_secteur IS NULL ";
+} else {
+    $sql .= " AND id_secteur IS NULL ";
 }
 $sql .= " GROUP BY faq_theme;";
 $req = $db->prepare($sql);
@@ -96,10 +98,11 @@ include_once("./header.php"); ?>
         </div>
     <?php } else { ?>
         <h2>Retrouvez la réponse à vos questions les plus génériques ici bientôt !</h2>
-        <?=include_once("./error404.php") ?>
+        <?php include_once("./error404.php"); ?>
     <?php } ?>
 </div>
 <?php
 include_once("./footer.php");
+include_once("./js.php");
 die(ob_get_clean());
 ?>

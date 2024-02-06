@@ -1,44 +1,18 @@
-section {
-    width: 100vw;
-    height: 100vh;
-    display: grid;
-    grid-template-columns: 65% 35%;
-}
-
-.gauche {
-    background-color: #F2ABBF;
-}
-
-.droit {
-    background: linear-gradient(180deg, #0F213B 0%, #0F213B 0.01%, #0F133B 100%);
-}
-
-.droit>div {
+body {
+    color: var(--coul-ternaire);
+    background-color: var(--coul-secondaire);
     display: flex;
-    justify-items: center;
-    align-items: center;
     flex-direction: column;
-    margin-top: 30%;
-    padding: 0 50px;
+    align-items: center;
 }
 
-.droit form label {
-    display: block;
-    padding-top: 20px;
+img {
+    width: 100px;
+    aspect-ratio: 3/4;
+    margin-bottom: 2em;
 }
 
-form>div:nth-of-type(1) {
-    margin-top: 25px;
-}
-
-form>div:nth-of-type(2) {
-    padding-bottom: 50px;
-}
-
-.gauche img {
-    position: absolute;
-    width: 40em;
-    height: 25em;
-    right: 60em;
-    transform: rotate(180deg);
+form input,
+form p {
+    margin-bottom: 1em;
 }

@@ -14,17 +14,16 @@ $_SESSION['csrf_token'] = $csrfToken;
     <link rel="stylesheet" href="css/_reset.css">
     <link rel="stylesheet" href="css/_style.css">
     <link rel="stylesheet" href="css/code.css">
-    <script src="js/code.js"></script>
 </head>
 
 <body onload="actionCode();">
-    <section>
-        <div class="gauche">
-            <img src="img/homme.png" alt="">
-        </div>
-        <div class="droit">
-            <div>
+    <div class="container justify-content-center">
+        <div class="row">
+            <div class="col-12 text-center">
+                <img src="img/logo_adrar.png" alt="Logo de l'ADRAR">
                 <h1 class="text-white">Bienvenue sur l'ERP</h1>
+            </div>
+            <div class="col-12">
                 <form action="../src/c/c_requetes.php" method="post">
                     <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : "alert-info") ?>"><?= @urldecode($_GET['message']) ?></div>
                     <input type="hidden" name="form_signup_csrf" value="<?= $csrfToken ?>">
@@ -36,7 +35,9 @@ $_SESSION['csrf_token'] = $csrfToken;
                 </form>
             </div>
         </div>
-    </section>
+    </div>
+
+    <script src="js/code.js"></script>
 </body>
 
 </html>

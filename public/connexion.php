@@ -19,17 +19,17 @@ $_SESSION['csrf_token'] = $csrfToken;
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php">
+    <meta property="og:url" content="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/connexion.php">
     <meta property="og:title" content="ADRAR ERP - Connexion">
     <meta property="og:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus.">
-    <meta property="og:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png">
+    <meta property="og:image" content="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="https://www.marceau-rodrigues.fr/erp/public/connexion.php">
+    <meta property="twitter:url" content="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/connexion.php">
     <meta property="twitter:title" content="ADRAR ERP - Connexion">
     <meta property="twitter:description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus.">
-    <meta property="twitter:image" content="https://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png">
+    <meta property="twitter:image" content="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/logo_adrar.png">
 
     <meta name="robots" content="index, follow">
     <title>ADRAR ERP - Connexion</title>
@@ -49,6 +49,7 @@ $_SESSION['csrf_token'] = $csrfToken;
             <div class="col-12">
                 <form action="../src/c/c_requetes.php" method="post">
                     <div class="<?= (isset($_GET['message']) && !empty($_GET['message']) && isset($_COOKIE['DECONNECTE']) && !empty($_COOKIE['DECONNECTE']) ? "" : "hidden ") ?>text-center alert <?= (isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "error" ? "alert-danger" : ((isset($_GET['type']) && !empty($_GET['type']) && $_GET['type'] == "success") ? "bg-success" : "alert-info")) ?>"><?= @urldecode($_GET['message']) ?></div>
+                    <input type="hidden" name="form_login_url" value="<?= $_GET['url'] ?>">
                     <input type="hidden" name="form_login_csrf" value="<?= $csrfToken ?>">
                     <div>
                         <label for="form_login_username" class="text-white">Nom d'utilisateur</label>

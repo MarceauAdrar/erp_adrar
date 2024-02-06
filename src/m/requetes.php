@@ -582,6 +582,7 @@ function connexionUtilisateur(string|int $identifiant)
     if ($req->rowCount() === 1) {
         $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
         $_SESSION['utilisateur']['id_formateur'] = -1;
+        $_SESSION['utilisateur']['id_secteur'] = -1;
         $req->closeCursor();
         return true;
     } elseif ($req->rowCount() === 0) {

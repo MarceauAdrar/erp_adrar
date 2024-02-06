@@ -6,13 +6,6 @@ ini_set("session.gc_maxlifetime", 14400);
 
 session_start();
 
-if (
-    !array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php"
-    && $_SERVER['REQUEST_URI'] !== "/erp/public/changer-mdp.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/changer-mdp.php"
-) {
-    header("Location: https://" . $_SERVER['SERVER_NAME'] . "/erp/public/deconnexion.php?type=info&message=" . urlencode("Session expirée"));
-}
-
 define("DEV", false);
 define("LIEN_FORMATION", "/erp/public/formation/");
 
@@ -54,3 +47,10 @@ $mailer->Port       = 587;                                    //TCP port to conn
 $mailer->isHTML(true);
 
 include_once __DIR__ . '/requetes.php';
+
+if (
+    !array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php"
+    && $_SERVER['REQUEST_URI'] !== "/erp/public/changer-mdp.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/changer-mdp.php"
+) {
+    header("Location: https://" . $_SERVER['SERVER_NAME'] . "/erp/public/deconnexion.php?type=info&message=" . urlencode("Session expirée") . "&url=" . urlencode($_SERVER['REQUEST_URI']));
+}

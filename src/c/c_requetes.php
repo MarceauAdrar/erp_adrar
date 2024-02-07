@@ -7,26 +7,26 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $id_formateur = filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT);
 
     foreach (recupererFormateurs() as $formateur) {
-        if ($id_formateur == $formateur['id_formateur']) {
+        if ($id_formateur == $formateur['formateur_id']) {
             $choix_secteurs = "";
             foreach (recupererSecteurs() as $secteur) {
-                $choix_secteurs .= '<option value="' . $secteur['id_secteur'] . '" ' . ($secteur['id_secteur'] == $formateur['id_secteur'] ? 'selected' : '') . '>' . $secteur['nom_secteur'] . '</option>';
+                $choix_secteurs .= '<option value="' . $secteur['secteur_id'] . '" ' . ($secteur['secteur_id'] == $formateur['id_secteur'] ? 'selected' : '') . '>' . $secteur['secteur_nom'] . '</option>';
             }
             $tbody_formateurs .= '
             <tr>
-                <td><input type="text" name="form_formateur_editer_nom" value="' .  $formateur['nom_formateur'] . '"></td>
-                <td><input type="text" name="form_formateur_editer_prenom" value="' .  $formateur['prenom_formateur'] . '"></td>
-                <td><input type="text" name="form_formateur_editer_mail" value="' .  $formateur['mail_formateur'] . '"></td>
+                <td><input type="text" name="form_formateur_editer_nom" value="' .  $formateur['formateur_nom'] . '"></td>
+                <td><input type="text" name="form_formateur_editer_prenom" value="' .  $formateur['formateur_prenom'] . '"></td>
+                <td><input type="text" name="form_formateur_editer_mail" value="' .  $formateur['formateur_mail'] . '"></td>
                 <td>
                     <div>
                         <label>Téléverser ma signature: (png transparents uniquement)</label>
                         <input type="file" name="form_formateur_editer_signature">
                     </div>
-                    <button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $formateur['id_formateur'] . '">Signer manuellement</button>
+                    <button onclick="afficherCanvasSignature(this.nextSibling.nextElementSibling.children[0].getAttribute(\'data-id\'));" id="btn-display-signature-' . $id_formateur . '">Signer manuellement</button>
                     <div class="hidden">
-                        <canvas class="box-signature" id="signature-pad-' . $formateur['id_formateur'] . '" data-id="' . $formateur['id_formateur'] . '" width="400" height="200"></canvas>
+                        <canvas class="box-signature" id="signature-pad-' . $id_formateur . '" data-id="' . $id_formateur . '" width="400" height="200"></canvas>
                         <div>
-                            <button id="clear-' . $formateur['id_formateur'] . '">Effacer</button>
+                            <button id="clear-' . $id_formateur . '">Effacer</button>
                         </div>
                     </div>
                 </td>
@@ -39,21 +39,21 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                 <td><textarea name="form_formateur_editer_liens">' .  $formateur['carte_formateur_liens'] . '</textarea></td>
                 <td><input type="text" name="form_formateur_editer_tel" value="' .  $formateur['carte_formateur_tel'] . '"></td>
                 <td><input type="text" name="form_formateur_editer_portable" value="' .  $formateur['carte_formateur_portable'] . '"></td>
-                <td><a href="#" onclick="majFormateur(' . $formateur['id_formateur'] . ');">Mise à jour</a></td>
+                <td><a href="#" onclick="majFormateur(' . $id_formateur . ');">Mise à jour</a></td>
             </tr>';
         } else {
             $tbody_formateurs .= '
             <tr>
-                <td>' . strtoupper($formateur['nom_formateur']) . '</td>
-                <td>' . ucwords($formateur['prenom_formateur']) . '</td>
-                <td>' . $formateur['mail_formateur'] . '</td>
-                <td>' . (empty($formateur['signature_formateur']) ? 'Signature manquante' : '<img style="width:150px;height:100px;" src="../src/' . $formateur['signature_formateur'] . '" alt="Signature du formateur">') . '</td>
-                <td>' . $formateur['nom_secteur'] . '</td>
+                <td>' . strtoupper($formateur['formateur_nom']) . '</td>
+                <td>' . ucwords($formateur['formateur_prenom']) . '</td>
+                <td>' . $formateur['formateur_mail'] . '</td>
+                <td>' . (empty($formateur['formateur_signature']) ? 'Signature manquante' : '<img style="width:150px;height:100px;" src="../src/' . $formateur['formateur_signature'] . '" alt="Signature du formateur">') . '</td>
+                <td>' . $formateur['secteur_nom'] . '</td>
                 <td>' . $formateur['carte_formateur_role'] . '</td>
                 <td>' . $formateur['carte_formateur_liens'] . '</td>
                 <td>' . $formateur['carte_formateur_tel'] . '</td>
                 <td>' . $formateur['carte_formateur_portable'] . '</td>
-                <td><a href="#" onclick="recupererListeFormateurs(' . $formateur['id_formateur'] . ');">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
+                <td><a href="#" onclick="recupererListeFormateurs(' . $formateur['formateur_id'] . ');">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
             </tr>';
         }
     }
@@ -63,9 +63,9 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererStagiaires() as $stagiaire) {
         $tbody_stagiaires .= '
         <tr>
-            <td>' . strtoupper($stagiaire['nom_stagiaire']) . '</td>
-            <td>' . ucwords($stagiaire['prenom_stagiaire']) . '</td>
-            <td>' . date_format(new DateTime($stagiaire['date_naissance_stagiaire']), "d/m/Y") . '</td>
+            <td>' . strtoupper($stagiaire['stagiaire_nom']) . '</td>
+            <td>' . ucwords($stagiaire['stagiaire_prenom']) . '</td>
+            <td>' . date_format(new DateTime($stagiaire['stagiaire_date_naissance']), "d/m/Y") . '</td>
             <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
@@ -75,10 +75,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererStages() as $stage) {
         $tbody_stages .= '
         <tr>
-            <td>' . strtoupper($stage['nom_tuteur']) . '</td>
-            <td>' . ucwords($stage['prenom_tuteur']) . '</td>
-            <td>' . $stage['rue_lieu_stage'] . " " . $stage['cp_lieu_stage'] . " " . $stage['ville_lieu_stage'] . " " . $stage['pays_lieu_stage'] . '</td>
-            <td>' . $stage['mail_tuteur'] . '</td>
+            <td>' . strtoupper($stage['stage_nom_tuteur']) . '</td>
+            <td>' . ucwords($stage['stage_prenom_tuteur']) . '</td>
+            <td>' . $stage['stage_adresse_rue'] . " " . $stage['stage_adresse_cp'] . " " . $stage['stage_adresse_ville'] . " " . $stage['stage_adresse_pays'] . '</td>
+            <td>' . $stage['stage_mail_tuteur'] . '</td>
             <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
@@ -89,13 +89,13 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $tbody_sessions .= '
         <tr>
             <td>' . strtoupper($session['nom_session']) . '</td>
-            <td>' . $session['duree_stage'] . '</td>
-            <td>' . strtoupper($session['sigle_session']) . '</td>
-            <td>' . date_format(new DateTime($session['date_debut_session']), 'd/m/Y') . '</td>
-            <td>' . date_format(new DateTime($session['date_fin_session']), 'd/m/Y') . '</td>
-            <td>' . date_format(new DateTime($session['date_debut_stage']), 'd/m/Y') . '</td>
-            <td>' . date_format(new DateTime($session['date_fin_stage']), 'd/m/Y') . '</td>
-            <td>' . strtoupper($session['nom_formateur']) . " " . ucwords($session['prenom_formateur']) . '</td>
+            <td>' . $session['session_duree_stage'] . '</td>
+            <td>' . strtoupper($session['session_sigle']) . '</td>
+            <td>' . date_format(new DateTime($session['session_date_debut']), 'd/m/Y') . '</td>
+            <td>' . date_format(new DateTime($session['session_date_fin']), 'd/m/Y') . '</td>
+            <td>' . date_format(new DateTime($session['session_stage_date_debut']), 'd/m/Y') . '</td>
+            <td>' . date_format(new DateTime($session['session_stage_date_fin']), 'd/m/Y') . '</td>
+            <td>' . strtoupper($session['formateur_nom']) . " " . ucwords($session['formateur_prenom']) . '</td>
             <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
@@ -105,16 +105,16 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererSecteurs() as $secteur) {
         $tbody_secteurs .= '
         <tr>
-            <td>' . ucfirst($secteur['nom_secteur']) . '</td>
-            <td><img style="height:100px;" src="./img/' . $secteur['logo_secteur'] . '" alt="Logo du secteur ' . $secteur['nom_secteur'] . '"></td>
+            <td>' . ucfirst($secteur['secteur_nom']) . '</td>
+            <td><img style="height:100px;" src="./img/' . $secteur['secteur_logo'] . '" alt="Logo du secteur ' . $secteur['secteur_nom'] . '"></td>
             <td><a href="#" onclick="">Editer</a>&nbsp;<a href="#" onclick="">Supprimer</a></td>
         </tr>';
     }
     die(json_encode($tbody_secteurs));
 } elseif (isset($_POST['recupererDonneesFiltres']) && !empty($_POST['recupererDonneesFiltres'])) {
-    $formateurs = '<option value="0"' . (!isset($_SESSION['filtres']['id_formateur']) || empty($_SESSION['filtres']['id_formateur']) ? " selected" : "") . '>Tous</option>';
+    $formateurs = '<option value="0"' . (!isset($_SESSION['filtres']['formateur_id']) || empty($_SESSION['filtres']['formateur_id']) ? " selected" : "") . '>Tous</option>';
     foreach (recupererFormateurs() as $formateur) {
-        $formateurs .= '<option value="' . $formateur['id_formateur'] . '"' . (isset($_SESSION['filtres']['id_formateur']) && $_SESSION['filtres']['id_formateur'] == $formateur['id_formateur'] ? " selected" : "") . '>' . strtoupper($formateur['nom_formateur']) . " " . ucwords($formateur['prenom_formateur']) . '</option>';
+        $formateurs .= '<option value="' . $formateur['formateur_id'] . '"' . (isset($_SESSION['filtres']['formateur_id']) && $_SESSION['filtres']['formateur_id'] == $formateur['formateur_id'] ? " selected" : "") . '>' . strtoupper($formateur['formateur_nom']) . " " . ucwords($formateur['formateur_prenom']) . '</option>';
     }
     $sessions = '<option value="0"' . (!isset($_SESSION['filtres']['nom_session']) || empty($_SESSION['filtres']['nom_session']) ? " selected" : "") . '>Toutes</option>';
     foreach (recupererSessions() as $session) {
@@ -126,7 +126,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         "formateurs" => $formateurs
     )));
 } elseif (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
-    $_SESSION['filtres']['id_formateur'] = filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT);
+    $_SESSION['filtres']['formateur_id'] = filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT);
     $_SESSION['filtres']['nom_session'] = filter_var($_POST['nom_session'], FILTER_SANITIZE_SPECIAL_CHARS);
 
     $stages = '';
@@ -151,19 +151,19 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $tbody = '';
 
     // var_dump($_SESSION['filtres']['nom_session']);
-    foreach (recupererStages($_SESSION['filtres']['id_formateur'], $_SESSION['filtres']['nom_session']) as $data) {
+    foreach (recupererStages($_SESSION['filtres']['formateur_id'], $_SESSION['filtres']['nom_session']) as $data) {
         $tbody .= '
         <tr>
             <td>' . strtoupper($data['nom_session']) . '</td>
-            <td>' . strtoupper($data['nom_stagiaire']) . '</td>
-            <td>' . ucfirst($data['prenom_stagiaire']) . '</td>
-            <td class="' . (!empty($data['convention_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['convention_recue']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['horaires_recues_1']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_1']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['horaires_recues_2']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_2']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['attestation_recue']) ? 'Oui' : 'Non') . '</td>
-            <td class="' . (!empty($data['evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['evaluation_recue']) ? 'Oui' : 'Non') . '</td>
-            <td ' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "demandes_terminees" : ($data['compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes')) . '>' . (!empty($data['convention_recue']) && !empty($data['horaires_recues_1']) && !empty($data['horaires_recues_2']) && !empty($data['horaires_recues_3']) && !empty($data['attestation_recue']) && !empty($data['evaluation_recue']) ? "Terminé !" : ($data['compteur_demandes'] === 0 ? '<a role="button" class="btn-mail" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" class="btn-mail" onclick="recupererDocumentsManquants(' . $data['id_stagiaire'] . ');" data-modal="modal">Relance</a>')) . '</td>
+            <td>' . strtoupper($data['stagiaire_nom']) . '</td>
+            <td>' . ucfirst($data['stagiaire_prenom']) . '</td>
+            <td class="' . (!empty($data['stagiaire_convention_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_convention_recue']) ? 'Oui' : 'Non') . '</td>
+            <td class="' . (!empty($data['stagiaire_horaires_recues_1']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_horaires_recues_1']) ? 'Oui' : 'Non') . '</td>
+            <td class="' . (!empty($data['stagiaire_horaires_recues_2']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_horaires_recues_2']) ? 'Oui' : 'Non') . '</td>
+            <td class="' . (!empty($data['stagiaire_horaires_recues_3']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_horaires_recues_3']) ? 'Oui' : 'Non') . '</td>
+            <td class="' . (!empty($data['stagiaire_attestation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_attestation_recue']) ? 'Oui' : 'Non') . '</td>
+            <td class="' . (!empty($data['stagiaire_evaluation_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_evaluation_recue']) ? 'Oui' : 'Non') . '</td>
+            <td ' . (!empty($data['stagiaire_convention_recue']) && !empty($data['stagiaire_horaires_recues_1']) && !empty($data['stagiaire_horaires_recues_2']) && !empty($data['stagiaire_horaires_recues_3']) && !empty($data['stagiaire_attestation_recue']) && !empty($data['stagiaire_evaluation_recue']) ? "demandes_terminees" : ($data['stagiaire_compteur_demandes'] === 0 ? 'premiere_demande' : 'plusieurs_demandes')) . '>' . (!empty($data['stagiaire_convention_recue']) && !empty($data['stagiaire_horaires_recues_1']) && !empty($data['stagiaire_horaires_recues_2']) && !empty($data['stagiaire_horaires_recues_3']) && !empty($data['stagiaire_attestation_recue']) && !empty($data['stagiaire_evaluation_recue']) ? "Terminé !" : ($data['stagiaire_compteur_demandes'] === 0 ? '<a role="button" class="btn-mail" onclick="recupererDocumentsManquants(' . $data['stagiaire_id'] . ');" data-modal="modal">1ère demande</a>' : '<a role="button" class="btn-mail" onclick="recupererDocumentsManquants(' . $data['stagiaire_id'] . ');" data-modal="modal">Relance</a>')) . '</td>
         </tr>';
     }
 
@@ -178,9 +178,9 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif ((isset($_POST['recupererDocumentsManquants']) && !empty($_POST['recupererDocumentsManquants'])) && (isset($_POST['id_stagiaire']) && !empty($_POST['id_stagiaire']))) {
     $id_stagiaire = filter_input(INPUT_POST, 'id_stagiaire', FILTER_VALIDATE_INT);
 
-    $req = $db->prepare("SELECT convention_recue, horaires_recues_1, horaires_recues_2, horaires_recues_3, attestation_recue, evaluation_recue, compteur_demandes
+    $req = $db->prepare("SELECT stagiaire_convention_recue, stagiaire_horaires_recues_1, stagiaire_horaires_recues_2, stagiaire_horaires_recues_3, stagiaire_attestation_recue, stagiaire_evaluation_recue, stagiaire_compteur_demandes
                         FROM stagiaires
-                        WHERE id_stagiaire=:id_stagiaire;");
+                        WHERE stagiaire_id=:id_stagiaire;");
     $req->bindParam(":id_stagiaire", $id_stagiaire);
     $req->execute();
     $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
@@ -190,9 +190,9 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             if (empty($html)) {
                 $html .= '
                     <input type="hidden" name="id_stagiaire" id="id_stagiaire" value="' . $id_stagiaire . '">
-                    <input type="hidden" name="relance" id="relance" value="' . ($stagiaire['compteur_demandes'] >= 1 ? "1" : "0") . '">';
+                    <input type="hidden" name="relance" id="relance" value="' . ($stagiaire['stagiaire_compteur_demandes'] >= 1 ? "1" : "0") . '">';
             }
-            if ($document === "convention_recue") {
+            if ($document === "stagiaire_convention_recue") {
                 $html .= '
                     <div>
                         <label for="convention">
@@ -200,7 +200,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                             Convention de stage
                         </label>
                     </div>';
-            } elseif ($document === "horaires_recues_1") {
+            } elseif ($document === "stagiaire_horaires_recues_1") {
                 $html .= '
                 <div>
                     <label for="horaires_mois_1">
@@ -208,7 +208,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                         Horaires mois 1
                     </label>
                 </div>';
-            } elseif ($document === "horaires_recues_2") {
+            } elseif ($document === "stagiaire_horaires_recues_2") {
                 $html .= '
                 <div>
                     <label for="horaires_mois_2">
@@ -216,7 +216,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                         Horaires mois 2
                     </label>
                 </div>';
-            } elseif ($document === "horaires_recues_3") {
+            } elseif ($document === "stagiaire_horaires_recues_3") {
                 $html .= '
                 <div>
                     <label for="horaires_mois_3">
@@ -224,7 +224,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                         Horaires mois 3
                     </label>
                 </div>';
-            } elseif ($document === "attestation_recue") {
+            } elseif ($document === "stagiaire_attestation_recue") {
                 $html .= '
                 <div>
                     <label for="attestation">
@@ -232,7 +232,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
                         Attestation de stage
                     </label>
                 </div>';
-            } elseif ($document === "evaluation_recue") {
+            } elseif ($document === "stagiaire_evaluation_recue") {
                 $html .= '
                 <div>
                     <label for="evaluation">
@@ -288,22 +288,22 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     }
     $sql = 'UPDATE formateurs  
             SET 
-                nom_formateur=:nom_formateur, 
-                prenom_formateur=:prenom_formateur, 
-                mail_formateur=:mail_formateur, 
+                formateur_nom=:nom_formateur, 
+                formateur_prenom=:prenom_formateur, 
+                formateur_mail=:mail_formateur, 
                 ';
     if (!empty($_POST['mdp_formateur'])) {
-        $sql .= ' mdp_formateur=:mdp_formateur, ';
+        $sql .= ' formateur_mdp=:mdp_formateur, ';
     }
     if (!empty($_POST['signature'])) {
-        $sql .= ' signature_formateur=:signature_formateur, ';
+        $sql .= ' formateur_signature=:signature_formateur, ';
     }
     $sql .= '   id_secteur=:id_secteur, 
                 carte_formateur_role=:carte_formateur_role, 
                 carte_formateur_liens=:carte_formateur_liens, 
                 carte_formateur_tel=:carte_formateur_tel, 
                 carte_formateur_portable=:carte_formateur_portable 
-            WHERE id_formateur=:id_formateur;';
+            WHERE formateur_id=:id_formateur;';
     $req = $db->prepare($sql);
     $req->bindValue(":nom_formateur", filter_var($_POST['nom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(":prenom_formateur", filter_var($_POST['prenom_formateur'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -331,7 +331,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         fclose($fp);
     }
     if (!empty($logo_secteur)) {
-        $sql = 'INSERT INTO secteurs(nom_secteur, logo_secteur) 
+        $sql = 'INSERT INTO secteurs(secteur_nom, secteur_logo) 
                 VALUES(:nom_secteur, :logo_secteur);';
         $req = $db->prepare($sql);
         $req->bindValue(":nom_secteur", $nom_secteur);
@@ -343,24 +343,24 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif (isset($_POST['form_login_csrf']) && !empty($_POST['form_login_csrf'])) {
     if ($_SESSION['csrf_token'] === $_POST['form_login_csrf'] && isset($_POST['form_login_username']) && !empty($_POST['form_login_username']) && isset($_POST['form_login_pass']) && !empty($_POST['form_login_pass'])) {
         // On sauvegarde une tentative de connexion
-        $req = $db->prepare("INSERT INTO connexion_essais(ip_connexion_essai, date_connexion_essai, username_connexion_essai) 
-                            VALUES(:ip_connexion_essai, NOW(), :username_connexion_essai);");
-        $req->bindValue(':ip_connexion_essai', $_SERVER['REMOTE_ADDR']);
-        $req->bindValue(':username_connexion_essai', $_POST['form_login_username']);
+        $req = $db->prepare("INSERT INTO connexions_essais(connexion_essai_ip, connexion_essai_date, connexion_essai_username) 
+                            VALUES(:connexion_essai_ip, NOW(), :connexion_essai_username);");
+        $req->bindValue(':connexion_essai_ip', $_SERVER['REMOTE_ADDR']);
+        $req->bindValue(':connexion_essai_username', $_POST['form_login_username']);
         $req->execute();
         // S'il y a 5 tentatives infructueuses en 5 minutes ou moins, on bloque l'accès au compte
         $req = $db->prepare("SELECT COUNT(*) 
-                            FROM connexion_essais 
-                            WHERE username_connexion_essai=:username_connexion_essai 
-                            AND date_connexion_essai >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) 
-                            GROUP BY username_connexion_essai;");
-        $req->bindValue(':username_connexion_essai', $_POST['form_login_username']);
+                            FROM connexions_essais 
+                            WHERE connexion_essai_username=:connexion_essai_username 
+                            AND connexion_essai_date >= DATE_SUB(NOW(), INTERVAL 5 MINUTE) 
+                            GROUP BY connexion_essai_username;");
+        $req->bindValue(':connexion_essai_username', $_POST['form_login_username']);
         $req->execute();
         if ($req->fetch(PDO::FETCH_COLUMN) <= 5) {
             if (connexionUtilisateur($_POST['form_login_username'])) {
-                if (array_key_exists("mdp_formateur", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_formateur'])) {
+                if (array_key_exists("formateur_mdp", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['formateur_mdp'])) {
                     $redirect = "../../public/index.php";
-                } elseif (array_key_exists("mdp_stagiaire", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['mdp_stagiaire'])) {
+                } elseif (array_key_exists("stagiaire_mdp", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['stagiaire_mdp'])) {
                     $redirect = "../../public/formation";
                 } else {
                     $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
@@ -383,11 +383,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     unset($_SESSION['code_tmp']);
     if ($_SESSION['csrf_token'] === $_POST['form_signup_csrf'] && isset($_POST['form_signup_code']) && !empty($_POST['form_signup_code'])) {
         $code_tmp = filter_var($_POST['form_signup_code'], FILTER_VALIDATE_INT);
-        $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE (code_entree_formateur=:code_formateur OR tmp_code_formateur=:code_formateur) AND (NOW() <= date_code_entree_formateur OR NOW() <= date_tmp_code_formateur);");
+        $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE (formateur_code_entree=:code_formateur OR formateur_code_tmp=:code_formateur) AND (NOW() <= formateur_date_code_entree OR NOW() <= formateur_date_code_tmp);");
         $req_formateur->bindValue(":code_formateur", $code_tmp);
         $req_formateur->execute();
 
-        $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE tmp_code_stagiaire=:code_stagiaire;");
+        $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE stagiaire_code_tmp=:code_stagiaire;");
         $req_stagiaire->bindValue(":code_stagiaire", $code_tmp);
         $req_stagiaire->execute();
 
@@ -412,18 +412,18 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             if (str_contains($_SESSION['code_tmp'], "formateur_")) {
                 $req = $db->prepare("UPDATE formateurs 
                                     SET 
-                                        code_entree_formateur=NULL, 
-                                        tmp_code_formateur=NULL, 
-                                        mdp_formateur=:mdp_formateur
-                                    WHERE (code_entree_formateur=:code_tmp OR tmp_code_formateur=:code_tmp);");
+                                        formateur_code_entree=NULL, 
+                                        formateur_code_tmp=NULL, 
+                                        formateur_mdp=:mdp_formateur
+                                    WHERE (formateur_code_entree=:code_tmp OR formateur_code_tmp=:code_tmp);");
                 $req->bindValue(":mdp_formateur", password_hash(htmlspecialchars($_POST['form_change_pass']), PASSWORD_BCRYPT));
                 $req->bindValue(":code_tmp", filter_var(str_replace("formateur_", "", $_SESSION['code_tmp']), FILTER_VALIDATE_INT));
             } elseif (str_contains($_SESSION['code_tmp'], "stagiaire_")) {
                 $req = $db->prepare("UPDATE stagiaires 
                                     SET 
-                                        tmp_code_stagiaire=NULL, 
-                                        mdp_stagiaire=:mdp_stagiaire
-                                    WHERE tmp_code_stagiaire=:code_tmp;");
+                                        stagiaire_code_tmp=NULL, 
+                                        stagiaire_mdp=:mdp_stagiaire
+                                    WHERE stagiaire_code_tmp=:code_tmp;");
                 $req->bindValue(":mdp_stagiaire", password_hash(htmlspecialchars($_POST['form_change_pass']), PASSWORD_BCRYPT));
                 $req->bindValue(":code_tmp", filter_var(str_replace("stagiaire_", "", $_SESSION['code_tmp']), FILTER_VALIDATE_INT));
             }
@@ -480,10 +480,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     if (empty($message)) {
         $sql = "UPDATE formateurs 
                 SET 
-                    nom_formateur=:nom_formateur, 
-                    prenom_formateur=:prenom_formateur, ";
+                    formateur_nom=:nom_formateur, 
+                    formateur_prenom=:prenom_formateur, ";
         if (isset($password)) {
-            $sql .= "  mdp_formateur=:mdp_formateur, ";
+            $sql .= "  formateur_mdp=:mdp_formateur, ";
         }
         $sql .= "       carte_formateur_role=:carte_formateur_role, ";
         if (!empty($liens)) {
@@ -498,11 +498,11 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
             $sql .= "   carte_formateur_portable = NULL, ";
         }
         if (isset($uniqid)) {
-            $sql .= "   signature_formateur=:signature_formateur, ";
+            $sql .= "   formateur_signature=:signature_formateur, ";
         }
         $sql .= "   id_site=:id_site, 
                     id_secteur=:id_secteur 
-                WHERE id_formateur=:id_formateur;";
+                WHERE formateur_id=:id_formateur;";
         $req = $db->prepare($sql);
         $req->bindValue(':nom_formateur', filter_var($_POST['form_update_formateur_nom'], FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(':prenom_formateur', filter_var($_POST['form_update_formateur_prenom'], FILTER_SANITIZE_SPECIAL_CHARS));
@@ -522,7 +522,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         }
         $req->bindValue(':id_site', filter_var($_POST['form_update_formateur_site'], FILTER_VALIDATE_INT));
         $req->bindValue(':id_secteur', filter_var($_POST['form_update_formateur_secteur'], FILTER_VALIDATE_INT));
-        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
         $req->execute();
         $req->closeCursor();
         $type = "info";
@@ -539,12 +539,12 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $resultat = json_decode(ajouterDocument($_POST['form_add_document_nom'], $_FILES['form_add_document_fichier']), true);
     header("Location: ../../public/index.php?page=ajouter_document&type=" . ($resultat['success'] == true ? "info" : "danger") . "&message=" . $resultat['message']);
 } elseif (isset($_POST['get_ratio_convention']) && !empty($_POST['get_ratio_convention'])) {
-    $sql = "SELECT convention_recue 
+    $sql = "SELECT stagiaire_convention_recue 
             FROM stagiaires sta 
-            JOIN sessions s ON(s.id_session = sta.id_session AND s.date_debut_stage <= NOW()) ";
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
-            JOIN formateurs f ON(f.id_formateur = s.id_formateur) ";
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
     }
     $sql .= " WHERE 1 
               AND sta.id_stage IS NOT NULL ";
@@ -555,13 +555,13 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
-    $sql .= " AND sta.est_actif=1 ";
+    $sql .= " AND sta.stagiaire_actif=1 ";
     // var_dump($sql);
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
-        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $req->bindValue(":id_session", filter_var($_POST['filtre_session'], FILTER_VALIDATE_INT));
     }
@@ -595,30 +595,30 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         'success' => $success
     )));
 } elseif (isset($_POST['get_ratio_attestation']) && !empty($_POST['get_ratio_attestation'])) {
-    $sql = "SELECT attestation_recue 
+    $sql = "SELECT stagiaire_attestation_recue 
             FROM stagiaires sta 
-            JOIN sessions s ON(s.id_session = sta.id_session AND s.date_debut_stage <= NOW()) ";
+            JOIN sessions s ON(s.session_id = sta.session_id AND s.session_stage_date_debut <= NOW()) ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
-            JOIN formateurs f ON(f.id_formateur = s.id_formateur) ";
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
     }
     $sql .= " WHERE 1 
               AND sta.id_stage IS NOT NULL ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " AND f.id_secteur=:id_secteur ";
-        $sql .= " AND s.date_fin_stage <= NOW() ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
         $sql .= " AND s.id_formateur=:id_formateur ";
-        $sql .= " AND s.date_fin_stage <= NOW() ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
-    $sql .= " AND sta.est_actif=1 ";
+    $sql .= " AND sta.stagiaire_actif=1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
-        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $req->bindValue(":id_session", filter_var($_POST['filtre_session'], FILTER_VALIDATE_INT));
     }
@@ -652,30 +652,30 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         'success' => $success
     )));
 } elseif (isset($_POST['get_ratio_evaluation']) && !empty($_POST['get_ratio_evaluation'])) {
-    $sql = "SELECT evaluation_recue 
+    $sql = "SELECT stagiaire_evaluation_recue 
             FROM stagiaires sta 
-            JOIN sessions s ON(s.id_session = sta.id_session AND s.date_debut_stage <= NOW()) ";
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
-            JOIN formateurs f ON(f.id_formateur = s.id_formateur) ";
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
     }
     $sql .= " WHERE 1 
               AND sta.id_stage IS NOT NULL ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " AND f.id_secteur=:id_secteur ";
-        $sql .= " AND s.date_fin_stage <= NOW() ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
         $sql .= " AND s.id_formateur=:id_formateur ";
-        $sql .= " AND s.date_fin_stage <= NOW() ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
-    $sql .= " AND sta.est_actif=1 ";
+    $sql .= " AND sta.stagiaire_actif =1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
-        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $req->bindValue(":id_session", filter_var($_POST['filtre_session'], FILTER_VALIDATE_INT));
     }
@@ -709,39 +709,39 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         'success' => $success
     )));
 } elseif (isset($_POST['get_ratio_presence']) && !empty($_POST['get_ratio_presence'])) {
-    $sql = "SELECT horaires_recues_1, horaires_recues_2, horaires_recues_3 
+    $sql = "SELECT stagiaire_horaires_recues_1, stagiaire_horaires_recues_2, stagiaire_horaires_recues_3 
             FROM stagiaires sta 
-            JOIN sessions s ON(s.id_session = sta.id_session AND s.date_debut_stage <= NOW()) ";
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
-            JOIN formateurs f ON(f.id_formateur = s.id_formateur) ";
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
     }
     $sql .= " WHERE 1 
               AND sta.id_stage IS NOT NULL ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " AND f.id_secteur=:id_secteur ";
-        $sql .= " AND s.date_fin_stage <= NOW() ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
         $sql .= " AND s.id_formateur=:id_formateur ";
-        $sql .= " AND s.date_fin_stage <= NOW() ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }
-    $sql .= " AND sta.est_actif=1 ";
+    $sql .= " AND sta.stagiaire_actif=1 ";
     $req = $db->prepare($sql);
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
-        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $req->bindValue(":id_session", filter_var($_POST['filtre_session'], FILTER_VALIDATE_INT));
     }
     $req->execute();
     $somme = 0;
     foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $value) {
-        $somme += $value['horaires_recues_1'];
-        $somme += $value['horaires_recues_2'];
-        $somme += $value['horaires_recues_3'];
+        $somme += $value['stagiaire_horaires_recues_1'];
+        $somme += $value['stagiaire_horaires_recues_2'];
+        $somme += $value['stagiaire_horaires_recues_3'];
     }
     $somme = $somme / 3;
 

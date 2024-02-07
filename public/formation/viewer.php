@@ -14,16 +14,16 @@ $req = $db->prepare("SELECT *
 $req->execute();
 $acquisition_categories = $req->fetchAll(PDO::FETCH_ASSOC);
 
-$sql = "SELECT nom_stagiaire, prenom_stagiaire   
+$sql = "SELECT stagiaire_nom, stagiaire_prenom   
         FROM stagiaires 
-        WHERE id_stagiaire=:id_stagiaire;";
+        WHERE stagiaire_id=:id_stagiaire;";
 $req = $db->prepare($sql);
-$id_stagiaire = (isset($_SESSION["utilisateur"]["id_stagiaire"]) && $_SESSION["utilisateur"]["id_stagiaire"] !== -1 ? $_SESSION["utilisateur"]["id_stagiaire"] : $_GET['id_stagiaire']);
+$id_stagiaire = (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] !== -1 ? $_SESSION["utilisateur"]["stagiaire_id"] : $_GET['id_stagiaire']);
 $req->bindParam(":id_stagiaire", $id_stagiaire);
 $req->execute();
 $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
 
-if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0) {
+if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["formateur_id"] > 0) {
     $th_supp = '<th class="bg-info text-white" align="center"><b>Mettre à jour</b></th>';
 } else {
     $th_supp = '';
@@ -37,7 +37,7 @@ foreach ($acquisition_categories as $categorie) {
     if ($categorie['acquisition_categorie'] !== $acquisition_categorie) {
         $acquisition_categorie = $categorie['acquisition_categorie'];
         $tbody .= '<tr>';
-        $tbody .= ' <td colspan="' . (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0 ? 5 : 4) . '" rowspan="1" style="background-color:#d9d9d9;color:#000;font-weight:bold;">' . $acquisition_categorie . '</td>';
+        $tbody .= ' <td colspan="' . (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["formateur_id"] > 0 ? 5 : 4) . '" rowspan="1" style="background-color:#d9d9d9;color:#000;font-weight:bold;">' . $acquisition_categorie . '</td>';
         $tbody .= '</tr>';
     }
     if ($categorie['id_module'] !== $acquisition_module) {
@@ -60,9 +60,9 @@ foreach ($acquisition_categories as $categorie) {
     foreach ($acquis as $key => $unAcquis) {
         $noms_prenoms_formateurs = null;
         if (isset($unAcquis['ids_formateurs']) && !empty($unAcquis['ids_formateurs']) && $unAcquis['ids_formateurs'] != "-1") {
-            $sql = "SELECT GROUP_CONCAT(prenom_formateur, ' ', nom_formateur) AS prenom_nom_formateur 
+            $sql = "SELECT GROUP_CONCAT(formateur_prenom, ' ', formateur_nom) AS prenom_nom_formateur 
                     FROM formateurs  
-                    WHERE id_formateur IN(" . $unAcquis['ids_formateurs'] . ");";
+                    WHERE formateur_id IN(" . $unAcquis['ids_formateurs'] . ");";
             $req = $db->prepare($sql);
             $req->execute();
             $noms_prenoms_formateurs = $req->fetch(PDO::FETCH_COLUMN);
@@ -70,7 +70,7 @@ foreach ($acquisition_categories as $categorie) {
             $noms_prenoms_formateurs = -1;
         }
 
-        if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0) {
+        if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["formateur_id"] > 0) {
             $tbody .= '<tr>';
             $tbody .=   $cours_module_libelle;
             $tbody .= ' <td>' . $unAcquis['acquisition_libelle'] . '</td>';
@@ -156,11 +156,11 @@ if (!$stagiaire) {
     include_once('./error404.php');
     include_once('./footer.php');
 } else {
-    if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["id_formateur"] > 0) {
+    if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["formateur_id"] > 0) {
         // var_dump($stagiaire, $id_stagiaire, $tbody);
         $title = " | Évaluation par stagiaire";
         include_once('./header.php');
-        echo '<h1 class="text-center">Évaluation du stagiaire: ' . $stagiaire['prenom_stagiaire'] . "&nbsp;" . $stagiaire['nom_stagiaire'] . ' </h1>
+        echo '<h1 class="text-center">Évaluation du stagiaire: ' . $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'] . ' </h1>
             ' . $tbl;
         include_once('./js.php');
         include_once('./footer.php');

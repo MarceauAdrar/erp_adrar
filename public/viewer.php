@@ -3,30 +3,30 @@
 include_once __DIR__ . '/../src/m/connect.php';
 include_once __DIR__ . '/../src/vendor/autoload.php';
 
-$req = $db->prepare("SELECT * FROM documents WHERE index_document=:index_document;");
-$req->bindParam(":index_document", $_POST['document']);
+$req = $db->prepare("SELECT * FROM documents WHERE document_index=:document_index;");
+$req->bindParam(":document_index", $_POST['document']);
 $req->execute();
 $document = $req->fetch(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT * FROM documents_pages WHERE id_document=:id_document;");
-$req->bindParam(":id_document", $document['id_document']);
+$req = $db->prepare("SELECT * FROM documents_pages WHERE document_id=:document_id;");
+$req->bindParam(":document_id", $document['document_id']);
 $req->execute();
 $pages = $req->fetchAll(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT stages.id_stage, nom_stagiaire, prenom_stagiaire, DATE_FORMAT(date_naissance_stagiaire, '%d/%m/%Y') AS date_naissance_stagiaire, mail_stagiaire, tel_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
+$req = $db->prepare("SELECT stages.stage_id, stagiaire_nom, stagiaire_prenom, DATE_FORMAT(stagiaire_date_naissance, '%d/%m/%Y') AS stagiaire_date_naissance, stagiaire_mail, stagiaire_tel, session_duree_stage, session_sigle, DATE_FORMAT(session_date_debut, '%d/%m/%Y') AS session_date_debut, DATE_FORMAT(session_date_fin, '%d/%m/%Y') AS session_date_fin, DATE_FORMAT(session_stage_date_debut, '%d/%m/%Y') AS session_stage_date_debut, DATE_FORMAT(session_stage_date_fin, '%d/%m/%Y') AS session_stage_date_fin, stage_adresse_rue, stage_adresse_cp, stage_adresse_ville, stage_adresse_pays, stage_nom_tuteur, stage_prenom_tuteur, stage_mail_tuteur, DATE_FORMAT(NOW(), '%d/%m/%Y') AS date_aujourdhui
                     FROM stagiaires 
-                    JOIN sessions ON sessions.id_session = stagiaires.id_session
-                    LEFT JOIN stages ON stages.id_stage = stagiaires.id_stage
-                    WHERE stagiaires.id_stagiaire=:id_stagiaire;");
+                    JOIN sessions ON sessions.session_id = stagiaires.id_session
+                    LEFT JOIN stages ON stages.stage_id = stagiaires.id_stage
+                    WHERE stagiaires.stagiaire_id=:id_stagiaire;");
 $req->bindParam(":id_stagiaire", $_POST['stagiaire']);
 $req->execute();
 $stage = $req->fetch(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(adresse_num_site, ' ', adresse_rue_site, ' ', adresse_cp_site, ' ', adresse_ville_site) AS carte_formateur_adresse_site
+$req = $db->prepare("SELECT formateur_nom, formateur_prenom, formateur_mail, formateur_signature, secteur_nom, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(site_adresse_num, ' ', site_adresse_rue, ' ', site_adresse_cp, ' ', site_adresse_ville) AS carte_formateur_adresse_site
                     FROM formateurs 
-                    INNER JOIN sites ON sites.id_site = formateurs.id_site  
-                    INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur 
-                    WHERE id_formateur=:id_formateur;");
+                    INNER JOIN sites ON sites.site_id = formateurs.id_site  
+                    INNER JOIN secteurs ON secteurs.secteur_id = formateurs.id_secteur 
+                    WHERE formateur_id=:id_formateur;");
 $req->bindParam(":id_formateur", $_POST['formateur']);
 $req->execute();
 $formateur = $req->fetch(PDO::FETCH_ASSOC);
@@ -34,27 +34,27 @@ $formateur = $req->fetch(PDO::FETCH_ASSOC);
 $html2pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8');
 $html2pdf->SetCreator("Marceau RODRIGUES");
 $html2pdf->SetAuthor("Marceau RODRIGUES");
-$html2pdf->SetTitle($document['nom_document']);
-$html2pdf->SetSubject($document['nom_document']);
+$html2pdf->SetTitle($document['document_nom']);
+$html2pdf->SetSubject($document['document_nom']);
 if (!empty($pages)) {
     foreach ($pages as $page) {
         $html2pdf->AddPage();
-        $html2pdf->Image(__DIR__ . '/../src/v/templates_documents/' . $document['index_document'] . "/" . $page['lien']);
-        if (!empty($page['textes_ajoutes'])) {
-            foreach (json_decode($page['textes_ajoutes'], true) as $key => $i) {
+        $html2pdf->Image(__DIR__ . '/../src/v/templates_documents/' . $document['document_index'] . "/" . $page['document_page_lien']);
+        if (!empty($page['document_page_textes_ajoutes'])) {
+            foreach (json_decode($page['document_page_textes_ajoutes'], true) as $key => $i) {
                 $html2pdf->setXY($i['X'], $i['Y']);
                 if (str_contains($i['texte'], "|")) {
                     $texte = explode('|', $i['texte']);
-                    if (isset($stage['id_stage']) && array_key_exists($texte[0], $stage) && array_key_exists($texte[1], $stage)) {
+                    if (isset($stage['stage_id']) && array_key_exists($texte[0], $stage) && array_key_exists($texte[1], $stage)) {
                         $html2pdf->Cell(0, 10, strtoupper($stage[$texte[0]]) . " " . ucwords($stage[$texte[1]]), 0, 1);
                     } elseif (array_key_exists($texte[0], $formateur) && array_key_exists($texte[1], $formateur)) {
                         $html2pdf->Cell(0, 10, strtoupper($formateur[$texte[0]]) . " " . ucwords($formateur[$texte[1]]), 0, 1);
                     }
-                } elseif (isset($stage['id_stage']) && array_key_exists($i['texte'], $stage)) {
+                } elseif (isset($stage['stage_id']) && array_key_exists($i['texte'], $stage)) {
                     $html2pdf->Cell(0, 10, $stage[$i['texte']], 0, 1);
                 } elseif (array_key_exists($i['texte'], $formateur)) {
                     $html2pdf->Cell(0, 10, $formateur[$i['texte']], 0, 1);
-                } elseif (isset($stage['id_stage'])) {
+                } elseif (isset($stage['stage_id'])) {
                     $html2pdf->Cell(0, 10, $i['texte'], 0, 1);
                 }
                 if (isset($i['tampon']) && !empty($i['tampon'])) { // Gère le tampon s'il est nécessaire sur le document
@@ -62,7 +62,7 @@ if (!empty($pages)) {
                 }
                 if (isset($i['signature']) && !empty($i['signature'])) { // Gère la signature du formateur si elle est nécessaire sur le document
                     $i['signature'] = strtr($i['signature'], array(
-                        '{{FORMATEUR_SIGNATURE}}' => $formateur['signature_formateur']
+                        '{{FORMATEUR_SIGNATURE}}' => $formateur['formateur_signature']
                     ));
                     $html2pdf->Image(__DIR__ . "/../src/" . $formateur[$i['signature']], $i['xsignature'], $i['ysignature'], 47, 27.5);
                 }
@@ -71,7 +71,7 @@ if (!empty($pages)) {
 
         // Ajout des informations saisies dans le formulaires si elles sont présentes
         if (isset($_POST['document_attestation']) && !empty($_POST['document_attestation'])) {
-            if ($page['num_page'] == 1) {
+            if ($page['document_page_num'] == 1) {
                 if (isset($_POST['poste_occupe_attestation']) && !empty($_POST['poste_occupe_attestation'])) {
                     $html2pdf->setXY(50, 95.5);
                     $html2pdf->Cell(0, 10, filter_var($_POST['poste_occupe_attestation'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
@@ -119,7 +119,7 @@ if (!empty($pages)) {
             }
         } elseif (isset($_POST['document_convention']) && !empty($_POST['document_convention'])) {
         } elseif (isset($_POST['document_evaluation']) && !empty($_POST['document_evaluation'])) {
-            if ($page['num_page'] == 1) {
+            if ($page['document_page_num'] == 1) {
                 if (isset($_POST['nom_entreprise_evaluation']) && !empty($_POST['nom_entreprise_evaluation'])) {
                     $html2pdf->setXY(110, 49);
                     $html2pdf->Cell(0, 10, filter_var($_POST['nom_entreprise_evaluation'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
@@ -196,7 +196,7 @@ if (!empty($pages)) {
                     $html2pdf->setXY(25, 219);
                     $html2pdf->Cell(0, 10, filter_var($_POST['conseil_au_stagiaire_evaluation_2'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);
                 }
-            } elseif ($page['num_page'] == 2) {
+            } elseif ($page['document_page_num'] == 2) {
                 if (isset($_POST['appreciations_entreprise_evaluation']) && !empty($_POST['appreciations_entreprise_evaluation'])) {
                     $html2pdf->setXY(25, 34);
                     $html2pdf->Cell(0, 10, filter_var($_POST['appreciations_entreprise_evaluation'], FILTER_SANITIZE_SPECIAL_CHARS), 0, 1);

@@ -88,7 +88,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererSessions() as $session) {
         $tbody_sessions .= '
         <tr>
-            <td>' . strtoupper($session['nom_session']) . '</td>
+            <td>' . strtoupper($session['session_nom']) . '</td>
             <td>' . $session['session_duree_stage'] . '</td>
             <td>' . strtoupper($session['session_sigle']) . '</td>
             <td>' . date_format(new DateTime($session['session_date_debut']), 'd/m/Y') . '</td>
@@ -116,9 +116,9 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     foreach (recupererFormateurs() as $formateur) {
         $formateurs .= '<option value="' . $formateur['formateur_id'] . '"' . (isset($_SESSION['filtres']['formateur_id']) && $_SESSION['filtres']['formateur_id'] == $formateur['formateur_id'] ? " selected" : "") . '>' . strtoupper($formateur['formateur_nom']) . " " . ucwords($formateur['formateur_prenom']) . '</option>';
     }
-    $sessions = '<option value="0"' . (!isset($_SESSION['filtres']['nom_session']) || empty($_SESSION['filtres']['nom_session']) ? " selected" : "") . '>Toutes</option>';
+    $sessions = '<option value="0"' . (!isset($_SESSION['filtres']['session_nom']) || empty($_SESSION['filtres']['session_nom']) ? " selected" : "") . '>Toutes</option>';
     foreach (recupererSessions() as $session) {
-        $sessions .= '<option value="' . $session['nom_session'] . '"' . (isset($_SESSION['filtres']['nom_session']) && $_SESSION['filtres']['nom_session'] == $session['nom_session'] ? " selected" : "") . '>' . strtoupper($session['nom_session']) . '</option>';
+        $sessions .= '<option value="' . $session['session_nom'] . '"' . (isset($_SESSION['filtres']['session_nom']) && $_SESSION['filtres']['session_nom'] == $session['session_nom'] ? " selected" : "") . '>' . strtoupper($session['session_nom']) . '</option>';
     }
 
     die(json_encode(array(
@@ -127,7 +127,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     )));
 } elseif (isset($_POST['recupererDonnees']) && !empty($_POST['recupererDonnees'])) {
     $_SESSION['filtres']['formateur_id'] = filter_var($_POST['id_formateur'], FILTER_VALIDATE_INT);
-    $_SESSION['filtres']['nom_session'] = filter_var($_POST['nom_session'], FILTER_SANITIZE_SPECIAL_CHARS);
+    $_SESSION['filtres']['session_nom'] = filter_var($_POST['nom_session'], FILTER_SANITIZE_SPECIAL_CHARS);
 
     $stages = '';
     $liste_sessions = array();
@@ -151,10 +151,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     $tbody = '';
 
     // var_dump($_SESSION['filtres']['nom_session']);
-    foreach (recupererStages($_SESSION['filtres']['formateur_id'], $_SESSION['filtres']['nom_session']) as $data) {
+    foreach (recupererStages($_SESSION['filtres']['formateur_id'], $_SESSION['filtres']['session_nom']) as $data) {
         $tbody .= '
         <tr>
-            <td>' . strtoupper($data['nom_session']) . '</td>
+            <td>' . strtoupper($data['session_nom']) . '</td>
             <td>' . strtoupper($data['stagiaire_nom']) . '</td>
             <td>' . ucfirst($data['stagiaire_prenom']) . '</td>
             <td class="' . (!empty($data['stagiaire_convention_recue']) ? 'coul-vert' : 'coul-rouge') . '">' . (!empty($data['stagiaire_convention_recue']) ? 'Oui' : 'Non') . '</td>

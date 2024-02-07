@@ -20,7 +20,7 @@ $exercices = $req->fetchAll(PDO::FETCH_ASSOC);
 
 $sql = "SELECT * 
         FROM cours_ressources ";
-if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+if ($_SESSION['utilisateur']['stagiaire_id'] > 0) {
     $sql .= " LEFT JOIN stagiaires_ressources ON (id_stagiaire=:id_stagiaire AND id_ressource=cours_ressource_id) ";
 }
 $sql .= " WHERE id_cours= (SELECT cours_id 
@@ -28,8 +28,8 @@ $sql .= " WHERE id_cours= (SELECT cours_id
                         WHERE cours_link=:cours_link) 
         AND cours_ressource_type = 'tp';";
 $req = $db->prepare($sql);
-if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
-    $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+if ($_SESSION['utilisateur']['stagiaire_id'] > 0) {
+    $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
 }
 $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
 $req->execute();
@@ -40,14 +40,14 @@ ob_start();
 include_once("./header.php"); ?>
 
 <div class="container-fluid bg-white">
-    <div class="row<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? ' justify-content-between' : '') ?>">
-        <div class="<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-3 ') ?>mt-2 mb-2 float-start">
+    <div class="row<?= ($_SESSION['utilisateur']['formateur_id'] > 0 ? ' justify-content-between' : '') ?>">
+        <div class="<?= ($_SESSION['utilisateur']['formateur_id'] > 0 ? 'col-auto ' : 'col-3 ') ?>mt-2 mb-2 float-start">
             <a class="btn btn-success" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/cours.php?cours=<?= $module['cours_module_uuid'] ?>">Retour sur les cours</a>
         </div>
-        <div class="<?= ($_SESSION['utilisateur']['id_formateur'] > 0 ? 'col-auto ' : 'col-6 text-center ') ?> mt-2 mb-2 float-start">
+        <div class="<?= ($_SESSION['utilisateur']['formateur_id'] > 0 ? 'col-auto ' : 'col-6 text-center ') ?> mt-2 mb-2 float-start">
             <h2>[<?= $module['cours_module_libelle'] ?>] - <?= $module['cours_title'] ?></h2>
         </div>
-        <?php if ($_SESSION['utilisateur']['id_formateur'] > 0) { ?>
+        <?php if ($_SESSION['utilisateur']['formateur_id'] > 0) { ?>
             <div class="col-auto mt-2 mb-2 float-end">
                 <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAjouterRessource">Ajouter une ressource</button>
             </div>
@@ -115,8 +115,8 @@ include_once("./header.php"); ?>
                             <a target="_blank" href="<?= $tp['cours_ressource_lien'] ?>" class="text-black text-decoration-none">
                                 <div class="card">
                                     <span class="card-img-top" alt="Illustration devoirs à la maison">
-                                        <?php if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
-                                            if (empty($tp['lien_ressource_rendue'])) { ?>
+                                        <?php if ($_SESSION['utilisateur']['stagiaire_id'] > 0) {
+                                            if (empty($tp['stagiaire_ressource_rendue_lien'])) { ?>
                                                 <i class="fa-solid fa-arrow-up-from-bracket text-grey upload-file" title="Rendre le TP" onclick="document.querySelector('#file_input_tp_<?= $tp['cours_ressource_id'] ?>').click();"></i>
                                                 <input type="file" name="file_input_tp_<?= $tp['cours_ressource_id'] ?>" id="file_input_tp_<?= $tp['cours_ressource_id'] ?>" class="hidden" onchange="sendTp(<?= $tp['cours_ressource_id'] ?>, this.name);">
                                             <?php } else { ?>

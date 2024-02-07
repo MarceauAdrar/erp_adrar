@@ -4,13 +4,13 @@ include_once("../../src/m/connect.php");
 
 $title = " | Contrôle administration";
 
-if (array_key_exists("pseudo_stagiaire", $_SESSION["utilisateur"])) {
+if (array_key_exists("stagiaire_pseudo", $_SESSION["utilisateur"])) {
     header("Location: ../formation");
 }
 
-$sql_select_stagiaires = "SELECT i.id_stagiaire, nom_stagiaire, prenom_stagiaire, pseudo_stagiaire, evaluation_errors_max, stagiaire_evaluation_completed, stagiaire_evaluation_correction, stagiaire_evaluation_errors_found, evaluation_id, evaluation_dd_link
+$sql_select_stagiaires = "SELECT i.stagiaire_id, stagiaire_nom, stagiaire_prenom, stagiaire_pseudo, evaluation_errors_max, stagiaire_evaluation_completed, stagiaire_evaluation_correction, stagiaire_evaluation_errors_found, evaluation_id, evaluation_dd_link
                     FROM stagiaires_evaluations ie 
-                    JOIN stagiaires i ON (i.id_stagiaire = ie.id_stagiaire) 
+                    JOIN stagiaires i ON (i.stagiaire_id = ie.id_stagiaire) 
                     JOIN evaluations e ON (e.evaluation_id = ie.id_evaluation) 
                     JOIN evaluations_dd edd ON (edd.evaluation_dd_id = e.id_evaluation_dd) 
                     ORDER BY evaluation_dd_id, evaluation_id;";
@@ -29,7 +29,7 @@ $req_select_tps = $db->prepare($sql_select_tps);
 $req_select_tps->execute();
 $tps = $req_select_tps->fetchAll(PDO::FETCH_ASSOC);
 
-$req_secteurs = $db->prepare("SELECT id_secteur, nom_secteur FROM secteurs ORDER BY nom_secteur;");
+$req_secteurs = $db->prepare("SELECT secteur_id, secteur_nom FROM secteurs ORDER BY secteur_nom;");
 $req_secteurs->execute();
 $secteurs = $req_secteurs->fetchAll(PDO::FETCH_ASSOC);
 
@@ -68,7 +68,7 @@ include_once("./header.php"); ?>
                     <select class="form-select" name="form_faq_secteur" id="form_faq_secteur">
                         <option value="-1">Tous les secteurs</option>
                         <?php foreach ($secteurs as $secteur) { ?>
-                            <option value="<?= $secteur['id_secteur'] ?>"><?= $secteur['nom_secteur'] ?></option>
+                            <option value="<?= $secteur['secteur_id'] ?>"><?= $secteur['secteur_nom'] ?></option>
                         <?php } ?>
                     </select>
                 </div>
@@ -108,16 +108,16 @@ include_once("./header.php"); ?>
                             ?>
                                     <tr>
                                         <td class="text-center"><?= $stagiaire["evaluation_id"] ?></td>
-                                        <td>(<?= $stagiaire["id_stagiaire"] ?>)&nbsp;<?= $stagiaire["nom_stagiaire"] ?> <?= $stagiaire["prenom_stagiaire"] ?></td>
-                                        <td><a href="./achieved.php?module=html-css&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["pseudo_stagiaire"] ?>&stagiaire_id=<?= $stagiaire["id_stagiaire"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
+                                        <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["stagiaire_nom"] ?> <?= $stagiaire["stagiaire_prenom"] ?></td>
+                                        <td><a href="./achieved.php?module=html-css&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["stagiaire_pseudo"] ?>&stagiaire_id=<?= $stagiaire["stagiaire_id"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
                                         <td><?= (!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>') ?></td>
-                                        <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" style="cursor: pointer;" onclick="validInternCorrection(' . $stagiaire["id_stagiaire"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
+                                        <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" style="cursor: pointer;" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
                                         <td class="text-center">
                                             <?php if (!empty($stagiaire["evaluation_errors_max"])) { ?>
-                                                <?= (!empty($stagiaire["stagiaire_evaluation_errors_found"]) ? '<i class="fa-solid fa-circle-minus" style="cursor: pointer; float: left; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["id_stagiaire"] . ', ' . $stagiaire["evaluation_id"] . ', \'minus\');"></i>' : '') ?>
-                                                <span id="errors_found_plus_one_<?= $stagiaire["evaluation_id"] ?>_<?= $stagiaire["id_stagiaire"] ?>" value="<?= intval($stagiaire["stagiaire_evaluation_errors_found"]) ?>"><?= $stagiaire["stagiaire_evaluation_errors_found"] ?></span>
+                                                <?= (!empty($stagiaire["stagiaire_evaluation_errors_found"]) ? '<i class="fa-solid fa-circle-minus" style="cursor: pointer; float: left; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'minus\');"></i>' : '') ?>
+                                                <span id="errors_found_plus_one_<?= $stagiaire["evaluation_id"] ?>_<?= $stagiaire["stagiaire_id"] ?>" value="<?= intval($stagiaire["stagiaire_evaluation_errors_found"]) ?>"><?= $stagiaire["stagiaire_evaluation_errors_found"] ?></span>
                                                 /
-                                                <?= $stagiaire["evaluation_errors_max"] ?><?= ($stagiaire["stagiaire_evaluation_errors_found"] < $stagiaire["evaluation_errors_max"] ? '<i class="fa-solid fa-plus-circle" style="cursor: pointer; float: right; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["id_stagiaire"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');"></i>' : '') ?>
+                                                <?= $stagiaire["evaluation_errors_max"] ?><?= ($stagiaire["stagiaire_evaluation_errors_found"] < $stagiaire["evaluation_errors_max"] ? '<i class="fa-solid fa-plus-circle" style="cursor: pointer; float: right; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');"></i>' : '') ?>
                                             <?php } ?>
                                         </td>
                                         <td class="text-center"><?= (!empty($stagiaire["evaluation_errors_max"]) ? number_format(floatval($stagiaire["stagiaire_evaluation_errors_found"] / $stagiaire["evaluation_errors_max"]) * 100, 0) : "") ?></td>
@@ -161,7 +161,7 @@ include_once("./header.php"); ?>
                             ?>
                                     <tr>
                                         <td class="text-center"><?= $stagiaire["evaluation_id"] ?></td>
-                                        <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["nom_stagiaire"] ?> <?= $stagiaire["prenom_stagiaire"] ?></td>
+                                        <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["stagiaire_nom"] ?> <?= $stagiaire["stagiaire_prenom"] ?></td>
                                         <td><a href="achieved.php?module=bootstrap&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["stagiaire_username"] ?>&stagiaire_id=<?= $stagiaire["stagiaire_id"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
                                         <td><?= (!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>') ?></td>
                                         <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
@@ -254,13 +254,13 @@ include_once("./header.php"); ?>
                                 $sql = "SELECT * 
                                         FROM sessions 
                                         WHERE id_formateur=:id_formateur
-                                        ORDER BY nom_session;";
+                                        ORDER BY session_nom;";
                                 $req = $db->prepare($sql);
-                                $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                                $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
                                 $req->execute();
                                 $sessions_formateur = $req->fetchAll(PDO::FETCH_ASSOC);
                                 foreach ($sessions_formateur as $session) { ?>
-                                    <option value="<?= $session['id_session'] ?>"><?= $session['nom_session'] ?></option>
+                                    <option value="<?= $session['session_id'] ?>"><?= $session['session_nom'] ?></option>
                                 <?php } ?>
                             </select>
                         </div>
@@ -351,13 +351,13 @@ include_once("./header.php"); ?>
                     $sql = "SELECT * 
                                 FROM sessions 
                                 WHERE id_formateur=:id_formateur
-                                ORDER BY nom_session;";
+                                ORDER BY session_nom;";
                     $req = $db->prepare($sql);
-                    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
                     $req->execute();
                     $sessions_formateur = $req->fetchAll(PDO::FETCH_ASSOC);
                     foreach ($sessions_formateur as $session) { ?>
-                        <option value="<?= $session['id_session'] ?>"><?= $session['nom_session'] ?></option>
+                        <option value="<?= $session['session_id'] ?>"><?= $session['session_nom'] ?></option>
                     <?php } ?>
                 </select>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

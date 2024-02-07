@@ -9,7 +9,7 @@ $sql_lignes = "SELECT evaluation_id, evaluation_title, evaluation_goals, evaluat
                 LEFT JOIN stagiaires_evaluations ie ON (e.evaluation_id = ie.id_evaluation AND id_stagiaire=:id_stagiaire) 
                 WHERE id_evaluation_dd = 1;";
 $req_lignes = $db->prepare($sql_lignes);
-$req_lignes->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["id_stagiaire"]);
+$req_lignes->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["stagiaire_id"]);
 $req_lignes->execute();
 if ($req_lignes->rowCount() > 0) {
     foreach ($req_lignes->fetchAll(PDO::FETCH_ASSOC) as $eval) {
@@ -29,7 +29,7 @@ if ($req_lignes->rowCount() > 0) {
         } elseif (empty($eval["stagiaire_evaluation_correction"])) {
             $lignes .= '    <td><div class="alert alert-warning mb-0">En attente de correction</div></td>';
         } elseif ($eval["evaluation_errors_max"] > $eval["stagiaire_evaluation_errors_found"]) {
-            $lignes .= '    <td><a class="btn btn-dark" href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/achieved.php?module=html-css&tp=' . $eval["evaluation_id"] . '&stagiaire_username=' . $_SESSION['utilisateur']['pseudo_stagiaire'] . '">Voir mes erreurs</a></td>';
+            $lignes .= '    <td><a class="btn btn-dark" href="//' . $_SERVER["SERVER_NAME"] . '/erp/public/formation/achieved.php?module=html-css&tp=' . $eval["evaluation_id"] . '&stagiaire_username=' . $_SESSION['utilisateur']['stagiaire_pseudo'] . '">Voir mes erreurs</a></td>';
         } else {
             $lignes .= '    <td><div class="alert alert-success mb-0">Félicitations, vous avez terminé ce TP !</div></td>';
         }

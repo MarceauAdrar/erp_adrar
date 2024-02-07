@@ -1,11 +1,14 @@
 <?php
 include_once __DIR__ . '/../src/m/connect.php';
 
-if (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
+if (isset($_SESSION['utilisateur']['stagiaire_id']) && $_SESSION['utilisateur']['stagiaire_id'] > 0 && (!isset($_GET["page"]) || (isset($_GET["page"]) && $_GET["page"] !== "formation"))) {
     header("Location: formation");
     die;
 }
 
+// echo"<pre>";
+// var_dump($_SESSION['utilisateur']);
+// echo"</pre>";die;
 if (isset($_GET["page"]) && !empty($_GET["page"])) {
     if (isset($db) && !empty($db)) {
         $page = "erreurs/404.php";
@@ -47,10 +50,10 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
                 $page = "formation/boite-aux-lettres.php";
                 break;
         }
-        if ($_SESSION['utilisateur']['id_formateur'] > 0 && $page !== "erreurs/404.php") {
-            $req = $db->prepare('REPLACE INTO historiques(id_formateur, page_visitee, page_nom, ip_visiteur, date_visite)
+        if ($_SESSION['utilisateur']['formateur_id'] > 0 && $page !== "erreurs/404.php") {
+            $req = $db->prepare('REPLACE INTO historiques(id_formateur, historique_page_visitee, historique_page_nom, historique_ip_visiteur, historique_date_visite)
                                 VALUES(:id_formateur, :page_visitee, :page_nom, :ip_visiteur, NOW());');
-            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
             $req->bindValue(':page_visitee', '?page=' . filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS));
             $req->bindValue(':page_nom', ucfirst(filter_var($_GET['page'], FILTER_SANITIZE_SPECIAL_CHARS)));
             $req->bindValue(':ip_visiteur', filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP));
@@ -68,18 +71,18 @@ if (isset($_GET["page"]) && !empty($_GET["page"])) {
 
 $req = $db->prepare("SELECT * 
                     FROM sessions
-                    LEFT JOIN stagiaires ON (sessions.id_session = stagiaires.id_session)
+                    LEFT JOIN stagiaires ON (sessions.session_id = stagiaires.id_session)
                     WHERE id_formateur=:id_formateur
-                    GROUP BY nom_session;");
-$req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                    GROUP BY session_nom;");
+$req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
 $req->execute();
 $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
 $req->closeCursor();
 
 if (isset($_POST['form_filter_session'])) {
-    $_SESSION['filtres']['id_session'] = filter_var($_POST['form_filter_session'], FILTER_VALIDATE_INT);
+    $_SESSION['filtres']['session_id'] = filter_var($_POST['form_filter_session'], FILTER_VALIDATE_INT);
 } else {
-    $_SESSION['filtres']['id_session'] = -1;
+    $_SESSION['filtres']['session_id'] = -1;
 }
 ?>
 
@@ -111,10 +114,10 @@ if (isset($_POST['form_filter_session'])) {
                 <form method="post" class="d-inline">
                     <select name="form_filter_session" onchange="getRatios();">
                         <option value="-1">Tout le secteur</option>
-                        <option value="0" <?= (empty($_SESSION['filtres']['id_session']) ? " selected" : "") ?>>Toutes mes sessions</option>
+                        <option value="0" <?= (empty($_SESSION['filtres']['session_id']) ? " selected" : "") ?>>Toutes mes sessions</option>
                         <?php if (!empty($sessions)) {
                             foreach ($sessions as $session) { ?>
-                                <option value="<?= $session['id_session'] ?>" <?= (isset($_SESSION['filtres']['id_session']) && $_SESSION['filtres']['id_session'] == $session['id_session'] ? " selected" : "") ?>><?= $session['nom_session'] ?></option>
+                                <option value="<?= $session['session_id'] ?>" <?= (isset($_SESSION['filtres']['session_id']) && $_SESSION['filtres']['session_id'] == $session['session_id'] ? " selected" : "") ?>><?= $session['session_nom'] ?></option>
                         <?php }
                         } ?>
                     </select>
@@ -160,14 +163,14 @@ if (isset($_POST['form_filter_session'])) {
                         </div>
                         <div class="card-content">
                             <?php
-                            $req = $db->prepare('SELECT * FROM historiques WHERE id_formateur=:id_formateur ORDER BY date_visite DESC LIMIT 3;');
-                            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+                            $req = $db->prepare('SELECT * FROM historiques WHERE id_formateur=:id_formateur ORDER BY historique_date_visite DESC LIMIT 3;');
+                            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
                             $req->execute();
                             $historiques = $req->fetchAll(PDO::FETCH_ASSOC);
                             $req->closeCursor();
                             if (!empty($historiques)) {
                                 foreach ($historiques as $historique) { ?>
-                                    <p><a href="<?= $historique['page_visitee'] ?>"><?= str_replace(array('_', '-'), '&nbsp;', $historique['page_nom']) ?></a></p>
+                                    <p><a href="<?= $historique['historique_page_visitee'] ?>"><?= str_replace(array('_', '-'), '&nbsp;', $historique['historique_page_nom']) ?></a></p>
                                 <?php
                                 }
                             } else { ?>

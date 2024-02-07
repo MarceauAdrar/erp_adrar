@@ -52,8 +52,8 @@ $conditionalStyles[] = $cellWizard->getConditional();
 
 $req = $db->prepare("SELECT *
                       FROM stagiaires
-                      JOIN sessions ON sessions.id_session = stagiaires.id_session
-                      WHERE nom_session " . (isset($_GET['nom_session']) && !empty($_GET['nom_session']) ? "=:nom_session" : "IS NOT NULL") . ";");
+                      JOIN sessions ON sessions.session_id = stagiaires.id_session
+                      WHERE session_nom " . (isset($_GET['nom_session']) && !empty($_GET['nom_session']) ? "=:nom_session" : "IS NOT NULL") . ";");
 if (isset($_GET['nom_session']) && !empty($_GET['nom_session'])) {
   $req->bindParam(":nom_session", $_GET['nom_session']);
 }
@@ -95,16 +95,16 @@ $borderThinWheat = array(
 if (!empty($session)) {
   $sessions = array();
   for ($stagiaire = 1; $stagiaire <= sizeof($session); $stagiaire++) {
-    if (!in_array($session[$stagiaire - 1]['nom_session'], $sessions)) {
+    if (!in_array($session[$stagiaire - 1]['session_nom'], $sessions)) {
       $i = 2;
       if (empty($sessions)) {
         $sheet = $spreadsheet->getActiveSheet();
       } else {
         $sheet = $spreadsheet->createSheet();
       }
-      array_push($sessions, $session[$stagiaire - 1]['nom_session']);
+      array_push($sessions, $session[$stagiaire - 1]['session_nom']);
 
-      $sheet->setTitle($session[$stagiaire - 1]['nom_session']);
+      $sheet->setTitle($session[$stagiaire - 1]['session_nom']);
 
       // Appliquer la validation des données à la plage de cellules spécifiée
       $sheet->setDataValidation($cellRangeChoix, $dataValidation);
@@ -127,14 +127,14 @@ if (!empty($session)) {
       $sheet->getStyle($cellWizard->getCellRange())
         ->setConditionalStyles($conditionalStyles);
     }
-    $sheet->setCellValue("A" . $i, strtoupper($session[$stagiaire - 1]['nom_stagiaire']));
-    $sheet->setCellValue("B" . $i, ucwords($session[$stagiaire - 1]['prenom_stagiaire']));
-    $sheet->setCellValue("C" . $i, ($session[$stagiaire - 1]['convention_recue'] ? "Oui" : "Non"));
-    $sheet->setCellValue("D" . $i, ($session[$stagiaire - 1]['horaires_recues_1'] ? "Oui" : "Non"));
-    $sheet->setCellValue("E" . $i, ($session[$stagiaire - 1]['horaires_recues_2'] ? "Oui" : "Non"));
-    $sheet->setCellValue("F" . $i, ($session[$stagiaire - 1]['horaires_recues_3'] ? "Oui" : "Non"));
-    $sheet->setCellValue("G" . $i, ($session[$stagiaire - 1]['attestation_recue'] ? "Oui" : "Non"));
-    $sheet->setCellValue("H" . $i, ($session[$stagiaire - 1]['evaluation_recue'] ? "Oui" : "Non"));
+    $sheet->setCellValue("A" . $i, strtoupper($session[$stagiaire - 1]['stagiaire_nom']));
+    $sheet->setCellValue("B" . $i, ucwords($session[$stagiaire - 1]['stagiaire_prenom']));
+    $sheet->setCellValue("C" . $i, ($session[$stagiaire - 1]['stagiaire_convention_recue'] ? "Oui" : "Non"));
+    $sheet->setCellValue("D" . $i, ($session[$stagiaire - 1]['stagiaire_horaires_recues_1'] ? "Oui" : "Non"));
+    $sheet->setCellValue("E" . $i, ($session[$stagiaire - 1]['stagiaire_horaires_recues_2'] ? "Oui" : "Non"));
+    $sheet->setCellValue("F" . $i, ($session[$stagiaire - 1]['stagiaire_horaires_recues_3'] ? "Oui" : "Non"));
+    $sheet->setCellValue("G" . $i, ($session[$stagiaire - 1]['stagiaire_attestation_recue'] ? "Oui" : "Non"));
+    $sheet->setCellValue("H" . $i, ($session[$stagiaire - 1]['stagiaire_evaluation_recue'] ? "Oui" : "Non"));
     $i++;
     $sheet->getStyle('A2:H' . $i - 1)->applyFromArray($borderThinWheat);
     foreach (range('A', $sheet->getHighestDataColumn()) as $col) {

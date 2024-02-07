@@ -8,14 +8,14 @@ function recupererStages($id_formateur = 0, $nom_session = 0)
 
     $sql = "SELECT * 
             FROM stagiaires
-            JOIN sessions ON sessions.id_session = stagiaires.id_session
-            JOIN stages ON stages.id_stage = stagiaires.id_stage 
+            JOIN sessions ON sessions.session_id = stagiaires.id_session
+            JOIN stages ON stages.stage_id = stagiaires.id_stage 
             WHERE 1 ";
     if (!empty($id_formateur)) {
         $sql .= " AND sessions.id_formateur=:id_formateur ";
     }
     if (!empty($nom_session)) {
-        $sql .= " AND sessions.nom_session=:nom_session ";
+        $sql .= " AND sessions.session_nom=:nom_session ";
     }
     $sql .= ";";
     $req = $db->prepare($sql);
@@ -36,7 +36,7 @@ function recupererFormateurs()
 
     $req = $db->prepare("SELECT *
                         FROM formateurs
-                        INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur;");
+                        INNER JOIN secteurs ON secteurs.secteur_id = formateurs.id_secteur;");
     $req->execute();
     $formateurs = $req->fetchAll(PDO::FETCH_ASSOC);
     return $formateurs;
@@ -59,7 +59,7 @@ function recupererSessions($id_formateur = 0)
 
     $sql = "SELECT *
             FROM sessions
-            LEFT JOIN formateurs ON formateurs.id_formateur = sessions.id_formateur 
+            LEFT JOIN formateurs ON formateurs.formateur_id = sessions.id_formateur 
             WHERE 1 ";
     if (!empty($id_formateur)) {
         $sql .= " AND sessions.id_formateur=:id_formateur ";
@@ -102,11 +102,11 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
     global $mailer;
 
     //Récupération des données du stage
-    $req = $db->prepare("SELECT nom_stagiaire, prenom_stagiaire, duree_stage, sigle_session, DATE_FORMAT(date_debut_session, '%d/%m/%Y') AS date_debut_session, DATE_FORMAT(date_fin_session, '%d/%m/%Y') AS date_fin_session, DATE_FORMAT(date_debut_stage, '%d/%m/%Y') AS date_debut_stage, DATE_FORMAT(date_fin_stage, '%d/%m/%Y') AS date_fin_stage, rue_lieu_stage, cp_lieu_stage, ville_lieu_stage, pays_lieu_stage, nom_tuteur, prenom_tuteur, mail_tuteur
+    $req = $db->prepare("SELECT stagiaire_nom, stagiaire_prenom, session_duree_stage, session_sigle, DATE_FORMAT(session_date_debut, '%d/%m/%Y') AS session_date_debut, DATE_FORMAT(session_date_fin, '%d/%m/%Y') AS session_date_fin, DATE_FORMAT(session_stage_date_debut, '%d/%m/%Y') AS session_stage_date_debut, DATE_FORMAT(session_stage_date_fin, '%d/%m/%Y') AS session_stage_date_fin, stage_adresse_rue, stage_adresse_cp, stage_adresse_ville, stage_adresse_pays, stage_nom_tuteur, stage_prenom_tuteur, stage_mail_tuteur
                         FROM stagiaires 
-                        JOIN sessions ON sessions.id_session = stagiaires.id_session
-                        LEFT JOIN stages ON stages.id_stage = stagiaires.id_stage
-                        WHERE stagiaires.id_stagiaire=:id_stagiaire;");
+                        JOIN sessions ON sessions.session_id = stagiaires.id_session
+                        LEFT JOIN stages ON stages.stage_id = stagiaires.id_stage
+                        WHERE stagiaires.stagiaire_id=:id_stagiaire;");
     $req->bindParam(":id_stagiaire", $id_stagiaire);
     $req->execute();
     $stage = $req->fetch(PDO::FETCH_ASSOC);
@@ -115,9 +115,9 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
         //Recipients
         $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
         if (DEV) {
-            $mailer->addAddress('marceau0707@gmail.com', $stage['prenom_tuteur'] . " " . $stage['nom_tuteur']);
+            $mailer->addAddress('marceau0707@gmail.com', $stage['stage_prenom_tuteur'] . " " . $stage['stage_nom_tuteur']);
         } else {
-            $mailer->addAddress($stage['mail_tuteur'], $stage['prenom_tuteur'] . " " . $stage['nom_tuteur']);
+            $mailer->addAddress($stage['stage_mail_tuteur'], $stage['stage_prenom_tuteur'] . " " . $stage['stage_nom_tuteur']);
             $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
         }
         $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
@@ -127,17 +127,17 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
         // $documents = array('convention', 'attestation', 'evaluation', 'presence');
 
         $liste_documents = implode("', '", $documents);
-        $req = $db->prepare("SELECT id_document, index_document, nom_document
+        $req = $db->prepare("SELECT document_id, document_index, document_nom
                             FROM documents
-                            WHERE index_document IN ('" . $liste_documents . "');");
+                            WHERE document_index IN ('" . $liste_documents . "');");
         $req->execute();
         $documents = $req->fetchAll(PDO::FETCH_ASSOC);
 
-        $req = $db->prepare("SELECT nom_formateur, prenom_formateur, mail_formateur, signature_formateur, nom_secteur, logo_secteur, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(adresse_num_site, ' ', adresse_rue_site, ' ', adresse_cp_site, ' ', adresse_ville_site) AS carte_formateur_adresse_site
+        $req = $db->prepare("SELECT formateur_nom, formateur_prenom, formateur_mail, formateur_signature, secteur_nom, secteur_logo, carte_formateur_role, carte_formateur_liens, carte_formateur_tel, carte_formateur_portable, GROUP_CONCAT(site_adresse_num, ' ', site_adresse_rue, ' ', site_adresse_cp, ' ', site_adresse_ville) AS carte_formateur_adresse_site
                             FROM formateurs 
-                            INNER JOIN sites ON sites.id_site = formateurs.id_site  
-                            INNER JOIN secteurs ON secteurs.id_secteur = formateurs.id_secteur 
-                            WHERE id_formateur=:id_formateur;");
+                            INNER JOIN sites ON sites.site_id = formateurs.id_site  
+                            INNER JOIN secteurs ON secteurs.secteur_id = formateurs.id_secteur 
+                            WHERE formateur_id=:id_formateur;");
         $req->bindParam(":id_formateur", $id_formateur);
         $req->execute();
         $formateur = $req->fetch(PDO::FETCH_ASSOC);
@@ -145,26 +145,26 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
         if (!empty($documents)) {
 
             foreach ($documents as $document) {
-                $req = $db->prepare("SELECT nom_document, lien, textes_ajoutes
+                $req = $db->prepare("SELECT document_nom, document_page_lien, document_page_textes_ajoutes
                                     FROM documents 
-                                    JOIN documents_pages ON documents.id_document = documents_pages.id_document
-                                    WHERE index_document=:index_document;");
-                $req->bindParam(":index_document", $document['index_document']);
+                                    JOIN documents_pages ON documents.document_id = documents_pages.id_document
+                                    WHERE document_index=:document_index;");
+                $req->bindParam(":document_index", $document['document_index']);
                 $req->execute();
                 $pages = $req->fetchAll(PDO::FETCH_ASSOC);
 
                 if (!empty($pages)) {
                     $html2pdf = new TCPDF('P', 'mm', 'A4', true, 'UTF-8');
-                    $html2pdf->SetCreator(ucfirst($formateur['prenom_formateur']) . " " . strtoupper($formateur['nom_formateur']));
-                    $html2pdf->SetAuthor(ucfirst($formateur['prenom_formateur']) . " " . strtoupper($formateur['nom_formateur']));
-                    $html2pdf->SetTitle($pages[0]['nom_document']);
-                    $html2pdf->SetSubject($pages[0]['nom_document']);
+                    $html2pdf->SetCreator(ucfirst($formateur['formateur_prenom']) . " " . strtoupper($formateur['formateur_nom']));
+                    $html2pdf->SetAuthor(ucfirst($formateur['formateur_prenom']) . " " . strtoupper($formateur['formateur_nom']));
+                    $html2pdf->SetTitle($pages[0]['document_nom']);
+                    $html2pdf->SetSubject($pages[0]['document_nom']);
 
                     foreach ($pages as $page) {
                         $html2pdf->AddPage();
-                        $html2pdf->Image(__DIR__ . "/../v/templates_documents/" . $document['index_document'] . "/" . $page['lien']); // Le template de la convention
-                        if (!empty($page['textes_ajoutes'])) {
-                            foreach (json_decode($page['textes_ajoutes'], true) as $i) {
+                        $html2pdf->Image(__DIR__ . "/../v/templates_documents/" . $document['document_index'] . "/" . $page['document_page_lien']); // Le template de la convention
+                        if (!empty($page['document_page_textes_ajoutes'])) {
+                            foreach (json_decode($page['document_page_textes_ajoutes'], true) as $i) {
                                 $html2pdf->setXY($i['X'], $i['Y']);
                                 if (str_contains($i['texte'], "|")) {
                                     $texte = explode('|', $i['texte']);
@@ -192,8 +192,8 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
                     if (!is_dir(__DIR__ . '/../v/tmp/')) {
                         mkdir(__DIR__ . '/../v/tmp/');
                     }
-                    $html2pdf->Output(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', 'F');
-                    $mailer->addAttachment(__DIR__ . '/../v/tmp/' . $document['index_document'] . '.pdf', str_replace(" ", "_", $document['nom_document']) . '.pdf');
+                    $html2pdf->Output(__DIR__ . '/../v/tmp/' . $document['document_index'] . '.pdf', 'F');
+                    $mailer->addAttachment(__DIR__ . '/../v/tmp/' . $document['document_index'] . '.pdf', str_replace(" ", "_", $document['document_nom']) . '.pdf');
                 }
             }
         }
@@ -207,7 +207,7 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
         if ($bEstRelance) {
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_RELANCE.html');
             $message = strtr($message, array(
-                '{{NB_RELANCE}}' => $stage['compteur_demandes'] + 1
+                '{{NB_RELANCE}}' => $stage['stagiaire_compteur_demandes'] + 1
             ));
         } else {
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_DEMANDE.html');
@@ -233,12 +233,12 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
         }
 
         $message = strtr($message, array(
-            '{{NOM_TUTEUR}}' => strtoupper($stage['nom_tuteur']),
-            '{{PRENOM_NOM_STAGIAIRE}}' => strtoupper($stage['nom_stagiaire']) . " " . ucwords($stage['prenom_stagiaire']),
+            '{{NOM_TUTEUR}}' => strtoupper($stage['stage_nom_tuteur']),
+            '{{PRENOM_NOM_STAGIAIRE}}' => strtoupper($stage['stagiaire_nom']) . " " . ucwords($stage['stagiaire_prenom']),
             '{{LISTE_DOCUMENTS}}' => $liste_documents,
             '{{CARTE_PRENOM}}' => ucwords($formateur['prenom_formateur']),
-            '{{CARTE_NOM}}' => strtoupper($formateur['nom_formateur']),
-            '{{CARTE_LOGO_SECTEUR}}' => $formateur['logo_secteur'],
+            '{{CARTE_NOM}}' => strtoupper($formateur['formateur_nom']),
+            '{{CARTE_LOGO_SECTEUR}}' => $formateur['secteur_logo'],
             '{{CARTE_ADRESSE}}' => $formateur['carte_formateur_adresse_site'],
             '{{CARTE_NUMEROS}}' => $numeros,
             '{{CARTE_LIENS}}' => $liens,
@@ -258,8 +258,8 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
         if ($mailer->send()) {
             if (!DEV) {
                 $req = $db->prepare("UPDATE stagiaires 
-                                    SET compteur_demandes = compteur_demandes + 1
-                                    WHERE id_stagiaire=:id_stagiaire;");
+                                    SET stagiaire_compteur_demandes = stagiaire_compteur_demandes + 1
+                                    WHERE stagiaire_id=:id_stagiaire;");
                 $req->bindParam(":id_stagiaire", $id_stagiaire);
                 $req->execute();
             }
@@ -293,7 +293,7 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
 
     $mail_formateur = filter_var($mail, FILTER_VALIDATE_EMAIL);
 
-    $req = $db->prepare("SELECT id_formateur FROM formateurs WHERE mail_formateur=:mail_formateur;");
+    $req = $db->prepare("SELECT formateur_id FROM formateurs WHERE formateur_mail=:mail_formateur;");
     $req->bindValue(":mail_formateur", $mail_formateur);
     $req->execute();
     if ($req->rowCount() === 0) { // Si le mail du formateur n'existe pas encore
@@ -303,7 +303,7 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
         $prenom_formateur = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $code_entree_formateur = random_int(100000, 999999);
 
-        $req = $db->prepare("INSERT INTO formateurs(nom_formateur, prenom_formateur, mail_formateur, carte_formateur_role, carte_formateur_tel, code_entree_formateur, date_code_entree_formateur, id_site, id_secteur) 
+        $req = $db->prepare("INSERT INTO formateurs(formateur_nom, formateur_prenom, formateur_mail, carte_formateur_role, carte_formateur_tel, formateur_code_entree, formateur_date_code_entree, id_site, id_secteur) 
                             VALUES(:nom_formateur, :prenom_formateur, :mail_formateur, :carte_formateur_role, :carte_formateur_tel, :code_entree_formateur, DATE_ADD(NOW(), INTERVAL 7 DAY), :id_site, :id_secteur);");
         $req->bindValue(":nom_formateur", $nom_formateur);
         $req->bindValue(":prenom_formateur", $prenom_formateur);
@@ -376,7 +376,7 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
 
     $mail_stagiaire = filter_var($mail, FILTER_VALIDATE_EMAIL);
 
-    $req = $db->prepare("SELECT id_stagiaire FROM stagiaires WHERE mail_stagiaire=:mail_stagiaire;");
+    $req = $db->prepare("SELECT stagiaire_id FROM stagiaires WHERE stagiaire_mail=:mail_stagiaire;");
     $req->bindValue(":mail_stagiaire", $mail_stagiaire);
     $req->execute();
     if ($req->rowCount() === 0) { // Si le mail du stagiaire n'existe pas encore
@@ -386,7 +386,7 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $prenom_stagiaire = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $mdp_stagiaire = readable_random_string(10);
 
-        $req = $db->prepare("INSERT INTO stagiaires(nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, mdp_stagiaire, mdp_decode_stagiaire, tel_stagiaire, date_naissance_stagiaire, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
+        $req = $db->prepare("INSERT INTO stagiaires(stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_mdp, stagiaire_mdp_decode, stagiaire_tel, date_naissance_stagiaire, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
                             VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :id_session" . (isset($id_stage) ? ", :id_stage" : "") . ");");
         $req->bindValue(":nom_stagiaire", $nom_stagiaire);
         $req->bindValue(":prenom_stagiaire", $prenom_stagiaire);
@@ -459,11 +459,11 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
     $tmp_code = random_int(100000, 999999);
     unset($_SESSION['code_tmp']);
 
-    $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE mail_formateur=:mail_formateur AND code_entree_formateur IS NULL;");
+    $req_formateur = $db->prepare("SELECT * FROM formateurs WHERE formateur_mail=:mail_formateur AND formateur_code_entree IS NULL;");
     $req_formateur->bindValue(":mail_formateur", $mail_utilisateur);
     $req_formateur->execute();
 
-    $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE mail_stagiaire=:mail_stagiaire;");
+    $req_stagiaire = $db->prepare("SELECT * FROM stagiaires WHERE stagiaire_mail=:mail_stagiaire;");
     $req_stagiaire->bindValue(":mail_stagiaire", $mail_utilisateur);
     $req_stagiaire->execute();
 
@@ -473,9 +473,9 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
 
         $req = $db->prepare("UPDATE formateurs 
                             SET 
-                                tmp_code_formateur=:tmp_code_formateur, 
-                                date_tmp_code_formateur=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
-                            WHERE mail_formateur=:mail_formateur;");
+                                formateur_code_tmp=:tmp_code_formateur, 
+                                formateur_date_code_tmp=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
+                            WHERE formateur_mail=:mail_formateur;");
         $req->bindValue(":mail_formateur", $mail_utilisateur);
         $req->bindValue(":tmp_code_formateur", $tmp_code);
         if ($req->execute()) {
@@ -483,7 +483,7 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
 
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_TMP.html');
             $message = strtr($message, array(
-                '{{PRENOM}}' => ucwords($user['prenom_formateur']),
+                '{{PRENOM}}' => ucwords($user['formateur_prenom']),
                 '{{CODE_TMP}}' => $tmp_code,
                 '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $tmp_code
             ));
@@ -492,9 +492,9 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
             $mailer->AltBody = strip_tags($message);
             $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
             if (DEV) {
-                $mailer->addAddress('marceau0707@gmail.com', $mail_utilisateur . " - " . $user['prenom_formateur'] . " " . $user['nom_formateur']);
+                $mailer->addAddress('marceau0707@gmail.com', $mail_utilisateur . " - " . $user['formateur_prenom'] . " " . $user['formateur_nom']);
             } else {
-                $mailer->addAddress($mail_utilisateur, $user['prenom_formateur'] . " " . $user['nom_formateur']);
+                $mailer->addAddress($mail_utilisateur, $user['formateur_prenom'] . " " . $user['formateur_nom']);
                 $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
             }
             $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
@@ -516,9 +516,9 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
 
         $req = $db->prepare("UPDATE stagiaires 
                             SET 
-                                tmp_code_stagiaire=:tmp_code_stagiaire, 
-                                date_tmp_code_stagiaire=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
-                            WHERE mail_stagiaire=:mail_stagiaire;");
+                                stagiaire_code_tmp=:tmp_code_stagiaire, 
+                                stagiaire_date_code_tmp=DATE_ADD(NOW(), INTERVAL 15 MINUTE)
+                            WHERE stagiaire_mail=:mail_stagiaire;");
         $req->bindValue(":mail_stagiaire", $mail_utilisateur);
         $req->bindValue(":tmp_code_stagiaire", $tmp_code);
         if ($req->execute()) {
@@ -526,7 +526,7 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
 
             $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_CODE_TMP.html');
             $message = strtr($message, array(
-                '{{PRENOM}}' => ucwords($user['prenom_stagiaire']),
+                '{{PRENOM}}' => ucwords($user['stagiaire_prenom']),
                 '{{CODE_TMP}}' => $tmp_code,
                 '{{LIEN}}' => $_SERVER['REQUEST_SCHEME'] . "://" . $_SERVER['SERVER_NAME'] . "/erp/public/code.php?code=" . $tmp_code
             ));
@@ -535,9 +535,9 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
             $mailer->AltBody = strip_tags($message);
             $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
             if (DEV) {
-                $mailer->addAddress('marceau0707@gmail.com', $mail_utilisateur . " - " . $user['prenom_stagiaire'] . " " . $user['nom_stagiaire']);
+                $mailer->addAddress('marceau0707@gmail.com', $mail_utilisateur . " - " . $user['stagiaire_prenom'] . " " . $user['stagiaire_nom']);
             } else {
-                $mailer->addAddress($mail_utilisateur, $user['prenom_stagiaire'] . " " . $user['nom_stagiaire']);
+                $mailer->addAddress($mail_utilisateur, $user['stagiaire_prenom'] . " " . $user['stagiaire_nom']);
                 $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
             }
             $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
@@ -575,33 +575,33 @@ function connexionUtilisateur(string|int $identifiant)
     global $db;
 
     $sql = "SELECT * 
-                FROM stagiaires WHERE pseudo_stagiaire=:identifiant;";
+                FROM stagiaires WHERE stagiaire_pseudo=:identifiant;";
     $req = $db->prepare($sql);
     $req->bindValue(":identifiant", filter_var($identifiant, FILTER_SANITIZE_SPECIAL_CHARS));
     $req->execute();
     if ($req->rowCount() === 1) {
         $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
-        $_SESSION['utilisateur']['id_formateur'] = -1;
+        $_SESSION['utilisateur']['formateur_id'] = -1;
         $_SESSION['utilisateur']['id_secteur'] = -1;
         $req->closeCursor();
         return true;
     } elseif ($req->rowCount() === 0) {
         $sql = "SELECT *  
-                FROM formateurs WHERE (mail_formateur=:identifiant 
-                                    OR code_entree_formateur=:identifiant 
-                                    OR tmp_code_formateur=:identifiant);";
+                FROM formateurs WHERE (formateur_mail=:identifiant 
+                                    OR formateur_code_entree=:identifiant 
+                                    OR formateur_code_tmp=:identifiant);";
         $req = $db->prepare($sql);
         $req->bindValue(":identifiant", filter_var($identifiant . "@adrar-formation.com", FILTER_VALIDATE_EMAIL));
         $req->execute();
         if ($req->rowCount() === 1) {
             $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
-            $_SESSION['utilisateur']['id_stagiaire'] = -1;
+            $_SESSION['utilisateur']['stagiaire_id'] = -1;
             $_SESSION['utilisateur']['id_session'] = NULL;
             $_SESSION['mode_edition'] = false;
             $req->closeCursor();
             return true;
         }
-    }
+    } 
     return false;
 }
 
@@ -635,25 +635,25 @@ function readable_random_string($length = 6)
 /**
  * Permet la prise en charge d'un nouveau document.
  * 
- * @param string $nom_document Le nom du document.
+ * @param string $document_nom Le nom du document.
  * @param array $fichier Le fichier a importer.
  * 
  * 
  * @return string Un tableau avec deux index `string type` et `string message`..
  */
-function ajouterDocument(string $nom_document, array $fichier)
+function ajouterDocument(string $document_nom, array $fichier)
 {
     $type = "info";
     $message = "Document ajouté";
 
-    if (!is_dir("../v/templates_documents/$nom_document")) {
-        if (!mkdir("../v/templates_documents/$nom_document", 0777, true)) {
+    if (!is_dir("../v/templates_documents/$document_nom")) {
+        if (!mkdir("../v/templates_documents/$document_nom", 0777, true)) {
             $type = "error";
             $message = "Le dossier n'a pas pu être créé.";
         }
     }
 
-    $nom_dossier = $nom_document;
+    $nom_dossier = $document_nom;
 
     switch ($fichier['type']) {
         case "application/pdf":
@@ -678,7 +678,7 @@ function ajouterDocument(string $nom_document, array $fichier)
         // Convertir chaque page du PDF en PNG
         foreach ($imagick as $pageNumber => $image) {
             // Enregistrer l'image au format PNG
-            $image->writeImage('../v/templates_documents/' . $nom_dossier . '/' . $nom_document . '_' . ($pageNumber + 1) . '.jpg');
+            $image->writeImage('../v/templates_documents/' . $nom_dossier . '/' . $document_nom . '_' . ($pageNumber + 1) . '.jpg');
         }
         // Libérer la mémoire
         $imagick->clear();

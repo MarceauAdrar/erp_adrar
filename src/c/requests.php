@@ -47,7 +47,7 @@ if (!empty($_POST["btn_join_evaluation"])) {
     $sql_insert_stagiaire = "INSERT INTO stagiaires_evaluations(stagiaire_evaluation_completed, id_stagiaire, id_evaluation) 
                         VALUES(0, :id_stagiaire, :id_evaluation);";
     $req_insert_stagiaire = $db->prepare($sql_insert_stagiaire);
-    $req_insert_stagiaire->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["id_stagiaire"]);
+    $req_insert_stagiaire->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["stagiaire_id"]);
     $req_insert_stagiaire->bindParam(":id_evaluation", $_POST["evalId"]);
     if ($req_insert_stagiaire->execute()) {
         die("ok");
@@ -56,7 +56,7 @@ if (!empty($_POST["btn_join_evaluation"])) {
 }
 
 if (!empty($_POST["save_code"])) {
-    $link = "../../public/formation/stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"] . "/" . $_POST["module"];
+    $link = "../../public/formation/stagiaires/" . $_SESSION["utilisateur"]["stagiaire_pseudo"] . "/" . $_POST["module"];
     $file = $_POST["tp"] . "." . $_POST["extension"];
     if (!file_exists($link . "/" . $file)) {
         if (!mkdir($link, 0777, true)) {
@@ -76,7 +76,7 @@ if (!empty($_POST["submit_evaluation"])) {
                                     WHERE id_stagiaire=:id_stagiaire 
                                     AND id_evaluation=:id_evaluation;";
     $req_update_stagiaire_evaluation = $db->prepare($sql_update_stagiaire_evaluation);
-    $req_update_stagiaire_evaluation->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["id_stagiaire"]);
+    $req_update_stagiaire_evaluation->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["stagiaire_id"]);
     $id_evaluation = substr($_POST["tp"], 2);
     $req_update_stagiaire_evaluation->bindParam(":id_evaluation", $id_evaluation);
     if ($req_update_stagiaire_evaluation->execute()) {
@@ -121,14 +121,14 @@ if (!empty($_POST["show_modal_manage_cours"])) {
             FROM sessions 
             WHERE id_formateur=:id_formateur ";
     if (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
-        $sql .= " AND id_session=:id_session ";
+        $sql .= " AND session_id=:id_session ";
     } elseif (isset($_POST['id_session']) && $_POST['id_session'] == "-1") { // Actives uniquement
-        $sql .= " AND (date_fin_session>=NOW()) ";
-    } else { // Toute sessions confondues 
+        $sql .= " AND (session_date_fin>=NOW()) ";
+    } else { // Toutes sessions confondues 
     }
-    $sql .= " ORDER BY nom_session;";
+    $sql .= " ORDER BY session_nom;";
     $req = $db->prepare($sql);
-    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     if (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
         $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
     }
@@ -143,8 +143,8 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 $sql_select_cours = "SELECT *
                                     FROM cours 
                                     JOIN cours_modules ON (cours_module_id = id_module) 
-                                    JOIN sessions as s ON (s.id_session=:id_session) 
-                                    LEFT JOIN cours_sessions ON (cours_id = id_cours AND cours_sessions.id_session=s.id_session) 
+                                    JOIN sessions as s ON (s.session_id=:id_session) 
+                                    LEFT JOIN cours_sessions ON (cours_id = id_cours AND cours_sessions.id_session=s.session_id) 
                                     WHERE 1 ";
                 $sql_select_cours .= "  AND (cours_session_active=:cours_session_active ";
                 if (isset($_POST['cours_actifs']) && $_POST['cours_actifs'] == "false") {
@@ -170,8 +170,8 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 // var_dump(filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
                 $req_select_cours = $db->prepare($sql_select_cours);
                 $req_count_cours = $db->prepare($sql_count_cours);
-                $req_select_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
-                $req_count_cours->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
+                $req_select_cours->bindValue(':id_session', filter_var($session['session_id'], FILTER_VALIDATE_INT));
+                $req_count_cours->bindValue(':id_session', filter_var($session['session_id'], FILTER_VALIDATE_INT));
                 $req_select_cours->bindValue(':cours_session_active', filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
                 $req_count_cours->bindValue(':cours_session_active', filter_var($_POST['cours_actifs'], FILTER_VALIDATE_BOOL));
                 // $req_select_cours->bindValue(':offset', (isset($_POST['page']) ? filter_var($_POST['page'], FILTER_VALIDATE_INT) : 1) * 25);
@@ -181,9 +181,9 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                 $nbCours = sizeof($req_count_cours->fetchAll(PDO::FETCH_ASSOC));
                 $req_select_cours->closeCursor(); ?>
                 <div class="row">
-                    <h2><?= $session['nom_session'] ?></h2><small>&nbsp;(<?= sizeof($cours) ?> cours trouvés sur <?= $nbCours ?>)</small>
+                    <h2><?= $session['session_nom'] ?></h2><small>&nbsp;(<?= sizeof($cours) ?> cours trouvés sur <?= $nbCours ?>)</small>
                     <!-- <div class="col-12 d-flex">
-                        <nav aria-label="Navigation session <?= $session['nom_session'] ?>">
+                        <nav aria-label="Navigation session <?= $session['session_nom'] ?>">
                             <ul class="pagination">
                                 <li class="page-item"><a class="page-link" href="#">Précédent</a></li>
                                 <?php if (sizeof($cours) >= 1) for ($i = 1; $i <= $nbCours / 25; $i++) { ?>
@@ -195,10 +195,14 @@ if (!empty($_POST["show_modal_manage_cours"])) {
                     </div> -->
 
                     <?php foreach ($cours as $cour) { ?>
-                        <div class="col-3" id="cours_<?= $cour['cours_id'] ?>_<?= $session['id_session'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['id_session'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
+                        <div class="col-3 pb-5" id="cours_<?= $cour['cours_id'] ?>_<?= $session['session_id'] ?>" onclick="<?= (!empty($_SESSION['mode_edition']) ? 'updateStatusCourse(' . $cour['cours_id'] . ',' . $session['session_id'] . ');' : 'alert(\'Mode édition désactivé !\');') ?>">
                             <span class="admin-manage-imgs" id="cours_<?= $cour['cours_id'] ?>">
                                 <span class="<?= (empty($_SESSION['mode_edition']) ? "edition-off" : (!empty($cour['cours_session_active']) ? "cours-active" : "cours-inactive")) ?>">
-                                    <img class="img-course" alt="Illustration <?= $cour["cours_module_libelle"] ?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy">
+                                    <?php if (file_exists("/erp/public/formation/imgs/" . $cour['cours_module_illustration'])) { ?>
+                                        <img class="img-course" alt="Illustration <?= $cour["cours_module_libelle"] ?>" src="/erp/public/formation/imgs/<?= $cour['cours_module_illustration'] ?>" loading="lazy">
+                                    <?php } else { ?>
+                                        <img class="img-course" alt="Illustration non trouvée" src="/erp/public/formation/imgs/not_found_404.svg" loading="lazy">
+                                    <?php } ?>
                                 </span>
                             </span>
                             <p class="admin-manage-text"><strong>[<?= strtoupper($cour['cours_module_libelle']) ?>]</strong>&nbsp;<?= $cour['cours_title'] ?></p>
@@ -222,11 +226,11 @@ if (!empty($_POST["show_modal_manage_quiz"])) {
             FROM sessions 
             WHERE id_formateur=:id_formateur ";
     if (!empty($_POST['id_session'])) {
-        $sql .= " AND id_session=:id_session ";
+        $sql .= " AND session_id=:id_session ";
     }
     $sql .= " ORDER BY nom_session;";
     $req = $db->prepare($sql);
-    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     if (!empty($_POST['id_session'])) {
         $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
     }
@@ -243,7 +247,7 @@ if (!empty($_POST["show_modal_manage_quiz"])) {
                                     LEFT JOIN quiz_sessions ON (quiz_id = id_quiz AND id_session=:id_session) 
                                     ORDER BY quiz_module;";
                 $req_select_quiz = $db->prepare($sql_select_quiz);
-                $req_select_quiz->bindValue(':id_session', filter_var($session['id_session'], FILTER_VALIDATE_INT));
+                $req_select_quiz->bindValue(':id_session', filter_var($session['session_id'], FILTER_VALIDATE_INT));
                 $req_select_quiz->execute();
                 $quiz = $req_select_quiz->fetchAll(PDO::FETCH_ASSOC);
                 $req_select_quiz->closeCursor(); ?>
@@ -258,7 +262,7 @@ if (!empty($_POST["show_modal_manage_quiz"])) {
                         } elseif ($value['quiz_difficulte'] == 1) {
                             $difficulte = "Modéré";
                         } ?>
-                        <div class="col-3" id="quiz_<?= $value['quiz_id'] ?>_<?= $session['id_session'] ?>" onclick="updateStatusQuiz(<?= $value['quiz_id'] ?>, <?= $session['id_session'] ?>);">
+                        <div class="col-3" id="quiz_<?= $value['quiz_id'] ?>_<?= $session['session_id'] ?>" onclick="updateStatusQuiz(<?= $value['quiz_id'] ?>, <?= $session['session_id'] ?>);">
                             <span class="admin-manage-imgs" id="quiz_<?= $value['quiz_id'] ?>">
                                 <span class="<?= (!empty($value['quiz_session_active']) ? "quiz-active" : "quiz-inactive") ?>"><?php include("../../public/formation/imgs/video_game_night.svg") ?></span>
                             </span>
@@ -288,11 +292,11 @@ if (!empty($_POST["add_cours"])) { // TODO supprimer la colonne et intégrer la 
     $req->bindValue(':cours_keywords', filter_var($_POST['form_cours_keywords'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_link', filter_var($_POST['form_cours_link'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':cours_category', filter_var(strtolower($_POST['form_cours_module']), FILTER_SANITIZE_SPECIAL_CHARS));
-    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     if ($req->execute() && !empty($_POST['form_cours_active'])) {
         $id_cours = $req->fetch(PDO::FETCH_ASSOC)['cours_id'];
-        $req = $db->prepare("SELECT id_session FROM sessions WHERE id_formateur=:id_formateur;");
-        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req = $db->prepare("SELECT session_id FROM sessions WHERE id_formateur=:id_formateur;");
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
         $req->execute();
         $sessions = $req->fetchAll(PDO::FETCH_COLUMN);
         foreach ($sessions as $session) {
@@ -315,11 +319,11 @@ if (!empty($_POST["add_quiz"])) {
     $req->bindValue(':quiz_module', filter_var($_POST['form_quiz_module'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':quiz_lien', filter_var($_POST['form_quiz_lien'], FILTER_SANITIZE_SPECIAL_CHARS));
     $req->bindValue(':quiz_difficulte', filter_var($_POST['form_quiz_difficulte'], FILTER_VALIDATE_INT));
-    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     if ($req->execute() && !empty($_POST['form_quiz_active'])) {
         $id_quiz = $req->fetch(PDO::FETCH_ASSOC)['quiz_id'];
-        $req = $db->prepare("SELECT id_session FROM sessions WHERE id_formateur=:id_formateur;");
-        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req = $db->prepare("SELECT session_id FROM sessions WHERE id_formateur=:id_formateur;");
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
         $req->execute();
         $sessions = $req->fetchAll(PDO::FETCH_COLUMN);
         foreach ($sessions as $session) {
@@ -343,7 +347,7 @@ if (!empty($_POST["update_status_cours"])) {
     $req_update_cours->bindParam(":id_cours", $_POST["cours_id"]);
     $req_update_cours->bindParam(":id_session", $_POST["id_session"]);
     if ($req_update_cours->execute()) {
-        $req_select_stagiaires_session = $db->prepare("SELECT id_stagiaire 
+        $req_select_stagiaires_session = $db->prepare("SELECT stagiaire_id 
                                                        FROM stagiaires 
                                                        WHERE id_session=:id_session;");
         $req_select_stagiaires_session->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
@@ -393,7 +397,7 @@ if (!empty($_POST["update_status_quiz"])) {
     $req_update_quiz->bindParam(":id_quiz", $_POST["quiz_id"]);
     $req_update_quiz->bindParam(":quiz_session_active", $_POST["quiz_active"]);
     if ($req_update_quiz->execute()) {
-        $req_select_stagiaires_session = $db->prepare("SELECT id_stagiaire 
+        $req_select_stagiaires_session = $db->prepare("SELECT stagiaire_id 
                                                        FROM stagiaires 
                                                        WHERE id_session=:id_session;");
         $req_select_stagiaires_session->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
@@ -482,7 +486,7 @@ if (!empty($_POST["form_ressource_add"])) {
         $extensions_ok = array("gz", "tar", "zip", "rar");
         $extension = substr(strrchr($_FILES['form_ressource_file']['name'], '.'), 1);
         if (in_array($extension, $extensions_ok)) {
-            $pseudo_formateur = strtolower(substr($_SESSION['utilisateur']['prenom_formateur'], 0, 1) . $_SESSION['utilisateur']['nom_formateur']);
+            $pseudo_formateur = strtolower(substr($_SESSION['utilisateur']['formateur_prenom'], 0, 1) . $_SESSION['utilisateur']['formateur_nom']);
             $lien = "../v/formateurs/" . $pseudo_formateur;
             $archive = uniqid("_") . "_ressource_cours_" . $id_cours . "." . $extension;
             $archive_lien = sha1($archive);
@@ -502,7 +506,7 @@ if (!empty($_POST["form_ressource_add"])) {
     $req->bindValue(':cours_ressource_archive', $archive);
     $req->bindValue(':cours_ressource_archive_lien', $archive_lien);
     if ($req->execute()) {
-        $req_select_stagiaires_session = $db->prepare("SELECT s.id_stagiaire 
+        $req_select_stagiaires_session = $db->prepare("SELECT s.stagiaire_id 
                                                        FROM stagiaires s
                                                        JOIN cours_sessions c ON (s.id_session = c.id_session AND id_cours=:id_cours) 
                                                        WHERE s.id_session=:id_session;");
@@ -536,12 +540,12 @@ if (!empty($_POST["form_ressource_add"])) {
 if (!empty($_POST["load_new_notifications"])) {
     $notifications = "";
     $notifications_count = 0;
-    if ($_SESSION['utilisateur']['id_stagiaire'] > 0) {
+    if ($_SESSION['utilisateur']['stagiaire_id'] > 0) {
         $req = $db->prepare("SELECT notification_titre, notification_date, notification_lien 
                             FROM notifications 
                             WHERE id_stagiaire=:id_stagiaire 
                             ORDER BY notification_date DESC;");
-        $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+        $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
         $req->execute();
         $result = $req->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($result)) {
@@ -570,7 +574,7 @@ if (isset($_POST['delete_notification'])) {
     }
     $sql .= ";";
     $req = $db->prepare($sql);
-    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
     if (isset($_POST['lien_notification']) && !empty($_POST['lien_notification'])) {
         $req->bindValue(":notification_lien", filter_var($_POST['lien_notification'], FILTER_SANITIZE_SPECIAL_CHARS));
     }
@@ -580,13 +584,13 @@ if (isset($_POST['delete_notification'])) {
 if (isset($_POST['send_tp']) && isset($_FILES['fichier']) && !empty($_FILES['fichier'])) {
     $tp_id = filter_var($_POST['tp_id'], FILTER_VALIDATE_INT);
     $lien_ressource_rendue = filter_var("ressource_" . $tp_id . "_" . $_FILES['fichier']['name'], FILTER_SANITIZE_SPECIAL_CHARS);
-    if (!is_dir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['pseudo_stagiaire'] . "/tps/")) {
-        mkdir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['pseudo_stagiaire'] . "/tps/");
+    if (!is_dir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/")) {
+        mkdir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/");
     }
-    move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/" . $_SESSION['utilisateur']['pseudo_stagiaire'] . "/tps/" . $lien_ressource_rendue);
-    $req = $db->prepare("REPLACE INTO stagiaires_ressources(id_stagiaire, id_ressource, lien_ressource_rendue) 
+    move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/" . $lien_ressource_rendue);
+    $req = $db->prepare("REPLACE INTO stagiaires_ressources(id_stagiaire, id_ressource, stagiaire_ressource_rendue_lien) 
                         VALUES(:id_stagiaire, :id_ressource, :lien_ressource_rendue);");
-    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
     $req->bindValue(":id_ressource", $tp_id);
     $req->bindValue(":lien_ressource_rendue", $lien_ressource_rendue);
     die(json_encode($req->execute()));
@@ -595,8 +599,8 @@ if (isset($_POST['send_tp']) && isset($_FILES['fichier']) && !empty($_FILES['fic
 if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     $success = true;
 
-    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
-        $sql = "SELECT id_formateur FROM formateurs ";
+    if ($_SESSION['utilisateur']['formateur_id'] > 0) {
+        $sql = "SELECT formateur_id FROM formateurs ";
         if (!empty($_SESSION['utilisateur']['id_secteur'])) {
             $sql .= " WHERE id_secteur=:id_secteur";
         }
@@ -611,9 +615,9 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
 
         $sql = "SELECT * 
                 FROM cours 
-                JOIN formateurs ON (formateurs.id_formateur = cours.id_formateur) 
+                JOIN formateurs ON (formateurs.formateur_id = cours.id_formateur) 
                 JOIN cours_modules ON (cours_module_id = id_module) 
-                WHERE formateurs.id_formateur IN(" . implode(", ", $ids_formateurs) . ") ";
+                WHERE formateurs.formateur_id IN(" . implode(", ", $ids_formateurs) . ") ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
             $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
             $conditions = array();
@@ -652,7 +656,7 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     }
 
     $liste_modules = "";
-    if ($_SESSION['utilisateur']['id_formateur'] > 0 && !empty($_SESSION['mode_edition'])) {
+    if ($_SESSION['utilisateur']['formateur_id'] > 0 && !empty($_SESSION['mode_edition'])) {
         $liste_modules .= '<div class="col-xs-1 col-md-3 col-lg-3 mb-3">
             <div class="card">
                 <span class="card-img-top" alt="Illustration d\'un nouveau module">
@@ -694,11 +698,11 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
 if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $success = true;
 
-    if ($_SESSION['utilisateur']['id_formateur'] > 0) {
-        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_module_libelle, cours_module_illustration, nom_formateur, prenom_formateur 
+    if ($_SESSION['utilisateur']['formateur_id'] > 0) {
+        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_module_libelle, cours_module_illustration, formateur_nom, formateur_prenom 
                             FROM cours c 
                             INNER JOIN cours_modules cm ON cm.cours_module_id = c.id_module
-                            INNER JOIN formateurs f ON (f.id_formateur = c.id_formateur) 
+                            INNER JOIN formateurs f ON (f.formateur_id = c.id_formateur) 
                             WHERE 1 ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
             $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
@@ -712,10 +716,10 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
                                 ORDER BY cours_position;";
         $req_select_cours = $db->prepare($sql_select_cours);
     } else {
-        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_module_libelle, cours_module_illustration, nom_formateur, prenom_formateur 
+        $sql_select_cours = "SELECT cours_id, cours_title, cours_synopsis, cours_link, cours_module_libelle, cours_module_illustration, formateur_nom, formateur_prenom 
                             FROM cours c 
                             INNER JOIN cours_modules cm ON cm.cours_module_id = c.id_module
-                            INNER JOIN formateurs f ON (f.id_formateur = c.id_formateur) ";
+                            INNER JOIN formateurs f ON (f.formateur_id = c.id_formateur) ";
         if (isset($_SESSION["utilisateur"]["id_session"]) && !empty($_SESSION["utilisateur"]["id_session"])) {
             $sql_select_cours .= " INNER JOIN cours_sessions cs ON (c.cours_id = cs.id_cours AND cs.id_session=:id_session) ";
         } else {
@@ -745,7 +749,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $cours = $req_select_cours->fetchAll(PDO::FETCH_ASSOC);
 
     $liste_cours = "";
-    if ($_SESSION['utilisateur']['id_formateur'] > 0 && !empty($_SESSION['mode_edition'])) {
+    if ($_SESSION['utilisateur']['formateur_id'] > 0 && !empty($_SESSION['mode_edition'])) {
         $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
             <div class="card">
                 <span class="card-img-top" alt="Illustration a ajouter">
@@ -762,7 +766,7 @@ if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     if (!empty($cours)) {
         foreach ($cours as $cours) {
             $liste_cours .= '<div class="col-xs-1 col-lg-3 mb-3">
-                    <a title="Cours fait par ' . ucwords($cours['prenom_formateur']) . " " . strtoupper($cours['nom_formateur']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
+                    <a title="Cours fait par ' . ucwords($cours['formateur_prenom']) . " " . strtoupper($cours['formateur_nom']) . '" href="embed.php?slide=' . $cours['cours_link'] . '" class="text-decoration-none text-black">
                         <div class="card">
                             <span class="card-img-top">
                                 <img class="img-course" alt="Illustration ' . $cours["cours_module_libelle"] . '" src="/erp/public/formation/imgs/' . (file_exists('/var/www/html/erp/public/formation/imgs/' . $cours['cours_module_illustration']) ? $cours['cours_module_illustration'] : "no_data.svg") . '" loading="lazy" >
@@ -805,13 +809,13 @@ if (isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode']
 }
 
 if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
-    $req = $db->prepare('SELECT id_stagiaire, pseudo_stagiaire, nom_stagiaire, prenom_stagiaire 
+    $req = $db->prepare('SELECT stagiaire_id, stagiaire_pseudo, stagiaire_nom, stagiaire_prenom 
                         FROM stagiaires s 
-                        JOIN sessions ss ON (s.id_session = ss.id_session) 
-                        WHERE est_actif IS TRUE 
-                        AND date_fin_session > NOW() 
+                        JOIN sessions ss ON (ss.session_id = s.id_session) 
+                        WHERE stagiaire_actif IS TRUE 
+                        AND session_date_fin > NOW() 
                         AND id_formateur=:id_formateur;');
-    $req->bindValue(':id_formateur', $_SESSION['utilisateur']['id_formateur']);
+    $req->bindValue(':id_formateur', $_SESSION['utilisateur']['formateur_id']);
     $req->execute();
 
     die(json_encode(array(
@@ -821,16 +825,16 @@ if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
 }
 
 if (isset($_POST['reset_pass_trainee']) && !empty($_POST['reset_pass_trainee'])) {
-    $req = $db->prepare('SELECT mdp_decode_stagiaire 
+    $req = $db->prepare('SELECT stagiaire_mdp_decode 
                         FROM stagiaires 
-                        WHERE pseudo_stagiaire=:pseudo_stagiaire;');
+                        WHERE stagiaire_pseudo=:pseudo_stagiaire;');
     $req->bindValue(':pseudo_stagiaire', $_POST['username_trainee']);
     $req->execute();
     $old_mdp = $req->fetch(PDO::FETCH_COLUMN);
 
     $req = $db->prepare('UPDATE stagiaires 
-                        SET mdp_stagiaire = "' . password_hash($old_mdp, PASSWORD_BCRYPT) . '"
-                        WHERE pseudo_stagiaire=:pseudo_stagiaire;');
+                        SET stagiaire_mdp = "' . password_hash($old_mdp, PASSWORD_BCRYPT) . '"
+                        WHERE stagiaire_pseudo=:pseudo_stagiaire;');
     $req->bindValue(':pseudo_stagiaire', $_POST['username_trainee']);
 
     die(json_encode(array(
@@ -849,18 +853,18 @@ if (
 ) {
     $sql = "UPDATE stagiaires 
             SET 
-                nom_stagiaire=:nom_stagiaire, 
-                prenom_stagiaire=:prenom_stagiaire ";
+                stagiaire_nom=:nom_stagiaire, 
+                stagiaire_prenom=:prenom_stagiaire ";
     if (isset($_POST['form_mail_stagiaire']) && !empty($_POST['form_mail_stagiaire'])) {
-        $sql .= " , mail_stagiaire=:mail_stagiaire ";
+        $sql .= " , stagiaire_mail=:mail_stagiaire ";
     }
     if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
-        $sql .= " , mdp_stagiaire=:mdp_stagiaire ";
+        $sql .= " , stagiaire_mdp=:mdp_stagiaire ";
     }
     if (isset($_POST['form_avatar_stagiaire']) && !empty($_POST['form_avatar_stagiaire'])) {
         $sql .= " , id_avatar=:id_avatar ";
     }
-    $sql .= " WHERE id_stagiaire=:id_stagiaire;";
+    $sql .= " WHERE stagiaire_id=:id_stagiaire;";
     $req = $db->prepare($sql);
     $req->bindValue(':nom_stagiaire', strtoupper($_POST['form_nom_stagiaire']));
     $req->bindValue(':prenom_stagiaire', ucwords($_POST['form_prenom_stagiaire']));
@@ -869,7 +873,7 @@ if (
     }
     if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
         $req->bindValue(':mdp_stagiaire', password_hash($_POST['form_mdp_stagiaire'], PASSWORD_BCRYPT));
-        $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+        $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
         $req->execute();
         header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
@@ -877,7 +881,7 @@ if (
     if (isset($_POST['form_avatar_stagiaire']) && !empty($_POST['form_avatar_stagiaire'])) {
         $req->bindValue(':id_avatar', filter_var($_POST['form_avatar_stagiaire'], FILTER_VALIDATE_INT));
     }
-    $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['id_stagiaire'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
     $req->execute();
 
     header("Location: ../../public/formation/account.php");
@@ -891,21 +895,21 @@ if (
 ) {
     $sql = "UPDATE formateurs 
             SET 
-                nom_formateur=:nom_formateur, 
-                prenom_formateur=:prenom_formateur ";
+                formateur_nom=:nom_formateur, 
+                formateur_prenom=:prenom_formateur ";
     if (isset($_POST['form_mdp_formateur']) && !empty($_POST['form_mdp_formateur'])) {
-        $sql .= " , mdp_formateur=:mdp_formateur ";
+        $sql .= " , formateur_mdp=:mdp_formateur ";
     }
     if (isset($_POST['form_avatar_formateur']) && !empty($_POST['form_avatar_formateur'])) {
         $sql .= " , id_avatar=:id_avatar ";
     }
-    $sql .= " WHERE id_formateur=:id_formateur;";
+    $sql .= " WHERE formateur_id=:id_formateur;";
     $req = $db->prepare($sql);
     $req->bindValue(':nom_formateur', strtoupper($_POST['form_nom_formateur']));
     $req->bindValue(':prenom_formateur', ucwords($_POST['form_prenom_formateur']));
     if (isset($_POST['form_mdp_formateur']) && !empty($_POST['form_mdp_formateur'])) {
         $req->bindValue(':mdp_formateur', password_hash($_POST['form_mdp_formateur'], PASSWORD_BCRYPT));
-        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
         $req->execute();
         header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
@@ -913,14 +917,14 @@ if (
     if (isset($_POST['form_avatar_formateur']) && !empty($_POST['form_avatar_formateur'])) {
         $req->bindValue(':id_avatar', filter_var($_POST['form_avatar_formateur'], FILTER_VALIDATE_INT));
     }
-    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+    $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
     $req->execute();
 
     header("Location: ../../public/formation/account.php");
     exit;
 }
 
-if (isset($_POST['set_module_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+if (isset($_POST['set_module_position']) && isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur']['formateur_id'] > 0) {
     $sql = "UPDATE cours_modules, cours_modules AS cm2
             SET cours_modules.cours_module_position = cm2.cours_module_position, cm2.cours_module_position = cours_modules.cours_module_position
             WHERE cours_modules.cours_module_position=:new AND cm2.cours_module_position=:old;";
@@ -939,7 +943,7 @@ if (isset($_POST['set_module_position']) && isset($_SESSION['utilisateur']['id_f
     )));
 }
 
-if (isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+if (isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur']['formateur_id'] > 0) {
     $sql = "UPDATE cours, cours AS c2
             SET cours.cours_position = c2.cours_position, c2.cours_position = cours.cours_position
             WHERE cours.cours_position=:new AND c2.cours_position=:old 
@@ -965,7 +969,7 @@ if (isset($_POST['set_cours_position']) && isset($_SESSION['utilisateur']['id_fo
     )));
 }
 
-if (isset($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty($_POST['form_faq_title']) && isset($_POST['form_faq_content']) && !empty($_POST['form_faq_content']) && isset($_POST['form_faq_secteur']) && isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
+if (isset($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty($_POST['form_faq_title']) && isset($_POST['form_faq_content']) && !empty($_POST['form_faq_content']) && isset($_POST['form_faq_secteur']) && isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur']['formateur_id'] > 0) {
     $sql = "INSERT INTO faqs(faq_theme, faq_title, faq_content, faq_priority, id_secteur) 
             VALUES(:theme, :title, :content, :priority, :secteur)";
     $req = $db->prepare($sql);
@@ -982,9 +986,9 @@ if (isset($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty
     exit;
 }
 if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_POST['id_user']) && !empty($_POST['id_user'])) {
-    $sql = "SELECT nom_stagiaire, prenom_stagiaire 
+    $sql = "SELECT stagiaire_nom, stagiaire_prenom 
             FROM stagiaires 
-            WHERE id_stagiaire=:id_stagiaire;";
+            WHERE stagiaire_id=:id_stagiaire;";
     $req = $db->prepare($sql);
     $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
     $req->execute();
@@ -1004,7 +1008,7 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_
             
             ORDER BY message_date;";
     $req = $db->prepare($sql);
-    $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["id_formateur"], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
     $req->bindValue(":id_user", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
     $req->execute();
     $messages = '';
@@ -1012,7 +1016,7 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_
     if (!empty($liste)) {
         foreach ($liste as $message) {
             $messages .= '<div>';
-            $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["id_formateur"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["id_stagiaire"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
+            $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["formateur_id"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["stagiaire_id"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
             $messages .= '</div>';
         }
     } else {
@@ -1021,7 +1025,7 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_
 
     die(json_encode(array(
         "success" => true,
-        "user" => $stagiaire['prenom_stagiaire'] . "&nbsp;" . $stagiaire['nom_stagiaire'],
+        "user" => $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'],
         "messages" => $messages
     )));
 }
@@ -1031,7 +1035,7 @@ if (isset($_POST['send_message']) && isset($_POST['send_message']) && isset($_PO
             VALUES(:message_content, NOW(), :id_send_formateur, :id_stagiaire);";
     $req = $db->prepare($sql);
     $req->bindValue(":message_content", filter_var($_POST["message_content"], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-    $req->bindValue(":id_send_formateur", filter_var($_SESSION["utilisateur"]["id_formateur"], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_send_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
     $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
     $req->execute();
     exit;

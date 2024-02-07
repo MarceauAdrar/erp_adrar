@@ -3,7 +3,7 @@ include_once("../../src/m/connect.php");
 // TODO: remove this redirection
 // header("Location: ./index.php");
 
-if (!empty($_SESSION["utilisateur"]["id_stagiaire"]) && isset($_SESSION["utilisateur"]["id_stagiaire"]) && !isset($_GET["token"])) {
+if (!empty($_SESSION["utilisateur"]["stagiaire_id"]) && isset($_SESSION["utilisateur"]["stagiaire_id"]) && !isset($_GET["token"])) {
     header("Location: ./index.php");
 }
 
@@ -12,7 +12,7 @@ $sql_check_token = "SELECT evaluation_id, evaluation_title, evaluation_title, ev
                     LEFT JOIN stagiaires_evaluations ie ON (e.evaluation_id = ie.id_evaluation AND ie.id_stagiaire=:id_stagiaire AND stagiaire_evaluation_completed = 0)
                     WHERE evaluation_token=:evaluation_token;";
 $req_check_token = $db->prepare($sql_check_token);
-$req_check_token->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["id_stagiaire"]);
+$req_check_token->bindParam(":id_stagiaire", $_SESSION["utilisateur"]["stagiaire_id"]);
 $req_check_token->bindParam(":evaluation_token", $_GET["token"]);
 $req_check_token->execute();
 $eval = $req_check_token->fetch(PDO::FETCH_ASSOC);
@@ -23,10 +23,10 @@ $tp = 0;
 $bHtml = 0;
 $bCss = 0;
 if ($req_check_token->rowCount() > 0) {
-    $data = array('stagiaire_username' => $_SESSION["utilisateur"]["pseudo_stagiaire"]);
+    $data = array('stagiaire_username' => $_SESSION["utilisateur"]["stagiaire_pseudo"]);
     $postdata = http_build_query(
         array(
-            'stagiaire_username' => $_SESSION["utilisateur"]["pseudo_stagiaire"]
+            'stagiaire_username' => $_SESSION["utilisateur"]["stagiaire_pseudo"]
         )
     );
 
@@ -41,7 +41,7 @@ if ($req_check_token->rowCount() > 0) {
 
     $context  = stream_context_create($opts);
     $link_template_html = "./modules/html-css/templates";
-    $link_stagiaire_html = "./stagiaires/" . $_SESSION["utilisateur"]["pseudo_stagiaire"] . "/html-css";
+    $link_stagiaire_html = "./stagiaires/" . $_SESSION["utilisateur"]["stagiaire_pseudo"] . "/html-css";
     if (!is_dir($link_stagiaire_html)) {
         if (!mkdir($link_stagiaire_html, 0664, true)) {
             die("Erreur lors de la création de l'arborescence");
@@ -131,7 +131,7 @@ if ($req_check_token->rowCount() > 0) {
                             </div>
                         </div>
                         <div class="col-12" id="box_preview">
-                            <iframe id="web_preview_full" src="//' . $_SERVER["SERVER_ADDR"] . '/erp/public/formation/stagiaires/' . $_SESSION["utilisateur"]["pseudo_stagiaire"] . '/html-css/rando_nuit/index.html" frameborder="0"></iframe>
+                            <iframe id="web_preview_full" src="//' . $_SERVER["SERVER_ADDR"] . '/erp/public/formation/stagiaires/' . $_SESSION["utilisateur"]["stagiaire_pseudo"] . '/html-css/rando_nuit/index.html" frameborder="0"></iframe>
                         </div>
                     </div>
                 </div>';

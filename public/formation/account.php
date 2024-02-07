@@ -6,13 +6,13 @@ $form = "";
 
 
 
-if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur']['id_formateur'] > 0) {
-    $sql = "SELECT nom_formateur, prenom_formateur, mail_formateur, carte_formateur_tel, avatar_id, avatar_nom, avatar_lien
+if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur']['formateur_id'] > 0) {
+    $sql = "SELECT formateur_nom, formateur_prenom, formateur_mail, carte_formateur_tel, avatar_id, avatar_nom, avatar_lien
             FROM formateurs 
             JOIN avatars ON (avatar_id = id_avatar)
-            WHERE id_formateur=:id_formateur;";
+            WHERE formateur_id=:id_formateur;";
     $req = $db->prepare($sql);
-    $req->bindValue(':id_formateur', $_SESSION['utilisateur']['id_formateur']);
+    $req->bindValue(':id_formateur', $_SESSION['utilisateur']['formateur_id']);
     $req->execute();
     $formateur = $req->fetch(PDO::FETCH_ASSOC);
     $sql = "SELECT avatar_id, avatar_nom, avatar_lien
@@ -41,21 +41,21 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_nom_formateur">NOM<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_nom_formateur" id="form_nom_formateur" placeholder="Nom utilisateur" value="' . $formateur['nom_formateur'] . '">
+                                <input type="text" class="form-control" name="form_nom_formateur" id="form_nom_formateur" placeholder="Nom utilisateur" value="' . $formateur['formateur_nom'] . '">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_prenom_formateur">Prénom<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_prenom_formateur" id="form_prenom_formateur" placeholder="Prénom d\'utilisateur" value="' . $formateur['prenom_formateur'] . '">
+                                <input type="text" class="form-control" name="form_prenom_formateur" id="form_prenom_formateur" placeholder="Prénom d\'utilisateur" value="' . $formateur['formateur_prenom'] . '">
                             </div>
                         </div>
                         <div class="col">
                             <label for="form_email_formateur">Email<span class="required">*</span></label>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="form_email_formateur" id="form_email_formateur" disabled placeholder="Prénom d\'utilisateur" value="' . explode('@adrar-', $formateur['mail_formateur'])[0] . '">
-                                    <input type="text" class="form-control" disabled value="@' . explode('@', $formateur['mail_formateur'])[1] . '">
+                                    <input type="text" class="form-control" name="form_email_formateur" id="form_email_formateur" disabled placeholder="Prénom d\'utilisateur" value="' . explode('@adrar-', $formateur['formateur_mail'])[0] . '">
+                                    <input type="text" class="form-control" disabled value="@' . explode('@', $formateur['formateur_mail'])[1] . '">
                                 </div>
                             </div>
                         </div>
@@ -75,13 +75,13 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
             </div>
         </div>
     ';
-} elseif (isset($_SESSION['utilisateur']['id_stagiaire']) && $_SESSION['utilisateur']['id_stagiaire'] > 0) {
-    $sql = "SELECT nom_stagiaire, prenom_stagiaire, mail_stagiaire, pseudo_stagiaire, tel_stagiaire, date_naissance_stagiaire, avatar_id, avatar_nom, avatar_lien 
+} elseif (isset($_SESSION['utilisateur']['stagiaire_id']) && $_SESSION['utilisateur']['stagiaire_id'] > 0) {
+    $sql = "SELECT stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_tel, stagiaire_date_naissance, avatar_id, avatar_nom, avatar_lien 
             FROM stagiaires 
             JOIN avatars ON (avatar_id = id_avatar)
-            WHERE id_stagiaire=:id_stagiaire;";
+            WHERE stagiaire_id=:id_stagiaire;";
     $req = $db->prepare($sql);
-    $req->bindValue(':id_stagiaire', $_SESSION['utilisateur']['id_stagiaire']);
+    $req->bindValue(':id_stagiaire', $_SESSION['utilisateur']['stagiaire_id']);
     $req->execute();
     $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
     $sql = "SELECT avatar_id, avatar_nom, avatar_lien
@@ -110,25 +110,25 @@ if (isset($_SESSION['utilisateur']['id_formateur']) && $_SESSION['utilisateur'][
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_nom_stagiaire">NOM<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_nom_stagiaire" id="form_nom_stagiaire" placeholder="Nom utilisateur" required value="' . $stagiaire['nom_stagiaire'] . '">
+                                <input type="text" class="form-control" name="form_nom_stagiaire" id="form_nom_stagiaire" placeholder="Nom utilisateur" required value="' . $stagiaire['stagiaire_nom'] . '">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_prenom_stagiaire">Prénom<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_prenom_stagiaire" id="form_prenom_stagiaire" placeholder="Prénom d\'utilisateur" required value="' . $stagiaire['prenom_stagiaire'] . '">
+                                <input type="text" class="form-control" name="form_prenom_stagiaire" id="form_prenom_stagiaire" placeholder="Prénom d\'utilisateur" required value="' . $stagiaire['stagiaire_prenom'] . '">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_pseudo_stagiaire">Pseudo<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_pseudo_stagiaire" id="form_pseudo_stagiaire" placeholder="Pseudo unique d\'utilisateur" disabled required value="' . $stagiaire['pseudo_stagiaire'] . '">
+                                <input type="text" class="form-control" name="form_pseudo_stagiaire" id="form_pseudo_stagiaire" placeholder="Pseudo unique d\'utilisateur" disabled required value="' . $stagiaire['stagiaire_pseudo'] . '">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_mail_stagiaire">Mail<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['mail_stagiaire'] . '">
+                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['stagiaire_mail'] . '">
                             </div>
                         </div>
                         <div class="col">

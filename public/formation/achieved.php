@@ -9,7 +9,7 @@ if (!empty($_GET["module"]) && !empty($_GET["tp"])) {
                             AND id_stagiaire=:id_stagiaire;";
     $req_check_achieved = $db->prepare($sql_check_achieved);
     $req_check_achieved->bindParam(":id_evaluation", $_GET["tp"]);
-    $id_stagiaire = (!empty($_GET["stagiaire_id"]) ? $_GET["stagiaire_id"] : $_SESSION["utilisateur"]["id_stagiaire"]);
+    $id_stagiaire = (!empty($_GET["stagiaire_id"]) ? $_GET["stagiaire_id"] : $_SESSION["utilisateur"]["stagiaire_id"]);
     $stagiaire_username = (!empty($_GET["stagiaire_username"]) ? $_GET["stagiaire_username"] : $_SESSION["stagiaire"]["stagiaire_username"]);
     $req_check_achieved->bindParam(":id_stagiaire", $id_stagiaire);
     $req_check_achieved->execute();

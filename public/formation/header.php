@@ -38,7 +38,7 @@
     </script>
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css">
-    <?php if (isset($_SESSION["utilisateur"]["id_formateur"])) { ?>
+    <?php if (isset($_SESSION["utilisateur"]["formateur_id"])) { ?>
         <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
         <style>
             .select2-container {
@@ -73,7 +73,7 @@
 
 <body>
     <div class="wrapper pb-5">
-        <?php if (isset($_SESSION["utilisateur"]["id_stagiaire"])) { ?>
+        <?php if (isset($_SESSION["utilisateur"]["stagiaire_id"])) { ?>
             <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-light">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
@@ -88,7 +88,7 @@
                                 <a class="nav-link active" aria-current="page" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">Accueil</a>
                             </li>
                             <?php
-                            if ($_SESSION["utilisateur"]["id_formateur"] !== -1) { ?>
+                            if ($_SESSION["utilisateur"]["formateur_id"] !== -1) { ?>
                                 <li class="nav-item">
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/admin.php">Administration</a>
                                 </li>
@@ -146,15 +146,15 @@
                         </ul>
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             <?php
-                            if ($_SESSION["utilisateur"]["id_stagiaire"] > 0) {
+                            if ($_SESSION["utilisateur"]["stagiaire_id"] > 0) {
                                 echo '<a href="#" onclick="loadNewNotifications(true);" class="text-decoration-none"><i class="fas fa-bell fa-lg text-grey position-relative"><span class="notifications-count"></span></i></a>&nbsp;';
-                                $nom_prenom = ucwords($_SESSION["utilisateur"]["prenom_stagiaire"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_stagiaire"]);
-                            } elseif ($_SESSION["utilisateur"]["id_formateur"] > 0) {
-                                $nom_prenom = ucwords($_SESSION["utilisateur"]["prenom_formateur"]) . " " . strtoupper($_SESSION["utilisateur"]["nom_formateur"]);
+                                $nom_prenom = ucwords($_SESSION["utilisateur"]["stagiaire_prenom"]) . " " . strtoupper($_SESSION["utilisateur"]["stagiaire_nom"]);
+                            } elseif ($_SESSION["utilisateur"]["formateur_id"] > 0) {
+                                $nom_prenom = ucwords($_SESSION["utilisateur"]["formateur_prenom"]) . " " . strtoupper($_SESSION["utilisateur"]["formateur_nom"]);
                             }
                             ?>
                             <?php
-                            if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
+                            if ($_SESSION["utilisateur"]["formateur_id"] > 0) { ?>
                                 <li class="nav-item">
                                     <div class="nav-link form-check form-switch">
                                         <input class="form-check-input" type="checkbox" role="switch" id="form_edition_mode" onclick="toggleEditionMode();" <?= (isset($_SESSION['mode_edition']) && !empty($_SESSION['mode_edition']) ? 'checked' : '') ?>>
@@ -169,10 +169,10 @@
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbar_dropdown_user">
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/account.php">Modifier mes informations</a></li>
                                     <?php
-                                    if ($_SESSION["utilisateur"]["id_formateur"] > 0) { ?>
+                                    if ($_SESSION["utilisateur"]["formateur_id"] > 0) { ?>
                                         <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalTrainees" class="dropdown-item" onclick="loadTrainees();">Actions sur les stagiaires</a></li>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/">Retour sur l'ERP</a></li>
-                                    <?php } elseif ($_SESSION["utilisateur"]["id_stagiaire"] > 0) { ?>
+                                    <?php } elseif ($_SESSION["utilisateur"]["stagiaire_id"] > 0) { ?>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/viewer.php">Consulter mes acquis</a></li>
                                     <?php } ?>
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/deconnexion.php?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Se déconnecter</a></li>

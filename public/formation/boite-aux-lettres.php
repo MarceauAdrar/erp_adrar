@@ -4,23 +4,23 @@ include_once("../src/m/connect.php");
 $title = " | Boîte aux lettres";
 
 $comptes = "";
-if($_SESSION["utilisateur"]["id_formateur"] !== -1) {
-    $sql = "SELECT avatar_lien, sta.id_stagiaire AS stagiaire_id, nom_stagiaire, prenom_stagiaire 
+if($_SESSION["utilisateur"]["formateur_id"] !== -1) {
+    $sql = "SELECT avatar_lien, sta.stagiaire_id, stagiaire_nom, stagiaire_prenom 
             FROM stagiaires sta 
             JOIN avatars ON (avatar_id = id_avatar) 
-            JOIN sessions s ON (s.id_session = sta.id_session) 
-            JOIN formateurs f ON (f.id_formateur = s.id_formateur) 
-            JOIN secteurs sec ON (sec.id_secteur = f.id_secteur) 
-            WHERE sta.est_actif = 1 
-            AND f.id_formateur=:id_formateur 
-            ORDER BY prenom_stagiaire, nom_stagiaire;";
+            JOIN sessions s ON (s.session_id = sta.id_session) 
+            JOIN formateurs f ON (f.formateur_id = s.id_formateur) 
+            JOIN secteurs sec ON (sec.secteur_id = f.id_secteur) 
+            WHERE sta.stagiaire_actif = 1 
+            AND f.formateur_id=:id_formateur 
+            ORDER BY stagiaire_prenom, stagiaire_nom;";
     $req = $db->prepare($sql);
-    $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["id_formateur"], FILTER_VALIDATE_INT));
+    $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
     $req->execute();
     $listeComptes = $req->fetchAll(PDO::FETCH_ASSOC);
     
     foreach($listeComptes as $compte) {
-        $comptes .= '<div class="ps-1 pt-2 pb-2 fake-link" onclick="showMessages(' . $compte['stagiaire_id'] . ')"><img src="//'.$_SERVER["SERVER_NAME"].'/erp/public/formation/imgs/avatars/'.$compte['avatar_lien'].'">&nbsp;(' . $compte['stagiaire_id'] . ')&nbsp;'.$compte['prenom_stagiaire']."&nbsp;".$compte['nom_stagiaire'].'</div>';
+        $comptes .= '<div class="ps-1 pt-2 pb-2 fake-link" onclick="showMessages(' . $compte['stagiaire_id'] . ')"><img src="//'.$_SERVER["SERVER_NAME"].'/erp/public/formation/imgs/avatars/'.$compte['avatar_lien'].'">&nbsp;(' . $compte['stagiaire_id'] . ')&nbsp;'.$compte['stagiaire_prenom']."&nbsp;".$compte['stagiaire_nom'].'</div>';
     }
 }
 

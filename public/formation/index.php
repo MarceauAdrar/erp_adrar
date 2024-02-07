@@ -29,7 +29,7 @@ include_once("./header.php");
 </div>
 
 <script>
-    sessionStorage.setItem("stagiaire_username", "<?= (!isset($_SESSION) ? "" : (array_key_exists("pseudo_stagiaire", $_SESSION['utilisateur']) ? $_SESSION["utilisateur"]["pseudo_stagiaire"] : $_SESSION["utilisateur"]["mail_formateur"])) ?>");
+    sessionStorage.setItem("stagiaire_username", "<?= (!isset($_SESSION) ? "" : (array_key_exists("stagiaire_pseudo", $_SESSION['utilisateur']) ? $_SESSION["utilisateur"]["stagiaire_pseudo"] : $_SESSION["utilisateur"]["formateur_mail"])) ?>");
     sessionStorage.setItem("SERVER_NAME", "<?= $_SERVER["SERVER_NAME"] ?>");
 </script>
 <?php

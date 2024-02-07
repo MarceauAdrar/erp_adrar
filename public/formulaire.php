@@ -7,8 +7,8 @@ $nom_formulaire = '';
 if(isset($_GET['form']) && !empty($_GET['form'])) {
     switch ($_GET['form']) {
         case 'mon-compte':
-            $req = $db->prepare("SELECT * FROM formateurs WHERE id_formateur=:id_formateur;");
-            $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['id_formateur'], FILTER_VALIDATE_INT));
+            $req = $db->prepare("SELECT * FROM formateurs WHERE formateur_id=:formateur_id;");
+            $req->bindValue(':formateur_id', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
             $req->execute();
             $utilisateur = $req->fetch(PDO::FETCH_ASSOC);
             $req->closeCursor();
@@ -16,17 +16,17 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
             $js = '<script src="js/index.js"></script>
             <script src="js/mon-compte.js"></script>';
     
-            $sites = $db->query("SELECT * FROM sites ORDER BY libelle_site;")->fetchAll(PDO::FETCH_ASSOC);
-            $secteurs = $db->query("SELECT * FROM secteurs ORDER BY nom_secteur;")->fetchAll(PDO::FETCH_ASSOC);
+            $sites = $db->query("SELECT * FROM sites ORDER BY site_libelle;")->fetchAll(PDO::FETCH_ASSOC);
+            $secteurs = $db->query("SELECT * FROM secteurs ORDER BY secteur_nom;")->fetchAll(PDO::FETCH_ASSOC);
             $nom_formulaire = 'form_update_formateur';
             $label_btn = "Mettre à jour";
             $options_sites = "";
             foreach ($sites as $site) {
-                $options_sites .= '<option value="' . $site['id_site'] . '" ' . ($utilisateur['id_site'] == $site['id_site'] ? " selected" : "") . '>' . $site['libelle_site'] . '</option>';
+                $options_sites .= '<option value="' . $site['site_id'] . '" ' . ($utilisateur['id_site'] == $site['site_id'] ? " selected" : "") . '>' . $site['site_libelle'] . '</option>';
             }
             $options_secteurs = "";
             foreach ($secteurs as $secteur) {
-                $options_secteurs .= '<option value="' . $secteur['id_secteur'] . '" ' . ($utilisateur['id_secteur'] == $secteur['id_secteur'] ? " selected" : "") . '>' . $secteur['nom_secteur'] . '</option>';
+                $options_secteurs .= '<option value="' . $secteur['secteur_id'] . '" ' . ($utilisateur['secteur_id'] == $secteur['secteur_id'] ? " selected" : "") . '>' . $secteur['secteur_nom'] . '</option>';
             }
     
             $title = "Mon compte";
@@ -36,15 +36,15 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                 <div>
                                     <div>
                                         <label for="form_update_formateur_nom">NOM:*</label>
-                                        <input autocomplete="none" type="text" name="form_update_formateur_nom" value="' . $utilisateur['nom_formateur'] . '">
+                                        <input autocomplete="none" type="text" name="form_update_formateur_nom" value="' . $utilisateur['formateur_nom'] . '">
                                     </div>
                                     <div>
                                         <label for="form_update_formateur_prenom">Prénom:*</label>
-                                        <input autocomplete="none" type="text" name="form_update_formateur_prenom" value="' . $utilisateur['prenom_formateur'] . '">
+                                        <input autocomplete="none" type="text" name="form_update_formateur_prenom" value="' . $utilisateur['formateur_prenom'] . '">
                                     </div>
                                     <div>
                                         <label for="form_update_formateur_mail">Mail (sans le nom de domaine):*</label>
-                                        <input autocomplete="none" type="text" name="form_update_formateur_mail" value="' . $utilisateur['mail_formateur'] . '" disabled>
+                                        <input autocomplete="none" type="text" name="form_update_formateur_mail" value="' . $utilisateur['formateur_mail'] . '" disabled>
                                     </div>
                                     <div>
                                         <label for="form_update_formateur_pass">Mot de passe:</label>
@@ -93,21 +93,21 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                     </div>
                                     <div>
                                         <label>Signature actuelle:</label>
-                                        <img class="box-signature" src="../src/' . $utilisateur['signature_formateur'] . '" alt="Signature du formateur" width="250" height="125">
+                                        <img class="box-signature" src="../src/' . $utilisateur['formateur_signature'] . '" alt="Signature du formateur" width="250" height="125">
                                     </div>
                                 </div>
                             </form>';
             break;
         case 'ajouter-referent';
-            $sites = $db->query("SELECT * FROM sites ORDER BY libelle_site;")->fetchAll(PDO::FETCH_ASSOC);
-            $secteurs = $db->query("SELECT * FROM secteurs ORDER BY nom_secteur;")->fetchAll(PDO::FETCH_ASSOC);
+            $sites = $db->query("SELECT * FROM sites ORDER BY site_libelle;")->fetchAll(PDO::FETCH_ASSOC);
+            $secteurs = $db->query("SELECT * FROM secteurs ORDER BY secteur_nom;")->fetchAll(PDO::FETCH_ASSOC);
             $options_sites = "";
             foreach ($sites as $site) {
-                $options_sites .= '<option value="' . $site['id_site'] . '">' . $site['libelle_site'] . '</option>';
+                $options_sites .= '<option value="' . $site['site_id'] . '">' . $site['site_libelle'] . '</option>';
             }
             $options_secteurs = "";
             foreach ($secteurs as $secteur) {
-                $options_secteurs .= '<option value="' . $secteur['id_secteur'] . '">' . $secteur['nom_secteur'] . '</option>';
+                $options_secteurs .= '<option value="' . $secteur['secteur_id'] . '">' . $secteur['secteur_nom'] . '</option>';
             }
     
             $nom_formulaire = 'form_add_formateur';
@@ -156,12 +156,12 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
             break;
         case 'ajouter-stagiaire';
             $options_sessions = "";
-            foreach (recupererSessions($_SESSION['utilisateur']['id_formateur']) as $session) {
-                $options_sessions .= '<option value="' . $session['id_session'] . '">' . $session['nom_session'] . '</option>';
+            foreach (recupererSessions($_SESSION['utilisateur']['formateur_id']) as $session) {
+                $options_sessions .= '<option value="' . $session['session_id'] . '">' . $session['session_nom'] . '</option>';
             }
             $options_stages = "";
-            foreach (recupererStages($_SESSION['utilisateur']['id_formateur']) as $stage) {
-                $options_stages .= '<option value="' . $stage['id_stage'] . '">[' . $stage['nom_tuteur'] . " " . $stage['prenom_tuteur'] . '] ' . $stage['rue_lieu_stage'] . " " . $stage['cp_lieu_stage'] . " - " . $stage['ville_lieu_stage'] . '</option>';
+            foreach (recupererStages($_SESSION['utilisateur']['formateur_id']) as $stage) {
+                $options_stages .= '<option value="' . $stage['stage_id'] . '">[' . $stage['stage_nom_tuteur'] . " " . $stage['stage_prenom_tuteur'] . '] ' . $stage['stage_adresse_rue'] . " " . $stage['stage_adresse_cp'] . " - " . $stage['stage_adresse_ville'] . '</option>';
             }
     
             $nom_formulaire = 'form_add_stagiaire';

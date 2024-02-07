@@ -1,10 +1,10 @@
 <?php
 require_once __DIR__ . '/../../src/m/connect.php';
 
-$documents = $db->query("SELECT * FROM documents ORDER BY nom_document;")->fetchAll(PDO::FETCH_ASSOC);
-$stagiaires = $db->query("SELECT * FROM stagiaires WHERE 1 ORDER BY nom_stagiaire;")->fetchAll(PDO::FETCH_ASSOC);
-$sessions = $db->query("SELECT * FROM sessions ORDER BY nom_session;")->fetchAll(PDO::FETCH_ASSOC);
-$formateurs = $db->prepare("SELECT * FROM formateurs WHERE id_secteur=:id_secteur AND est_actif IS TRUE ORDER BY nom_formateur;");
+$documents = $db->query("SELECT * FROM documents ORDER BY document_nom;")->fetchAll(PDO::FETCH_ASSOC);
+$stagiaires = $db->query("SELECT * FROM stagiaires WHERE 1 ORDER BY stagiaire_nom;")->fetchAll(PDO::FETCH_ASSOC);
+$sessions = $db->query("SELECT * FROM sessions ORDER BY session_nom;")->fetchAll(PDO::FETCH_ASSOC);
+$formateurs = $db->prepare("SELECT * FROM formateurs WHERE id_secteur=:id_secteur AND formateur_actif IS TRUE ORDER BY formateur_nom;");
 $formateurs->bindValue(':id_secteur', $_SESSION['utilisateur']['id_secteur']);
 $formateurs->execute();
 $formateurs = $formateurs->fetchAll(PDO::FETCH_ASSOC);
@@ -40,7 +40,7 @@ $formateurs = $formateurs->fetchAll(PDO::FETCH_ASSOC);
                         <label for="document">Document à générer:</label>
                         <select name="document" id="document" onchange="updateForm();">
                             <?php foreach ($documents as $document) { ?>
-                                <option value="<?= $document['index_document'] ?>"><?= $document['nom_document'] ?></option>
+                                <option value="<?= $document['document_index'] ?>"><?= $document['document_nom'] ?></option>
                             <?php } ?>
                         </select>
                     </div>
@@ -49,10 +49,10 @@ $formateurs = $formateurs->fetchAll(PDO::FETCH_ASSOC);
                         <select name="stagiaire" id="stagiaire">
                             <?php
                             foreach ($sessions as $session) { ?>
-                                <optgroup label="<?= $session['nom_session'] ?>">
+                                <optgroup label="<?= $session['session_nom'] ?>">
                                     <?php foreach ($stagiaires as $stagiaire) {
-                                        if ($stagiaire['id_session'] == $session['id_session']) { ?>
-                                            <option value="<?= $stagiaire['id_stagiaire'] ?>"><?= $stagiaire['prenom_stagiaire'] ?>&nbsp;<?= $stagiaire['nom_stagiaire'] ?></option>
+                                        if ($stagiaire['id_session'] == $session['session_id']) { ?>
+                                            <option value="<?= $stagiaire['stagiaire_id'] ?>"><?= $stagiaire['stagiaire_prenom'] ?>&nbsp;<?= $stagiaire['stagiaire_nom'] ?></option>
                                     <?php }
                                     } ?>
                                 </optgroup>
@@ -63,7 +63,7 @@ $formateurs = $formateurs->fetchAll(PDO::FETCH_ASSOC);
                         <label for="formateur">Formateur:</label>
                         <select name="formateur" id="formateur">
                             <?php foreach ($formateurs as $formateur) { ?>
-                                <option value="<?= $formateur['id_formateur'] ?>"><?= $formateur['prenom_formateur'] ?>&nbsp;<?= $formateur['nom_formateur'] ?></option>
+                                <option value="<?= $formateur['formateur_id'] ?>"><?= $formateur['formateur_prenom'] ?>&nbsp;<?= $formateur['formateur_nom'] ?></option>
                             <?php } ?>
                         </select>
                     </div>

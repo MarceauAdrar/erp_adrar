@@ -8,7 +8,7 @@ $req->bindParam(":document_index", $_POST['document']);
 $req->execute();
 $document = $req->fetch(PDO::FETCH_ASSOC);
 
-$req = $db->prepare("SELECT * FROM documents_pages WHERE document_id=:document_id;");
+$req = $db->prepare("SELECT * FROM documents_pages WHERE id_document=:document_id;");
 $req->bindParam(":document_id", $document['document_id']);
 $req->execute();
 $pages = $req->fetchAll(PDO::FETCH_ASSOC);

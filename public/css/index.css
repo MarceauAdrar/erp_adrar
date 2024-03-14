@@ -2,6 +2,20 @@ small {
     font-size: 14px;
 }
 
+.main .box-2,
+.main .box-3,
+.main .box-4,
+.main .box-5,
+.main .box-4 .card-content .modules-box {
+    display: flex;
+}
+
+.main .box-2 .box,
+.main .box-4 .modules .module {
+    cursor: pointer;
+}
+
+
 .main .box-1,
 .main .box-2 .box,
 .main .box-3 .historique,
@@ -49,19 +63,6 @@ small {
     padding: 10px;
 }
 
-.main .box-2,
-.main .box-3,
-.main .box-4,
-.main .box-5,
-.main .box-4 .card-content .modules-box {
-    display: flex;
-}
-
-.main .box-2 .box,
-.main .box-4 .modules .module {
-    cursor: pointer;
-}
-
 .main .box-2 .box {
     width: 25%;
 }
@@ -101,7 +102,8 @@ small {
     text-align: center;
     padding-top: 1em;
 }
-.main .ratios > span {
+
+.main .ratios>span {
     font-size: 1.75em;
     border: 2px solid #000;
     background-color: #fff;

@@ -97,7 +97,7 @@ if (isset($_POST['form_filter_session'])) {
     <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/_reset.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="css/_style.css?v=<?= uniqid() ?>">
-    <link rel="stylesheet" href="css/index.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="css/admin.css?v=<?= uniqid() ?>">
     <title>Accueil - ERP</title>
 </head>
 
@@ -108,7 +108,7 @@ if (isset($_POST['form_filter_session'])) {
         </div>
         <div class="main">
             <div class="box-1">
-                <form method="post" class="d-inline">
+                <form method="post" class="d-inline w-sm-100">
                     <select name="form_filter_session" onchange="getRatios();">
                         <option value="-1">Tout le secteur</option>
                         <option value="0" <?= (empty($_SESSION['filtres']['session_id']) ? " selected" : "") ?>>Toutes mes sessions</option>
@@ -119,9 +119,9 @@ if (isset($_POST['form_filter_session'])) {
                         } ?>
                     </select>
                 </form>
-                <input type="search" name="search" onsubmit="return false;" autocomplete="off" placeholder="Rechercher...">
+                <input class="d-sm-none" type="search" name="search" onsubmit="return false;" autocomplete="off" placeholder="Rechercher...">
             </div>
-            <div class="box-2">
+            <div class="box-2 d-sm-none">
                 <div class="box">
                     <a href="index.php?page=ajouter-referent">
                         <div class="contenu">
@@ -152,7 +152,7 @@ if (isset($_POST['form_filter_session'])) {
                 </div>
             </div>
             <div class="box-3">
-                <div class="historique">
+                <div class="historique d-sm-none">
                     <div class="contenu">
                         <div class="card-title">
                             <h2>Historique</h2>
@@ -201,7 +201,7 @@ if (isset($_POST['form_filter_session'])) {
                 </div>
             </div>
             <div class="box-4">
-                <div class="modules">
+                <div class="modules d-sm-none">
                     <div class="contenu">
                         <div class="card-title">
                             <h2>Modules</h2>

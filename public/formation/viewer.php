@@ -18,14 +18,14 @@ $sql = "SELECT stagiaire_nom, stagiaire_prenom
         FROM stagiaires 
         WHERE stagiaire_id=:id_stagiaire;";
 $req = $db->prepare($sql);
-$id_stagiaire = (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] !== -1 ? $_SESSION["utilisateur"]["stagiaire_id"] : $_GET['id_stagiaire']);
+$id_stagiaire = (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] !== -1 ? $_SESSION["utilisateur"]["stagiaire_id"] : @$_GET['id_stagiaire']);
 $req->bindParam(":id_stagiaire", $id_stagiaire);
 $req->execute();
 $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
 
 if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["formateur_id"] > 0) {
     $th_supp = '<th class="bg-info text-white" align="center"><b>Mettre à jour</b></th>';
-} else {
+} elseif (isset($id_stagiaire) && !empty($id_stagiaire) && $id_stagiaire > 0) {
     $th_supp = '';
 }
 $tbody = '';
@@ -74,14 +74,18 @@ foreach ($acquisition_categories as $categorie) {
             $tbody .= '<tr>';
             $tbody .=   $cours_module_libelle;
             $tbody .= ' <td>' . $unAcquis['acquisition_libelle'] . '</td>';
-            $tbody .= ' <td align="center"><input class="form-control" id="form_maj_eval_ids_formateurs_' . $unAcquis['acquisition_id'] . '" value="' . $unAcquis['ids_formateurs'] . '" type="text" />' . (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs > 0 ? str_replace(array(',', ' '), array('<br>&<br>', '<br>'), $noms_prenoms_formateurs) : (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs < 0 ? "Prestataire externe" : "A définir")) . '</td>';
+            $tbody .= ' <td align="center">
+                            <input class="form-control" value="' . $unAcquis['ids_formateurs'] . '" id="form_maj_eval_ids_formateurs_' . $unAcquis['acquisition_id'] . '" type="hidden"/>
+                            <input class="form-control form-autocomplete-formateurs" data-acquis="' . $unAcquis['acquisition_id'] . '" id="form_maj_eval_select_formateurs_' . $unAcquis['acquisition_id'] . '" type="text" />' . (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs > 0 ? str_replace(array(',', ' '), array('<br>&<br>', '<br>'), $noms_prenoms_formateurs) : (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs < 0 ? "Prestataire externe" : "A définir")) .
+                '</td>';
             $niveau = " <select id='form_maj_eval_niveau_" . $unAcquis['acquisition_id'] . "' class='form-select'>";
-            foreach (["A", "PR A", "PE A", "NA", "NE", "A définir"] as $value) {
+            foreach (["A", "PR A", "PE A", "NA", "NE"] as $value) {
                 $niveau .= '<option value="' . $value . '" ' . ($value === $unAcquis['acquisition_niveau'] ? "selected" : "") . '>' . $value . '</option>';
             }
+            $niveau .= '    <option value="non_renseigne" ' . (empty($unAcquis['acquisition_niveau']) ? "selected" : "") . ' disabled>Non renseigné</option>';
             $niveau .= "</select>";
             $tbody .= ' <td align="center" style="background-color:' . ($unAcquis['acquisition_niveau'] === 'A' ? '#A8D08D' : ($unAcquis['acquisition_niveau'] === 'PR A' ? '#FFEB9C' : ($unAcquis['acquisition_niveau'] === 'PE A' ? '#ED7D31' : ($unAcquis['acquisition_niveau'] === 'NA' ? '#FFC7CE' : 'white')))) . '">' . $niveau . '</td>';
-            $tbody .= ' <td align="center"><a href="#" onclick="majEval(' . $unAcquis['acquisition_id'] . ', ' . $id_stagiaire . ');" class="btn btn-outline-primary">Enregistrer</a></td>';
+            $tbody .= ' <td align="center"><button onclick="majEval(' . $unAcquis['acquisition_id'] . ', ' . $id_stagiaire . ');" class="btn btn-outline-primary">Enregistrer</button></td>';
             $tbody .= '</tr>';
         } else {
             $tbody .= '<tr>';
@@ -162,8 +166,62 @@ if (!$stagiaire) {
         include_once('./header.php');
         echo '<h1 class="text-center">Évaluation du stagiaire: ' . $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'] . ' </h1>
             ' . $tbl;
-        include_once('./js.php');
-        include_once('./footer.php');
+        include_once('./js.php'); ?>
+        <script>
+            function split(val) {
+                return val.split(/,\s*/);
+            }
+
+            function extractLast(term) {
+                return split(term).pop();
+            }
+            document.addEventListener("DOMContentLoaded", (event) => {
+                let formateurs = [];
+
+                $.ajax({
+                    url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+                    method: "post",
+                    dataType: "json",
+                    data: {
+                        search_trainers: 1
+                    },
+                    success: function(r) {
+                        if (r.success) {
+                            formateurs = r.formateurs;
+                            formateurs.push({
+                                id: -1,
+                                value: 'Externe'
+                            });
+                        }
+                    }
+                });
+
+                $(".form-autocomplete-formateurs").autocomplete({
+                    minLength: 3,
+                    source: function(request, response) {
+                        response($.ui.autocomplete.filter(
+                            formateurs, extractLast(request.term)));
+                    },
+                    focus: function() {
+                        return false;
+                    },
+                    select: function(event, ui) {
+                        var terms = split(this.value);
+                        terms.pop();
+                        terms.push(ui.item.value);
+                        terms.push("");
+                        this.value = terms.join(",");
+                        if (!$('#form_maj_eval_ids_formateurs_' + this.dataset.acquis).val()) { // Permet de ne pas se retrouver avec une virgule si un seul formateur
+                            $('#form_maj_eval_ids_formateurs_' + this.dataset.acquis).val(ui.item.id);
+                        } else {
+                            $('#form_maj_eval_ids_formateurs_' + this.dataset.acquis).val($('#form_maj_eval_ids_formateurs_' + this.dataset.acquis).val() + "," + ui.item.id);
+                        }
+                        return false;
+                    }
+                });
+            });
+        </script>
+<?php include_once('./footer.php');
     } else {
         $html2pdf = new MYPDF('P', 'mm', 'A4', true, 'UTF-8');
         $html2pdf->SetCreator("Marceau RODRIGUES");

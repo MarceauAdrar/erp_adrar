@@ -375,8 +375,8 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } else {
         $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Jeton incorrect");
     }
-    if(isset($_POST['form_login_url']) && !empty($_POST['form_login_url'])) {
-        $redirect = $_POST['form_login_url'];
+    if (isset($_POST['form_login_url']) && !empty($_POST['form_login_url'])) {
+        // $redirect = $_POST['form_login_url'];
     }
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_signup_csrf']) && !empty($_POST['form_signup_csrf'])) {
@@ -597,7 +597,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif (isset($_POST['get_ratio_attestation']) && !empty($_POST['get_ratio_attestation'])) {
     $sql = "SELECT stagiaire_attestation_recue 
             FROM stagiaires sta 
-            JOIN sessions s ON(s.session_id = sta.session_id AND s.session_stage_date_debut <= NOW()) ";
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
             JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
@@ -758,6 +758,140 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     if ($value <= 30) {
         $color = "col-bad";
     } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+
+    die(json_encode(array(
+        'value' => number_format($value, 2, ","),
+        'color' => $color,
+        'success' => $success
+    )));
+} elseif (isset($_POST['get_ratio_reussite']) && !empty($_POST['get_ratio_reussite'])) {
+    $sql = "SELECT stagiaire_diplome
+            FROM stagiaires sta 
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_date_fin < NOW()) ";
+    if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 
+              AND sta.stagiaire_diplome IS NOT NULL ";
+    if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+    }
+    $sql .= " AND sta.stagiaire_actif = 1 ";
+    // var_dump($sql);
+    $req = $db->prepare($sql);
+    if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['filtre_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+
+    $somme = 0;
+    $sommeFaussee = 0;
+    $total = 0;
+    foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        if ($value['stagiaire_diplome'] == 1) {
+            $somme += 1;
+        }
+        if ($value['stagiaire_diplome'] <> -4) {
+            $total += 1;
+        }
+        if (!empty($value['stagiaire_diplome']) && ($value['stagiaire_diplome'] == 1 || $value['stagiaire_diplome'] == -1 || $value['stagiaire_diplome'] == -2 || $value['stagiaire_diplome'] == -3)) {
+            $sommeFaussee += 1;
+        }
+    }
+
+    $color = "";
+    $value = 0;
+    $colorBis = "";
+    $valueFausee = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total) * 100;
+        $valueFausee = ($sommeFaussee / $total) * 100;
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 30) {
+        $color = "col-bad";
+    } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+
+    if ($valueFausee <= 30) {
+        $colorBis = "col-bad";
+    } elseif ($valueFausee <= 70) {
+        $colorBis = "col-medium";
+    } else {
+        $colorBis = "col-good";
+    }
+
+    die(json_encode(array(
+        'value' => number_format($value, 2, ","),
+        'valueFaussee' => number_format($valueFausee, 2, ","),
+        'color' => $color,
+        'colorBis' => $colorBis,
+        'success' => $success
+    )));
+} elseif (isset($_POST['get_ratio_satisfaction']) && !empty($_POST['get_ratio_satisfaction'])) {
+    $sql = "SELECT stagiaire_questionnaire_note 
+            FROM stagiaires sta 
+            JOIN stagiaires_questionnaires sq ON(sta.stagiaire_id = sq.id_stagiaire) 
+            JOIN sessions s ON(s.session_id = sta.id_session) ";
+    if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 ";
+    if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+    }
+    $sql .= " AND sta.stagiaire_actif =1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['filtre_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $somme = 0;
+    foreach ($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+
+    $total = $req->rowCount();
+    $color = "";
+    $value = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total);
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 2.5) {
+        $color = "col-bad";
+    } elseif ($value <= 3.5) {
         $color = "col-medium";
     } else {
         $color = "col-good";

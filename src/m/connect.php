@@ -17,7 +17,9 @@ use TCPDF;
 require __DIR__ . '/../vendor/autoload.php';
 
 try {
-    $db = new PDO("mysql:host=localhost;dbname=adrar_titres", "debian", "Adr4r!");
+    $db = new PDO("mysql:host=localhost;dbname=adrar_titres", "debian", "Adr4r!", array(
+        PDO::ATTR_PERSISTENT => true
+    ));
 } catch (PDOException $e) {
     if (DEV) throw $e;
 }
@@ -47,6 +49,14 @@ $mailer->Port       = 587;                                    //TCP port to conn
 $mailer->isHTML(true);
 
 include_once __DIR__ . '/requetes.php';
+
+if (!isset($_SESSION['CREATED'])) {
+    $_SESSION['CREATED'] = time();
+} else if (time() - $_SESSION['CREATED'] > 1800) {
+    // session started more than 30 minutes ago
+    session_regenerate_id(true);    // change session ID for the current session and invalidate old session ID
+    $_SESSION['CREATED'] = time();  // update creation time
+}
 
 if (
     !array_key_exists('utilisateur', $_SESSION) && $_SERVER['REQUEST_URI'] !== "/erp/public/code.php" && explode('?', $_SERVER['REQUEST_URI'])[0] !== "/erp/public/code.php"

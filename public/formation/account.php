@@ -76,6 +76,47 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
         </div>
     ';
 } elseif (isset($_SESSION['utilisateur']['stagiaire_id']) && $_SESSION['utilisateur']['stagiaire_id'] > 0) {
+    $sql = "SELECT sq.*, q.questionnaire_question_resume
+            FROM stagiaires_questionnaires sq 
+            INNER JOIN questionnaires q ON (q.questionnaire_id = sq.id_questionnaire)  
+            WHERE id_stagiaire=:id_stagiaire;";
+    $req = $db->prepare($sql);
+    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
+    $req->execute();
+    $questionnaire_stagiaire = $req->fetchAll(PDO::FETCH_ASSOC);
+
+    $questionnaire_stagiaire_remplis = "";
+    if (!empty($questionnaire_stagiaire)) {
+        $questionnaire_stagiaire_remplis .= '<div class="row my-4">';
+        foreach ($questionnaire_stagiaire as $satisfaction) {
+            $questionnaire_stagiaire_remplis .= '<div class="col-xs-1 col-md-3 col-lg-3 text-center">';
+            $questionnaire_stagiaire_remplis .= '   <div title="' . (!empty($satisfaction['stagiaire_questionnaire_reponse']) ? $satisfaction['stagiaire_questionnaire_reponse'] : "Aucun commentaire laissé.") . '">';
+            $img = "";
+            $alt = "Introuvable";
+            if ($satisfaction['stagiaire_questionnaire_note'] == 1.00) {
+                $img = "tres_satisfait.png";
+                $alt = "Très satisfait";
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 2.00) {
+                $img = "satisfait.png";
+                $alt = "Satisfait";
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 3.00) {
+                $img = "neutre.png";
+                $alt = "Neutre";
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 4.00) {
+                $img = "insatisfait.png";
+                $alt = "Insatisfait";
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 5.00) {
+                $img = "tres_insatisfait.png";
+                $alt = "Très insatisfait";
+            }
+            $questionnaire_stagiaire_remplis .= '       <img src="./imgs/' . $img . '" alt="' . $alt . '">';
+            $questionnaire_stagiaire_remplis .= '       <p>' . $satisfaction['questionnaire_question_resume'] . '</p>';
+            $questionnaire_stagiaire_remplis .= '   </div>';
+            $questionnaire_stagiaire_remplis .= '</div>';
+        }
+        $questionnaire_stagiaire_remplis .= '</div>';
+    }
+
     $sql = "SELECT stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_tel, stagiaire_date_naissance, avatar_id, avatar_nom, avatar_lien 
             FROM stagiaires 
             JOIN avatars ON (avatar_id = id_avatar)
@@ -145,6 +186,7 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                     </div>
                 </form>
             </div>
+            ' . $questionnaire_stagiaire_remplis . '
         </div>
     ';
 }

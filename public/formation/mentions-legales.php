@@ -33,7 +33,8 @@ include_once("./header.php");
                     4657 rue de la Jeune Parque
                 </li> -->
                 <li>Directeur de la publication : RODRIGUES Marceau - Contact : marceaurodrigues@adrar-formation.com.</li>
-                <li>Hébergeur : OVH SAS - 2 rue Kellermann - BP 80157 - 59053 Roubaix Cedex 1 - Téléphone : 1007</li>
+                <!-- <li>Hébergeur : OVH SAS - 2 rue Kellermann - BP 80157 - 59053 Roubaix Cedex 1 - Téléphone : 1007</li> -->
+                <li>Hébergeur : Auto-hébergement chez le propriétaire sur une Debian 12</li>
                 <li>Délégué à la protection des données : RODRIGUES Marceau - marceaurodrigues@adrar-formation.com</li>
             </ul>
             </p>
@@ -114,5 +115,6 @@ include_once("./header.php");
 </div>
 <?php
 include_once("./footer.php");
+include_once("./js.php");
 die(ob_get_clean());
 ?>

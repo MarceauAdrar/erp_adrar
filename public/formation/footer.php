@@ -55,11 +55,11 @@
                     document.querySelector('#form_trainee_table_tbody').innerHTML = "";
                     trainees.forEach((trainee) => {
                         if (input.value.length > 0) {
-                            if (trainee.stagiaire_nom.trim().toLowerCase().match(input.value) || trainee.stagiaire_nom.trim().toLowerCase().match(input.value) || trainee.stagiaire_pseudo.trim().toLowerCase().match(input.value)) {
-                                document.querySelector('#form_trainee_table_tbody').innerHTML = document.querySelector('#form_trainee_table_tbody').outerHTML + "<tr><td>(" + trainee.stagiaire_pseudo + ") " + trainee.stagiaire_prenom + " " + trainee.stagiaire_nom + "</td><td align='center'><a href='#' class='btn btn-warning' onclick='connectAsTrainee(`" + trainee.stagiaire_pseudo + "`);'><i class='fa-solid fa-plug'></i></a></td><td align='center'><a href='#' class='btn btn-danger' onclick='resetPassTrainee(`" + trainee.stagiaire_pseudo + "`);'><i class='fa-solid fa-rotate-right'></i></a></td><td align='center'><a target='_blank' href='viewer.php?id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-eye'></i></a>&nbsp;&nbsp;<a href='viewer.php?mode=edit&id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-edit'></i></a></td>";
+                            if (trainee.stagiaire_nom.trim().toLowerCase().match(input.value) || trainee.stagiaire_prenom.trim().toLowerCase().match(input.value) || trainee.stagiaire_pseudo.trim().toLowerCase().match(input.value)) {
+                                document.querySelector('#form_trainee_table_tbody').innerHTML = document.querySelector('#form_trainee_table_tbody').outerHTML + "<tr><td style='" + (trainee.stagiaire_bientot_partie ? "color:#e77171;" : "") + "'>(" + trainee.stagiaire_pseudo + ") " + trainee.stagiaire_prenom + " " + trainee.stagiaire_nom + "</td><td align='center'><a href='#' class='btn btn-warning' onclick='connectAsTrainee(`" + trainee.stagiaire_pseudo + "`);'><i class='fa-solid fa-plug'></i></a></td><td align='center'><a href='#' class='btn btn-danger' onclick='resetPassTrainee(`" + trainee.stagiaire_pseudo + "`);'><i class='fa-solid fa-rotate-right'></i></a></td><td align='center'><a target='_blank' href='viewer.php?id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-eye'></i></a>&nbsp;&nbsp;<a href='viewer.php?mode=edit&id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-edit'></i></a></td>";
                             }
                         } else {
-                            document.querySelector('#form_trainee_table_tbody').innerHTML = document.querySelector('#form_trainee_table_tbody').outerHTML + "<tr><td>(" + trainee.stagiaire_pseudo + ") " + trainee.stagiaire_prenom + " " + trainee.stagiaire_nom + "</td><td align='center'><a href='#' class='btn btn-warning' onclick='connectAsTrainee(`" + trainee.stagiaire_pseudo + "`);'><i class='fa-solid fa-plug'></i></a></td><td align='center'><a href='#' class='btn btn-danger' onclick='resetPassTrainee(`" + trainee.stagiaire_pseudo + "`)'><i class='fa-solid fa-rotate-right'></i></a></td><td align='center'><a target='_blank' href='viewer.php?id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-eye'></i></a>&nbsp;&nbsp;<a href='viewer.php?mode=edit&id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-edit'></i></a></td>";
+                            document.querySelector('#form_trainee_table_tbody').innerHTML = document.querySelector('#form_trainee_table_tbody').outerHTML + "<tr><td style='" + (trainee.stagiaire_bientot_partie ? "color:#e77171;" : "") + "'>(" + trainee.stagiaire_pseudo + ") " + trainee.stagiaire_prenom + " " + trainee.stagiaire_nom + "</td><td align='center'><a href='#' class='btn btn-warning' onclick='connectAsTrainee(`" + trainee.stagiaire_pseudo + "`);'><i class='fa-solid fa-plug'></i></a></td><td align='center'><a href='#' class='btn btn-danger' onclick='resetPassTrainee(`" + trainee.stagiaire_pseudo + "`)'><i class='fa-solid fa-rotate-right'></i></a></td><td align='center'><a target='_blank' href='viewer.php?id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-eye'></i></a>&nbsp;&nbsp;<a href='viewer.php?mode=edit&id_stagiaire=" + trainee.stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-edit'></i></a></td>";
                         }
                     });
                 });
@@ -76,7 +76,7 @@
                             for (i = 0; i < r.nb_trainees; i++) {
                                 option = document.createElement("li");
                                 trainees.push(r.trainees[i]);
-                                document.querySelector('#form_trainee_table_tbody').innerHTML = document.querySelector('#form_trainee_table_tbody').outerHTML + "<tr><td>(" + r.trainees[i].stagiaire_pseudo + ") " + r.trainees[i].stagiaire_prenom + " " + r.trainees[i].stagiaire_nom + "</td><td align='center'><a href='#' class='btn btn-warning' onclick='connectAsTrainee(`" + r.trainees[i].stagiaire_pseudo + "`);'><i class='fa-solid fa-plug'></i></a></td><td align='center'><a href='#' class='btn btn-danger' onclick='resetPassTrainee(`" + r.trainees[i].stagiaire_pseudo + "`)'><i class='fa-solid fa-rotate-right'></i></a></td><td align='center'><a target='_blank' href='viewer.php?id_stagiaire=" + r.trainees[i].stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-eye'></i></a>&nbsp;&nbsp;<a href='viewer.php?mode=edit&id_stagiaire=" + r.trainees[i].stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-edit'></i></a></td>";
+                                document.querySelector('#form_trainee_table_tbody').innerHTML = document.querySelector('#form_trainee_table_tbody').outerHTML + "<tr><td style='" + (r.trainees[i].stagiaire_bientot_partie ? "color:#e77171;" : "") + "'>(" + r.trainees[i].stagiaire_pseudo + ") " + r.trainees[i].stagiaire_prenom + " " + r.trainees[i].stagiaire_nom + "</td><td align='center'><a href='#' class='btn btn-warning' onclick='connectAsTrainee(`" + r.trainees[i].stagiaire_pseudo + "`);'><i class='fa-solid fa-plug'></i></a></td><td align='center'><a href='#' class='btn btn-danger' onclick='resetPassTrainee(`" + r.trainees[i].stagiaire_pseudo + "`)'><i class='fa-solid fa-rotate-right'></i></a></td><td align='center'><a target='_blank' href='viewer.php?id_stagiaire=" + r.trainees[i].stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-eye'></i></a>&nbsp;&nbsp;<a href='viewer.php?mode=edit&id_stagiaire=" + r.trainees[i].stagiaire_id + "' class='btn btn-primary'><i class='fa-solid fa-edit'></i></a></td>";
                             }
                         }
                     });
@@ -113,21 +113,21 @@
                 }
 
                 function majEval(id_acquis, id_stagiaire) {
-                    let formateurs = document.querySelector("#form_maj_eval_ids_formateurs_"+id_acquis).value;
-                    let niveau = document.querySelector("#form_maj_eval_niveau_"+id_acquis).value;
+                    let formateurs = document.querySelector("#form_maj_eval_ids_formateurs_" + id_acquis).value;
+                    let niveau = document.querySelector("#form_maj_eval_niveau_" + id_acquis).value;
                     $.ajax({
                         url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
                         method: "post",
                         dataType: "JSON",
                         data: {
-                            maj_eval: 1, 
-                            id_acquis: id_acquis, 
-                            id_stagiaire: id_stagiaire, 
-                            formateurs: formateurs, 
-                            niveau: niveau 
+                            maj_eval: 1,
+                            id_acquis: id_acquis,
+                            id_stagiaire: id_stagiaire,
+                            formateurs: formateurs,
+                            niveau: niveau
                         },
                         success: function(r) {
-
+                            document.reload();
                         }
                     });
                 }

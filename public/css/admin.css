@@ -1,4 +1,163 @@
-.box-signature {
-    border: 1px solid #000;
-    background-color: #FFFFFF;
+/* Règles par défaut */
+.d-sm-none,
+.d-md-none {
+    display: block;
+}
+
+#logo {
+    width: 3em;
+}
+
+small {
+    font-size: 14px;
+}
+
+.main .box-2,
+.main .box-3,
+.main .box-4,
+.main .box-5,
+.main .box-4 .card-content .modules-box {
+    display: flex;
+}
+
+.main .box-2 .box,
+.main .box-4 .modules .module {
+    cursor: pointer;
+}
+
+.main .box-1,
+.main .box-2 .box,
+.main .box-3 .historique,
+.main .box-3 .convention,
+.main .box-3 .attestation,
+.main .box-4 .modules,
+.main .box-5>* {
+    border: 1px solid #FFFFFF;
+    border-radius: 10px;
+}
+
+.main .box-4 .modules-box .module:not(:nth-of-type(4)) {
+    margin-right: 10px;
+}
+
+.main .box-4 .modules-box .module p {
+    padding-top: 15px;
+}
+
+.main .box-4 .modules-box .module {
+    padding: 10px;
+    background-color: var(--coul-ternaire);
+    border: 1px solid #000000;
+    width: 25%;
+    height: 12vh;
+    overflow-y: auto;
+}
+
+.main .box-1 {
+    padding: 20px;
+    text-align: end;
+    margin-bottom: 50px;
+}
+
+.main div:not(.box-1),
+.main div:not(.box-5) {
+    margin-bottom: 10px;
+}
+
+.main .box-1 input[type="search"] {
+    border-radius: 5px;
+    border: 1px solid #D9D9D9;
+    background: rgba(0, 36, 224, 0.10);
+    box-shadow: 0px 4px 20px 0px rgba(0, 0, 0, 0.25) inset;
+    padding: 10px;
+}
+
+.main .box-2 .box {
+    width: 25%;
+}
+
+.main .box-2 .box,
+.main .box-3,
+.main .box-3,
+.main .box-4,
+.main .box-5 {
+    height: 25%;
+}
+
+.main .box-3 .historique {
+    width: 50%;
+}
+
+.main .box-4 .modules {
+    width: 100%;
+}
+
+.main .box-3 .convention,
+.main .box-3 .attestation,
+.main .box-5>* {
+    width: 25%;
+}
+
+.main .box-2 .box:not(:nth-of-type(4)),
+.main .box-5 div:not(:nth-of-type(4)) {
+    margin-right: 15px;
+}
+
+.main .box-3 .convention {
+    margin-left: 15px;
+}
+
+.main .ratios {
+    text-align: center;
+    padding-top: 1em;
+}
+
+.main .ratios>span {
+    font-size: 1.75em;
+    border: 2px solid #000;
+    background-color: #fff;
+    padding: 0 1vw;
+}
+
+/* Règles pour les appareils faisant 992px de large */
+@media screen and (max-width: 992px) {
+    .d-md-none {
+        display: none !important;
+    }
+
+    #logo {
+        width: 11.25vw;
+    }
+
+    .main .box-3 .convention,
+    .main .box-3 .attestation,
+    .main .box-5>* {
+        width: 50%;
+    }
+}
+
+/* Règles pour les appareils faisant 600px de large */
+@media screen and (max-width: 600px) {
+    .d-sm-none {
+        display: none !important;
+    }
+
+    #logo {
+        width: 13vw;
+    }
+
+    .main .box-3 .convention,
+    .main .box-3 .attestation,
+    .main .box-5>* {
+        width: 100%;
+    }
+
+    .main .box-3,
+    .main .box-5 {
+        display: block;
+    }
+
+    .w-sm-100 {
+        width: 100%;
+    }
 }

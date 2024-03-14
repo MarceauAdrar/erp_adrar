@@ -809,7 +809,7 @@ if (isset($_POST['toggle_edition_mode']) && !empty($_POST['toggle_edition_mode']
 }
 
 if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
-    $req = $db->prepare('SELECT stagiaire_id, stagiaire_pseudo, stagiaire_nom, stagiaire_prenom 
+    $req = $db->prepare('SELECT stagiaire_id, stagiaire_pseudo, stagiaire_nom, stagiaire_prenom, DATE(session_date_fin) <= DATE(NOW()) + INTERVAL 30 DAY AS stagiaire_bientot_partie 
                         FROM stagiaires s 
                         JOIN sessions ss ON (ss.session_id = s.id_session) 
                         WHERE stagiaire_actif IS TRUE 
@@ -985,73 +985,165 @@ if (isset($_POST['form_faq_theme']) && isset($_POST['form_faq_title']) && !empty
     header("Location: /erp/public/formation/admin.php");
     exit;
 }
-if (isset($_POST['show_messages']) && isset($_POST['show_messages']) && isset($_POST['id_user']) && !empty($_POST['id_user'])) {
-    $sql = "SELECT stagiaire_nom, stagiaire_prenom 
+if (isset($_POST['show_messages']) && isset($_POST['show_messages'])) {
+    if (isset($_POST['id_user']) && !empty($_POST['id_user'])) {
+        $sql = "SELECT stagiaire_nom, stagiaire_prenom 
             FROM stagiaires 
             WHERE stagiaire_id=:id_stagiaire;";
-    $req = $db->prepare($sql);
-    $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
-    $req->execute();
-    $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
+        $req = $db->prepare($sql);
+        $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+        $req->execute();
+        $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
 
-    $sql = "SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
-            FROM messages 
-            WHERE id_send_formateur=:id_formateur 
-            AND id_stagiaire=:id_user 
-            
-            UNION 
-            
-            SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
-            FROM messages 
-            WHERE id_formateur=:id_formateur 
-            AND id_send_stagiaire=:id_user 
-            
-            ORDER BY message_date;";
-    $req = $db->prepare($sql);
-    $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
-    $req->bindValue(":id_user", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
-    $req->execute();
-    $messages = '';
-    $liste = $req->fetchAll(PDO::FETCH_ASSOC);
-    if (!empty($liste)) {
-        foreach ($liste as $message) {
-            $messages .= '<div>';
-            $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["formateur_id"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["stagiaire_id"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
-            $messages .= '</div>';
+        if (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] > 0) {
+            $sql = "SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+                    FROM messages 
+                    WHERE id_send_stagiaire=:id_stagiaire 
+                    AND id_stagiaire=:id_user 
+                    
+                    UNION 
+                    
+                    SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+                    FROM messages 
+                    WHERE id_stagiaire=:id_stagiaire 
+                    AND id_send_stagiaire=:id_user 
+                    
+                    ORDER BY message_date;";
+            $req = $db->prepare($sql);
+            $req->bindValue(":id_stagiaire", filter_var($_SESSION["utilisateur"]["stagiaire_id"], FILTER_VALIDATE_INT));
+            $req->bindValue(":id_user", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+            $req->execute();
+            $messages = '';
+            $liste = $req->fetchAll(PDO::FETCH_ASSOC);
+        } elseif (isset($_SESSION["utilisateur"]["formateur_id"]) && $_SESSION["utilisateur"]["formateur_id"] > 0) {
+            $sql = "SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+                    FROM messages 
+                    WHERE id_send_stagiaire=:id_user 
+                    AND id_formateur=:id_formateur 
+                    
+                    UNION 
+                    
+                    SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+                    FROM messages 
+                    WHERE id_stagiaire=:id_user 
+                    AND id_send_formateur=:id_formateur 
+                    
+                    ORDER BY message_date;";
+            $req = $db->prepare($sql);
+            $req->bindValue(":id_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
+            $req->bindValue(":id_user", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+            $req->execute();
+            $messages = '';
+            $liste = $req->fetchAll(PDO::FETCH_ASSOC);
         }
-    } else {
-        $messages = 'Aucun message pour le moment...';
-    }
+        // var_dump($sql, $_SESSION["utilisateur"]["formateur_id"], $_POST['id_user']);
+        // die;
 
-    die(json_encode(array(
-        "success" => true,
-        "user" => $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'],
-        "messages" => $messages
-    )));
+        if (!empty($liste)) {
+            foreach ($liste as $message) {
+                $messages .= '<div>';
+                $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["formateur_id"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["stagiaire_id"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
+                $messages .= '</div>';
+            }
+        } else {
+            $messages = 'Aucun message pour le moment...';
+        }
+
+        die(json_encode(array(
+            "success" => true,
+            "user" => $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'],
+            "messages" => $messages
+        )));
+    } elseif (isset($_POST['id_session']) && !empty($_POST['id_session'])) {
+        $sql = "SELECT session_nom 
+                FROM sessions 
+                WHERE session_id=:id_session;";
+        $req = $db->prepare($sql);
+        $req->bindValue(":id_session", filter_var($_POST["id_session"], FILTER_VALIDATE_INT));
+        $req->execute();
+        $session = $req->fetch(PDO::FETCH_ASSOC);
+
+        $sql = "SELECT message_id, message_content, message_date, id_send_formateur, id_send_stagiaire, id_stagiaire, id_formateur 
+                FROM messages 
+                WHERE (id_send_formateur IS NOT NULL OR id_send_stagiaire IS NOT NULL)
+                AND id_session=:id_session 
+                ORDER BY message_date;";
+        $req = $db->prepare($sql);
+        $req->bindValue(":id_session", filter_var($_POST["id_session"], FILTER_VALIDATE_INT));
+        $req->execute();
+        $messages = '';
+        $liste = $req->fetchAll(PDO::FETCH_ASSOC);
+        if (!empty($liste)) {
+            foreach ($liste as $message) {
+                $messages .= '<div>';
+                $messages .= '  <p class="msg ' . ($message['id_send_formateur'] == $_SESSION["utilisateur"]["formateur_id"] || $message['id_send_stagiaire'] == $_SESSION["utilisateur"]["stagiaire_id"] ? "msg-sender ms-auto" : "msg-receiver me-auto") . '">' . $message['message_content'] . '</p>';
+                $messages .= '</div>';
+            }
+        } else {
+            $messages = 'Aucun message pour le moment...';
+        }
+
+        die(json_encode(array(
+            "success" => true,
+            "session" => $session['session_nom'],
+            "messages" => $messages
+        )));
+    }
 }
 
-if (isset($_POST['send_message']) && isset($_POST['send_message']) && isset($_POST['id_user']) && !empty($_POST['id_user'])) {
-    $sql = "INSERT INTO messages(message_content, message_date, id_send_formateur, id_stagiaire) 
-            VALUES(:message_content, NOW(), :id_send_formateur, :id_stagiaire);";
+if (isset($_POST['send_message']) && isset($_POST['send_message'])) {
+    if (isset($_SESSION["utilisateur"]["formateur_id"]) && $_SESSION["utilisateur"]["formateur_id"] > 0) {
+        $sender = "id_send_formateur";
+    } elseif (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] > 0) {
+        $sender = "id_send_stagiaire";
+    }
+    if (isset($_POST['id_session']) && !empty($_POST['id_session'])) {
+        $receiver = "id_session";
+    } elseif (isset($_POST['id_user']) && !empty($_POST['id_user'])) {
+        $receiver = "id_stagiaire";
+    }
+
+    $sql = "INSERT INTO messages(message_content, message_date, " . $sender . ", " . $receiver . ") 
+            VALUES(:message_content, NOW(), :" . $sender . ", :" . $receiver . ");";
     $req = $db->prepare($sql);
     $req->bindValue(":message_content", filter_var($_POST["message_content"], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-    $req->bindValue(":id_send_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
-    $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+    if (isset($_SESSION["utilisateur"]["formateur_id"]) && $_SESSION["utilisateur"]["formateur_id"] > 0) {
+        $req->bindValue(":id_send_formateur", filter_var($_SESSION["utilisateur"]["formateur_id"], FILTER_VALIDATE_INT));
+    } elseif (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] > 0) {
+        $req->bindValue(":id_send_stagiaire", filter_var($_SESSION["utilisateur"]["stagiaire_id"], FILTER_VALIDATE_INT));
+    }
+    if (isset($_POST['id_session']) && !empty($_POST['id_session'])) {
+        $req->bindValue(":id_session", filter_var($_POST["id_session"], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_user']) && !empty($_POST['id_user'])) {
+        $req->bindValue(":id_stagiaire", filter_var($_POST["id_user"], FILTER_VALIDATE_INT));
+    }
     $req->execute();
     exit;
 }
 
 if (isset($_POST['maj_eval']) && !empty($_POST['maj_eval'])) {
-    $sql = "REPLACE INTO stagiaires_acquisitions 
+    $sql = "REPLACE INTO stagiaires_acquisitions(id_acquis, id_stagiaire, ids_formateurs, acquisition_niveau) 
             VALUES(:id_acquis, :id_stagiaire, :ids_formateurs, :niveau);";
     $req = $db->prepare($sql);
     $req->bindValue(":id_acquis", filter_var($_POST['id_acquis'], FILTER_VALIDATE_INT));
     $req->bindValue(":id_stagiaire", filter_var($_POST['id_stagiaire'], FILTER_VALIDATE_INT));
-    $req->bindValue(":ids_formateurs", 1);
-    $req->bindValue(":niveau", strtoupper(filter_var($_POST['niveau'], FILTER_VALIDATE_INT)));
-    // $req->execute();
+    $req->bindValue(":ids_formateurs", htmlspecialchars(strip_tags($_POST['formateurs'])));
+    $req->bindValue(":niveau", strtoupper(filter_var($_POST['niveau'], FILTER_SANITIZE_SPECIAL_CHARS)));
+    $req->execute();
 
-    var_dump($_POST);
     exit;
+}
+
+if (isset($_POST['search_trainers']) && !empty($_POST['search_trainers'])) {
+    $sql = "SELECT formateur_id AS id, CONCAT(formateur_nom, ' ', formateur_prenom) AS value
+            FROM formateurs 
+            ORDER BY formateur_nom, formateur_prenom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+
+    die(json_encode(array(
+        "success" => true,
+        "formateurs" => $req->fetchAll(PDO::FETCH_ASSOC)
+    )));
 }
 ?>

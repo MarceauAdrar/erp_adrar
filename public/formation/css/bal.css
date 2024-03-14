@@ -32,10 +32,10 @@
     background-color: #FFF;
     color: #000;
 }
-.user-visibility > input, .user-visibility > a {
+.user-visibility > input, .user-visibility > a, .session-visibility > input, .session-visibility > a {
     position: absolute;
     bottom: 7vh;
 }
-.user-visibility > a {
+.user-visibility > a, .session-visibility > a {
     right: 1.5vw;
 }

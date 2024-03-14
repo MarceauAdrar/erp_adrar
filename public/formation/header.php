@@ -24,7 +24,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
     <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
     <!-- Pour la HeatMap de Clarity by Microsoft -->
-    <script>
+    <!-- <script>
         (function(c, l, a, r, i, t, y) {
             c[a] = c[a] || function() {
                 (c[a].q = c[a].q || []).push(arguments)
@@ -35,7 +35,7 @@
             y = l.getElementsByTagName(r)[0];
             y.parentNode.insertBefore(t, y);
         })(window, document, "clarity", "script", "jzc1fz18xt");
-    </script>
+    </script> -->
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css">
     <?php if (isset($_SESSION["utilisateur"]["formateur_id"])) { ?>
@@ -93,7 +93,7 @@
                                     <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/admin.php">Administration</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/?page=boite-aux-lettres">BAL</a>
+                                    <a class="nav-link" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/boite-aux-lettres.php">BAL</a>
                                 </li>
                             <?php } elseif (false) { ?>
                             <?php } ?>

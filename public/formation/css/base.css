@@ -423,3 +423,7 @@ span.required {
     height: 100%;
     width: 100%;
 }
+
+.ui-autocomplete {
+    z-index: 9999 !important;
+}

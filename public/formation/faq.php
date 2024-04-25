@@ -60,7 +60,7 @@ include_once("./header.php"); ?>
                 }
                 $req->execute();
                 $faqs = $req->fetchAll(PDO::FETCH_ASSOC); ?>
-                <h2 id="<?= str_replace(" ", "-", $theme) ?>" class="text-primary"><?= ucfirst($theme) ?></h2>
+                <h2 id="<?= str_replace(" ", "-", "global") ?>" class="text-primary">Global</h2>
                 <?php if (!empty($faqs)) {
                     foreach ($faqs as $faq) { ?>
                         <div class="ms-5">
@@ -68,7 +68,11 @@ include_once("./header.php"); ?>
                             <p><?= html_entity_decode($faq['faq_content']) ?></p>
                         </div>
                 <?php }
-                } ?>
+                } else { ?>
+                    <div class="ms-5">
+                        <p>Aucune donnée n'est disponible.</p>
+                    </div>
+                <?php } ?>
                 <?php foreach ($themes as $theme) if ($theme !== "global") {
                     $sql = "SELECT faq_theme, faq_title, faq_content 
                             FROM faqs 

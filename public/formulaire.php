@@ -26,7 +26,7 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
             }
             $options_secteurs = "";
             foreach ($secteurs as $secteur) {
-                $options_secteurs .= '<option value="' . $secteur['secteur_id'] . '" ' . ($utilisateur['secteur_id'] == $secteur['secteur_id'] ? " selected" : "") . '>' . $secteur['secteur_nom'] . '</option>';
+                $options_secteurs .= '<option value="' . $secteur['secteur_id'] . '" ' . ($utilisateur['id_secteur'] == $secteur['secteur_id'] ? " selected" : "") . '>' . $secteur['secteur_nom'] . '</option>';
             }
     
             $title = "Mon compte";

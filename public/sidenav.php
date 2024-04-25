@@ -12,7 +12,7 @@
                 <li><a href="/erp/public/formation" id="nav-formation"><i class="fa-solid fa-book fa-sm">&nbsp;</i><span>Formation</span></a></li>
                 <li><a href="/erp/public?page=stage" id="nav-stages"><i class="fa-solid fa-industry fa-sm">&nbsp;</i><span>Stages</span></a></li>
                 <li><a href="/erp/public?page=titre" id="nav-titres"><i class="fa-solid fa-certificate fa-sm">&nbsp;</i><span>Titres</span></a></li>
-                <li><a href="/erp/public/formation/boite-aux-lettres.php" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Documents remis</span></a></li>
+                <li><a href="/erp/public/formation/boite-aux-lettres.php" id="nav-personal-folder"><i class="fa-solid fa-folder-open fa-sm">&nbsp;</i><span>Boîte aux lettres</span></a></li>
             </ul>
         </nav>
     </div>

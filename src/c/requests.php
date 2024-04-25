@@ -491,7 +491,7 @@ if (!empty($_POST["form_ressource_add"])) {
             $archive = uniqid("_") . "_ressource_cours_" . $id_cours . "." . $extension;
             $archive_lien = sha1($archive);
             if (!is_dir($lien)) {
-                mkdir($lien);
+                mkdir($lien, 0777, true);
             }
             move_uploaded_file($_FILES['form_ressource_file']['tmp_name'], $lien . "/" . $archive);
         }
@@ -549,10 +549,10 @@ if (!empty($_POST["load_new_notifications"])) {
         $req->execute();
         $result = $req->fetchAll(PDO::FETCH_ASSOC);
         if (!empty($result)) {
+            $notifications .= "<button onclick=\"deleteNotification();\"><i class=\"fa-solid fa-trash text-grey\"></i></button>";
             foreach ($result as $notification) {
                 $notifications .= "<a onclick=\"deleteNotification('" . $notification['notification_lien'] . "');\"" . (substr($notification['notification_lien'], 0, 5) == "https" ? 'target="_blank"' : '') . " href=\"" . $notification['notification_lien'] . "\"><span>" . $notification['notification_titre'] . "</span><em class=\"d-block\">Le " . date_format(new DateTimeImmutable($notification['notification_date']), "d/m/y à H:i:s") . "</em></a>";
             }
-            $notifications .= "<button onclick=\"deleteNotification();\"><i class=\"fa-solid fa-trash text-grey\"></i></button>";
         } else {
             $notifications = "Aucune notification pour le moment";
         }
@@ -585,15 +585,17 @@ if (isset($_POST['send_tp']) && isset($_FILES['fichier']) && !empty($_FILES['fic
     $tp_id = filter_var($_POST['tp_id'], FILTER_VALIDATE_INT);
     $lien_ressource_rendue = filter_var("ressource_" . $tp_id . "_" . $_FILES['fichier']['name'], FILTER_SANITIZE_SPECIAL_CHARS);
     if (!is_dir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/")) {
-        mkdir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/");
+        mkdir("../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/", 0777, true);
     }
-    move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/" . $lien_ressource_rendue);
-    $req = $db->prepare("REPLACE INTO stagiaires_ressources(id_stagiaire, id_ressource, stagiaire_ressource_rendue_lien) 
-                        VALUES(:id_stagiaire, :id_ressource, :lien_ressource_rendue);");
-    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
-    $req->bindValue(":id_ressource", $tp_id);
-    $req->bindValue(":lien_ressource_rendue", $lien_ressource_rendue);
-    die(json_encode($req->execute()));
+    if (move_uploaded_file($_FILES['fichier']['tmp_name'], "../../public/formation/stagiaires/" . $_SESSION['utilisateur']['stagiaire_pseudo'] . "/tps/" . $lien_ressource_rendue)) {
+        $req = $db->prepare("REPLACE INTO stagiaires_ressources(id_stagiaire, id_ressource, stagiaire_ressource_rendue_lien) 
+                            VALUES(:id_stagiaire, :id_ressource, :lien_ressource_rendue);");
+        $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
+        $req->bindValue(":id_ressource", $tp_id);
+        $req->bindValue(":lien_ressource_rendue", $lien_ressource_rendue);
+        die(json_encode($req->execute()));
+    }
+    die(json_encode(array("success" => false, "message" => "Une erreur s'est produite, veuillez réessayer...")));
 }
 
 if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
@@ -695,6 +697,209 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
     )));
 }
 
+if (isset($_POST['get_list_courses']) && !empty($_POST['get_list_courses'])) {
+    $tbody = "";
+    $sql = "SELECT * 
+            FROM cours 
+            INNER JOIN cours_modules ON (cours_module_id = id_module) 
+            INNER JOIN formateurs ON (formateur_id = id_formateur) 
+            ORDER BY cours_module_position, cours_position;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $cours = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($cours)) {
+        foreach ($cours as $unCours) {
+            $tbody .= '<tr>';
+            $tbody .= ' <th scope="row">' . $unCours['cours_module_libelle'] . '</th>';
+            $tbody .= ' <td>' . $unCours['cours_title'] . '</td>';
+            $tbody .= ' <td>' . $unCours['cours_synopsis'] . '</td>';
+            $tbody .= ' <td>' . $unCours['cours_keywords'] . '</td>';
+            $tbody .= ' <td>' . $unCours['cours_position'] . '</td>';
+            $tbody .= ' <td>' . $unCours['formateur_nom'] . "&nbsp;" . $unCours['formateur_prenom'] . '</td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="6">Aucun cours n\'a été trouvé !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
+if (isset($_POST['get_list_trainers']) && !empty($_POST['get_list_trainers'])) {
+    $tbody = "";
+    $sql = "SELECT * 
+            FROM formateurs  
+            INNER JOIN sites ON (site_id = id_site) 
+            INNER JOIN secteurs ON (secteur_id = id_secteur) 
+            ORDER BY formateur_nom, formateur_prenom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $formateurs = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($formateurs)) {
+        foreach ($formateurs as $unFormateur) {
+            $tbody .= '<tr>';
+            $tbody .= ' <th scope="row">' . $unFormateur['formateur_nom'] . '</th>';
+            $tbody .= ' <td>' . $unFormateur['formateur_prenom'] . '</td>';
+            $tbody .= ' <td>' . $unFormateur['formateur_mail'] . '</td>';
+            $tbody .= ' <td>' . $unFormateur['carte_formateur_role'] . '</td>';
+            $tbody .= ' <td>' . $unFormateur['carte_formateur_liens'] . '</td>';
+            $tbody .= ' <td>' . $unFormateur['carte_formateur_tel'] . '</td>';
+            $tbody .= ' <td>' . $unFormateur['site_libelle'] . '</td>';
+            $tbody .= ' <td>' . $unFormateur['secteur_nom'] . '</td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="8">Aucun formateur n\'a été trouvé !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
+if (isset($_POST['get_list_sessions']) && !empty($_POST['get_list_sessions'])) {
+    $tbody = "";
+    $sql = "SELECT * 
+            FROM sessions 
+            INNER JOIN formateurs ON (formateur_id = id_formateur)
+            ORDER BY session_date_debut DESC, session_nom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($sessions)) {
+        foreach ($sessions as $uneSession) {
+            $tbody .= '<tr>';
+            $tbody .= ' <th scope="row">' . $uneSession['session_nom'] . '</th>';
+            $tbody .= ' <td>' . $uneSession['session_sigle'] . '</td>';
+            $tbody .= ' <td>' . date('d/m/Y', strtotime($uneSession['session_date_debut'])) . '</td>';
+            $tbody .= ' <td>' . date('d/m/Y', strtotime($uneSession['session_date_fin'])) . '</td>';
+            $tbody .= ' <td class="text-center"><img style="height:15vh;width:auto;" src="./imgs/blasons/' . (!empty($uneSession['session_blason']) ? $uneSession['session_blason'] : "#") . '" alt="Blason de la session ' . $uneSession['session_nom'] . '"></td>';
+            $tbody .= ' <td>' . $uneSession['formateur_nom'] . "&nbsp;" . $uneSession['formateur_prenom'] . '</td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="6">Aucune session n\'a été trouvée !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
+if (isset($_POST['get_list_trainees']) && !empty($_POST['get_list_trainees'])) {
+    $tbody = "";
+    $sql = "SELECT * 
+            FROM stagiaires 
+            LEFT JOIN sessions ON (session_id = id_session) 
+            LEFT JOIN stages ON (stage_id = id_stage) 
+            WHERE stagiaire_actif = 1 
+            ORDER BY stagiaire_nom, stagiaire_prenom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $stagiaires = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($stagiaires)) {
+        foreach ($stagiaires as $unStagiaire) {
+            $tbody .= '<tr>';
+            $tbody .= ' <th scope="row">' . $unStagiaire['stagiaire_nom'] . '</th>';
+            $tbody .= ' <td>' . $unStagiaire['stagiaire_prenom'] . '</td>';
+            $tbody .= ' <td>' . $unStagiaire['stagiaire_mail'] . '</td>';
+            $tbody .= ' <td>' . $unStagiaire['stagiaire_pseudo'] . '</td>';
+            $tbody .= ' <td>' . $unStagiaire['stagiaire_tel'] . '</td>';
+            $tbody .= ' <td>' . date('d/m/Y', strtotime($unStagiaire['stagiaire_date_naissance'])) . '</td>';
+            $tbody .= ' <td><a href="#sessions">' . $unStagiaire['session_nom'] . '</a></td>';
+            $tbody .= ' <td><a href="#stages">' . $unStagiaire['stage_nom'] . '</a></td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="8">Aucun·e stagiaire n\'a été trouvé·e !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
+if (isset($_POST['get_list_internships']) && !empty($_POST['get_list_internships'])) {
+    $tbody = "";
+    $sql = "SELECT * 
+            FROM stages  
+            ORDER BY stage_nom;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $stages = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($stages)) {
+        foreach ($stages as $unStage) {
+            $tbody .= '<tr>';
+            $tbody .= ' <th scope="row">' . $unStage['stage_nom'] . '</th>';
+            $tbody .= ' <td>' . $unStage['stage_adresse_rue'] . "&nbsp;,&nbsp;" . $unStage['stage_adresse_cp'] . "&nbsp;-&nbsp;" . $unStage['stage_adresse_ville'] . "(" . $unStage['stage_adresse_pays'] . ")" . '</td>';
+            $tbody .= ' <td>' . $unStage['stage_nom_tuteur'] . "&nbsp;" . $unStage['stage_prenom_tuteur'] . "&nbsp;(<a href='mailto:" . $unStage['stage_mail_tuteur'] . "'>Contact</a>)" . '</td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="3">Aucun stage n\'a été trouvé !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
+if (isset($_POST['get_list_faqs']) && !empty($_POST['get_list_faqs'])) {
+    $tbody = "";
+    $sql = "SELECT * 
+            FROM faqs 
+            LEFT JOIN secteurs ON (secteur_id = id_secteur) 
+            ORDER BY faq_theme, faq_title;";
+    $req = $db->prepare($sql);
+    $req->execute();
+    $faqs = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($faqs)) {
+        foreach ($faqs as $uneFaq) {
+            $tbody .= '<tr>';
+            $tbody .= ' <th scope="row">' . $uneFaq['faq_theme'] . '</th>';
+            $tbody .= ' <td>' . $uneFaq['faq_title'] . '</td>';
+            $tbody .= ' <td>' . $uneFaq['faq_content'] . '</td>';
+            $tbody .= ' <td>' . $uneFaq['faq_visible'] . '</td>';
+            $tbody .= ' <td>' . $uneFaq['faq_priority'] . '</td>';
+            $tbody .= ' <td>' . $uneFaq['secteur_nom'] . '</td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="6">Aucune F.A.Q n\'a été trouvée !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
 if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $success = true;
 

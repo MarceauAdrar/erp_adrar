@@ -6,3 +6,8 @@
         <script src="<?= $_SERVER["REQUEST_SCHEME"] ?>://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/js/index.js?v=<?= uniqid() ?>"></script>
         <script src="<?= $_SERVER["REQUEST_SCHEME"] ?>://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/js/tooltips.js?v=<?= uniqid() ?>"></script>
         <script src="<?= $_SERVER["REQUEST_SCHEME"] ?>://<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/js/modals.js?v=<?= uniqid() ?>"></script>
+
+        <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+        <script src="https://cdn.datatables.net/2.0.5/js/dataTables.bootstrap5.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+        <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.bootstrap5.js"></script>

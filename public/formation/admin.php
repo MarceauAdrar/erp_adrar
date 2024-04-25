@@ -39,151 +39,505 @@ $arr = array(
 );
 
 include_once("./header.php"); ?>
-<div class="container-fluid">
-    <div class="row mt-2">
-        <div class="col-8 offset-2">
-            <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddCourse">Ajouter un cours</button>
-            <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManagecours" onclick="showModalManagecours();">Gérer les cours</button>
-            <!-- <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddQuiz">Ajouter un quiz</button>
-            <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManageQuiz" onclick="showModalManageQuiz();">Gérer les quiz</button> -->
+<div class="container-fluid mb-3">
+    <div>
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link text-dark active" data-bs-toggle="tab" href="#cours" onclick="getListCourses();">Cours</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#formateurs" onclick="getListTrainers();">Formateurs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#sessions" onclick="getListSessions();">Sessions</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#stagiaires" onclick="getListTrainees();">Stagiaires</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#stages" onclick="getListInterships();">Stages</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#faq" onclick="getListFaqs()">F.A.Q</a>
+            </li>
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane container-fluid active" id="cours">
+                <div class="mt-2 mb-2">
+                    <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddCourse">Ajouter un cours</button>
+                    <button role="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalManagecours" onclick="showModalManagecours();">Gérer les cours</button>
+                </div>
+                <div>
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-cours">
+                        <thead>
+                            <tr>
+                                <th scope="col">Module</th>
+                                <th scope="col">Titre</th>
+                                <th scope="col">Synopsis</th>
+                                <th scope="col">Mots-clés</th>
+                                <th scope="col">Position</th>
+                                <th scope="col">Auteur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="formateurs">
+                <div class="mt-2 mb-2">
+                    <button role="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalAddTrainer">Ajouter un·e formateur/trice</button>
+                </div>
+                <div>
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-formateurs">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Prénom</th>
+                                <th scope="col">Mail</th>
+                                <th scope="col">Rôle</th>
+                                <th scope="col">Liens</th>
+                                <th scope="col">Tél.</th>
+                                <th scope="col">Site</th>
+                                <th scope="col">Secteur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="sessions">
+                <div class="mt-2 mb-2">
+                    <button role="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalAddSession">Ajouter une session</button>
+                </div>
+                <div>
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-sessions">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Sigle</th>
+                                <th scope="col">Date début</th>
+                                <th scope="col">Date fin</th>
+                                <th scope="col">Blason</th>
+                                <th scope="col">Référent·e</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="stagiaires">
+                <div class="mt-2 mb-2">
+                    <button role="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalAddTrainee">Ajouter un·e stagiaire</button>
+                </div>
+                <div>
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-stagiaires">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom</th>
+                                <th scope="col">Prénom</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Pseudo</th>
+                                <th scope="col">Tél.</th>
+                                <th scope="col">Date de naissance</th>
+                                <th scope="col">Nom de la session</th>
+                                <th scope="col">Nom de l'entreprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="stages">
+                <div class="mt-2 mb-2">
+                    <button role="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalAddTutor">Ajouter un·e tuteur/trice</button>
+                </div>
+                <div>
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-stages">
+                        <thead>
+                            <tr>
+                                <th scope="col">Nom entreprise</th>
+                                <th scope="col">Adresse</th>
+                                <th scope="col">Tuteur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="faq">
+                <div class="mt-2 mb-2">
+                    <button role="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalAddQandA">Ajouter une FAQ</button>
+                </div>
+                <div>
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-faqs">
+                        <thead>
+                            <tr>
+                                <th scope="col">Thème</th>
+                                <th scope="col">Titre</th>
+                                <th scope="col">Contenu</th>
+                                <th scope="col">Visibilité</th>
+                                <th scope="col">Priorité</th>
+                                <th scope="col">Secteur</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-3 offset-2">
-            <form class="bg-light p-3 mt-3" action="//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php" method="post">
-                <div class="form-group">
-                    <label for="form_faq_theme">Thème de la FAQ (25 caractères max)</label>
-                    <input type="text" class="form-control" name="form_faq_theme" id="form_faq_theme" placeholder="Thème de la FAQ (laisser vide si `global`)">
-                </div>
-                <div class="form-group pt-2">
-                    <label for="form_faq_title">Titre de la FAQ</label>
-                    <input type="text" class="form-control" name="form_faq_title" id="form_faq_title" placeholder="Titre de la FAQ">
-                </div>
-                <div class="form-group pt-2 pb-2">
-                    <label for="form_faq_content">Contenu de la FAQ</label>
-                    <textarea class="form-control" name="form_faq_content" id="form_faq_content"></textarea>
-                </div>
-                <div class="form-group pb-2">
-                    <label for="form_faq_secteur">Secteur</label>
-                    <select class="form-select" name="form_faq_secteur" id="form_faq_secteur">
-                        <option value="-1">Tous les secteurs</option>
-                        <?php foreach ($secteurs as $secteur) { ?>
-                            <option value="<?= $secteur['secteur_id'] ?>"><?= $secteur['secteur_nom'] ?></option>
+        <div class="col-8 offset-2">
+
+            <!-- Ancien code par rapport aux évaluations de l'application -->
+            <!-- <div class="modules mt-3">
+            <details close>
+                <summary>
+                    <span class="admin-titles">Données du module HTML/CSS</span>
+                </summary>
+                <?php foreach ($tps as $value) if ($value['id_evaluation_dd'] == 1) { ?>
+                    <a class="btn btn-warning mb-2" href="./check.php?module=html-css&tp=<?= $value['evaluation_id'] ?>">Correction TP<?= $value ?></a>
+                <?php } ?>
+                <table class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr class="text-center">
+                            <th>TP n°</th>
+                            <th>(#ID) Prénom NOM</th>
+                            <th>Voir</th>
+                            <th>TP terminé</th>
+                            <th>TP corrigé</th>
+                            <th>Score obtenu/Score max</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($stagiaires)) {
+                            foreach ($stagiaires as $stagiaire) if ($stagiaire['evaluation_dd_link'] == "html-css") {
+                                $arr[0]["html-css"] += 1;
+                        ?>
+                                <tr>
+                                    <td class="text-center"><?= $stagiaire["evaluation_id"] ?></td>
+                                    <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["stagiaire_nom"] ?> <?= $stagiaire["stagiaire_prenom"] ?></td>
+                                    <td><a href="./achieved.php?module=html-css&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["stagiaire_pseudo"] ?>&stagiaire_id=<?= $stagiaire["stagiaire_id"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
+                                    <td><?= (!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>') ?></td>
+                                    <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" style="cursor: pointer;" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
+                                    <td class="text-center">
+                                        <?php if (!empty($stagiaire["evaluation_errors_max"])) { ?>
+                                            <?= (!empty($stagiaire["stagiaire_evaluation_errors_found"]) ? '<i class="fa-solid fa-circle-minus" style="cursor: pointer; float: left; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'minus\');"></i>' : '') ?>
+                                            <span id="errors_found_plus_one_<?= $stagiaire["evaluation_id"] ?>_<?= $stagiaire["stagiaire_id"] ?>" value="<?= intval($stagiaire["stagiaire_evaluation_errors_found"]) ?>"><?= $stagiaire["stagiaire_evaluation_errors_found"] ?></span>
+                                            /
+                                            <?= $stagiaire["evaluation_errors_max"] ?><?= ($stagiaire["stagiaire_evaluation_errors_found"] < $stagiaire["evaluation_errors_max"] ? '<i class="fa-solid fa-plus-circle" style="cursor: pointer; float: right; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');"></i>' : '') ?>
+                                        <?php } ?>
+                                    </td>
+                                    <td class="text-center"><?= (!empty($stagiaire["evaluation_errors_max"]) ? number_format(floatval($stagiaire["stagiaire_evaluation_errors_found"] / $stagiaire["evaluation_errors_max"]) * 100, 0) : "") ?></td>
+                                </tr>
+                            <?php }
+                        }
+                        if (empty($arr[0]["html-css"]) || empty($stagiaires)) { ?>
+                            <tr>
+                                <td class="text-center" colspan="7">Aucune donnée à afficher</td>
+                            </tr>
                         <?php } ?>
-                    </select>
-                </div>
-                <div class="text-end">
-                    <button role="button" type="submit" class="btn btn-primary">Envoyer</button>
-                </div>
-            </form>
+                    </tbody>
+                </table>
+            </details>
         </div>
-    </div>
-    <div class="row">
-        <div class="col-8 offset-2">
 
-            <div class="modules mt-3">
-                <details close>
-                    <summary>
-                        <span class="admin-titles">Données du module HTML/CSS</span>
-                    </summary>
-                    <?php foreach ($tps as $value) if ($value['id_evaluation_dd'] == 1) { ?>
-                        <a class="btn btn-warning mb-2" href="./check.php?module=html-css&tp=<?= $value['evaluation_id'] ?>">Correction TP<?= $value ?></a>
-                    <?php } ?>
-                    <table class="table table-bordered table-striped table-responsive">
-                        <thead>
-                            <tr class="text-center">
-                                <th>TP n°</th>
-                                <th>(#ID) Prénom NOM</th>
-                                <th>Voir</th>
-                                <th>TP terminé</th>
-                                <th>TP corrigé</th>
-                                <th>Score obtenu/Score max</th>
-                                <th>Note</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($stagiaires)) {
-                                foreach ($stagiaires as $stagiaire) if ($stagiaire['evaluation_dd_link'] == "html-css") {
-                                    $arr[0]["html-css"] += 1;
-                            ?>
-                                    <tr>
-                                        <td class="text-center"><?= $stagiaire["evaluation_id"] ?></td>
-                                        <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["stagiaire_nom"] ?> <?= $stagiaire["stagiaire_prenom"] ?></td>
-                                        <td><a href="./achieved.php?module=html-css&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["stagiaire_pseudo"] ?>&stagiaire_id=<?= $stagiaire["stagiaire_id"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
-                                        <td><?= (!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>') ?></td>
-                                        <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" style="cursor: pointer;" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
-                                        <td class="text-center">
-                                            <?php if (!empty($stagiaire["evaluation_errors_max"])) { ?>
-                                                <?= (!empty($stagiaire["stagiaire_evaluation_errors_found"]) ? '<i class="fa-solid fa-circle-minus" style="cursor: pointer; float: left; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'minus\');"></i>' : '') ?>
-                                                <span id="errors_found_plus_one_<?= $stagiaire["evaluation_id"] ?>_<?= $stagiaire["stagiaire_id"] ?>" value="<?= intval($stagiaire["stagiaire_evaluation_errors_found"]) ?>"><?= $stagiaire["stagiaire_evaluation_errors_found"] ?></span>
-                                                /
-                                                <?= $stagiaire["evaluation_errors_max"] ?><?= ($stagiaire["stagiaire_evaluation_errors_found"] < $stagiaire["evaluation_errors_max"] ? '<i class="fa-solid fa-plus-circle" style="cursor: pointer; float: right; padding-top: 2%; color: var(--col_base);" onclick="validInternCorrection(' . $stagiaire["stagiaire_id"] . ', ' . $stagiaire["evaluation_id"] . ', \'plus\');"></i>' : '') ?>
-                                            <?php } ?>
-                                        </td>
-                                        <td class="text-center"><?= (!empty($stagiaire["evaluation_errors_max"]) ? number_format(floatval($stagiaire["stagiaire_evaluation_errors_found"] / $stagiaire["evaluation_errors_max"]) * 100, 0) : "") ?></td>
-                                    </tr>
-                                <?php }
-                            }
-                            if (empty($arr[0]["html-css"]) || empty($stagiaires)) { ?>
+        <div class="modules mt-3">
+            <details open>
+                <summary>
+                    <span class="admin-titles">Données du module Bootstrap</span>
+                </summary>
+                <?php foreach ($tps as $value) if ($value['id_evaluation_dd'] == 3) { ?>
+                    <a class="btn btn-warning mb-2" href="./check.php?module=bootstrap&tp=<?= $value['evaluation_id'] ?>">Correction TP<?= $value ?></a>
+                <?php } ?>
+                <table class="table table-bordered table-striped table-responsive">
+                    <thead>
+                        <tr class="text-center">
+                            <th>TP n°</th>
+                            <th>(#ID) Prénom NOM</th>
+                            <th>Voir</th>
+                            <th>TP terminé</th>
+                            <th>TP corrigé</th>
+                            <th>Score obtenu/Score max</th>
+                            <th>Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($stagiaires)) {
+                            foreach ($stagiaires as $stagiaire) if ($stagiaire['evaluation_dd_link'] == "bootstrap") {
+                                $arr[0]["bootstrap"] += 1;
+                        ?>
                                 <tr>
-                                    <td class="text-center" colspan="7">Aucune donnée à afficher</td>
+                                    <td class="text-center"><?= $stagiaire["evaluation_id"] ?></td>
+                                    <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["stagiaire_nom"] ?> <?= $stagiaire["stagiaire_prenom"] ?></td>
+                                    <td><a href="achieved.php?module=bootstrap&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["stagiaire_username"] ?>&stagiaire_id=<?= $stagiaire["stagiaire_id"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
+                                    <td><?= (!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>') ?></td>
+                                    <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
+                                    <td class="text-center"><?= $stagiaire["stagiaire_evaluation_errors_found"] ?>/<?= $stagiaire["evaluation_errors_max"] ?></td>
+                                    <td class="text-center"><?= number_format(floatval($stagiaire["stagiaire_evaluation_errors_found"] / $stagiaire["evaluation_errors_max"]) * 100, 0) ?></td>
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </details>
-            </div>
-
-            <div class="modules mt-3">
-                <details open>
-                    <summary>
-                        <span class="admin-titles">Données du module Bootstrap</span>
-                    </summary>
-                    <?php foreach ($tps as $value) if ($value['id_evaluation_dd'] == 3) { ?>
-                        <a class="btn btn-warning mb-2" href="./check.php?module=bootstrap&tp=<?= $value['evaluation_id'] ?>">Correction TP<?= $value ?></a>
-                    <?php } ?>
-                    <table class="table table-bordered table-striped table-responsive">
-                        <thead>
-                            <tr class="text-center">
-                                <th>TP n°</th>
-                                <th>(#ID) Prénom NOM</th>
-                                <th>Voir</th>
-                                <th>TP terminé</th>
-                                <th>TP corrigé</th>
-                                <th>Score obtenu/Score max</th>
-                                <th>Note</th>
+                            <?php }
+                        }
+                        if (empty($arr[0]["bootstrap"]) || empty($stagiaires)) { ?>
+                            <tr>
+                                <td class="text-center" colspan="7">Aucune donnée à afficher</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (!empty($stagiaires)) {
-                                foreach ($stagiaires as $stagiaire) if ($stagiaire['evaluation_dd_link'] == "bootstrap") {
-                                    $arr[0]["bootstrap"] += 1;
-                            ?>
-                                    <tr>
-                                        <td class="text-center"><?= $stagiaire["evaluation_id"] ?></td>
-                                        <td>(<?= $stagiaire["stagiaire_id"] ?>)&nbsp;<?= $stagiaire["stagiaire_nom"] ?> <?= $stagiaire["stagiaire_prenom"] ?></td>
-                                        <td><a href="achieved.php?module=bootstrap&tp=<?= $stagiaire["evaluation_id"] ?>&stagiaire_username=<?= $stagiaire["stagiaire_username"] ?>&stagiaire_id=<?= $stagiaire["stagiaire_id"] ?>&correction=1" class="btn btn-info btn-sm">Voir</a></td>
-                                        <td><?= (!empty($stagiaire["stagiaire_evaluation_completed"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation terminée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation en cours !"></span>') ?></td>
-                                        <td><?= (!empty($stagiaire["stagiaire_evaluation_correction"]) ? '<span class="circle completed" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation corrigée !"></span>' : '<span class="circle awaiting" data-bs-toggle="tooltip" data-bs-placement="right" title="Évaluation non corrigée !"></span>') ?></td>
-                                        <td class="text-center"><?= $stagiaire["stagiaire_evaluation_errors_found"] ?>/<?= $stagiaire["evaluation_errors_max"] ?></td>
-                                        <td class="text-center"><?= number_format(floatval($stagiaire["stagiaire_evaluation_errors_found"] / $stagiaire["evaluation_errors_max"]) * 100, 0) ?></td>
-                                    </tr>
-                                <?php }
-                            }
-                            if (empty($arr[0]["bootstrap"]) || empty($stagiaires)) { ?>
-                                <tr>
-                                    <td class="text-center" colspan="7">Aucune donnée à afficher</td>
-                                </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
-                </details>
-            </div>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </details>
+        </div> -->
 
         </div>
     </div>
 </div>
 
+
+<div class="modal modal-xl fade" id="modalAddTrainer" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddTrainerTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddTrainerTitle">Ajouter un·e formateur/trice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="post" id="form_add_trainer">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_nom" class="form-label">NOM:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="NOM" name="form_formateurs_ajout_nom" id="form_formateurs_ajout_nom" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_prenom" class="form-label">Prénom:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Prénom" name="form_formateurs_ajout_prenom" id="form_formateurs_ajout_prenom" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="form_formateurs_ajout_mail" class="form-label">Mail:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Mail" name="form_formateurs_ajout_mail" id="form_formateurs_ajout_mail" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_role" class="form-label">Rôle:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Rôle" name="form_formateurs_ajout_role" id="form_formateurs_ajout_role" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_liens" class="form-label">Liens:</label>
+                            <input type="text" class="form-control" placeholder="Liens (à séparer par avec ;)" name="form_formateurs_ajout_liens" id="form_formateurs_ajout_liens">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_telephone" class="form-label">Téléphone:</label>
+                            <input type="text" class="form-control" placeholder="Téléphone" name="form_formateurs_ajout_telephone" id="form_formateurs_ajout_telephone">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_portable" class="form-label">Portable:</label>
+                            <input type="text" class="form-control" placeholder="Portable" name="form_formateurs_ajout_portable" id="form_formateurs_ajout_portable">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_secteur" class="form-label">Secteur:<span class="required">*</span></label>
+                            <select class="form-control" name="form_formateurs_ajout_secteur" id="form_formateurs_ajout_secteur" required>
+                                <option value="0" selected disabled>Choisir un secteur</option>
+                                <?php foreach (recupererSecteurs() as $secteur) { ?>
+                                    <option value="<?= $secteur['secteur_id'] ?>"><?= $secteur['secteur_nom'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_formateurs_ajout_site" class="form-label">Site:<span class="required">*</span></label>
+                            <select class="form-control" name="form_formateurs_ajout_site" id="form_formateurs_ajout_site" required>
+                                <option value="0" selected disabled>Choisir un site</option>
+                                <?php foreach (recupererSites() as $site) { ?>
+                                    <option value="<?= $site['site_id'] ?>"><?= $site['site_libelle'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-success" onclick="addTrainer();">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-xl fade" id="modalAddTrainee" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddTraineeTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddTraineeTitle">Ajouter un·e stagiaire</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="post" id="form_add_trainee">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_stagiaires_ajout_nom" class="form-label">NOM:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="NOM" name="form_stagiaires_ajout_nom" id="form_stagiaires_ajout_nom" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_stagiaires_ajout_prenom" class="form-label">Prénom:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Prénom" name="form_stagiaires_ajout_prenom" id="form_stagiaires_ajout_prenom" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="form_stagiaires_ajout_email" class="form-label">Email:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Email" name="form_stagiaires_ajout_email" id="form_stagiaires_ajout_email" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_stagiaires_ajout_dob" class="form-label">Date d'anniversaire:</label>
+                            <input type="date" class="form-control" placeholder="Date d'anniversaire" name="form_stagiaires_ajout_dob" id="form_stagiaires_ajout_dob">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_stagiaires_ajout_session" class="form-label">Session:<span class="required">*</span></label>
+                            <select class="form-control" name="form_stagiaires_ajout_session" id="form_stagiaires_ajout_session" required>
+                                <option value="0" selected disabled>Choisir une session</option>
+                                <?php foreach (recupererSessions() as $session) { ?>
+                                    <option value="<?= $session['session_id'] ?>"><?= $session['session_nom'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-success" onclick="addTrainee();">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-xl fade" id="modalAddSession" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddSessionTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddSessionTitle">Ajouter une session</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="post" id="form_add_session">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_session_ajout_nom" class="form-label">Nom:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Nom" name="form_session_ajout_nom" id="form_session_ajout_nom" required>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <label for="preview-blason"><i>Preview</i> blason</label>
+                            <div><img src="#" alt="Preview du blason de la session" id="preview-blason" style="max-height:20vh;width:auto;"></div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_session_ajout_sigle" class="form-label">Sigle:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Sigle" name="form_session_ajout_sigle" id="form_session_ajout_sigle" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_session_ajout_blason" class="form-label">Blason:</label>
+                            <input type="file" class="form-control" placeholder="Blason" name="form_session_ajout_blason" id="form_session_ajout_blason">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="form_session_ajout_date_debut" class="form-label">Date de début:<span class="required">*</span></label>
+                            <input type="date" class="form-control" placeholder="Date de début" name="form_session_ajout_date_debut" id="form_session_ajout_date_debut" required>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="form_session_ajout_date_fin" class="form-label">Date de fin:<span class="required">*</span></label>
+                            <input type="date" class="form-control" placeholder="Date de fin" name="form_session_ajout_date_fin" id="form_session_ajout_date_fin" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_session_ajout_referent" class="form-label">Formateur référent:<span class="required">*</span></label>
+                            <select class="form-control" name="form_session_ajout_referent" id="form_session_ajout_referent" required>
+                                <option value="0" selected disabled>Choisir un·e référent·e</option>
+                                <?php foreach (recupererFormateurs() as $formateur) { ?>
+                                    <option value="<?= $formateur['formateur_id'] ?>"><?= $formateur['formateur_prenom'] . "&nbsp;" . $formateur['formateur_nom'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-success" onclick="addSession();">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-xl fade" id="modalAddTutor" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddTutorTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalAddTutorTitle">Ajouter un·e tuteur/trice</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="#" method="post" id="form_add_tutor">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="form_tuteur_ajout_nom" class="form-label">NOM:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="NOM" name="form_tuteur_ajout_nom" id="form_tuteur_ajout_nom" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="form_tuteur_ajout_prenom" class="form-label">Prénom:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Prénom" name="form_tuteur_ajout_prenom" id="form_tuteur_ajout_prenom" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-12">
+                            <label for="form_tuteur_ajout_email" class="form-label">Email:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Email" name="form_tuteur_ajout_email" id="form_tuteur_ajout_email" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3">
+                            <label for="form_tuteur_ajout_adresse_rue" class="form-label">Rue:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Rue" name="form_tuteur_ajout_adresse_rue" id="form_tuteur_ajout_adresse_rue">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="form_tuteur_ajout_adresse_cp" class="form-label">Code postal:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Code postal" name="form_tuteur_ajout_adresse_cp" id="form_tuteur_ajout_adresse_cp">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="form_tuteur_ajout_adresse_ville" class="form-label">Ville:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Ville" name="form_tuteur_ajout_adresse_ville" id="form_tuteur_ajout_adresse_ville">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="form_tuteur_ajout_adresse_pays" class="form-label">Pays:<span class="required">*</span></label>
+                            <input type="text" class="form-control" placeholder="Pays" name="form_tuteur_ajout_adresse_pays" id="form_tuteur_ajout_adresse_pays">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fermer</button>
+                <button type="submit" class="btn btn-success" onclick="addTutor();">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal modal-xl fade" id="modalAddCourse" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddCourseTitle" aria-hidden="true">
     <div class="modal-dialog">
@@ -193,7 +547,7 @@ include_once("./header.php"); ?>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="../src/requests.php" method="post">
+                <form action="#" method="post">
                     <div class="mb-3">
                         <label for="form_cours_module" class="form-label">Nom du module:</label>
                         <input type="text" class="form-control" name="form_cours_module" id="form_cours_module" placeholder="html">
@@ -233,7 +587,6 @@ include_once("./header.php"); ?>
         </div>
     </div>
 </div>
-
 
 <div class="modal modal-xl fade" id="modalManagecours" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalManagecoursTitle" aria-hidden="true">
     <div class="modal-dialog">
@@ -284,6 +637,55 @@ include_once("./header.php"); ?>
                     <button type="button" class="btn btn-light">Suivant</button>
                 </div>
             </div> -->
+        </div>
+    </div>
+</div>
+
+<div class="modal modal-xl fade" id="modalAddQandA" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddQandATitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="container">
+                    <div class="row">
+                        <h5 class="modal-title w-auto" id="modalQandATitle">Ajouter une FAQ</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form class="" action="//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php" method="post" id="formAddFaq">
+                        <div class="form-group">
+                            <label for="form_faq_theme">Thème de la FAQ (25 caractères max)</label>
+                            <input type="text" class="form-control" name="form_faq_theme" id="form_faq_theme" placeholder="Thème de la FAQ (laisser vide si `global`)">
+                        </div>
+                        <div class="form-group pt-2">
+                            <label for="form_faq_title">Titre de la FAQ</label>
+                            <input type="text" class="form-control" name="form_faq_title" id="form_faq_title" placeholder="Titre de la FAQ">
+                        </div>
+                        <div class="form-group pt-2 pb-2">
+                            <label for="form_faq_content">Contenu de la FAQ</label>
+                            <textarea class="form-control" name="form_faq_content" id="form_faq_content"></textarea>
+                        </div>
+                        <div class="form-group pb-2">
+                            <label for="form_faq_secteur">Secteur</label>
+                            <select class="form-select" name="form_faq_secteur" id="form_faq_secteur">
+                                <option value="-1">Tous les secteurs</option>
+                                <?php foreach ($secteurs as $secteur) { ?>
+                                    <option value="<?= $secteur['secteur_id'] ?>"><?= $secteur['secteur_nom'] ?></option>
+                                <?php } ?>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex">
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fermer</button>&nbsp;
+                    <button role="button" type="submit" class="btn btn-primary" form="formAddFaq">Envoyer</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -398,6 +800,170 @@ include_once("./js.php"); ?>
 <script>
     sessionStorage.setItem("previous_uri", "<?= $_SERVER["REQUEST_URI"] ?>");
 
+    getListCourses();
+
+    function getListCourses() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_courses: 1,
+                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            success: function(r) {
+                $("#table-cours tbody").html(r);
+
+                new DataTable('#table-cours', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
+    function getListTrainers() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_trainers: 1,
+                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            success: function(r) {
+                $("#table-formateurs tbody").html(r);
+
+                new DataTable('#table-formateurs', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
+    function getListSessions() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_sessions: 1,
+                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            success: function(r) {
+                $("#table-sessions tbody").html(r);
+
+                new DataTable('#table-sessions', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
+    function getListTrainees() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_trainees: 1,
+                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            success: function(r) {
+                $("#table-stagiaires tbody").html(r);
+
+                new DataTable('#table-stagiaires', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
+    function getListInterships() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_internships: 1,
+                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            success: function(r) {
+                $("#table-stages tbody").html(r);
+
+                new DataTable('#table-stages', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
+    function getListFaqs() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_faqs: 1,
+                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            success: function(r) {
+                $("#table-faqs tbody").html(r);
+
+                new DataTable('#table-faqs', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
     function validInternCorrection(id_stagiaire, tp, operation) {
         var errors_found = $("#errors_found_plus_one_" + tp + "_" + id_stagiaire).attr("value");
         if (operation === 'minus') errors_found--;
@@ -420,6 +986,7 @@ include_once("./js.php"); ?>
     }
 
     function showModalManagecours() {
+        // if(document.querySelector('input[name="form_search_cours"]').value !== "") {
         $.ajax({
             url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
@@ -433,6 +1000,9 @@ include_once("./js.php"); ?>
                 $("#modalManagecours .modal-content .modal-body").html(r);
             }
         });
+        // } else {
+        //     $("#modalManagecours .modal-content .modal-body").html("<p>Effectuez une recherche (mot-clé ou titre)...</p>");
+        // }
     }
 
     function showModalManageQuiz() {
@@ -489,6 +1059,101 @@ include_once("./js.php"); ?>
         });
     }
 
+    let uploadBlason = document.getElementById('form_session_ajout_blason');
+    let previewBlason = document.getElementById('preview-blason');
+    uploadBlason.onchange = evt => {
+        const [file] = uploadBlason.files
+        if (file) {
+            previewBlason.src = URL.createObjectURL(file)
+        }
+    };
+
+    function addSession() {
+        let donnees = new FormData();
+        donnees.append("form_session_ajout", 1);
+        donnees.append("form_session_ajout_nom", $("#form_session_ajout_nom").val());
+        donnees.append("form_session_ajout_sigle", $("#form_session_ajout_sigle").val());
+        donnees.append("form_session_ajout_date_debut", $("#form_session_ajout_date_debut").val());
+        donnees.append("form_session_ajout_date_fin", $("#form_session_ajout_date_fin").val());
+        donnees.append("form_session_ajout_blason", document.getElementById('form_session_ajout_blason').files[0]);
+        donnees.append("id_formateur", $("#form_session_ajout_referent").val());
+
+        $.ajax({
+            url: "//" + SERVER_NAME + "/erp/src/c/c_requetes.php",
+            method: "post",
+            contentType: false,
+            processData: false,
+            data: donnees,
+            success: function(r) {
+                document.getElementById("form_add_session").reset();
+                $("#modalAddSession").modal("hide");
+            }
+        });
+    }
+
+    function addTutor() {
+        $.ajax({
+            url: "//" + SERVER_NAME + "/erp/src/c/c_requetes.php",
+            method: "post",
+            data: {
+                form_tuteur_ajout: 1,
+                form_tuteur_ajout_nom: $("#form_tuteur_ajout_nom").val(),
+                form_tuteur_ajout_prenom: $("#form_tuteur_ajout_prenom").val(),
+                form_tuteur_ajout_email: $("#form_tuteur_ajout_email").val(),
+                form_tuteur_ajout_adresse_rue: $("#form_tuteur_ajout_adresse_rue").val(),
+                form_tuteur_ajout_adresse_cp: $("#form_tuteur_ajout_adresse_cp").val(),
+                form_tuteur_ajout_adresse_ville: $("#form_tuteur_ajout_adresse_ville").val(),
+                form_tuteur_ajout_adresse_pays: $("#form_tuteur_ajout_adresse_pays").val()
+            },
+            success: function(r) {
+                $("#modalAddTutor #form_add_tutor").reset();
+                $("#modalAddTutor").modal("hide");
+            }
+        });
+    }
+
+    function addTrainer() {
+        $.ajax({
+            url: "//" + SERVER_NAME + "/erp/src/c/c_requetes.php",
+            method: "post",
+            data: {
+                form_formateurs_ajout: 1,
+                form_formateurs_ajout_nom: $("#form_formateurs_ajout_nom").val(),
+                form_formateurs_ajout_prenom: $("#form_formateurs_ajout_prenom").val(),
+                form_formateurs_ajout_mail: $("#form_formateurs_ajout_mail").val(),
+                form_formateurs_ajout_role: $("#form_formateurs_ajout_role").val(),
+                form_formateurs_ajout_liens: $("#form_formateurs_ajout_liens").val(),
+                form_formateurs_ajout_telephone: $("#form_formateurs_ajout_telephone").val(),
+                form_formateurs_ajout_portable: $("#form_formateurs_ajout_portable").val(),
+                id_secteur: $("#form_formateurs_ajout_secteur").val(),
+                id_site: $("#form_formateurs_ajout_site").val(),
+            },
+            success: function(r) {
+                $("#modalAddTrainer #form_add_trainer").reset();
+                $("#modalAddTrainer").modal("hide");
+            }
+        });
+    }
+
+    function addTrainee() {
+        $.ajax({
+            url: "//" + SERVER_NAME + "/erp/src/c/c_requetes.php",
+            method: "post",
+            data: {
+                form_stagiaires_ajout: 1,
+                form_stagiaires_ajout_nom: $("#form_stagiaires_ajout_nom").val(),
+                form_stagiaires_ajout_prenom: $("#form_stagiaires_ajout_prenom").val(),
+                form_stagiaires_ajout_email: $("#form_stagiaires_ajout_email").val(),
+                form_stagiaires_ajout_dob: $("#form_stagiaires_ajout_dob").val(),
+                id_session: $("#form_stagiaires_ajout_session").val(),
+            },
+            success: function(r) {
+                $("#modalAddTrainee #form_add_trainee").reset();
+                $("#modalAddTrainee").modal("hide");
+            }
+        });
+    }
+
     function addCourse() {
         $.ajax({
             url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
@@ -511,4 +1176,4 @@ include_once("./js.php"); ?>
     }
 </script>
 <?php
-include_once("./footer.php");
+include_once("./footer.php"); ?>

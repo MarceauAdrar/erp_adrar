@@ -277,8 +277,14 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         array_push($documents_libelles, 'Évaluation de stage : Afin de pouvoir avoir un retour sur la prestation du stagiaire, il est important que ce document nous soit retourné.');
     }
     die(json_encode(envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $documents_libelles, $_POST['relance'])));
+} elseif (isset($_POST['form_session_ajout']) && !empty($_POST['form_session_ajout'])) {
+    die(inscriptionSession($_POST['form_session_ajout_nom'], $_POST['form_session_ajout_sigle'], $_POST['form_session_ajout_date_debut'], $_POST['form_session_ajout_date_fin'], $_FILES['form_session_ajout_blason'], $_POST['id_formateur']));
+} elseif (isset($_POST['form_tuteur_ajout']) && !empty($_POST['form_tuteur_ajout'])) {
+    die(inscriptionStage($mailer, $_POST['form_tuteur_ajout_nom'], $_POST['form_tuteur_ajout_prenom'], $_POST['form_tuteur_ajout_email'], $_POST['form_tuteur_ajout_adresse_rue'], $_POST['form_tuteur_ajout_adresse_cp'], $_POST['form_tuteur_ajout_adresse_ville'], $_POST['form_tuteur_ajout_adresse_pays']));
 } elseif (isset($_POST['form_formateurs_ajout']) && !empty($_POST['form_formateurs_ajout'])) {
     die(inscriptionFormateur($mailer, $_POST['form_formateurs_ajout_nom'], $_POST['form_formateurs_ajout_prenom'], $_POST['form_formateurs_ajout_mail'], $_POST['form_formateurs_ajout_role'], $_POST['form_formateurs_ajout_telephone'], $_POST['id_site'], $_POST['id_secteur']));
+} elseif (isset($_POST['form_stagiaires_ajout']) && !empty($_POST['form_stagiaires_ajout'])) {
+    die(inscriptionStagiaire($mailer, $_POST['form_stagiaires_ajout_nom'], $_POST['form_stagiaires_ajout_prenom'], $_POST['form_stagiaires_ajout_email'], null, null, $_POST['form_stagiaires_ajout_dob'], $_POST['id_session'], null));
 } elseif (isset($_POST['form_formateur_editer']) && !empty($_POST['form_formateur_editer'])) {
     if (!empty($_POST['signature'])) {
         $uniqid = uniqid();
@@ -376,7 +382,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Jeton incorrect");
     }
     if (isset($_POST['form_login_url']) && !empty($_POST['form_login_url'])) {
-        // $redirect = $_POST['form_login_url'];
+        $redirect = $_POST['form_login_url'];
     }
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_signup_csrf']) && !empty($_POST['form_signup_csrf'])) {
@@ -541,7 +547,7 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
 } elseif (isset($_POST['get_ratio_convention']) && !empty($_POST['get_ratio_convention'])) {
     $sql = "SELECT stagiaire_convention_recue 
             FROM stagiaires sta 
-            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
+            JOIN sessions s ON(s.session_id = sta.id_session) ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " 
             JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
@@ -550,8 +556,10 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
               AND sta.id_stage IS NOT NULL ";
     if (isset($_POST['filtre_session']) && $_POST['filtre_session'] == -1) {
         $sql .= " AND f.id_secteur=:id_secteur ";
+        $sql .= " AND s.session_stage_date_debut <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] == 0) {
         $sql .= " AND s.id_formateur=:id_formateur ";
+        $sql .= " AND s.session_stage_date_debut <= NOW() ";
     } elseif (isset($_POST['filtre_session']) && $_POST['filtre_session'] > 0) {
         $sql .= " AND sta.id_session=:id_session ";
     }

@@ -76,6 +76,37 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
         </div>
     ';
 } elseif (isset($_SESSION['utilisateur']['stagiaire_id']) && $_SESSION['utilisateur']['stagiaire_id'] > 0) {
+    $informations_session = "";
+    $sql = "SELECT * 
+            FROM sessions 
+            WHERE session_id=:id_session;";
+    $req = $db->prepare($sql);
+    $req->bindValue(':id_session', $_SESSION['utilisateur']['id_session'], PDO::PARAM_INT);
+    $req->execute();
+    $session = $req->fetch(PDO::FETCH_ASSOC);
+    $informations_session = '<div class="row">
+                                <div class="col-12">
+                                    <h2>Informations de votre session</h2>
+                                </div>
+                                <div class="col-6">
+                                    <p><b>Nom de la session:</b>&nbsp;' . $session['session_nom'] . '</p>
+                                    <p><b>Sigle de la session:</b>&nbsp;' . $session['session_sigle'] . '</p>
+                                    <p><b>Vos dates clés:</b>
+                                        <ul>
+                                            <li>Formation commencée le ' . date('d/m/Y', strtotime($session['session_date_debut'])) . '</li>
+                                            <li>Formation se terminant le ' . date('d/m/Y', strtotime($session['session_date_fin'])) . '</li>
+                                            <li>Date du stage: ' . date('d/m/Y', strtotime($session['session_stage_date_debut'])) . '</li>
+                                            <li>Fin du stage: ' . date('d/m/Y', strtotime($session['session_stage_date_fin'])) . '</li>
+                                        </ul>
+                                    </p>
+                                </div>
+                                <div class="col-6 text-center">
+                                    <img src="./imgs/blasons/' . $session['session_blason'] . '" alt="Blason de la session" style="max-height:50vh;width:auto;"/>
+                                    <p><b>Blason</b></p>
+                                </div>
+                            </div>';
+
+
     $sql = "SELECT sq.*, q.questionnaire_question_resume
             FROM stagiaires_questionnaires sq 
             INNER JOIN questionnaires q ON (q.questionnaire_id = sq.id_questionnaire)  
@@ -186,6 +217,7 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                     </div>
                 </form>
             </div>
+            ' . $informations_session . '
             ' . $questionnaire_stagiaire_remplis . '
         </div>
     ';

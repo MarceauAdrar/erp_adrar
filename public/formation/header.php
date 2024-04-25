@@ -38,6 +38,8 @@
     </script> -->
     <!-- CSS only -->
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.bootstrap5.css">
     <?php if (isset($_SESSION["utilisateur"]["formateur_id"])) { ?>
         <link href="//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet">
         <style>
@@ -59,6 +61,10 @@
             .img-selected {
                 border: 2px solid green;
             }
+
+            .bg-v1-primary {
+                background-color: #f5f5f5 !important;
+            }
         </style>
     <?php } ?>
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha512-MV7K8+y+gLIBoVD59lQIYicR65iaqukzvf/nwasF0nqhPay5w/9lJmVM2hMDcnK1OnMGCdVK+iQrJ7lzPJQd1w==" crossorigin="anonymous" referrerpolicy="no-referrer">
@@ -68,13 +74,14 @@
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/evals.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/animations.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/bal.css?v=<?= uniqid() ?>">
+    <link rel="stylesheet" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/css/admin.css?v=<?= uniqid() ?>">
     <title>Plateforme pédagogique<?= $title ?></title>
 </head>
 
 <body>
     <div class="wrapper pb-5">
         <?php if (isset($_SESSION["utilisateur"]["stagiaire_id"])) { ?>
-            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-light">
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-v1-primary">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
                         <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar">

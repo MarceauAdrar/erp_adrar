@@ -84,6 +84,17 @@ function recupererSecteurs()
     return $secteurs;
 }
 
+function recupererSites()
+{
+    global $db;
+
+    $req = $db->prepare("SELECT *
+                        FROM sites;");
+    $req->execute();
+    $sites = $req->fetchAll(PDO::FETCH_ASSOC);
+    return $sites;
+}
+
 /**
  * Permet d'envoyer les documents manquants à un tuteur donné.
  *
@@ -273,6 +284,148 @@ function envoyerMailTuteur($mailer, $id_stagiaire, $id_formateur, $documents, $d
 }
 
 /**
+ * Permet d'enregistrer une session dans la table **sessions**.
+ *
+ * Cette fonction prend un ensemble de paramètres pour une session donnée.
+ *
+ * @param string        $nom Le nom de la session.
+ * @param string        $sigle Le sigle de la session.
+ * @param string        $date_debut La date de début.
+ * @param string        $date_fin La date de fin.
+ * @param array|null    $blason Le blason de la session (optionnel).
+ * @param int           $id_formateur Le/la formatrice référent·e de la session.
+ * @return string       Un JSON avec deux index `boolean success` et `string message`.
+ */
+function inscriptionSession(string $nom, string $sigle, string $date_debut, string $date_fin, array|null $blason, int $id_formateur)
+{
+    global $db;
+
+    $req = $db->prepare("SELECT session_id FROM sessions WHERE session_nom=:session_nom;");
+    $req->bindValue(":session_nom", $nom);
+    $req->execute();
+    if ($req->rowCount() === 0) { // Si la session n'existe pas encore
+        $req->closeCursor();
+        $blason_nom = NULL;
+        if(!empty($blason)) {
+            $extensions_ok = array("gif", "jpg", "jpeg", "png");
+            $extension = substr(strrchr($blason['name'], '.'), 1);
+            if (in_array($extension, $extensions_ok)) {
+                $lien = "../../public/formation/imgs/blasons";
+                $blason_nom = $nom . "." . $extension;
+                if (!is_dir($lien)) {
+                    mkdir($lien, 0777, true);
+                }
+                move_uploaded_file($blason['tmp_name'], $lien . "/" . $blason_nom);
+            }
+        }
+
+        $req = $db->prepare("INSERT INTO sessions(session_nom, session_sigle, session_date_debut, session_date_fin, session_blason, id_formateur) 
+                            VALUES(:session_nom, :session_sigle, :session_date_debut, :session_date_fin, :session_blason, :id_formateur);");
+        $req->bindValue(":session_nom", filter_var(strtoupper($nom), FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":session_sigle", filter_var($sigle, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":session_date_debut", date('Y-m-d', strtotime($date_debut)));
+        $req->bindValue(":session_date_fin", date('Y-m-d', strtotime($date_fin)));
+        $req->bindValue(":session_blason", filter_var($blason_nom, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":id_formateur", filter_var($id_formateur, FILTER_VALIDATE_INT));
+        if ($req->execute()) {
+            $req->closeCursor();
+                $success = true;
+                $message = "Session créée.";
+        } else {
+            $success = false;
+            $message = "Une erreur s'est produite, veuillez réessayer.";
+        }
+    } else {
+        $success = false;
+        $message = "Cette session existe déjà. Vérifiez les informations saisies.";
+    }
+    return json_encode(array(
+        'success' => $success,
+        'message' => $message
+    ));
+}
+
+/**
+ * Permet d'enregistrer un tuteur dans la table **stages**.
+ *
+ * Cette fonction prend un ensemble de paramètres pour un stage donné.
+ *
+ * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
+ * @param string    $nom Le nom du tuteur.
+ * @param string    $prenom Le prénom du tuteur.
+ * @param string    $mail Le mail du tuteur.
+ * @param string    $rue La rue du lieu de stage.
+ * @param string    $cp Le code postal du lieu de stage.
+ * @param string    $ville La ville du lieu de stage.
+ * @param string    $pays Le pays du lieu de stage.
+ * @return string   Un JSON avec deux index `boolean success` et `string message`.
+ */
+function inscriptionStage(PHPMailer $mailer, string $nom, string $prenom, string $mail, string $rue, string $cp, string $ville, string $pays)
+{
+    global $db;
+
+    $mail_tuteur = filter_var($mail, FILTER_VALIDATE_EMAIL);
+
+    $req = $db->prepare("SELECT stage_id FROM stages WHERE stage_mail_tuteur=:mail_tuteur;");
+    $req->bindValue(":mail_tuteur", $mail_tuteur);
+    $req->execute();
+    if ($req->rowCount() === 0) { // Si le mail du tuteur n'existe pas encore
+        $req->closeCursor();
+
+        $nom_tuteur = filter_var(strtoupper($nom), FILTER_SANITIZE_SPECIAL_CHARS);
+        $prenom_tuteur = filter_var(ucwords($prenom), FILTER_SANITIZE_SPECIAL_CHARS);
+
+        $req = $db->prepare("INSERT INTO stages(stage_adresse_rue, stage_adresse_cp, stage_adresse_ville, stage_adresse_pays, stage_nom_tuteur, stage_prenom_tuteur, stage_mail_tuteur) 
+                            VALUES(:stage_adresse_rue, :stage_adresse_cp, :stage_adresse_ville, :stage_adresse_pays, :stage_nom_tuteur, :stage_prenom_tuteur, :stage_mail_tuteur);");
+        $req->bindValue(":stage_adresse_rue", filter_var($rue, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":stage_adresse_cp", filter_var($cp, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":stage_adresse_ville", filter_var($ville, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":stage_adresse_pays", filter_var($pays, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":stage_nom_tuteur", $nom_tuteur);
+        $req->bindValue(":stage_prenom_tuteur", $prenom_tuteur);
+        $req->bindValue(":stage_mail_tuteur", $mail_tuteur);
+        if ($req->execute()) {
+            $req->closeCursor();
+
+            // TODO: compléter le mail + rechercher le stagiaire concerné lors de l'ajout
+            $message = file_get_contents(__DIR__ . '/../v/templates_mails/MAIL_ENTREE_STAGIAIRE.html');
+            $message = strtr($message, array(
+                '{{NOM_TUTEUR}}' => $nom_tuteur
+            ));
+            $mailer->Subject = '[ADRAR] Stagiaire reçu dans votre établissement';
+            $mailer->Body    = $message;
+            $mailer->AltBody = strip_tags($message);
+            $mailer->setFrom('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            if (DEV) {
+                $mailer->addAddress('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            } else {
+                $mailer->addAddress($mail_tuteur, $prenom_tuteur . " " . $nom_tuteur);
+                $mailer->addBCC('marceaurodrigues@adrar-formation.com'); // Blind Carbon Copy
+            }
+            $mailer->addReplyTo('marceaurodrigues@adrar-formation.com', 'Marceau RODRIGUES');
+            try {
+                $mailer->send();
+                $success = true;
+                $message = "Email envoyé.";
+            } catch (Exception $e) {
+                $success = false;
+                $message = "Erreur: " . $e->getMessage();
+            }
+        } else {
+            $success = false;
+            $message = "Une erreur s'est produite, veuillez réessayer.";
+        }
+    } else {
+        $success = false;
+        $message = "Cette adresse mail est déjà utilisée pour un autre stage.";
+    }
+    return json_encode(array(
+        'success' => $success,
+        'message' => $message
+    ));
+}
+
+/**
  * Permet d'enregistrer un formateur dans la table **formateurs**.
  *
  * Cette fonction prend un ensemble de paramètres pour un formateur donné.
@@ -359,22 +512,25 @@ function inscriptionFormateur(PHPMailer $mailer, string $nom, string $prenom, st
  * Permet d'enregistrer un stagiaire dans la table **stagiaires**.
  *
  *
- * @param PHPMailer $mailer Une instance paramétrée de PHPMailer.
- * @param string    $nom Le nom du stagiaire.
- * @param string    $prenom Le prénom du stagiaire.
- * @param string    $mail Le mail du stagiaire.
- * @param string    $pseudo Le pseudo du stagiaire.
- * @param string    $tel Le téléphone du stagiaire.
- * @param string    $date_anniversaire La date d'anniversaire du stagiaire (format libre).
- * @param int       $id_session L'identifiant de la session du stagiaire, cf. table **sessions**.
- * @param int|null  $id_stage L'identifiant du stage en entreprise du stagiaire, cf. table **stages**.
- * @return string   Un JSON avec deux index `boolean success` et `string message`.
+ * @param PHPMailer     $mailer Une instance paramétrée de PHPMailer.
+ * @param string        $nom Le nom du stagiaire.
+ * @param string        $prenom Le prénom du stagiaire.
+ * @param string        $mail Le mail du stagiaire.
+ * @param string|null   $pseudo Le pseudo du stagiaire.
+ * @param string|null   $tel Le téléphone du stagiaire.
+ * @param string|null   $date_anniversaire La date d'anniversaire du stagiaire (format libre).
+ * @param int           $id_session L'identifiant de la session du stagiaire, cf. table **sessions**.
+ * @param int|null      $id_stage L'identifiant du stage en entreprise du stagiaire, cf. table **stages**.
+ * @return string       Un JSON avec deux index `boolean success` et `string message`.
  */
-function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, string $mail, string $pseudo, string $tel, string $date_anniversaire, int $id_session, int $id_stage = null)
+function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, string $mail, string $pseudo = null, string $tel = null, string $date_anniversaire = null, int $id_session, int $id_stage = null)
 {
     global $db;
 
     $mail_stagiaire = filter_var($mail, FILTER_VALIDATE_EMAIL);
+    if (is_null($pseudo)) {
+        $pseudo = strtolower(substr($prenom, 0, 1) . $nom . date('y'));
+    }
 
     $req = $db->prepare("SELECT stagiaire_id FROM stagiaires WHERE stagiaire_mail=:mail_stagiaire;");
     $req->bindValue(":mail_stagiaire", $mail_stagiaire);
@@ -386,16 +542,16 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $prenom_stagiaire = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $mdp_stagiaire = readable_random_string(10);
 
-        $req = $db->prepare("INSERT INTO stagiaires(stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_mdp, stagiaire_mdp_decode, stagiaire_tel, date_naissance_stagiaire, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
-                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :tel_stagiaire, DATE_FORMAT(:date_naissance_stagiaire, '%Y-%m-%d'), :id_session" . (isset($id_stage) ? ", :id_stage" : "") . ");");
+        $req = $db->prepare("INSERT INTO stagiaires(stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_mdp, stagiaire_mdp_decode, stagiaire_tel, stagiaire_date_naissance, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
+                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :stagiaire_tel, DATE_FORMAT(:stagiaire_date_naissance, '%Y-%m-%d'), :id_session" . (isset($id_stage) ? ", :id_stage" : "") . ");");
         $req->bindValue(":nom_stagiaire", $nom_stagiaire);
         $req->bindValue(":prenom_stagiaire", $prenom_stagiaire);
         $req->bindValue(":mail_stagiaire", $mail_stagiaire);
         $req->bindValue(":pseudo_stagiaire", filter_var($pseudo, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":mdp_stagiaire", password_hash(filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS), PASSWORD_BCRYPT));
         $req->bindValue(":mdp_decode_stagiaire", filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS));
-        $req->bindValue(":tel_stagiaire", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
-        $req->bindValue(":date_naissance_stagiaire", filter_var($date_anniversaire, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":stagiaire_tel", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
+        $req->bindValue(":stagiaire_date_naissance", filter_var($date_anniversaire, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":id_session", filter_var($id_session, FILTER_VALIDATE_INT));
         if (isset($id_stage)) {
             $req->bindValue(":id_stage", filter_var($id_stage, FILTER_VALIDATE_INT));
@@ -601,7 +757,7 @@ function connexionUtilisateur(string|int $identifiant)
             $req->closeCursor();
             return true;
         }
-    } 
+    }
     return false;
 }
 

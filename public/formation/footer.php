@@ -45,8 +45,8 @@
             </div>
             <script src="//code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
             <script src="//code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-            <script src="https://cdn.datatables.net/1.13.1/js/dataTables.min.js"></script>
-            <script src="https://cdn.datatables.net/editor/datatables.editor.min.js"></script>
+            <!-- <script src="https://cdn.datatables.net/1.13.1/js/dataTables.min.js"></script>
+            <script src="https://cdn.datatables.net/editor/datatables.editor.min.js"></script> -->
             <script>
                 // $(function() {
                 //     $('nav a[href^="//' + SERVER_NAME + '/' + location.pathname + '"]').addClass('active');
@@ -116,6 +116,7 @@
                 }
 
                 function majEval(id_acquis, id_stagiaire) {
+                    // TODO: passer un tableau à la place de l'ID acquisition
                     let formateurs = document.querySelector("#form_maj_eval_ids_formateurs_" + id_acquis).value;
                     let niveau = document.querySelector("#form_maj_eval_niveau_" + id_acquis).value;
                     $.ajax({

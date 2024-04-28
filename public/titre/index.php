@@ -21,7 +21,6 @@ $formateurs = $formateurs->fetchAll(PDO::FETCH_ASSOC);
     <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
     <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
-    <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/_reset.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="css/_style.css?v=<?= uniqid() ?>">
     <title>Génération de documents à la volée</title>

@@ -200,7 +200,8 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_mail_stagiaire">Mail<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['stagiaire_mail'] . '">
+                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" onchange="checkEmailStagiaire();" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['stagiaire_mail'] . '">
+                                <span class="d-none" id="form_mail_disponible"></span>
                             </div>
                         </div>
                         <div class="col">
@@ -241,6 +242,25 @@ echo $form; ?>
         img.classList.add('img-selected');
     }
 </script>
-<?php include_once("./js.php");
+<?php include_once("./js.php");?>
+<script>
+    //TODO: not working
+    function checkEmailStagiaire() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                check_email_stagiaire: 1,
+                form_stagiaire_email: document.querySelector('#form_mail_stagiaire').value
+            },
+            success: function(r) {
+                $('#form_mail_disponible').text(r.message);
+                return r.disponible;
+            }
+        });
+    }
+</script>
+<?php 
 include_once("./footer.php");
 die(ob_get_clean());

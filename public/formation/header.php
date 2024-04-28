@@ -1,3 +1,5 @@
+<?php include_once("../../src/m/connect.php"); ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -150,6 +152,21 @@
                                     </ul>
                                 </li>
                             <?php } ?>
+                            <?php
+                            if ($_SESSION["utilisateur"]["formateur_id"] > 0) { ?>
+                                <li class="nav-item">
+                                    <select name="form_filter_session" id="form_filter_session" class="form-select pe-5">
+                                        <option value="-1">Tout le secteur</option>
+                                        <option value="0" <?= (empty($_SESSION['filtres']['session_id']) ? " selected" : "") ?>>Toutes mes sessions</option>
+                                        <?php $sessions = recupererSessions($_SESSION['utilisateur']['formateur_id']);
+                                        if (!empty($sessions)) {
+                                            foreach ($sessions as $session) { ?>
+                                                <option value="<?= $session['session_id'] ?>" <?= (isset($_SESSION['filtres']['session_id']) && $_SESSION['filtres']['session_id'] == $session['session_id'] ? " selected" : "") ?>><?= $session['session_nom'] ?></option>
+                                        <?php }
+                                        } ?>
+                                    </select>
+                                </li>
+                        <?php } ?>
                         </ul>
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             <?php

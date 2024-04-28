@@ -900,6 +900,437 @@ if (isset($_POST['get_list_faqs']) && !empty($_POST['get_list_faqs'])) {
     }
     die($tbody);
 }
+
+if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention'])) {
+    if (isset($_POST['id_session'])) {
+        $_SESSION['filtres']['session_id'] = filter_var($_POST['id_session'], FILTER_VALIDATE_INT);
+    } else {
+        $_SESSION['filtres']['session_id'] = -1;
+    }
+    
+    $label = "";
+    $sql = "SELECT stagiaire_convention_recue 
+            FROM stagiaires sta 
+            JOIN sessions s ON(s.session_id = sta.id_session) ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 
+              AND sta.id_stage IS NOT NULL ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+        $sql .= " AND s.session_stage_date_debut <= NOW() ";
+        $label = "sur le secteur";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+        $sql .= " AND s.session_stage_date_debut <= NOW() ";
+        $label = "sur les sessions référées par moi";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+        $label = "pour la session";
+    }
+    $sql .= " AND sta.stagiaire_actif=1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $somme = 0;
+    foreach ($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+
+    $total = $req->rowCount();
+    $color = "";
+    $value = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 30) {
+        $color = "col-bad";
+    } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+    
+    die(json_encode(array(
+        "success" => $success, 
+        "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
+        "color" => $color, 
+        "label" => $label
+    )));
+} elseif (isset($_POST['get_stats_attestation']) && !empty($_POST['get_stats_attestation'])) {
+    if (isset($_POST['id_session'])) {
+        $_SESSION['filtres']['session_id'] = filter_var($_POST['id_session'], FILTER_VALIDATE_INT);
+    } else {
+        $_SESSION['filtres']['session_id'] = -1;
+    }
+    
+    $label = "";
+    $sql = "SELECT stagiaire_attestation_recue 
+            FROM stagiaires sta 
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 
+              AND sta.id_stage IS NOT NULL ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
+        $label = "sur le secteur";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
+        $label = "sur les sessions référées par moi";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+        $label = "pour la session";
+    }
+    $sql .= " AND sta.stagiaire_actif=1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $somme = 0;
+    foreach ($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+
+    $total = $req->rowCount();
+    $color = "";
+    $value = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 30) {
+        $color = "col-bad";
+    } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+    
+    die(json_encode(array(
+        "success" => $success, 
+        "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
+        "color" => $color, 
+        "label" => $label
+    )));
+} elseif (isset($_POST['get_stats_evaluation']) && !empty($_POST['get_stats_evaluation'])) {
+    if (isset($_POST['id_session'])) {
+        $_SESSION['filtres']['session_id'] = filter_var($_POST['id_session'], FILTER_VALIDATE_INT);
+    } else {
+        $_SESSION['filtres']['session_id'] = -1;
+    }
+    
+    $label = "";
+    $sql = "SELECT stagiaire_evaluation_recue 
+            FROM stagiaires sta 
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 
+              AND sta.id_stage IS NOT NULL ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
+        $label = "sur le secteur";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
+        $label = "sur les sessions référées par moi";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+        $label = "pour la session";
+    }
+    $sql .= " AND sta.stagiaire_actif =1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $somme = 0;
+    foreach ($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+
+    $total = $req->rowCount();
+    $color = "";
+    $value = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 30) {
+        $color = "col-bad";
+    } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+        
+    die(json_encode(array(
+        "success" => $success, 
+        "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
+        "color" => $color, 
+        "label" => $label
+    )));
+} elseif (isset($_POST['get_stats_presence']) && !empty($_POST['get_stats_presence'])) {
+    if (isset($_POST['id_session'])) {
+        $_SESSION['filtres']['session_id'] = filter_var($_POST['id_session'], FILTER_VALIDATE_INT);
+    } else {
+        $_SESSION['filtres']['session_id'] = -1;
+    }
+    
+    $label = "";
+    $sql = "SELECT stagiaire_horaires_recues_1, stagiaire_horaires_recues_2, stagiaire_horaires_recues_3 
+            FROM stagiaires sta 
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_stage_date_debut <= NOW()) ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 
+              AND sta.id_stage IS NOT NULL ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
+        $label = "sur le secteur";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+        $sql .= " AND s.session_stage_date_fin <= NOW() ";
+        $label = "sur les sessions référées par moi";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+        $label = "pour la session";
+    }
+    $sql .= " AND sta.stagiaire_actif=1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $somme = 0;
+    foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        $somme += $value['stagiaire_horaires_recues_1'];
+        $somme += $value['stagiaire_horaires_recues_2'];
+        $somme += $value['stagiaire_horaires_recues_3'];
+    }
+    $somme = $somme / 3;
+
+    $total = $req->rowCount();
+    $color = "";
+    $value = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total) * 100;
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 30) {
+        $color = "col-bad";
+    } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+        
+    die(json_encode(array(
+        "success" => $success, 
+        "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
+        "color" => $color, 
+        "label" => $label
+    )));
+} elseif (isset($_POST['get_stats_reussite']) && !empty($_POST['get_stats_reussite'])) {
+    if (isset($_POST['id_session'])) {
+        $_SESSION['filtres']['session_id'] = filter_var($_POST['id_session'], FILTER_VALIDATE_INT);
+    } else {
+        $_SESSION['filtres']['session_id'] = -1;
+    }
+    
+    $label = "";
+    $sql = "SELECT stagiaire_diplome
+            FROM stagiaires sta 
+            JOIN sessions s ON(s.session_id = sta.id_session AND s.session_date_fin < NOW()) ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 
+              AND sta.stagiaire_diplome IS NOT NULL ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+        $label = "sur le secteur";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+        $label = "sur les sessions référées par moi";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+        $label = "pour la session";
+    }
+    $sql .= " AND sta.stagiaire_actif = 1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+
+    $somme = 0;
+    $sommeFaussee = 0;
+    $total = 0;
+    foreach ($req->fetchAll(PDO::FETCH_ASSOC) as $value) {
+        if ($value['stagiaire_diplome'] == 1) {
+            $somme += 1;
+        }
+        if ($value['stagiaire_diplome'] <> -4) {
+            $total += 1;
+        }
+        if (!empty($value['stagiaire_diplome']) && ($value['stagiaire_diplome'] == 1 || $value['stagiaire_diplome'] == -1 || $value['stagiaire_diplome'] == -2 || $value['stagiaire_diplome'] == -3)) {
+            $sommeFaussee += 1;
+        }
+    }
+
+    $color = "";
+    $value = 0;
+    $colorBis = "";
+    $valueFausee = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total) * 100;
+        $valueFausee = ($sommeFaussee / $total) * 100;
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 30) {
+        $color = "col-bad";
+    } elseif ($value <= 70) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+
+    if ($valueFausee <= 30) {
+        $colorBis = "col-bad";
+    } elseif ($valueFausee <= 70) {
+        $colorBis = "col-medium";
+    } else {
+        $colorBis = "col-good";
+    }
+        
+    die(json_encode(array(
+        "success" => $success, 
+        "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
+        "color" => $color, 
+        "label" => $label
+    )));
+} elseif (isset($_POST['get_stats_satisfaction']) && !empty($_POST['get_stats_satisfaction'])) {
+    if (isset($_POST['id_session'])) {
+        $_SESSION['filtres']['session_id'] = filter_var($_POST['id_session'], FILTER_VALIDATE_INT);
+    } else {
+        $_SESSION['filtres']['session_id'] = -1;
+    }
+    
+    $label = "";
+    $sql = "SELECT stagiaire_questionnaire_note 
+            FROM stagiaires sta 
+            JOIN stagiaires_questionnaires sq ON(sta.stagiaire_id = sq.id_stagiaire) 
+            JOIN sessions s ON(s.session_id = sta.id_session) ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " 
+            JOIN formateurs f ON(f.formateur_id = s.id_formateur) ";
+    }
+    $sql .= " WHERE 1 ";
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $sql .= " AND f.id_secteur=:id_secteur ";
+        $label = "sur le secteur";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $sql .= " AND s.id_formateur=:id_formateur ";
+        $label = "sur les sessions référées par moi";
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND sta.id_session=:id_session ";
+        $label = "pour la session";
+    }
+    $sql .= " AND sta.stagiaire_actif =1 ";
+    $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && $_POST['id_session'] == -1) {
+        $req->bindValue(":id_secteur", filter_var($_SESSION['utilisateur']['id_secteur'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] == 0) {
+        $req->bindValue(":id_formateur", filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT));
+    } elseif (isset($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(":id_session", filter_var($_POST['id_session'], FILTER_VALIDATE_INT));
+    }
+    $req->execute();
+    $somme = 0;
+    foreach ($req->fetchAll(PDO::FETCH_COLUMN) as $value) {
+        $somme += $value;
+    }
+
+    $total = $req->rowCount();
+    $color = "";
+    $value = 0;
+    $success = true;
+    if (!empty($total)) {
+        $value = ($somme / $total);
+    } else {
+        $success = false;
+    }
+
+    if ($value <= 2.5) {
+        $color = "col-bad";
+    } elseif ($value <= 3.5) {
+        $color = "col-medium";
+    } else {
+        $color = "col-good";
+    }
+            
+    die(json_encode(array(
+        "success" => $success, 
+        "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 5 ? 5 : number_format($value, 2, ","))) . "/5" : "Aucune donnée"),
+        "color" => $color, 
+        "label" => $label
+    )));
+}
+
 if (isset($_POST['get_courses']) &&  !empty($_POST['get_courses'])) {
     $success = true;
 
@@ -1049,6 +1480,26 @@ if (isset($_POST['reset_pass_trainee']) && !empty($_POST['reset_pass_trainee']))
 
 if (isset($_POST['connect_as_trainee']) && !empty($_POST['connect_as_trainee'])) {
     die(json_encode(connexionUtilisateur($_POST['username_trainee'])));
+}
+
+if(isset($_POST['check_email_stagiaire']) && !empty($_POST['check_email_stagiaire'])
+    && isset($_POST['form_mail_stagiaire']) && !empty($_POST['form_mail_stagiaire'])) {
+    $disponible = true;
+    $message = "";
+    $req = $db->prepare("SELECT stagiaire_id FROM stagiaires WHERE stagiaire_mail=:mail_stagiaire;");
+    $req->bindValue(':mail_stagiaire', $_POST['form_mail_stagiaire'], PDO::PARAM_INT);
+    $req->execute();
+    if(!empty($req->fetch())) {
+        $disponible = false;
+        $message = "Cette adresse email n'est pas disponible.";
+    } elseif(!filter_var($_POST['form_mail_stagiaire'], FILTER_VALIDATE_EMAIL)) {
+        $disponible = false;
+        $message = "Cette adresse email ne correspond pas à un email.";
+    }
+    die(json_encode(array(
+        "disponible" => $disponible, 
+        "message" => $message
+    )));
 }
 
 if (

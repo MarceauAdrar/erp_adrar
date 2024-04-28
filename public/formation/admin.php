@@ -61,6 +61,9 @@ include_once("./header.php"); ?>
             <li class="nav-item">
                 <a class="nav-link text-dark" data-bs-toggle="tab" href="#faq" onclick="getListFaqs()">F.A.Q</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#statistiques" onclick="getStats()">Statistiques</a>
+            </li>
         </ul>
 
         <!-- Tab panes -->
@@ -191,6 +194,74 @@ include_once("./header.php"); ?>
                         <tbody>
                         </tbody>
                     </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="statistiques">
+                <div class="row mt-2 mb-2">
+                    <div class="col-4">
+                        <div class="border border-top-0" style="border-top: 3px solid #FC7C1C !important; height: 300px;">
+                            <div class="pt-3 px-3 h5">
+                                Stage
+                            </div>
+                            <hr>
+                            <div class="pb-3 px-3">
+                                <div class="row" style="height: 10vh;">
+                                    <div class="col-6">
+                                        <div class="border border-primary h-100 p-2">
+                                            <span><b id="ratio_valeur_stage_convention">XXX%</b> de conventions reçues</span>
+                                            <p id="ratio_libelle_stage_convention"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="border border-secondary h-100 p-2">
+                                            <span><b id="ratio_valeur_stage_attestation">XXX%</b> d'attestations reçues</span>
+                                            <p id="ratio_libelle_stage_attestation"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pb-3 px-3">
+                                <div class="row" style="height: 10vh;">
+                                    <div class="col-6">
+                                        <div class="border border-primary h-100 p-2">
+                                            <span><b id="ratio_valeur_stage_evaluation">XXX%</b> d'évaluations reçues</span>
+                                            <p id="ratio_libelle_stage_evaluation"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="border border-primary h-100 p-2">
+                                            <span><b id="ratio_valeur_stage_presence">XXX%</b> de présence reçues</span>
+                                            <p id="ratio_libelle_stage_presence"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="border border-top-0" style="border-top: 3px solid #FC7C1C !important; height: 300px;">
+                            <div class="pt-3 px-3 h5">
+                                Session
+                            </div>
+                            <hr>
+                            <div class="pb-3 px-3">
+                                <div class="row" style="height: 10vh;">
+                                    <div class="col-6">
+                                        <div class="border border-primary h-100 p-2">
+                                            <span><b id="ratio_valeur_session_reussite">XXX%</b> de réussite</span>
+                                            <p id="ratio_libelle_session_reussite"></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="border border-secondary h-100 p-2">
+                                            <span><b id="ratio_valeur_session_satisfaction">XXX%</b> de satisfaction</span>
+                                            <p id="ratio_libelle_session_satisfaction"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -810,6 +881,9 @@ include_once("./js.php"); ?>
                 get_list_courses: 1,
                 // id_session: document.querySelector('select[name="form_session_quiz"]').value
             },
+            beforeSend: function() {
+                $("#table-cours tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
+            },
             success: function(r) {
                 $("#table-cours tbody").html(r);
 
@@ -836,6 +910,9 @@ include_once("./js.php"); ?>
             data: {
                 get_list_trainers: 1,
                 // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            beforeSend: function() {
+                $("#table-formateurs tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
             },
             success: function(r) {
                 $("#table-formateurs tbody").html(r);
@@ -864,6 +941,9 @@ include_once("./js.php"); ?>
                 get_list_sessions: 1,
                 // id_session: document.querySelector('select[name="form_session_quiz"]').value
             },
+            beforeSend: function() {
+                $("#table-sessions tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
+            },
             success: function(r) {
                 $("#table-sessions tbody").html(r);
 
@@ -890,6 +970,9 @@ include_once("./js.php"); ?>
             data: {
                 get_list_trainees: 1,
                 // id_session: document.querySelector('select[name="form_session_quiz"]').value
+            },
+            beforeSend: function() {
+                $("#table-stagiaires tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
             },
             success: function(r) {
                 $("#table-stagiaires tbody").html(r);
@@ -918,6 +1001,9 @@ include_once("./js.php"); ?>
                 get_list_internships: 1,
                 // id_session: document.querySelector('select[name="form_session_quiz"]').value
             },
+            beforeSend: function() {
+                $("#table-stages tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
+            },
             success: function(r) {
                 $("#table-stages tbody").html(r);
 
@@ -945,6 +1031,9 @@ include_once("./js.php"); ?>
                 get_list_faqs: 1,
                 // id_session: document.querySelector('select[name="form_session_quiz"]').value
             },
+            beforeSend: function() {
+                $("#table-faqs tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
+            },
             success: function(r) {
                 $("#table-faqs tbody").html(r);
 
@@ -960,6 +1049,170 @@ include_once("./js.php"); ?>
                     "retrieve": true,
                     "scrollCollapse": true
                 });
+            }
+        });
+    }
+
+    let filtre = document.getElementById('form_filter_session');
+    filtre.onchange = () => {
+        getStats();
+    };
+
+    function getStats() {
+        getStatsConvention();
+        getStatsAttestation();
+        getStatsEvaluation();
+        getStatsPresence();
+        getStatsReussite();
+        getStatsSatisfaction();
+    }
+
+    function getStatsConvention() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                get_stats_convention: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $('#ratio_valeur_stage_convention').text("XXX%");
+                $('#ratio_valeur_stage_convention').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>');
+                $('#ratio_valeur_stage_convention').removeClass("col-good");
+                $('#ratio_valeur_stage_convention').removeClass("col-medium");
+                $('#ratio_valeur_stage_convention').removeClass("col-bad");
+                $('#ratio_libelle_stage_convention').text("");
+            },
+            success: function(r) {
+                $('#ratio_valeur_stage_convention').text(r.value);
+                $('#ratio_valeur_stage_convention').addClass(r.color);
+                $('#ratio_libelle_stage_convention').text(r.label);
+            }
+        });
+    }
+
+    function getStatsAttestation() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                get_stats_attestation: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $('#ratio_valeur_stage_attestation').text("XXX%");
+                $('#ratio_valeur_stage_attestation').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>');
+                $('#ratio_valeur_stage_attestation').removeClass("col-good");
+                $('#ratio_valeur_stage_attestation').removeClass("col-medium");
+                $('#ratio_valeur_stage_attestation').removeClass("col-bad");
+                $('#ratio_libelle_stage_attestation').text("");
+            },
+            success: function(r) {
+                $('#ratio_valeur_stage_attestation').text(r.value);
+                $('#ratio_valeur_stage_attestation').addClass(r.color);
+                $('#ratio_libelle_stage_attestation').text(r.label);
+            }
+        });
+    }
+
+    function getStatsEvaluation() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                get_stats_evaluation: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $('#ratio_valeur_stage_evaluation').text("XXX%");
+                $('#ratio_valeur_stage_evaluation').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>');
+                $('#ratio_valeur_stage_evaluation').removeClass("col-good");
+                $('#ratio_valeur_stage_evaluation').removeClass("col-medium");
+                $('#ratio_valeur_stage_evaluation').removeClass("col-bad");
+                $('#ratio_libelle_stage_evaluation').text("");
+            },
+            success: function(r) {
+                $('#ratio_valeur_stage_evaluation').text(r.value);
+                $('#ratio_valeur_stage_evaluation').addClass(r.color);
+                $('#ratio_libelle_stage_evaluation').text(r.label);
+            }
+        });
+    }
+
+    function getStatsPresence() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                get_stats_presence: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $('#ratio_valeur_stage_presence').text("XXX%");
+                $('#ratio_valeur_stage_presence').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>');
+                $('#ratio_valeur_stage_presence').removeClass("col-good");
+                $('#ratio_valeur_stage_presence').removeClass("col-medium");
+                $('#ratio_valeur_stage_presence').removeClass("col-bad");
+                $('#ratio_libelle_stage_presence').text("");
+            },
+            success: function(r) {
+                $('#ratio_valeur_stage_presence').text(r.value);
+                $('#ratio_valeur_stage_presence').addClass(r.color);
+                $('#ratio_libelle_stage_presence').text(r.label);
+            }
+        });
+    }
+
+    function getStatsReussite() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                get_stats_reussite: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $('#ratio_valeur_session_reussite').text("XXX%");
+                $('#ratio_valeur_session_reussite').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>');
+                $('#ratio_valeur_session_reussite').removeClass("col-good");
+                $('#ratio_valeur_session_reussite').removeClass("col-medium");
+                $('#ratio_valeur_session_reussite').removeClass("col-bad");
+                $('#ratio_libelle_session_reussite').text("");
+            },
+            success: function(r) {
+                $('#ratio_valeur_session_reussite').text(r.value);
+                $('#ratio_valeur_session_reussite').addClass(r.color);
+                $('#ratio_libelle_session_reussite').text(r.label);
+            }
+        });
+    }
+
+    function getStatsSatisfaction() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            dataType: "json",
+            data: {
+                get_stats_satisfaction: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $('#ratio_valeur_session_satisfaction').text("XXX");
+                $('#ratio_valeur_session_satisfaction').html('<div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>');
+                $('#ratio_valeur_session_satisfaction').removeClass("col-good");
+                $('#ratio_valeur_session_satisfaction').removeClass("col-medium");
+                $('#ratio_valeur_session_satisfaction').removeClass("col-bad");
+                $('#ratio_libelle_session_satisfaction').text("");
+            },
+            success: function(r) {
+                $('#ratio_valeur_session_satisfaction').text(r.value);
+                $('#ratio_valeur_session_satisfaction').addClass(r.color);
+                $('#ratio_libelle_session_satisfaction').text(r.label);
             }
         });
     }

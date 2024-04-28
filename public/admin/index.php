@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#ffffff">
     <meta name="description" content="ERP de l'ADRAR. Connectez-vous pour en voir plus.">
-    <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/_reset.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="css/_style.css?v=<?= uniqid() ?>">
     <link rel="stylesheet" href="css/admin.css?v=<?= uniqid() ?>">

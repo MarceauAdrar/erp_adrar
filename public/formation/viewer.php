@@ -18,16 +18,11 @@ $sql = "SELECT stagiaire_nom, stagiaire_prenom
         FROM stagiaires 
         WHERE stagiaire_id=:id_stagiaire;";
 $req = $db->prepare($sql);
-$id_stagiaire = (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] !== -1 ? $_SESSION["utilisateur"]["stagiaire_id"] : @$_GET['id_stagiaire']);
+$id_stagiaire = (isset($_SESSION["utilisateur"]["stagiaire_id"]) && $_SESSION["utilisateur"]["stagiaire_id"] != -1 ? $_SESSION["utilisateur"]["stagiaire_id"] : @$_GET['id_stagiaire']);
 $req->bindParam(":id_stagiaire", $id_stagiaire);
 $req->execute();
 $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
 
-if (isset($_GET['mode']) && !empty($_GET['mode']) && $_GET['mode'] === "edit" && $_SESSION["utilisateur"]["formateur_id"] > 0) {
-    $th_supp = '<th class="bg-info text-white" align="center"><b>Mettre à jour</b></th>';
-} elseif (isset($id_stagiaire) && !empty($id_stagiaire) && $id_stagiaire > 0) {
-    $th_supp = '';
-}
 $tbody = '';
 $acquisition_categorie = null;
 $acquisition_module = null;
@@ -77,7 +72,7 @@ foreach ($acquisition_categories as $categorie) {
             $tbody .= ' <td align="center">
                             <input class="form-control" value="' . $unAcquis['ids_formateurs'] . '" id="form_maj_eval_ids_formateurs_' . $unAcquis['acquisition_id'] . '" type="hidden"/>
                             <input class="form-control form-autocomplete-formateurs" data-acquis="' . $unAcquis['acquisition_id'] . '" id="form_maj_eval_select_formateurs_' . $unAcquis['acquisition_id'] . '" type="text" />' . (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs > 0 ? str_replace(array(',', ' '), array('<br>&<br>', '<br>'), $noms_prenoms_formateurs) : (isset($noms_prenoms_formateurs) && $noms_prenoms_formateurs < 0 ? "Prestataire externe" : "A définir")) .
-                '</td>';
+                        '</td>';
             $niveau = " <select id='form_maj_eval_niveau_" . $unAcquis['acquisition_id'] . "' class='form-select'>";
             foreach (["A", "PR A", "PE A", "NA", "NE"] as $value) {
                 $niveau .= '<option value="' . $value . '" ' . ($value === $unAcquis['acquisition_niveau'] ? "selected" : "") . '>' . $value . '</option>';
@@ -85,7 +80,7 @@ foreach ($acquisition_categories as $categorie) {
             $niveau .= '    <option value="non_renseigne" ' . (empty($unAcquis['acquisition_niveau']) ? "selected" : "") . ' disabled>Non renseigné</option>';
             $niveau .= "</select>";
             $tbody .= ' <td align="center" style="background-color:' . ($unAcquis['acquisition_niveau'] === 'A' ? '#A8D08D' : ($unAcquis['acquisition_niveau'] === 'PR A' ? '#FFEB9C' : ($unAcquis['acquisition_niveau'] === 'PE A' ? '#ED7D31' : ($unAcquis['acquisition_niveau'] === 'NA' ? '#FFC7CE' : 'white')))) . '">' . $niveau . '</td>';
-            $tbody .= ' <td align="center"><button onclick="majEval(' . $unAcquis['acquisition_id'] . ', ' . $id_stagiaire . ');" class="btn btn-outline-primary">Enregistrer</button></td>';
+            // $tbody .= ' <td align="center"><button onclick="majEval(' . $unAcquis['acquisition_id'] . ', ' . $id_stagiaire . ');" class="btn btn-outline-primary">Enregistrer</button></td>';
             $tbody .= '</tr>';
         } else {
             $tbody .= '<tr>';
@@ -126,22 +121,14 @@ class MYPDF extends TCPDF
     }
 }
 $tbl = <<<EOD
-    <div style="text-align:center;">
-        <span><b>A</b>&nbsp;pour Acquis<span>
-        <span><b>PR A</b>&nbsp;pour PReque Acquis<span>
-        <span><b>PE A</b>&nbsp;pour PEu Acquis<span>
-        <span><b>NA</b>&nbsp;pour Non Acquis<span>
-        <span><b>NE</b>&nbsp;pour Non Évalué·e<span>
-    </div>
     
-    <table border="1" class="table table-bordered table-responsive table-striped">
+    <table border="1" class="table table-bordered table-responsive table-striped" style="margin-top:10vh;">
         <thead>
             <tr style="background-color:#72A0C1;color:#FFFFFF;">
                 <th class="bg-info text-white" align="center"><b>Modules</b></th>
                 <th class="bg-info text-white" align="center"><b>Compétences</b></th>
                 <th class="bg-info text-white" align="center"><b>Formateur en charge</b></th>
                 <th class="bg-info text-white" align="center"><b>Acquisition</b></th>
-                $th_supp
             </tr>
         </thead>
         <tbody>
@@ -164,8 +151,19 @@ if (!$stagiaire) {
         // var_dump($stagiaire, $id_stagiaire, $tbody);
         $title = " | Évaluation par stagiaire";
         include_once('./header.php');
-        echo '<h1 class="text-center">Évaluation du stagiaire: ' . $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'] . ' </h1>
-            ' . $tbl;
+        echo '
+            <div class="fixed-top bg-white" style="margin-top: 11.8vh;">
+                <h1 class="text-center">Évaluation du stagiaire: ' . $stagiaire['stagiaire_prenom'] . "&nbsp;" . $stagiaire['stagiaire_nom'] . '</h1>
+                <div style="text-align:center;">
+                    <span><b>A</b>&nbsp;pour Acquis<span>
+                    <span><b>PR A</b>&nbsp;pour PReque Acquis<span>
+                    <span><b>PE A</b>&nbsp;pour PEu Acquis<span>
+                    <span><b>NA</b>&nbsp;pour Non Acquis<span>
+                    <span><b>NE</b>&nbsp;pour Non Évalué·e<span>
+                </div>
+            </div>
+            ' . $tbl .'
+            ';
         include_once('./js.php'); ?>
         <script>
             function split(val) {

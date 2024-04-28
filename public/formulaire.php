@@ -278,7 +278,6 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://kit.fontawesome.com/b478fcca05.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/_reset.css">
     <link rel="stylesheet" href="css/_style.css">
     <link rel="stylesheet" href="css/formulaire.css">

@@ -2,3 +2,15 @@
     /* color: #fff; */
     border-top: #3E8BAD 5px solid;
 }
+
+.col-bad {
+    color: red;
+}
+
+.col-medium {
+    color: orange;
+}
+
+.col-good {
+    color: green;
+}

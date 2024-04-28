@@ -2,4 +2,6 @@
 /src/vendor
 /node_modules
 /public/formation/stagiaires
-adrar_titres.sql
+/src/m/connect.php
+docker-compose.yml
+docker-compose.yml.old

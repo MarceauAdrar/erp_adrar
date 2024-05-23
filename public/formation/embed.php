@@ -18,6 +18,25 @@ $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECI
 $req->execute();
 $exercices = $req->fetchAll(PDO::FETCH_ASSOC);
 
+
+if (isset($_SESSION['utilisateur']['stagiaire_id']) && $_SESSION['utilisateur']['stagiaire_id'] > 0) {
+    $sql = 'REPLACE INTO stagiaires_cours_suivis(id_stagiaire, id_cours, stagiaire_cours_suivi_date) 
+            VALUES(:id_stagiaire, (SELECT cours_id FROM cours WHERE cours_link=:cours_link), NOW());';
+    $req = $db->prepare($sql);
+    $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->bindValue(":id_stagiaire", filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
+    $req->execute();
+    $req->closeCursor();
+
+    $sql = 'UPDATE cours 
+            SET cours_visitors = cours_visitors + 1
+            WHERE cours_id = (SELECT cours_id FROM cours WHERE cours_link=:cours_link);';
+    $req = $db->prepare($sql);
+    $req->bindValue(':cours_link', filter_var(@$_GET['slide'], FILTER_SANITIZE_SPECIAL_CHARS));
+    $req->execute();
+    $req->closeCursor();
+}
+
 $sql = "SELECT * 
         FROM cours_ressources ";
 if ($_SESSION['utilisateur']['stagiaire_id'] > 0) {

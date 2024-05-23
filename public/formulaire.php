@@ -93,7 +93,7 @@ if(isset($_GET['form']) && !empty($_GET['form'])) {
                                     </div>
                                     <div>
                                         <label>Signature actuelle:</label>
-                                        <img class="box-signature" src="../src/' . $utilisateur['formateur_signature'] . '" alt="Signature du formateur" width="250" height="125">
+                                        <img class="box-signature" src="../src/v/formateurs/' . $utilisateur['formateur_signature'] . '" alt="Signature du formateur" width="250" height="125">
                                     </div>
                                 </div>
                             </form>';

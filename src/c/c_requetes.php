@@ -363,13 +363,13 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
         $req->bindValue(':connexion_essai_username', $_POST['form_login_username']);
         $req->execute();
         if ($req->fetch(PDO::FETCH_COLUMN) <= 5) {
-            if (connexionUtilisateur($_POST['form_login_username'])) {
-                if (array_key_exists("formateur_mdp", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['formateur_mdp'])) {
-                    $redirect = "../../public/index.php";
-                } elseif (array_key_exists("stagiaire_mdp", $_SESSION['utilisateur']) && password_verify($_POST['form_login_pass'], $_SESSION['utilisateur']['stagiaire_mdp'])) {
+            if (connexionUtilisateur($_POST['form_login_username'], $_POST['form_login_pass'])) {
+                if (array_key_exists("formateur_mdp", $_SESSION['utilisateur'])) {
+                    $redirect = "../../public/formation";
+                } elseif (array_key_exists("stagiaire_mdp", $_SESSION['utilisateur'])) {
                     $redirect = "../../public/formation";
                 } else {
-                    $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Email et/ou mot de passe invalide");
+                    $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Une erreur s'est produite, veuillez réessayer");
                 }
                 setcookie("DECONNECTE", false, time() - 3600, "/");
             } else {
@@ -381,8 +381,12 @@ if (isset($_POST['recupererListeFormateurs']) && !empty($_POST['recupererListeFo
     } else {
         $redirect = "../../public/connexion.php?type=error&message=" . urlencode("Jeton incorrect");
     }
-    if (isset($_POST['form_login_url']) && !empty($_POST['form_login_url'])) {
-        $redirect = $_POST['form_login_url'];
+    if (isset($_POST['form_login_url']) && !empty($_POST['form_login_url']) && $_POST['form_login_url'] != "/erp/src/c/c_requetes.php") {
+        if(str_contains($redirect, '?')) {
+            $redirect .= "&url=" . $_POST['form_login_url'];
+        } else {
+            $redirect .= "?url=" . $_POST['form_login_url'];
+        }
     }
     header("Location: " . $redirect);
 } elseif (isset($_POST['form_signup_csrf']) && !empty($_POST['form_signup_csrf'])) {

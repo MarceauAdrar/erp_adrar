@@ -44,6 +44,9 @@ include_once("./header.php"); ?>
         <!-- Nav tabs -->
         <ul class="nav nav-tabs">
             <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#accueil" onclick="/*getListAccueil();*/">Accueil</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link text-dark active" data-bs-toggle="tab" href="#cours" onclick="getListCourses();">Cours</a>
             </li>
             <li class="nav-item">
@@ -54,6 +57,9 @@ include_once("./header.php"); ?>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-dark" data-bs-toggle="tab" href="#stagiaires" onclick="getListTrainees();">Stagiaires</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-dark" data-bs-toggle="tab" href="#exercices" onclick="getListExercises();">Exercices</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-dark" data-bs-toggle="tab" href="#stages" onclick="getListInterships();">Stages</a>
@@ -68,6 +74,9 @@ include_once("./header.php"); ?>
 
         <!-- Tab panes -->
         <div class="tab-content">
+            <div class="tab-pane container-fluid" id="accueil">
+                <p>Ajouter une gestion des carousels sur la page d'accueil</p>
+            </div>
             <div class="tab-pane container-fluid active" id="cours">
                 <div class="mt-2 mb-2">
                     <button role="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAddCourse">Ajouter un cours</button>
@@ -127,6 +136,7 @@ include_once("./header.php"); ?>
                                 <th scope="col">Date fin</th>
                                 <th scope="col">Blason</th>
                                 <th scope="col">Référent·e</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -150,6 +160,21 @@ include_once("./header.php"); ?>
                                 <th scope="col">Date de naissance</th>
                                 <th scope="col">Nom de la session</th>
                                 <th scope="col">Nom de l'entreprise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="tab-pane container-fluid fade" id="exercices">
+                <div class="mt-2">
+                    <table class="table table-bordered table-striped compact" style="margin: 0 auto;width:100%;" id="table-exercices">
+                        <thead>
+                            <tr>
+                                <th scope="col">Exercice/TP</th>
+                                <th scope="col">Prénom NOM</th>
+                                <th scope="col">Fichier</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -761,6 +786,45 @@ include_once("./header.php"); ?>
     </div>
 </div>
 
+<div class="modal modal-xl fade" id="modalInternshipPeriod" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalInternshipPeriodTitle" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="container">
+                    <div class="row">
+                        <h5 class="modal-title w-auto" id="modalInternshipPeriodTitle">Vérifier les périodes de stages de la session</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table table-bordered" id="table-internships-periods">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Intitulé</th>
+                                    <th scope="col">Date de début</th>
+                                    <th scope="col">Date de fin</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex">
+                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Fermer</button>&nbsp;
+                    <button role="button" type="submit" class="btn btn-primary" form="formAddFaq">Envoyer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- <div class="modal modal-xl fade" id="modalAddQuiz" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="modalAddQuizTitle" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -879,7 +943,7 @@ include_once("./js.php"); ?>
             method: "post",
             data: {
                 get_list_courses: 1,
-                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+                id_session: document.querySelector('#form_filter_session').value
             },
             beforeSend: function() {
                 $("#table-cours tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
@@ -909,7 +973,7 @@ include_once("./js.php"); ?>
             method: "post",
             data: {
                 get_list_trainers: 1,
-                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+                id_session: document.querySelector('#form_filter_session').value
             },
             beforeSend: function() {
                 $("#table-formateurs tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
@@ -939,7 +1003,7 @@ include_once("./js.php"); ?>
             method: "post",
             data: {
                 get_list_sessions: 1,
-                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+                id_session: document.querySelector('#form_filter_session').value
             },
             beforeSend: function() {
                 $("#table-sessions tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
@@ -969,7 +1033,7 @@ include_once("./js.php"); ?>
             method: "post",
             data: {
                 get_list_trainees: 1,
-                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+                id_session: document.querySelector('#form_filter_session').value
             },
             beforeSend: function() {
                 $("#table-stagiaires tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
@@ -993,13 +1057,43 @@ include_once("./js.php"); ?>
         });
     }
 
+    function getListExercises() {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_exercises: 1,
+                id_session: document.querySelector('#form_filter_session').value
+            },
+            beforeSend: function() {
+                $("#table-exercices tbody").html('<tr><td colspan="3"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
+            },
+            success: function(r) {
+                $("#table-exercices tbody").html(r);
+
+                new DataTable('#table-exercices', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
     function getListInterships() {
         $.ajax({
             url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 get_list_internships: 1,
-                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+                id_session: document.querySelector('#form_filter_session').value
             },
             beforeSend: function() {
                 $("#table-stages tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
@@ -1023,13 +1117,43 @@ include_once("./js.php"); ?>
         });
     }
 
+    function getListIntershipsPeriods(id_session) {
+        $.ajax({
+            url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
+            method: "post",
+            data: {
+                get_list_internships_periods: 1,
+                id_session: id_session
+            },
+            beforeSend: function() {
+                $("#table-internships-periods tbody").html('<tr><td colspan="3"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');
+            },
+            success: function(r) {
+                $("#table-internships-periods tbody").html(r);
+
+                new DataTable('#table-internships-periods', {
+                    "language": {
+                        "url": '//cdn.datatables.net/plug-ins/2.0.5/i18n/fr-FR.json',
+                    },
+                    "scrollX": true,
+                    "autoWidth": false,
+                    "info": false,
+                    "JQueryUI": true,
+                    "ordering": true,
+                    "retrieve": true,
+                    "scrollCollapse": true
+                });
+            }
+        });
+    }
+
     function getListFaqs() {
         $.ajax({
             url: "//<?= $_SERVER["SERVER_NAME"] ?>/erp/src/c/requests.php",
             method: "post",
             data: {
                 get_list_faqs: 1,
-                // id_session: document.querySelector('select[name="form_session_quiz"]').value
+                id_session: document.querySelector('#form_filter_session').value
             },
             beforeSend: function() {
                 $("#table-faqs tbody").html('<tr><td colspan="6"><div class="spinner-border spinner-border-sm" role="status"><span class="sr-only">Chargement...</span></div>&nbsp;<span>Chargement...</span></td></tr>');

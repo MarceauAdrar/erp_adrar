@@ -427,3 +427,50 @@ span.required {
 .ui-autocomplete {
     z-index: 9999 !important;
 }
+
+/* Change la couleur et la disposition par défaut des éléments de Splide */
+.splide__pagination__page.is-active {
+    background-color: #6BCEE8 !important;
+}
+
+.splide__pagination {
+    bottom: -1rem !important;
+}
+
+.box-signature {
+    background-color: #FFFFFF;
+    border: 1px solid #000000;
+    border-radius: 10px;
+}
+
+blockquote {
+    margin: 0;
+}
+
+blockquote {
+    padding: 15px;
+    background: #eee;
+    border-radius: 5px;
+}
+
+blockquote p::before {
+    content: '\201C';
+}
+
+blockquote p::after {
+    content: '\201D';
+}
+
+.blockquote {
+    position: relative;
+    width: 350px;
+    height: 100px;
+}
+
+.blockquote>img {
+    opacity: 0.1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

@@ -25,6 +25,9 @@
     <link rel="icon" type="image/png" sizes="32x32" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/img/favicon-16x16.png">
     <link rel="manifest" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/site.webmanifest">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+
     <!-- Pour la HeatMap de Clarity by Microsoft -->
     <!-- <script>
         (function(c, l, a, r, i, t, y) {
@@ -83,7 +86,7 @@
 <body>
     <div class="wrapper pb-5">
         <?php if (isset($_SESSION["utilisateur"]["stagiaire_id"])) { ?>
-            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-v1-primary">
+            <nav class="navbar navbar-expand-lg navbar-light border-bottom border-light sticky-top bg-v1-primary" id="navbar">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">
                         <img src="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/imgs/adrar_logo.svg" alt="Logo de l'ADRAR" id="logo_adrar">
@@ -94,7 +97,10 @@
                     <div class="collapse navbar-collapse" id="navbarText">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">Accueil</a>
+                                <a class="nav-link" aria-current="page" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation">Accueil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/modules.php">Modules</a>
                             </li>
                             <?php
                             if ($_SESSION["utilisateur"]["formateur_id"] !== -1) { ?>
@@ -166,7 +172,7 @@
                                         } ?>
                                     </select>
                                 </li>
-                        <?php } ?>
+                            <?php } ?>
                         </ul>
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                             <?php
@@ -177,6 +183,11 @@
                                 $nom_prenom = ucwords($_SESSION["utilisateur"]["formateur_prenom"]) . " " . strtoupper($_SESSION["utilisateur"]["formateur_nom"]);
                             }
                             ?>
+
+                            <?php if ($_SERVER['REMOTE_ADDR'] == "86.214.69.212") { 
+                                // https://speckyboy.com/notification-css-javascript/ ?>
+                                <!-- <i id="line" class="line"><span id="notification" style="padding-left: 15px;" id="notification" class="float fas icon notification"></span></i> -->
+                            <?php } ?>
                             <?php
                             if ($_SESSION["utilisateur"]["formateur_id"] > 0) { ?>
                                 <li class="nav-item">
@@ -197,7 +208,7 @@
                                         <li><a role="button" data-bs-toggle="modal" data-bs-target="#modalTrainees" class="dropdown-item" onclick="loadTrainees();">Actions sur les stagiaires</a></li>
                                         <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/">Retour sur l'ERP</a></li>
                                     <?php } elseif ($_SESSION["utilisateur"]["stagiaire_id"] > 0) { ?>
-                                        <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/viewer.php">Consulter mes acquis</a></li>
+                                        <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/formation/acquired.php">Consulter mes acquis</a></li>
                                     <?php } ?>
                                     <li><a class="dropdown-item" href="//<?= $_SERVER["SERVER_NAME"] ?>/erp/public/deconnexion.php?url=<?= urlencode($_SERVER['REQUEST_URI']) ?>">Se déconnecter</a></li>
                                 </ul>

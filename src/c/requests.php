@@ -55,6 +55,14 @@ if (!empty($_POST["btn_join_evaluation"])) {
     die("ko");
 }
 
+if (isset($_POST['form_filter_session']) && !empty($_POST['form_filter_session'])) {
+    $_SESSION['filtres']['session_id'] = filter_var($_POST['form_filter_session'], FILTER_VALIDATE_INT);
+    die(json_encode(true));
+} elseif(!isset($_POST['form_filter_session']) && !isset($_SESSION['filtres']['session_id'])) {
+    $_SESSION['filtres']['session_id'] = -1;
+    die(json_encode(true));
+}
+
 if (!empty($_POST["save_code"])) {
     $link = "../../public/formation/stagiaires/" . $_SESSION["utilisateur"]["stagiaire_pseudo"] . "/" . $_POST["module"];
     $file = $_POST["tp"] . "." . $_POST["extension"];
@@ -618,8 +626,11 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
         $sql = "SELECT * 
                 FROM cours 
                 JOIN formateurs ON (formateurs.formateur_id = cours.id_formateur) 
-                JOIN cours_modules ON (cours_module_id = id_module) 
-                WHERE formateurs.formateur_id IN(" . implode(", ", $ids_formateurs) . ") ";
+                JOIN cours_modules ON (cours_module_id = id_module) ";
+        if (isset($_SESSION['filtres']['session_id']) && !empty($_SESSION['filtres']['session_id']) && $_SESSION['filtres']['session_id'] > 0) {
+            $sql .= " JOIN cours_sessions ON (cours_id = id_cours AND id_session=:id_session AND cours_session_active = 1)  ";
+        }
+        $sql .= " WHERE formateurs.formateur_id IN(" . implode(", ", $ids_formateurs) . ") ";
         if (isset($_POST['recherche']) && !empty($_POST['recherche'])) {
             $mots_cles = explode(" ", filter_var(trim($_POST['recherche'], FILTER_SANITIZE_SPECIAL_CHARS)));
             $conditions = array();
@@ -629,8 +640,11 @@ if (isset($_POST['get_modules']) && !empty($_POST['get_modules'])) {
             $sql .= " AND " . implode(' AND ', $conditions);
         }
         $sql .= " GROUP BY id_module 
-                ORDER BY cours_module_position;";
+        ORDER BY cours_module_position;";
         $req = $db->prepare($sql);
+        if (isset($_SESSION['filtres']['session_id']) && !empty($_SESSION['filtres']['session_id']) && $_SESSION['filtres']['session_id'] > 0) {
+            $req->bindValue(":id_session", $_SESSION['filtres']['session_id'], PDO::PARAM_INT);
+        }
         $req->execute();
         $modules = $req->fetchAll(PDO::FETCH_ASSOC);
         $req->closeCursor();
@@ -773,9 +787,22 @@ if (isset($_POST['get_list_sessions']) && !empty($_POST['get_list_sessions'])) {
     $tbody = "";
     $sql = "SELECT * 
             FROM sessions 
-            INNER JOIN formateurs ON (formateur_id = id_formateur)
-            ORDER BY session_date_debut DESC, session_nom;";
+            INNER JOIN formateurs ON (formateur_id=id_formateur) ";
+    if (isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] == "-1") {
+        $sql .= "INNER JOIN secteurs ON (secteur_id = id_secteur) ";
+    } elseif (isset($_POST['id_session']) && empty($_POST['id_session'])) {
+        $sql .= " WHERE formateur_id=:id_formateur ";
+    } elseif (isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " WHERE session_id=:id_session ";
+    }
+
+    $sql .= "ORDER BY session_date_debut DESC, session_nom;";
     $req = $db->prepare($sql);
+    if (isset($_POST['id_session']) && empty($_POST['id_session'])) {
+        $req->bindValue(':id_formateur', filter_var($_SESSION['utilisateur']['formateur_id'], FILTER_VALIDATE_INT), PDO::PARAM_INT);
+    } elseif (isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT), PDO::PARAM_INT);
+    }
     $req->execute();
     $sessions = $req->fetchAll(PDO::FETCH_ASSOC);
     if (!empty($sessions)) {
@@ -787,11 +814,13 @@ if (isset($_POST['get_list_sessions']) && !empty($_POST['get_list_sessions'])) {
             $tbody .= ' <td>' . date('d/m/Y', strtotime($uneSession['session_date_fin'])) . '</td>';
             $tbody .= ' <td class="text-center"><img style="height:15vh;width:auto;" src="./imgs/blasons/' . (!empty($uneSession['session_blason']) ? $uneSession['session_blason'] : "#") . '" alt="Blason de la session ' . $uneSession['session_nom'] . '"></td>';
             $tbody .= ' <td>' . $uneSession['formateur_nom'] . "&nbsp;" . $uneSession['formateur_prenom'] . '</td>';
+            $tbody .= ' <td class="text-center"><button role="button" class="btn btn-info text-white" data-bs-toggle="modal" data-bs-target="#modalInternshipPeriod" onclick="getListIntershipsPeriods(' . $uneSession['session_id'] . ');">Période de stage</button></td>';
             $tbody .= '</tr>';
         }
     } else {
         $tbody = '<tr>';
-        $tbody .= ' <th scope="row" colspan="6">Aucune session n\'a été trouvée !</th>';
+        $tbody .= ' <th scope="row" colspan="7">Aucune session n\'a été trouvée !</th>';
+        $tbody .= ' <td class="d-none"></td>';
         $tbody .= ' <td class="d-none"></td>';
         $tbody .= ' <td class="d-none"></td>';
         $tbody .= ' <td class="d-none"></td>';
@@ -805,12 +834,25 @@ if (isset($_POST['get_list_sessions']) && !empty($_POST['get_list_sessions'])) {
 if (isset($_POST['get_list_trainees']) && !empty($_POST['get_list_trainees'])) {
     $tbody = "";
     $sql = "SELECT * 
-            FROM stagiaires 
-            LEFT JOIN sessions ON (session_id = id_session) 
+            FROM stagiaires ";
+    if(isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " INNER JOIN sessions ON (session_id=id_session AND session_id=:id_session) ";
+    } elseif(isset($_POST['id_session']) && empty($_POST['id_session'])) {
+        $sql .= " INNER JOIN sessions ON (session_id=id_session) ";
+        $sql .= " INNER JOIN formateurs ON (formateur_id = id_formateur) ";
+    } elseif(isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] == "-1") {
+        $sql .= " INNER JOIN sessions ON (session_id = id_session) ";
+        $sql .= " INNER JOIN formateurs ON (formateur_id = id_formateur) ";
+        $sql .= "INNER JOIN secteurs ON (secteur_id = id_secteur) ";
+    }
+    $sql .= " 
             LEFT JOIN stages ON (stage_id = id_stage) 
             WHERE stagiaire_actif = 1 
             ORDER BY stagiaire_nom, stagiaire_prenom;";
     $req = $db->prepare($sql);
+    if(isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT), PDO::PARAM_INT);
+    }
     $req->execute();
     $stagiaires = $req->fetchAll(PDO::FETCH_ASSOC);
     if (!empty($stagiaires)) {
@@ -841,6 +883,51 @@ if (isset($_POST['get_list_trainees']) && !empty($_POST['get_list_trainees'])) {
     die($tbody);
 }
 
+if (isset($_POST['get_list_exercises']) && !empty($_POST['get_list_exercises'])) {
+    $tbody = "";
+    $sql = "SELECT cours_module_libelle, cours_title, cours_ressource_titre, stagiaire_prenom, stagiaire_nom, stagiaire_pseudo, stagiaire_ressource_rendue_lien, session_nom 
+            FROM stagiaires 
+            INNER JOIN sessions ON (session_id=id_session) ";
+    if(isset($_POST['id_session']) && empty($_POST['id_session'])) {
+        $sql .= " INNER JOIN formateurs ON (formateur_id = id_formateur) ";
+    } elseif(isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] == "-1") {
+        $sql .= " INNER JOIN formateurs ON (formateur_id = id_formateur) ";
+        $sql .= "INNER JOIN secteurs ON (secteur_id = id_secteur) ";
+    }
+    $sql .= " JOIN cours_sessions ON (cours_sessions.id_session = session_id) 
+            JOIN cours_ressources ON (cours_ressources.id_cours = cours_sessions.id_cours) 
+            JOIN cours ON (cours.cours_id = cours_ressources.id_cours) 
+            JOIN cours_modules ON (cours_modules.cours_module_id = cours.id_module) 
+            LEFT JOIN stagiaires_ressources ON (cours_ressource_id = id_ressource AND stagiaire_id = id_stagiaire) 
+            WHERE stagiaire_actif = 1 ";
+    if(isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $sql .= " AND stagiaires.id_session=:id_session ";
+    }
+    $sql .= " ORDER BY session_nom, stagiaire_nom, stagiaire_prenom;";
+    $req = $db->prepare($sql);
+    if(isset($_POST['id_session']) && !empty($_POST['id_session']) && $_POST['id_session'] > 0) {
+        $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT), PDO::PARAM_INT);
+    }
+    $req->execute();
+    $stagiaires = $req->fetchAll(PDO::FETCH_ASSOC);
+    if (!empty($stagiaires)) {
+        foreach ($stagiaires as $unStagiaire) {
+            $tbody .= '<tr>';
+            $tbody .= ' <td scope="row">[' . $unStagiaire['cours_module_libelle'] . "&nbsp;/&nbsp;" . $unStagiaire['cours_title'] . "]&nbsp;" . $unStagiaire['cours_ressource_titre'] . '</td>';
+            $tbody .= ' <td>[' . $unStagiaire['session_nom'] . ']&nbsp;' . $unStagiaire['stagiaire_prenom'] . "&nbsp;" . $unStagiaire['stagiaire_nom'] . '</td>';
+            $tbody .= ' <td>' . (isset($unStagiaire['stagiaire_ressource_rendue_lien']) ? '<a href="stagiaires/' . $unStagiaire['stagiaire_pseudo'] . "/tps/" . $unStagiaire['stagiaire_ressource_rendue_lien'] . '" target="_blank">' . $unStagiaire['stagiaire_ressource_rendue_lien'] : 'Non rendu') . '</td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="3">Aucun exercice/TP n\'a été trouvé !</th>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
 if (isset($_POST['get_list_internships']) && !empty($_POST['get_list_internships'])) {
     $tbody = "";
     $sql = "SELECT * 
@@ -853,7 +940,7 @@ if (isset($_POST['get_list_internships']) && !empty($_POST['get_list_internships
         foreach ($stages as $unStage) {
             $tbody .= '<tr>';
             $tbody .= ' <th scope="row">' . $unStage['stage_nom'] . '</th>';
-            $tbody .= ' <td>' . $unStage['stage_adresse_rue'] . "&nbsp;,&nbsp;" . $unStage['stage_adresse_cp'] . "&nbsp;-&nbsp;" . $unStage['stage_adresse_ville'] . "(" . $unStage['stage_adresse_pays'] . ")" . '</td>';
+            $tbody .= ' <td>' . $unStage['stage_adresse_rue'] . "&nbsp;,&nbsp;" . $unStage['stage_adresse_cp'] . "&nbsp;-&nbsp;" . $unStage['stage_adresse_ville'] . "&nbsp;(" . $unStage['stage_adresse_pays'] . ")" . '</td>';
             $tbody .= ' <td>' . $unStage['stage_nom_tuteur'] . "&nbsp;" . $unStage['stage_prenom_tuteur'] . "&nbsp;(<a href='mailto:" . $unStage['stage_mail_tuteur'] . "'>Contact</a>)" . '</td>';
             $tbody .= '</tr>';
         }
@@ -861,6 +948,42 @@ if (isset($_POST['get_list_internships']) && !empty($_POST['get_list_internships
         $tbody = '<tr>';
         $tbody .= ' <th scope="row" colspan="3">Aucun stage n\'a été trouvé !</th>';
         $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= ' <td class="d-none"></td>';
+        $tbody .= '</tr>';
+    }
+    die($tbody);
+}
+
+if (isset($_POST['get_list_internships_periods']) && !empty($_POST['get_list_internships_periods'])) {
+    $tbody = "";
+    $sql = "SELECT session_id, session_stage 
+            FROM sessions 
+            WHERE session_id=:id_session;";
+    $req = $db->prepare($sql);
+    $req->bindValue(':id_session', filter_var($_POST['id_session'], FILTER_VALIDATE_INT), PDO::PARAM_INT);
+    $req->execute();
+    $session = $req->fetch(PDO::FETCH_ASSOC);
+    if (!empty($session)) {
+        $stages = json_decode($session['session_stage'], true);
+        if (!empty($stages)) {
+            foreach ($stages['stages'] as $unStage) {
+                $tbody .= '<tr>';
+                $tbody .= ' <td scope="row">' . $unStage['libelle'] . '</td>';
+                $tbody .= ' <td>' . $unStage['date_debut'] . '</td>';
+                $tbody .= ' <td>' . $unStage['date_fin'] . '</td>';
+                $tbody .= '</tr>';
+            }
+        } else {
+            $tbody = '<tr>';
+            $tbody .= ' <th scope="row" colspan="3">Aucune période de stage n\'a été trouvée !</th>';
+            $tbody .= ' <td class="d-none"></td>';
+            $tbody .= ' <td class="d-none"></td>';
+            $tbody .= '</tr>';
+        }
+    } else {
+        $tbody = '<tr>';
+        $tbody .= ' <th scope="row" colspan="3">Aucune session n\'a été trouvée !</th>';
         $tbody .= ' <td class="d-none"></td>';
         $tbody .= ' <td class="d-none"></td>';
         $tbody .= '</tr>';
@@ -907,7 +1030,7 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $_SESSION['filtres']['session_id'] = -1;
     }
-    
+
     $label = "";
     $sql = "SELECT stagiaire_convention_recue 
             FROM stagiaires sta 
@@ -962,11 +1085,11 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $color = "col-good";
     }
-    
+
     die(json_encode(array(
-        "success" => $success, 
+        "success" => $success,
         "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
-        "color" => $color, 
+        "color" => $color,
         "label" => $label
     )));
 } elseif (isset($_POST['get_stats_attestation']) && !empty($_POST['get_stats_attestation'])) {
@@ -975,7 +1098,7 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $_SESSION['filtres']['session_id'] = -1;
     }
-    
+
     $label = "";
     $sql = "SELECT stagiaire_attestation_recue 
             FROM stagiaires sta 
@@ -1030,11 +1153,11 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $color = "col-good";
     }
-    
+
     die(json_encode(array(
-        "success" => $success, 
+        "success" => $success,
         "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
-        "color" => $color, 
+        "color" => $color,
         "label" => $label
     )));
 } elseif (isset($_POST['get_stats_evaluation']) && !empty($_POST['get_stats_evaluation'])) {
@@ -1043,7 +1166,7 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $_SESSION['filtres']['session_id'] = -1;
     }
-    
+
     $label = "";
     $sql = "SELECT stagiaire_evaluation_recue 
             FROM stagiaires sta 
@@ -1098,11 +1221,11 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $color = "col-good";
     }
-        
+
     die(json_encode(array(
-        "success" => $success, 
+        "success" => $success,
         "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
-        "color" => $color, 
+        "color" => $color,
         "label" => $label
     )));
 } elseif (isset($_POST['get_stats_presence']) && !empty($_POST['get_stats_presence'])) {
@@ -1111,7 +1234,7 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $_SESSION['filtres']['session_id'] = -1;
     }
-    
+
     $label = "";
     $sql = "SELECT stagiaire_horaires_recues_1, stagiaire_horaires_recues_2, stagiaire_horaires_recues_3 
             FROM stagiaires sta 
@@ -1169,11 +1292,11 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $color = "col-good";
     }
-        
+
     die(json_encode(array(
-        "success" => $success, 
+        "success" => $success,
         "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
-        "color" => $color, 
+        "color" => $color,
         "label" => $label
     )));
 } elseif (isset($_POST['get_stats_reussite']) && !empty($_POST['get_stats_reussite'])) {
@@ -1182,7 +1305,7 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $_SESSION['filtres']['session_id'] = -1;
     }
-    
+
     $label = "";
     $sql = "SELECT stagiaire_diplome
             FROM stagiaires sta 
@@ -1256,11 +1379,11 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $colorBis = "col-good";
     }
-        
+
     die(json_encode(array(
-        "success" => $success, 
+        "success" => $success,
         "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 100 ? 100 : number_format($value, 2, ","))) . "%" : "Aucune donnée"),
-        "color" => $color, 
+        "color" => $color,
         "label" => $label
     )));
 } elseif (isset($_POST['get_stats_satisfaction']) && !empty($_POST['get_stats_satisfaction'])) {
@@ -1269,7 +1392,7 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $_SESSION['filtres']['session_id'] = -1;
     }
-    
+
     $label = "";
     $sql = "SELECT stagiaire_questionnaire_note 
             FROM stagiaires sta 
@@ -1322,11 +1445,11 @@ if (isset($_POST['get_stats_convention']) && !empty($_POST['get_stats_convention
     } else {
         $color = "col-good";
     }
-            
+
     die(json_encode(array(
-        "success" => $success, 
+        "success" => $success,
         "value" => (!empty($success) ? ($value == 0 ? 0 : ($value == 5 ? 5 : number_format($value, 2, ","))) . "/5" : "Aucune donnée"),
-        "color" => $color, 
+        "color" => $color,
         "label" => $label
     )));
 }
@@ -1461,15 +1584,8 @@ if (isset($_POST['load_trainees']) && !empty($_POST['load_trainees'])) {
 }
 
 if (isset($_POST['reset_pass_trainee']) && !empty($_POST['reset_pass_trainee'])) {
-    $req = $db->prepare('SELECT stagiaire_mdp_decode 
-                        FROM stagiaires 
-                        WHERE stagiaire_pseudo=:pseudo_stagiaire;');
-    $req->bindValue(':pseudo_stagiaire', $_POST['username_trainee']);
-    $req->execute();
-    $old_mdp = $req->fetch(PDO::FETCH_COLUMN);
-
     $req = $db->prepare('UPDATE stagiaires 
-                        SET stagiaire_mdp = "' . password_hash($old_mdp, PASSWORD_BCRYPT) . '"
+                        SET stagiaire_mdp = stagiaire_mdp_save
                         WHERE stagiaire_pseudo=:pseudo_stagiaire;');
     $req->bindValue(':pseudo_stagiaire', $_POST['username_trainee']);
 
@@ -1479,25 +1595,27 @@ if (isset($_POST['reset_pass_trainee']) && !empty($_POST['reset_pass_trainee']))
 }
 
 if (isset($_POST['connect_as_trainee']) && !empty($_POST['connect_as_trainee'])) {
-    die(json_encode(connexionUtilisateur($_POST['username_trainee'])));
+    die(json_encode(connexionUtilisateur($_POST['username_trainee'], null)));
 }
 
-if(isset($_POST['check_email_stagiaire']) && !empty($_POST['check_email_stagiaire'])
-    && isset($_POST['form_mail_stagiaire']) && !empty($_POST['form_mail_stagiaire'])) {
+if (
+    isset($_POST['check_email_stagiaire']) && !empty($_POST['check_email_stagiaire'])
+    && isset($_POST['form_mail_stagiaire']) && !empty($_POST['form_mail_stagiaire'])
+) {
     $disponible = true;
     $message = "";
     $req = $db->prepare("SELECT stagiaire_id FROM stagiaires WHERE stagiaire_mail=:mail_stagiaire;");
     $req->bindValue(':mail_stagiaire', $_POST['form_mail_stagiaire'], PDO::PARAM_INT);
     $req->execute();
-    if(!empty($req->fetch())) {
+    if (!empty($req->fetch())) {
         $disponible = false;
         $message = "Cette adresse email n'est pas disponible.";
-    } elseif(!filter_var($_POST['form_mail_stagiaire'], FILTER_VALIDATE_EMAIL)) {
+    } elseif (!filter_var($_POST['form_mail_stagiaire'], FILTER_VALIDATE_EMAIL)) {
         $disponible = false;
         $message = "Cette adresse email ne correspond pas à un email.";
     }
     die(json_encode(array(
-        "disponible" => $disponible, 
+        "disponible" => $disponible,
         "message" => $message
     )));
 }
@@ -1530,6 +1648,9 @@ if (
     if (isset($_POST['form_mdp_stagiaire']) && !empty($_POST['form_mdp_stagiaire'])) {
         $req->bindValue(':mdp_stagiaire', password_hash($_POST['form_mdp_stagiaire'], PASSWORD_BCRYPT));
         $req->bindValue(':id_stagiaire', filter_var($_SESSION['utilisateur']['stagiaire_id'], FILTER_VALIDATE_INT));
+        if (isset($_POST['form_avatar_stagiaire']) && !empty($_POST['form_avatar_stagiaire'])) {
+            $req->bindValue(':id_avatar', filter_var($_POST['form_avatar_stagiaire'], FILTER_VALIDATE_INT));
+        }
         $req->execute();
         header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
@@ -1549,12 +1670,21 @@ if (
     && isset($_POST['form_nom_formateur']) && !empty($_POST['form_nom_formateur'])
     && isset($_POST['form_prenom_formateur']) && !empty($_POST['form_prenom_formateur'])
 ) {
+    if (!empty($_POST['form_signature_formateur'])) {
+        $uniqid = uniqid();
+        $fp = fopen("../v/formateurs/signature_" . $uniqid . ".png", "wb");
+        fwrite($fp, base64_decode(explode(',', $_POST['form_signature_formateur'])[1]));
+        fclose($fp);
+    }
     $sql = "UPDATE formateurs 
             SET 
                 formateur_nom=:nom_formateur, 
                 formateur_prenom=:prenom_formateur ";
     if (isset($_POST['form_mdp_formateur']) && !empty($_POST['form_mdp_formateur'])) {
         $sql .= " , formateur_mdp=:mdp_formateur ";
+    }
+    if (!empty($_POST['form_signature_formateur'])) {
+        $sql .= ", formateur_signature=:signature_formateur ";
     }
     if (isset($_POST['form_avatar_formateur']) && !empty($_POST['form_avatar_formateur'])) {
         $sql .= " , id_avatar=:id_avatar ";
@@ -1569,6 +1699,9 @@ if (
         $req->execute();
         header("Location: /erp/public/deconnexion.php?type=info&message=" . urlencode("Vous devez vous reconnecter suite aux changements"));
         exit;
+    }
+    if (!empty($_POST['form_signature_formateur'])) {
+        $req->bindValue(":signature_formateur", 'signature_' . $uniqid . '.png');
     }
     if (isset($_POST['form_avatar_formateur']) && !empty($_POST['form_avatar_formateur'])) {
         $req->bindValue(':id_avatar', filter_var($_POST['form_avatar_formateur'], FILTER_VALIDATE_INT));
@@ -1702,7 +1835,7 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages'])) {
                 $messages .= '</div>';
             }
         } else {
-            $messages = 'Aucun message pour le moment...';
+            $messages = '<iframe src="https://lottie.host/embed/42d43b29-1cd3-43c6-b2d9-77c963210dd0/ahpeOAtfF5.json"></iframe>';
         }
 
         die(json_encode(array(
@@ -1736,7 +1869,9 @@ if (isset($_POST['show_messages']) && isset($_POST['show_messages'])) {
                 $messages .= '</div>';
             }
         } else {
-            $messages = 'Aucun message pour le moment...';
+            $messages = '<div class="d-flex justify-content-center"><script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs" type="module"></script> 
+                            <dotlottie-player src="https://lottie.host/42d43b29-1cd3-43c6-b2d9-77c963210dd0/ahpeOAtfF5.json" background="transparent" speed="1" style="width: 300px;" loop autoplay></dotlottie-player>
+                        </div>';
         }
 
         die(json_encode(array(

@@ -4,10 +4,8 @@ include_once("../../src/m/connect.php");
 $title = " | Mon profil";
 $form = "";
 
-
-
 if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur']['formateur_id'] > 0) {
-    $sql = "SELECT formateur_nom, formateur_prenom, formateur_mail, carte_formateur_tel, avatar_id, avatar_nom, avatar_lien
+    $sql = "SELECT formateur_nom, formateur_prenom, formateur_mail, formateur_signature, carte_formateur_tel, avatar_id, avatar_nom, avatar_lien
             FROM formateurs 
             JOIN avatars ON (avatar_id = id_avatar)
             WHERE formateur_id=:id_formateur;";
@@ -54,7 +52,7 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                             <label for="form_email_formateur">Email<span class="required">*</span></label>
                             <div class="form-group">
                                 <div class="input-group">
-                                    <input type="text" class="form-control" name="form_email_formateur" id="form_email_formateur" disabled placeholder="Prénom d\'utilisateur" value="' . explode('@adrar-', $formateur['formateur_mail'])[0] . '">
+                                    <input type="text" class="form-control" name="form_email_formateur" id="form_email_formateur" autocomplete="off" disabled placeholder="Prénom d\'utilisateur" value="' . explode('@adrar-', $formateur['formateur_mail'])[0] . '">
                                     <input type="text" class="form-control" disabled value="@' . explode('@', $formateur['formateur_mail'])[1] . '">
                                 </div>
                             </div>
@@ -63,6 +61,29 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                             <div class="form-group">
                                 <label for="form_mdp_formateur">Mot de passe</label>
                                 <input type="password" autocomplete="new-password" class="form-control" name="form_mdp_formateur" id="form_mdp_formateur" placeholder="Mot de passe utilisateur">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label for="form_signature_formateur">Signature:</label>
+                                <input type="hidden" name="form_signature_formateur">
+                                <div>
+                                    <canvas class="box-signature" id="signature-pad" width="400" height="200" style="touch-action: none;"></canvas>
+                                </div>
+                            </div>
+                            <span>
+                                <button id="approve-signature" type="button">Approuver</button>
+                                <button id="clear-signature" type="button">Effacer</button>
+                            </span>
+                        </div>
+                        <div class="col-4">
+                            <div class="form-group">
+                                <label>Signature actuelle:</label>
+                                <div>
+                                    ' . (isset($formateur['formateur_signature']) && !empty($formateur['formateur_signature']) ? '<img class="box-signature" src="../../src/v/formateurs/' . $formateur['formateur_signature'] . '" alt="Signature du formateur" width="250" height="125">' : '<p>Pas de signature</p>') . '   
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -84,6 +105,20 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
     $req->bindValue(':id_session', $_SESSION['utilisateur']['id_session'], PDO::PARAM_INT);
     $req->execute();
     $session = $req->fetch(PDO::FETCH_ASSOC);
+    $stages = json_decode($session['session_stage'], true);
+    $dates_stages = '<ul>';
+    if (!empty($stages['stages'])) {
+        foreach ($stages['stages'] as $stage) {
+            $dates_stages .= '<li>' . $stage['libelle'] . '</li>';
+            $dates_stages .= '  <ul>';
+            $dates_stages .= '      <li>Début: ' . date('d/m/Y', strtotime($stage['date_debut'])) . '</li>';
+            $dates_stages .= '      <li>Fin: ' . date('d/m/Y', strtotime($stage['date_fin'])) . '</li>';
+            $dates_stages .= '  </ul>';
+        }
+    } else {
+        $dates_stages .= '<li>Pas de dates définies</li>';
+    }
+    $dates_stages .= '</ul>';
     $informations_session = '<div class="row">
                                 <div class="col-12">
                                     <h2>Informations de votre session</h2>
@@ -95,8 +130,8 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                                         <ul>
                                             <li>Formation commencée le ' . date('d/m/Y', strtotime($session['session_date_debut'])) . '</li>
                                             <li>Formation se terminant le ' . date('d/m/Y', strtotime($session['session_date_fin'])) . '</li>
-                                            <li>Date du stage: ' . date('d/m/Y', strtotime($session['session_stage_date_debut'])) . '</li>
-                                            <li>Fin du stage: ' . date('d/m/Y', strtotime($session['session_stage_date_fin'])) . '</li>
+                                            <li>Stages</li>
+                                            ' . $dates_stages . '
                                         </ul>
                                     </p>
                                 </div>
@@ -124,19 +159,19 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
             $questionnaire_stagiaire_remplis .= '   <div title="' . (!empty($satisfaction['stagiaire_questionnaire_reponse']) ? $satisfaction['stagiaire_questionnaire_reponse'] : "Aucun commentaire laissé.") . '">';
             $img = "";
             $alt = "Introuvable";
-            if ($satisfaction['stagiaire_questionnaire_note'] == 1.00) {
+            if ($satisfaction['stagiaire_questionnaire_note'] == 5.00) {
                 $img = "tres_satisfait.png";
                 $alt = "Très satisfait";
-            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 2.00) {
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 4.00) {
                 $img = "satisfait.png";
                 $alt = "Satisfait";
             } elseif ($satisfaction['stagiaire_questionnaire_note'] == 3.00) {
                 $img = "neutre.png";
                 $alt = "Neutre";
-            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 4.00) {
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 2.00) {
                 $img = "insatisfait.png";
                 $alt = "Insatisfait";
-            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 5.00) {
+            } elseif ($satisfaction['stagiaire_questionnaire_note'] == 1.00) {
                 $img = "tres_insatisfait.png";
                 $alt = "Très insatisfait";
             }
@@ -194,13 +229,13 @@ if (isset($_SESSION['utilisateur']['formateur_id']) && $_SESSION['utilisateur'][
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_pseudo_stagiaire">Pseudo<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_pseudo_stagiaire" id="form_pseudo_stagiaire" placeholder="Pseudo unique d\'utilisateur" disabled required value="' . $stagiaire['stagiaire_pseudo'] . '">
+                                <input type="text" class="form-control" name="form_pseudo_stagiaire" id="form_pseudo_stagiaire" autocomplete="off" placeholder="Pseudo unique d\'utilisateur" disabled required value="' . $stagiaire['stagiaire_pseudo'] . '">
                             </div>
                         </div>
                         <div class="col">
                             <div class="form-group">
                                 <label for="form_mail_stagiaire">Mail<span class="required">*</span></label>
-                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" onchange="checkEmailStagiaire();" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['stagiaire_mail'] . '">
+                                <input type="text" class="form-control" name="form_mail_stagiaire" id="form_mail_stagiaire" onchange="checkEmailStagiaire();" autocomplete="email" placeholder="Mail unique d\'utilisateur" required value="' . $stagiaire['stagiaire_mail'] . '">
                                 <span class="d-none" id="form_mail_disponible"></span>
                             </div>
                         </div>
@@ -242,7 +277,7 @@ echo $form; ?>
         img.classList.add('img-selected');
     }
 </script>
-<?php include_once("./js.php");?>
+<?php include_once("./js.php"); ?>
 <script>
     //TODO: not working
     function checkEmailStagiaire() {
@@ -261,6 +296,8 @@ echo $form; ?>
         });
     }
 </script>
-<?php 
+<script src="//cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+<script src="./js/mon-compte.js"></script>
+<?php
 include_once("./footer.php");
 die(ob_get_clean());

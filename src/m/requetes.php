@@ -306,7 +306,7 @@ function inscriptionSession(string $nom, string $sigle, string $date_debut, stri
     if ($req->rowCount() === 0) { // Si la session n'existe pas encore
         $req->closeCursor();
         $blason_nom = NULL;
-        if(!empty($blason)) {
+        if (!empty($blason)) {
             $extensions_ok = array("gif", "jpg", "jpeg", "png");
             $extension = substr(strrchr($blason['name'], '.'), 1);
             if (in_array($extension, $extensions_ok)) {
@@ -329,8 +329,8 @@ function inscriptionSession(string $nom, string $sigle, string $date_debut, stri
         $req->bindValue(":id_formateur", filter_var($id_formateur, FILTER_VALIDATE_INT));
         if ($req->execute()) {
             $req->closeCursor();
-                $success = true;
-                $message = "Session créée.";
+            $success = true;
+            $message = "Session créée.";
         } else {
             $success = false;
             $message = "Une erreur s'est produite, veuillez réessayer.";
@@ -542,14 +542,13 @@ function inscriptionStagiaire(PHPMailer $mailer, string $nom, string $prenom, st
         $prenom_stagiaire = filter_var($prenom, FILTER_SANITIZE_SPECIAL_CHARS);
         $mdp_stagiaire = readable_random_string(10);
 
-        $req = $db->prepare("INSERT INTO stagiaires(stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_mdp, stagiaire_mdp_decode, stagiaire_tel, stagiaire_date_naissance, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
-                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_decode_stagiaire, :stagiaire_tel, DATE_FORMAT(:stagiaire_date_naissance, '%Y-%m-%d'), :id_session" . (isset($id_stage) ? ", :id_stage" : "") . ");");
+        $req = $db->prepare("INSERT INTO stagiaires(stagiaire_nom, stagiaire_prenom, stagiaire_mail, stagiaire_pseudo, stagiaire_mdp, stagiaire_mdp_save, stagiaire_tel, stagiaire_date_naissance, id_session" . (isset($id_stage) ? ", id_stage" : "") . ") 
+                            VALUES(:nom_stagiaire, :prenom_stagiaire, :mail_stagiaire, :pseudo_stagiaire, :mdp_stagiaire, :mdp_stagiaire, :stagiaire_tel, DATE_FORMAT(:stagiaire_date_naissance, '%Y-%m-%d'), :id_session" . (isset($id_stage) ? ", :id_stage" : "") . ");");
         $req->bindValue(":nom_stagiaire", $nom_stagiaire);
         $req->bindValue(":prenom_stagiaire", $prenom_stagiaire);
         $req->bindValue(":mail_stagiaire", $mail_stagiaire);
         $req->bindValue(":pseudo_stagiaire", filter_var($pseudo, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":mdp_stagiaire", password_hash(filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS), PASSWORD_BCRYPT));
-        $req->bindValue(":mdp_decode_stagiaire", filter_var($mdp_stagiaire, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":stagiaire_tel", filter_var($tel, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":stagiaire_date_naissance", filter_var($date_anniversaire, FILTER_SANITIZE_SPECIAL_CHARS));
         $req->bindValue(":id_session", filter_var($id_session, FILTER_VALIDATE_INT));
@@ -723,24 +722,29 @@ function reinitialiserMotDePasse(PHPMailer $mailer, string $mail)
  * Permet de connecter un formateur présent dans la table **formateurs** OU un stagiaire présent dans la table **stagiaires**.
  *
  *
- * @param string|int    $identifiant L'identifiant *unique* du formateur, un email ou un code d'accès.
+ * @param string|int    $identifiant L'identifiant *unique* du formateur ou du stagiaire ou un code d'accès.
+ * @param string|null   $mdp         Le mot de passe du formateur ou du stagiaire.
  * @return boolean      Un booléen.
  */
-function connexionUtilisateur(string|int $identifiant)
+function connexionUtilisateur(string|int $identifiant, string|null $mdp)
 {
     global $db;
 
     $sql = "SELECT * 
-                FROM stagiaires WHERE stagiaire_pseudo=:identifiant;";
+            FROM stagiaires WHERE stagiaire_pseudo=:identifiant;";
     $req = $db->prepare($sql);
     $req->bindValue(":identifiant", filter_var($identifiant, FILTER_SANITIZE_SPECIAL_CHARS));
     $req->execute();
     if ($req->rowCount() === 1) {
-        $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
-        $_SESSION['utilisateur']['formateur_id'] = -1;
-        $_SESSION['utilisateur']['id_secteur'] = -1;
+        $stagiaire = $req->fetch(PDO::FETCH_ASSOC);
+        if (!isset($mdp) || password_verify($mdp, $stagiaire['stagiaire_mdp'])) {
+            $_SESSION['utilisateur'] = $stagiaire;
+            $_SESSION['utilisateur']['formateur_id'] = -1;
+            $_SESSION['utilisateur']['id_secteur'] = -1;
+            $req->closeCursor();
+            return true;
+        }
         $req->closeCursor();
-        return true;
     } elseif ($req->rowCount() === 0) {
         $sql = "SELECT *  
                 FROM formateurs WHERE (formateur_mail=:identifiant 
@@ -750,12 +754,16 @@ function connexionUtilisateur(string|int $identifiant)
         $req->bindValue(":identifiant", filter_var($identifiant . "@adrar-formation.com", FILTER_VALIDATE_EMAIL));
         $req->execute();
         if ($req->rowCount() === 1) {
-            $_SESSION['utilisateur'] = $req->fetch(PDO::FETCH_ASSOC);
-            $_SESSION['utilisateur']['stagiaire_id'] = -1;
-            $_SESSION['utilisateur']['id_session'] = NULL;
-            $_SESSION['mode_edition'] = false;
+            $formateur = $req->fetch(PDO::FETCH_ASSOC);
+            if (password_verify($mdp, $formateur['formateur_mdp'])) {
+                $_SESSION['utilisateur'] = $formateur;
+                $_SESSION['utilisateur']['stagiaire_id'] = -1;
+                $_SESSION['utilisateur']['id_session'] = NULL;
+                $_SESSION['mode_edition'] = false;
+                $req->closeCursor();
+                return true;
+            }
             $req->closeCursor();
-            return true;
         }
     }
     return false;

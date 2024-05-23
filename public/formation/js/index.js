@@ -10,7 +10,27 @@ $(document).ready(function () {
         getModules();
     }
     if (document.querySelector('#liste_cours') !== null) {
-        getCourses(document.querySelector('#hidden_input_module').value);
+        getCourses(document.querySelector('#hidden_input_module').value, document.querySelector('#course-search-kw').value);
+    }
+
+    if (document.querySelector('#form_filter_session') !== null) {
+        $('#form_filter_session').on('change', () => {
+            $.ajax({
+                url: "//" + SERVER_NAME + "/erp/src/c/requests.php",
+                method: "POST",
+                dataType: "json",
+                data: {
+                    form_filter_session: $('#form_filter_session').val()
+                },
+                success: function () {
+                    if ($('#navbar .nav-link.active')) {
+                        $('.nav-item.active').trigger('click');
+                    } else if ($('.nav-link.active')) {
+                        $('.nav-link.active').trigger('click');
+                    }
+                }
+            });
+        });
     }
 });
 
